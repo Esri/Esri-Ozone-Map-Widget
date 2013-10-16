@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=7,IE=9">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>ESRI Map for OWF</title>
+
+        <!-- MUST include dojo configuration before other js and css -->
+        <script src="js/dojoConfig.js"></script>
+
+        <!-- Load non-AMD libs before dojo to avoid timing problems -->
+        <script src="js/lib/lodash.compat.js"></script>
+        <script src="js/lib/backbone.js"></script>
+
+        <link rel="stylesheet" href="css/dragAndDrop.css">
+
+        <style>
+            html, body, #mapDiv, .map.container {
+                padding: 0;
+                margin: 0;
+                height: 100%;
+            }
+            #legendDiv {
+                background-color: #fff;
+                position: absolute !important;
+                z-index: 99;
+                top:10px;
+                right:20px;
+            }
+        </style>
+    </head>
+    <body class="claro">
+        <script>
+            function addCss(src) {
+                document.writeln('<link rel="stylesheet" href="' + src + '">');
+            }
+
+            function addScript(src) {
+                document.writeln('<script src="' + src + '"><\/script>');
+            }
+
+            addCss(window.esriJsPath + "js/dojo/dijit/themes/claro/claro.css");
+            addCss(window.esriJsPath + "js/esri/css/esri.css");
+
+            // Add OWF widget API
+            addScript(window.owfJsPath + "owf-widget-" +
+                      ((window.isDebug) ? ("debug") : ("min")) + ".js");
+
+            // Add ESRI JS API, which starts dojo AMD loader
+            addScript(window.esriJsPath + "init.js");
+            //addScript(window.esriJsPath + "js/dojo/dojo/dojo.js");
+
+            // Trigger app entry point
+            addScript("js/app.js");
+        </script>
+        <div id="mapDiv"></div>
+        <div id="legendDiv"></div>
+    </body>
+</html>
