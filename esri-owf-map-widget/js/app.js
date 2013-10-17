@@ -4,9 +4,9 @@
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
     "models/map", "models/legend",
-    "dojo/mouse", "dojo/on", "dojo/dom",
+    "dojo/mouse", "dojo/on", "dojo/dom", "dojo/json",
     "dojo/domReady!"],
-    function(Map, Legend, Mouse, On, Dom) {
+    function(Map, Legend, Mouse, On, Dom, JSON) {
         var map = new Map("mapDiv");
         var legend = new Legend(map, "legendDiv");
         var dropZone = Dom.byId("mapDiv");
@@ -20,7 +20,17 @@ require([
                     function (sender, msg, channel) {
                         console.log('Got address "' + msg + '"" from "' +
                                     sender + '" on "' + channel);
-                        map.placeMarker(msg);
+                        var markerData = {};
+
+                        try {
+                            // Parse the msg as json.
+                            markerData = JSON.parse(msg);
+                        }
+                        catch (e) {
+                            // Treat the msg as plain address text and try to pass it along.
+                            markerData.address = msg;
+                        }
+                        map.placeMarker(markerData);
                     }
                 );
 
