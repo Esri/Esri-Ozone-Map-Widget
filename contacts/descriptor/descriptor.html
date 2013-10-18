@@ -12,32 +12,39 @@ p=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u20
     /********************************************************************/
     /*      Modify section below to create your descriptor.             */
     /********************************************************************/
-    var pathname = window.location.pathname;
+    var loc = window.location;
+
+    var path = loc.protocol + "//" + loc.hostname + ":" + loc.port +
+               loc.pathname;
+
+    // Remove filename if present
+    path = path.replace(/\/[^\/]+$/, "/");
+
     widgetData = {
-        "universalName":"org.owfgoss.owf.examples.ContactsManagerIntents",
-        "displayName":"Contacts Manager (Intents Launching)",
+        "universalName": "org.owfgoss.owf.examples.ContactsManager.intents",
+        "displayName": "Contacts Manager (Intents Launching)",
         "description": "",
-        "widgetVersion":"1.0",
-        "widgetUrl": pathname + "/../../index.html",
-        "imageUrlSmall": pathname + "/../../img/logo.png",
-        "imageUrlLarge": pathname + "/../../img/logo.png",
-        "width":400,
-        "height":400,
-        "visible":true,
-        "singleton":false,
-        "background":false,
-        "widgetTypes":[
+        "widgetVersion": "1.1",
+        "widgetUrl": path + "../index.html",
+        "imageUrlSmall": path + "../img/logo.png",
+        "imageUrlLarge": path + "../img/logo.png",
+        "width": 400,
+        "height": 400,
+        "visible": true,
+        "singleton": false,
+        "background": false,
+        "widgetTypes": [
             "standard"
         ],
-        "defaultTags":[
+        "defaultTags": [
             "map",
             "geo"
         ],
-        "intents":{
-            "send":[
+        "intents": {
+            "send": [
                 {
-                    "action":"plot",
-                    "dataTypes":[
+                    "action": "plot",
+                    "dataTypes": [
                         "application/vnd.owf.sample.address"
                     ]
                 }
@@ -47,7 +54,7 @@ p=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u20
     /********************************************************************/
     /*      Modify section above to create your descriptor.             */
     /********************************************************************/
-    
+
     var jsonData = JSON.stringify({
         status:200,
         data:widgetData
