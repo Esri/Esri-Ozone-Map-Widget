@@ -7,8 +7,14 @@ require([
     "dojo/mouse", "dojo/on", "dojo/dom", "dojo/json",
     "dojo/domReady!"],
     function(Map, Legend, Mouse, On, Dom, JSON) {
-        var map = new Map("mapDiv");
-        var legend = new Legend(map, "legendDiv");
+        var map = new Map("mapDiv", {
+                center: [-77.035841, 38.901721],
+                zoom: 8,
+                basemap: "streets"
+            });
+
+        Legend.createForMap(map, "legendDiv");
+
         var dropZone = Dom.byId("mapDiv");
 
         // Initialize OWF-specific functionality

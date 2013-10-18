@@ -1,24 +1,13 @@
 // Wrapper for ESRI map object
-define(["esri/map", "esri/tasks/locator", "esri/graphic",
+define(["dojo/_base/declare", "esri/map", "esri/tasks/locator", "esri/graphic",
         "esri/InfoTemplate", "esri/symbols/SimpleMarkerSymbol",
         "esri/symbols/Font", "esri/symbols/TextSymbol", "dojo/_base/Color"],
-        function(Map, Locator, Graphic,
+        function(declare, Map, Locator, Graphic,
                  InfoTemplate, SimpleMarkerSymbol, 
                  Font, TextSymbol, Color) {
-    return Backbone.Model.extend({
-        defaults: {
-            map: null, // Instance of underlying ESRI map object
-            locator: null
-        },
-        initialize: function(divName) {
-            var map = new Map(divName, {
-                center: [-56.049, 38.485],
-                zoom: 3,
-                basemap: "streets"
-            });
-
-            this.set({map: map});
-
+    return declare(Map, {
+        // See esri/map constructor for more information
+        constructor: function(divId, options) {
             var locatorUrl = "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer";
 
             if (window.location.protocol != "file:") {
@@ -27,7 +16,7 @@ define(["esri/map", "esri/tasks/locator", "esri/graphic",
                     window.location.protocol + "//");
             }
 
-            this.set({locator: new Locator(locatorUrl)});
+            this.locator = new Locator(locatorUrl);
         },
         // Returns a dojo.Deferred that will receive a list of candidates on
         // successful completion
@@ -35,12 +24,12 @@ define(["esri/map", "esri/tasks/locator", "esri/graphic",
             var params = { address: { "SingleLine": freeFormAddress } };
 
             if (inCurrentExtent) {
-                params.searchExtent = this.get("map").extent;
+                params.searchExtent = this.extent;
             }
 
-            this.get("locator").outSpatialReference = this.get("map").spatialReference;
+            this.locator.outSpatialReference = this.spatialReference;
 
-            return this.get("locator").addressToLocations(params);
+            return this.locator.addressToLocations(params);
         },
         // Add a market to the map. Uses the same argument format as the OWF
         // Google Maps sample widget: obj must have an 'address' property
@@ -69,7 +58,7 @@ define(["esri/map", "esri/tasks/locator", "esri/graphic",
                     var geometry = candidates[0].location;
                     var graphic = new Graphic(geometry, symbol, attributes, infoTemplate);
 
-                    me.get("map").graphics.add(graphic);
+                    me.graphics.add(graphic);
 
                     var displayText = candidates[0].address;
 
@@ -86,9 +75,9 @@ define(["esri/map", "esri/tasks/locator", "esri/graphic",
                         new Color("#666633"));
 
                     textSymbol.setOffset(0, 8);
-                    me.get("map").graphics.add(new Graphic(geometry, textSymbol));
+                    me.graphics.add(new Graphic(geometry, textSymbol));
 
-                    me.get("map").centerAndZoom(geometry, 20);
+                    me.centerAndZoom(geometry, 15);
                 }
             });
         }
