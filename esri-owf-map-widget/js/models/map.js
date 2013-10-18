@@ -1,12 +1,21 @@
-// Wrapper for ESRI map object
+/**
+ * Defines a map object for this webapp.
+ * @module
+ */
 define(["dojo/_base/declare", "esri/map", "esri/tasks/locator", "esri/graphic",
         "esri/InfoTemplate", "esri/symbols/SimpleMarkerSymbol",
         "esri/symbols/Font", "esri/symbols/TextSymbol", "dojo/_base/Color"],
-        function(declare, Map, Locator, Graphic,
+        function(declare, BaseMap, Locator, Graphic,
                  InfoTemplate, SimpleMarkerSymbol, 
                  Font, TextSymbol, Color) {
-    return declare(Map, {
-        // See esri/map constructor for more information
+    var Map = declare(BaseMap, /** @lends Map.prototype */ {
+        /**
+         * Create a new map instance.
+         * @constructs
+         * @param {string} divId - Identifier for DIV to bind map to.
+         * @param {object} options - Initialization options. See esri/map
+         * constructor for more information.
+         */
         constructor: function(divId, options) {
             var locatorUrl = "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer";
 
@@ -18,8 +27,10 @@ define(["dojo/_base/declare", "esri/map", "esri/tasks/locator", "esri/graphic",
 
             this.locator = new Locator(locatorUrl);
         },
-        // Returns a dojo.Deferred that will receive a list of candidates on
-        // successful completion
+        /**
+         * Returns a dojo.Deferred that will receive a list of candidates on
+         * successful completion
+         */
         addressToLocations: function(freeFormAddress, inCurrentExtent) {
             var params = { address: { "SingleLine": freeFormAddress } };
 
@@ -31,9 +42,11 @@ define(["dojo/_base/declare", "esri/map", "esri/tasks/locator", "esri/graphic",
 
             return this.locator.addressToLocations(params);
         },
-        // Add a market to the map. Uses the same argument format as the OWF
-        // Google Maps sample widget: obj must have an 'address' property
-        // which is a free form string.
+        /**
+         * Add a market to the map. Uses the same argument format as the OWF
+         * Google Maps sample widget: obj must have an 'address' property
+         * which is a free form string.
+         */
         placeMarker: function(obj) {
             var me = this;
 
@@ -82,4 +95,6 @@ define(["dojo/_base/declare", "esri/map", "esri/tasks/locator", "esri/graphic",
             });
         }
     });
+
+    return Map;
 });

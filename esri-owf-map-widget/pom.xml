@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.esri.owf.sample</groupId>
+    <artifactId>map</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <description>Packages the ESRI Map widget for OWF. (Currently just makes jsdoc.)</description>
+    <!--
+      NOTE: jsdocs are built by executing 'mvn site' which will place the
+      results in 'target/site/jsdoc' by default.
+      -->
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>com.github.phasebash</groupId>
+                <artifactId>jsdoc3-maven-plugin</artifactId>
+                <version>1.0.5</version>
+                <configuration>
+                    <recursive>true</recursive>
+                    <directoryRoots>
+                        <directoryRoot>${basedir}/js/models</directoryRoot>
+                    </directoryRoots>
+                    <sourceFiles>
+                        <sourceFile>${basedir}/js/app.js</sourceFile>
+                        <sourceFile>${basedir}/js/dojoConfig.js</sourceFile>
+                    </sourceFiles>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>

@@ -30,3 +30,7 @@ Thumbs.db
 *.tmproj
 .classpath
 .project
+
+# Output Directories #
+######################
+target/

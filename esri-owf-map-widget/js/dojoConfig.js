@@ -12,6 +12,10 @@
 // Define some global helper functions that can be used to set paths to the
 // ESRI and OWF JavaScript files.
 if (!window.isOffline) {
+    /**
+      * Determine if webapp is running in <b>offline</b> mode.
+      * @global
+      */
     window.isOffline = function() {
         // Test if "offline=true" was passed in URL
         return /.*offline\s*=\s*true.*/i.test(
@@ -20,6 +24,10 @@ if (!window.isOffline) {
 }
 
 if (!window.isDebug) {
+    /**
+      * Determine if webapp is running in <b>debug</b> mode.
+      * @global
+      */
     window.isDebug = function() {
         // Test if "debug=true" was passed in URL
         return /.*debug\s*=\s*true.*/i.test(
@@ -28,9 +36,12 @@ if (!window.isDebug) {
 }
 
 if (!window.contextPath) {
-    // Define absolute path to root of webapp. This only works if this
-    // JavaScript file is loaded by index.html (or another file in the
-    // root).
+    /**
+     * Specifies absolute path to root of this webapp. Only works if the
+     * JavaScript file defining this member is loaded by index.html (or
+     * another file in the webapp root).
+     * @global
+     */
     window.contextPath = (function() {
         var loc = window.location;
         var path = loc.protocol + "//";
@@ -53,11 +64,14 @@ if (!window.contextPath) {
 }
 
 if (!window.owfJsPath) {
+    /**
+     * Specifies path to OWF widget JavaScript API. Prefers files from OWF
+     * server it available.
+     * @global
+     */
     window.owfJsPath = (function() {
         var path = window.contextPath + "js/lib/";
 
-        // Define path to OWF widget JavaScript API. Prefer files from OWF
-        // server it available.
         if (document.referrer &&
             /\/owf\/$/i.test(decodeURIComponent(document.referrer))) {
                 path = decodeURIComponent(document.referrer) + "js-min/";
@@ -68,6 +82,12 @@ if (!window.owfJsPath) {
 }
 
 if (!window.esriJsPath) {
+    /**
+     * Specifies path to ESRI JavaScript API. Returns the location hosted on
+     * the Internet by default. When isOffline() is true returns a location
+     * hosted within this webapp.
+     * @global
+     */
     window.esriJsPath = (function() {
         var path = "http://js.arcgis.com/3.7/";
 
@@ -83,6 +103,12 @@ if (!window.esriJsPath) {
     })();
 }
 
+/**
+ * Dojo AMD loader configuration defined to allow ESRI libraries to be
+ * loaded either from the Internet or within this webapp depending on the
+ * value of isOffline().
+ * @global
+ */
 var dojoConfig = dojoConfig || {};
 
 // ESRI JavaScript API 3.7 does not load asynchronously
