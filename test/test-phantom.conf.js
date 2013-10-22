@@ -15,7 +15,8 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
         //include source files here
-        './esri-owf-map-widget/**/*.js',
+        //'./esri-owf-map-widget/**/*.js',
+        './api/**/*.js',
 
         //all spec files
         './test/spec/**/*.spec.js'
