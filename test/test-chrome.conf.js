@@ -7,6 +7,9 @@ module.exports = function(config) {
     // base path, that will be used to resolve files and exclude
     basePath: '..',
 
+    // Disable the html2js preprocessor to prevent Karma from adding a js extension to any
+    // HTML files that need to be included on the Karma server.
+    preprocessors: {'**/*.html': [] },
 
     // frameworks to use
     frameworks: ['jasmine'],
@@ -14,13 +17,15 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        //include source files here
-        //'./esri-owf-map-widget/**/*.js',
-        './api-test-widget/js/vendor/owf-widget-debug.js',
-        './api/**/*.js',
+        //include source files here; paths are relative to basePath as defined above.
+        {pattern: 'api/**/*.js', included: true, served: true},
 
         //all spec files
-        './test/spec/**/*.spec.js'
+        'test/spec/**/*.spec.js',
+
+        // Make any necessary descriptions, relay files available on the Karma server for tests
+        // The relay file under the api-test-widget is provided as an example.
+        {pattern: 'api-test-widget/js/eventing/*.html', included: false, served: true}
     ],
 
 
@@ -33,7 +38,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: ['progress', 'dots'],
-
+    
 
     // web server port
     port: 9876,

@@ -1,5 +1,4 @@
 
-
 describe("A suite", function() {
 
 
@@ -17,11 +16,11 @@ describe("A suite", function() {
 
 describe("Spying on behavior", function() {
 
-    var OWF = null;
 
-    // attempt to set up OWF eventing correctly - not quite working
     beforeEach(function() {
-        OWF = {
+        // Mock the necessary OWF methods and attach them to the window.  OWF should be in global
+        // scope when other libraries attempt to access it.
+        var OWF = {
             Eventing : {
                 publish : function() {
 
@@ -29,13 +28,29 @@ describe("Spying on behavior", function() {
                 subscribe : function() {
 
                 }
-        }
+            }
         };
-    })
+        var Ozone = {
+            util: {
+                toString : function() {
+                }
+            }
+        };
+
+        window.OWF = OWF;
+        window.Ozone = Ozone;
+    });
+
+    afterEach(function() {
+        // Remove our mock objects from the window so neither they nor any spies upon them
+        // hang around for other test suites.
+        delete window.OWF;
+        delete window.Ozone;
+    });
 
 
     // Not currently working, as OWF.Eventing.publish barfs in request....
-    xit("Map.status.request gets called", function() {
+    it("Map.status.request gets called", function() {
        var eventing = OWF.Eventing;
        expect(eventing).not.toBe(null);
 
@@ -50,10 +65,10 @@ describe("Spying on behavior", function() {
        expect(eventing.publish).toHaveBeenCalled();
 
        // don't expect error to be called
-    })
+    });
 
     // Not currently working, as OWF.Eventing.publish barfs in request....
-    xit("Map.status.request gets called with wrong types", function() {
+    it("Map.status.request gets called with wrong types", function() {
         var statusHandler = Map.status;
         spyOn(statusHandler, 'request').andCallThrough();
         statusHandler.request(['foo']);
@@ -64,21 +79,7 @@ describe("Spying on behavior", function() {
         // publish will be called, as now we're calling the error channel for issues
 
 
-    })
-
-});
-
-
-
-/*
-describe('Map.status', function() {
-
-    var statusHandler = Map.status;
-    spyOn(statusHandler, "request");
-    statusHandler.request();
-
-    it("verifies that request was called", function() {
-       expect(statusHandler.request).toHaveBeenCalled();
     });
+
 });
-*/
+
