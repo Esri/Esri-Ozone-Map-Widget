@@ -39,13 +39,15 @@ A modified version of the [Contacts Manager](https://github.com/ozoneplatform/ow
 
 At present, the test folder includes various unit/integration tests for the various JavaScript libraries developed herein.  The tests leverage the [Jasmine v1.3.1](http://pivotal.github.io/jasmine/) testing framework and are executed with [Karma v0.10.2](http://karma-runner.github.io/0.10/index.html).  Karma is a test runner that supports multiple JavaScript testing frameworks and allows for execution of JavaScript tests within targeted browsers (e.g., Chrome, IE, Firefox, PhantomJS).  These tools are provided by the [NPM Registry](http://npmjs.org/) and [Node JS v0.10.21](http://www.nodejs.org).  To install the appropriate tools, a good starting place is the [Karma Installation Instructions](http://karma-runner.github.io/0.10/intro/installation.html).
 
-	> Older versions of Node/NPM (e.g., v0.8.xx) may not execute the current Karma installation packages correctly on Windows.  An update to the latest version of Node/NPM is recommended. 
+*Note:  Older versions of Node/NPM (e.g., v0.8.xx) may not execute the current Karma installation packages correctly on Windows.  An update to the latest version of Node/NPM is recommended.*
 
 To run the tests from the command line, reference one of the karma configuration files in the test directory:
-	karma start test/test-chrome.conf.js
+
+    karma start test/test-chrome.conf.js
 
 If any tests fail, a common way to debug them is through the use of browser-specific tools.  To enable this, you may override the config file settings for a specifc browser and put Karma in server mode to allow for repeated test execution:
-	karma start test/test-chrome.conf.js --browsers=Chrome --single-run=false
+
+    karma start test/test-chrome.conf.js --browsers=Chrome --single-run=false
 
 
 
