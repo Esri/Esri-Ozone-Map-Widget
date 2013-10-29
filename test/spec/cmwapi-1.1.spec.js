@@ -445,6 +445,8 @@ describe("Map.status.view calls and handlers", function() {
             expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.format');
             expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: Map.status.FORMATS_REQUIRED});
 
+            expect(errorHandler.error.calls.length).toEqual(0);
+
         });
 
         it("Testing map.status.format send message: send any formats", function() {
@@ -464,6 +466,7 @@ describe("Map.status.view calls and handlers", function() {
             expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.format');
             expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: outputFormats});
 
+            expect(errorHandler.error.calls.length).toEqual(0);
         });
 
 

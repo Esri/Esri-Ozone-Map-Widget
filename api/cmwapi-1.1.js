@@ -281,8 +281,20 @@ Map.status = ( function ( ) {
          *
          * @param handler
          */
-        handleFormats : function (handler) {
+        handleFormats: function (handler) {
 
+            // no real validation here...
+            var newHandler = function (sender, msg) {
+
+                if (!msg.formats) {
+                    Map.error.error(sender, CHANNEL_FORMATS, msg, "Unable to determine formats" );
+                } else {
+                    handler(sender, msg);
+                }
+            }
+
+            OWF.Eventing.subscribe(CHANNEL_FORMAT, newHandler);
+            return newHandler;
 
         },
 
