@@ -32,6 +32,16 @@ Map.status = ( function ( ) {
      * Questions:
      *      status.about: version parameter: how to return that you support multiple versions?  and/or, how could you?
      *      status.about: widgetName: assume that's a "human-readable" name, rather than universal name?
+     *
+     *      status.view: would we filter out if the requester isn't me?
+     */
+
+    /**
+     * Pattern of usage
+     *      w1: send:  map.status.request  {types: [view]}
+     *      m1: receive map.status.request
+     *      m1: send: map.status.view {requester: w1, ... }
+     *      w1: receive: map.status.view - and the requester matches, so it handles
      */
 
     /**
@@ -51,6 +61,53 @@ Map.status = ( function ( ) {
             }
         }
         return {result: true};
+    },
+    validBounds = function(bounds) {
+      if (!bounds) {
+          return {result: false, msg: 'Bounds are required'}
+      }
+      if (!bounds.southWest) {
+        return {result: false, msg: 'Bounds needs southWest coordinates'}
+      } else if (!validLatLon(bounds.southWest.lat, bounds.southWest.lon)) {
+        return {result: false, msg: 'Bounds requires a valid southWest lat/lon pair [' + bounds.southWest.lat + ',' + bounds.southWest.lon +"]"}
+      }
+      if (!bounds.northEast) {
+        return {result: false, msg: 'Bounds needs northWest coordinates'}
+      } else if (!validLatLon(bounds.northEast.lat, bounds.northEast.lon)) {
+          return {result: false, msg: 'Bounds requires a valid northEast lat/lon pair [' + bounds.northEast.lat + ',' + bounds.northEast.lon +"]"}
+      }
+
+      return {result: true};
+    },
+    validCenter = function(center) {
+        if (!center) {
+            return {result: false, msg: 'Center is required'}
+        }
+
+        if (!validLatLon(center.lat, center.lon)) {
+            return {result: false, msg: 'Center requires a valid lat/lon pair [' + center.lat + ',' + center.lon +"]"}
+        }
+        return {result: true};
+    },
+    validRange = function(range) {
+       if (!range) {
+           return {result: false, msg: 'Range is required'}
+       }
+       // check that range is a number, and greater than 0
+       if (!(isNumber(range) && (range > 0))) {
+           return {result: false, msg: 'Range must be numeric and >= 0 [' + range + ']'}
+       }
+       return {result: true};
+    },
+    isNumber = function(n) {
+        // from http://stackoverflow.com/a/1830844
+       return !isNaN(parseFloat(n)) && isFinite(n);
+    },
+    validLatLon = function(lat,lon) {
+        if (!lat || !lon) {
+            return false;
+        }
+        return true;        // TODO: Replace this with real validator
     }
     return {
 
@@ -79,6 +136,7 @@ Map.status = ( function ( ) {
          * HANDLE a request for status...
          * @param handler : function; means of passing in function handler when message is received
          *   Will be given sender, as well as payload of request message (types).
+         *   Since single item (types), working to leave it as JSON {types: []}
          *   TODO: Is that idea of sender important???
          *   TODO: how would we remove handlers here???
          */
@@ -101,9 +159,13 @@ Map.status = ( function ( ) {
                 }
             }
             OWF.Eventing.subscribe(CHANNEL_REQUEST, newHandler );
+            return newHandler;  // returning to make it easy to test!
         },
 
         /**
+         * Method to send OUT view message.  Only real API requirement here is what goes out over the channel,
+         *    not how it comes in...  we can optimize as need be for usage
+         *
          * @param requester : optional; to whom to send, if not to everyone
          * @param bounds :
          *      { southWest { lat: , lon: }, northEast { lat: , lon: } }
@@ -112,15 +174,77 @@ Map.status = ( function ( ) {
          */
         view : function ( requester, bounds, center, range) {
 
+           /*
+            Validate data provided
+            */
+            var msg = '';
+            var isValidData = true;
+
+            // validate bounds
+            checkBounds = validBounds(bounds);
+            if (!checkBounds.result) {
+                msg += checkBounds.msg +';';
+                isValidData = false;
+            }
+            checkCenter = validCenter(center);
+            if (!checkCenter.result) {
+                msg += checkCenter.msg+';';
+                isValidData = false;
+            }
+            checkRange = validRange(range);
+            if (!checkRange.result) {
+                msg+=checkRange.msg+';';
+                isValidData = false;
+            }
+            msgOut = Ozone.util.toString({requester: requester, bounds: bounds, center: center, range: range});
+            if (!isValidData) {
+                Map.error.error("1", CHANNEL_VIEW,
+                    msgOut,
+                    msg);
+            } else {
+                OWF.Eventing.publish(CHANNEL_VIEW, msgOut);
+            }
+
         },
 
         /**
+         * Invoke handler if CHANNEL_REQUEST message received meets API specifications for map.status.view.
+         * Otherwise, throw map.error
          *
-         * @param handler
+         * @param handler: function has a parameter for sender, bounds, center, and range.
+         *      Sender is string / widget id
+         *      Bounds is { }
+         *      Center is { }
+         *      Range is number
+         *
          */
         handleView : function ( handler ) {
 
+            // Wrap their handler with validation checks for API for folks invoking outside of our calls
+            var newHandler = function( sender, msg) {
 
+                var requester, bounds, center, range;
+                jsonMsg = Ozone.util.parseJson(msg);
+                if (jsonMsg.requester) {
+                    // no real validation going on here, and it's an optinonal item..
+                    requester = jsonMsg.requester
+                }
+
+                if (!jsonMsg.bounds) {
+
+                }
+
+                if (!jsonMsg.center) {
+
+                }
+                if (!jsonMsg.range) {
+
+                }
+
+            }
+
+
+            OWF.Eventing.subscribe(CHANNEL_VIEW, newHandler);
         },
 
         FORMATS_REQUIRED : ["kml", "wms"],
@@ -148,9 +272,27 @@ Map.status = ( function ( ) {
          * @param type - one of TYPES_ALLOWED
          * @param widgetName - name of the map widget
          */
-        about : function ( version, type, widgetName ) {},
+        about : function ( version, type, widgetName ) {
 
-        handleAbout : function (handler) {}
+            // valid type
+
+            // has some sort of widget name
+
+            OWF.Eventing.publish(CHANNEL_ABOUT, Ozone.util.toString( {version: version, type: type, widgetName: widgetName}));
+
+
+        },
+
+        handleAbout : function (handler) {
+
+            // Wrap their handler with validation checks for API for folks invoking outside of our calls
+            var newHandler = function( sender, msg) {
+
+            }
+
+
+            OWF.Eventing.subscribe(CHANNEL_ABOUT, newHandler);
+        }
 
     };
 
