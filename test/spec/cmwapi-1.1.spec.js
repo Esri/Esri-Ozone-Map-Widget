@@ -470,22 +470,24 @@ describe("Map.status.view calls and handlers", function() {
         });
 
 
-        xit("Testing map.status.view handler", function() {
+        xit("Testing map.status.format handler - not yet implemented", function() {
             var eventing = OWF.Eventing;
             spyOn(eventing, 'subscribe');
 
             var testHandler = jasmine.createSpy('testHandler');
-            var newHandler = statusHandler.handleView(testHandler);
+            var newHandler = statusHandler.handleFormats(testHandler);
             expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.view');
 
             // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
             //expect(testHandler).toHaveBeenCalled();
 
             // But I can test the behavior for newHandler!
+/*      TODO: update for formats
             var jsonVal = { requester: '',
                 bounds: validBounds,
                 range: validRange,
                 center: validCenter };
+*/
             spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
             spyOn(errorHandler, 'error');
 
@@ -500,4 +502,100 @@ describe("Map.status.view calls and handlers", function() {
         });
 
     });
+
+    describe("Map.status.about calls and handlers", function() {
+
+        beforeEach(function() {
+            // Mock the necessary OWF methods and attach them to the window.  OWF should be in global
+            // scope when other libraries attempt to access it.
+            var OWF = {
+                Eventing : {
+                    publish : function() {
+
+                    },
+                    subscribe : function() {
+
+                    }
+                }
+            };
+            var Ozone = {
+                util: {
+                    toString : function() {
+                    },
+                    parseJson : function() {}
+                }
+            };
+
+            var errorHandler = Map.error;
+            var statusHandler = Map.status;
+
+            window.OWF = OWF;
+            window.Ozone = Ozone;
+
+            window.statusHandler = statusHandler;
+            window.errorHandler = errorHandler;
+
+        });
+
+        afterEach(function() {
+            // Remove our mock objects from the window so neither they nor any spies upon them
+            // hang around for other test suites.
+            delete window.OWF;
+            delete window.Ozone;
+
+            delete window.statusHandler;
+            delete window.errorHandler;
+        });
+
+
+        it("map.status.about", function() {
+            spyOn(statusHandler, 'about').andCallThrough();
+            spyOn(errorHandler, 'error');
+            spyOn(Ozone.util, 'toString').andCallFake( function(jsonStruct) {
+                return jsonStruct;
+            });
+            var eventing = OWF.Eventing;
+            spyOn(eventing, 'publish');
+
+            statusHandler.about("1.1", "2-D", "Widget Foo");
+            expect(statusHandler.about).toHaveBeenCalled();
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.about');
+            expect(eventing.publish.mostRecentCall.args[1]).toEqual({version: "1.1", type: "2-D", widgetName: "Widget Foo"});
+
+            expect(errorHandler.error.calls.length).toEqual(0);
+        });
+
+        it("map.status.about bad data", function() {
+            spyOn(statusHandler, 'about').andCallThrough();
+            spyOn(errorHandler, 'error');
+            spyOn(Ozone.util, 'toString').andCallFake( function(jsonStruct) {
+                return jsonStruct;
+            });
+            var eventing = OWF.Eventing;
+            spyOn(eventing, 'publish');
+
+            statusHandler.about(null, "2-D", "Widget Foo");
+            expect(statusHandler.about).toHaveBeenCalled();
+            expect(errorHandler.error.calls.length).toEqual(1);
+            expect(eventing.publish.calls.length).toEqual(0);
+
+            statusHandler.about("1.1", "foo", "Widget Foo");
+            expect(statusHandler.about).toHaveBeenCalled();
+            expect(errorHandler.error.calls.length).toEqual(2);
+            expect(eventing.publish.calls.length).toEqual(0);
+
+            statusHandler.about("1.1", "3-D", null);
+            expect(statusHandler.about).toHaveBeenCalled();
+            expect(errorHandler.error.calls.length).toEqual(3);
+            expect(eventing.publish.calls.length).toEqual(0);
+
+            statusHandler.about("1.1", "3-D", '');
+            expect(statusHandler.about).toHaveBeenCalled();
+            expect(errorHandler.error.calls.length).toEqual(4);
+            expect(eventing.publish.calls.length).toEqual(0);
+
+        });
+
+    })
+
     });

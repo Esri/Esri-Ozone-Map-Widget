@@ -54,6 +54,10 @@ Map.status = ( function ( ) {
 
     var FORMATS_REQUIRED = ["kml", "wms"];
 
+    var TYPES_ALLOWED = ["2-D", "3-D", "other"];
+
+    var DEFAULT_SENDER = '---DEFAULT----';
+
     validRequestTypes = function(types) {
         if (types) {
             for (var i = 0; i < types.length; i++  ) {
@@ -130,7 +134,7 @@ Map.status = ( function ( ) {
                 OWF.Eventing.publish(CHANNEL_REQUEST, Ozone.util.toString(objTypes));
             } else {
                 // TODO: get actual widget id
-                Map.error.error( "1", CHANNEL_REQUEST, types, checkTypes.msg);
+                Map.error.error( DEFAULT_SENDER, CHANNEL_REQUEST, types, checkTypes.msg);
             }
         },
 
@@ -200,7 +204,7 @@ Map.status = ( function ( ) {
             }
             msgOut = Ozone.util.toString({requester: requester, bounds: bounds, center: center, range: range});
             if (!isValidData) {
-                Map.error.error("1", CHANNEL_VIEW,
+                Map.error.error( DEFAULT_SENDER, CHANNEL_VIEW,
                     msgOut,
                     msg);
             } else {
@@ -298,7 +302,7 @@ Map.status = ( function ( ) {
 
         },
 
-        TYPES_ALLOWED : ["2-D", "3-D", "other"],
+        TYPES_ALLOWED : TYPES_ALLOWED,
 
         /**
          *
@@ -308,12 +312,32 @@ Map.status = ( function ( ) {
          */
         about : function ( version, type, widgetName ) {
 
+            var validData = true;
+            if (!version) {
+                validData = false;
+                Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, version, "Need a version of the CMWAPI");
+            }
+
             // valid type
+            if (!type) {
+                validData = false;
+                Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, type, "Need a type of widget : see TYPES_ALLOWED");
+            } else {
+                if (TYPES_ALLOWED.indexOf(type)==-1) {
+                    validData = false;
+                    Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, type, "Need a type of widget within TYPES_ALLOWED");
+                }
+            }
 
             // has some sort of widget name
+            if (!widgetName) {
+                Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, widgetName, "Need a widget name");
+                validData = false;
+            }
 
-            OWF.Eventing.publish(CHANNEL_ABOUT, Ozone.util.toString( {version: version, type: type, widgetName: widgetName}));
-
+            if (validData) {        // otherwise, we've already sent out error messages
+                OWF.Eventing.publish(CHANNEL_ABOUT, Ozone.util.toString( {version: version, type: type, widgetName: widgetName}));
+            }
 
         },
 
@@ -321,11 +345,27 @@ Map.status = ( function ( ) {
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
             var newHandler = function( sender, msg) {
-
+                var validData= true;
+                if (!msg.version) {
+                    Map.error.error(sender, CHANNEL_ABOUT, null, "Need a version of the CMWAPI");
+                    validData = false;
+                }
+                if (!msg.type) {
+                    Map.error.error(sender, CHANNEL_ABOUT, null, "Need a type of widget : see TYPES_ALLOWED");
+                    validData = false;
+                }
+                if (!msg.widgetName) {
+                    Map.error.error(sender, CHANNEL_ABOUT, null, "Need a widget name");
+                    validData = false;
+                }
+                if (validData) {
+                    handler(sender, msg.version, msg.type, msg.widgetName);
+                }
             }
 
 
             OWF.Eventing.subscribe(CHANNEL_ABOUT, newHandler);
+            return newHandler;
         }
 
     };
