@@ -33,7 +33,8 @@ describe("Spying on behavior", function() {
         var Ozone = {
             util: {
                 toString : function() {
-                }
+                },
+                parseJson : function() {}
             }
         };
 
@@ -95,6 +96,57 @@ describe("Spying on behavior", function() {
         //  note that this only happens if we 'callThrough' on errorHandler
         expect(eventing.publish.mostRecentCall.args[0]).toEqual("map.error");
 
+
+    });
+
+    it("Testing handler for map.status.request message when given invalid type", function() {
+
+        var eventing = OWF.Eventing;
+        spyOn(eventing, 'subscribe');
+
+        var testHandler = jasmine.createSpy('testHandler');
+        var newHandler = statusHandler.handleRequest(testHandler);
+        expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.request');
+
+        // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
+        //expect(testHandler).toHaveBeenCalled();
+
+        // But I can test the behavior or newHandler!
+        var returnVal = { types: ['foo']};
+        spyOn(Ozone.util, 'parseJson').andReturn(returnVal);
+        spyOn(errorHandler, 'error');
+
+        newHandler('senderFoo', { types: ['foo']});
+        expect(errorHandler.error).toHaveBeenCalled();
+
+        // DON'T expect testHandler to have been called!
+        expect(testHandler.calls.length).toEqual(0);
+
+    });
+
+    it("Testing handler for map.status.request message when given valid type", function() {
+
+        var eventing = OWF.Eventing;
+        spyOn(eventing, 'subscribe');
+
+        var testHandler = jasmine.createSpy('testHandler');
+        var newHandler = statusHandler.handleRequest(testHandler);
+        expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.request');
+
+        // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
+        //expect(testHandler).toHaveBeenCalled();
+
+        // But I can test the behavior or newHandler!
+        var returnVal = { types: ['view']};
+        spyOn(Ozone.util, 'parseJson').andReturn(returnVal);
+        spyOn(errorHandler, 'error');
+
+        newHandler('senderFoo', { types: ['view']});
+        // don't expect error to be called
+        expect(errorHandler.error.calls.length).toEqual(0);
+
+        // DO expect testHandler to have been called!
+        expect(testHandler.calls.length).toEqual(1);
 
     });
 
