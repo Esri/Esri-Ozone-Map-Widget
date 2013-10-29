@@ -596,6 +596,57 @@ describe("Map.status.view calls and handlers", function() {
 
         });
 
+        it("Test handler for map.status.about", function() {
+
+            var eventing = OWF.Eventing;
+            spyOn(eventing, 'subscribe');
+
+            var testHandler = jasmine.createSpy('testHandler');
+            var newHandler = statusHandler.handleAbout(testHandler);
+            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.about');
+
+            // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
+            //expect(testHandler).toHaveBeenCalled();
+
+            // But I can test the behavior for newHandler!
+
+            // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
+            //expect(testHandler).toHaveBeenCalled();
+
+            // But I can test the behavior for newHandler!
+            var jsonVal = {
+                version: '1.1.0',
+                type: '2-D',
+                widgetName: 'CMWAPI Spec widget'
+            }
+            spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
+            spyOn(errorHandler, 'error');
+
+            newHandler('senderFoo', jsonVal );
+            // don't expect error to be called
+            expect(errorHandler.error.calls.length).toEqual(0);
+
+            // Now DO expect testHandler to have been called!
+            expect(testHandler.calls.length).toEqual(1);
+
+
+/*
+            var jsonVal = {
+                type: '2-D',
+                widgetName: 'CMWAPI Spec widget'
+            }
+            spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
+            spyOn(errorHandler, 'error');
+            newHandler('senderFoo', jsonVal );
+            // don't expect error to be called
+            expect(errorHandler.error.calls.length).toEqual(1);
+            // Now DO expect testHandler to have been called!
+            expect(testHandler.calls.length).toEqual(0);
+*/
+
+
+        });
+
     })
 
     });
