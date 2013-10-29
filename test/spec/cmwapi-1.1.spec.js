@@ -386,4 +386,115 @@ describe("Map.status.view calls and handlers", function() {
 
     });
 
-});
+    describe("Map.status.format calls and handlers", function() {
+
+        beforeEach(function() {
+            // Mock the necessary OWF methods and attach them to the window.  OWF should be in global
+            // scope when other libraries attempt to access it.
+            var OWF = {
+                Eventing : {
+                    publish : function() {
+
+                    },
+                    subscribe : function() {
+
+                    }
+                }
+            };
+            var Ozone = {
+                util: {
+                    toString : function() {
+                    },
+                    parseJson : function() {}
+                }
+            };
+
+            var errorHandler = Map.error;
+            var statusHandler = Map.status;
+
+            window.OWF = OWF;
+            window.Ozone = Ozone;
+
+            window.statusHandler = statusHandler;
+            window.errorHandler = errorHandler;
+
+        });
+
+        afterEach(function() {
+            // Remove our mock objects from the window so neither they nor any spies upon them
+            // hang around for other test suites.
+            delete window.OWF;
+            delete window.Ozone;
+
+            delete window.statusHandler;
+            delete window.errorHandler;
+        });
+
+        it("Testing map.status.format send message: don't send any formats", function() {
+
+            spyOn(statusHandler, 'formats').andCallThrough();
+            spyOn(errorHandler, 'error');
+            spyOn(Ozone.util, 'toString').andCallFake( function(jsonStruct) {
+                return jsonStruct;
+            });
+            var eventing = OWF.Eventing;
+            spyOn(eventing, 'publish');
+
+            statusHandler.formats();
+            expect(statusHandler.formats).toHaveBeenCalled();
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.format');
+            expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: Map.status.FORMATS_REQUIRED});
+
+        });
+
+        it("Testing map.status.format send message: send any formats", function() {
+
+            spyOn(statusHandler, 'formats').andCallThrough();
+            spyOn(errorHandler, 'error');
+            spyOn(Ozone.util, 'toString').andCallFake( function(jsonStruct) {
+                return jsonStruct;
+            });
+            var eventing = OWF.Eventing;
+            spyOn(eventing, 'publish');
+
+            var testFormats = ['geoJSON', 'uhf'];
+            var outputFormats = Map.status.FORMATS_REQUIRED.concat(testFormats);
+            statusHandler.formats(testFormats);
+            expect(statusHandler.formats).toHaveBeenCalled();
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.format');
+            expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: outputFormats});
+
+        });
+
+
+        xit("Testing map.status.view handler", function() {
+            var eventing = OWF.Eventing;
+            spyOn(eventing, 'subscribe');
+
+            var testHandler = jasmine.createSpy('testHandler');
+            var newHandler = statusHandler.handleView(testHandler);
+            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.view');
+
+            // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
+            //expect(testHandler).toHaveBeenCalled();
+
+            // But I can test the behavior for newHandler!
+            var jsonVal = { requester: '',
+                bounds: validBounds,
+                range: validRange,
+                center: validCenter };
+            spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
+            spyOn(errorHandler, 'error');
+
+            newHandler('senderFoo', jsonVal );
+            // don't expect error to be called
+            expect(errorHandler.error.calls.length).toEqual(0);
+
+            // Now DO expect testHandler to have been called!
+            expect(testHandler.calls.length).toEqual(1);
+            //expect(testHandler.mostRecentCall.args[1]).toEqual(Map.status.SUPPORTED_STATUS_TYPES);
+
+        });
+
+    });
+    });

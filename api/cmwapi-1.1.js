@@ -52,6 +52,8 @@ Map.status = ( function ( ) {
 
     var SUPPORTED_STATUS_TYPES = ["about", "format", "view"];
 
+    var FORMATS_REQUIRED = ["kml", "wms"];
+
     validRequestTypes = function(types) {
         if (types) {
             for (var i = 0; i < types.length; i++  ) {
@@ -256,22 +258,33 @@ Map.status = ( function ( ) {
             return newHandler;
         },
 
-        FORMATS_REQUIRED : ["kml", "wms"],
+        FORMATS_REQUIRED : FORMATS_REQUIRED,
 
         /**
          * Send out the list of data formats that this map supports.
          *
          */
-        formats : function ( ) {
+        formats : function ( formats ) {
+            var sendFormats;
 
             // send at least FORMATS_REQUIRED
+            if (formats instanceof Array) {
+                sendFormats = FORMATS_REQUIRED.concat(formats);
+            } else { sendFormats = FORMATS_REQUIRED; }
+
+            // note: this may cause us to send the same format value more than once...
+            // blend data given with FORMATS_REQUIRED...
+            OWF.Eventing.publish(CHANNEL_FORMAT, Ozone.util.toString({formats: sendFormats}));
         },
 
         /**
          *
          * @param handler
          */
-        handleFormats : function (handler) {},
+        handleFormats : function (handler) {
+
+
+        },
 
         TYPES_ALLOWED : ["2-D", "3-D", "other"],
 
