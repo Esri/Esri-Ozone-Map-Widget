@@ -412,6 +412,15 @@ Map.error = ( function () {
          */
         handleError : function(handler) {
 
+            var newHandler = function(sender, msg) {
+
+                // nothing really that can be done if the error message itself has an error...
+                handler(sender, msg.type, msg.msg, msg.error);
+            }
+
+
+            OWF.Eventing.subscribe(CHANNEL_ERROR, newHandler);
+
         }
 
     }
