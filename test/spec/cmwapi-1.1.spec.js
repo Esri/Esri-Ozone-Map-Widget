@@ -37,8 +37,14 @@ describe("Spying on behavior", function() {
             }
         };
 
+        var errorHandler = Map.error;
+        var statusHandler = Map.status;
+
         window.OWF = OWF;
         window.Ozone = Ozone;
+
+        window.statusHandler = statusHandler;
+        window.errorHandler = errorHandler;
     });
 
     afterEach(function() {
@@ -49,14 +55,15 @@ describe("Spying on behavior", function() {
     });
 
 
-    // Not currently working, as OWF.Eventing.publish barfs in request....
     it("Map.status.request gets called", function() {
        var eventing = OWF.Eventing;
        expect(eventing).not.toBe(null);
 
-       var statusHandler = Map.status;
+       //var statusHandler = Map.status;
+       //var errorHandler = Map.error;
        spyOn(statusHandler, 'request').andCallThrough();
        spyOn(eventing, 'publish');
+       spyOn(errorHandler, 'error');
 
        statusHandler.request();
        expect(statusHandler.request).toHaveBeenCalled();
@@ -65,18 +72,28 @@ describe("Spying on behavior", function() {
        expect(eventing.publish).toHaveBeenCalled();
 
        // don't expect error to be called
+       expect(errorHandler.error.calls.length).toEqual(0);
     });
 
-    // Not currently working, as OWF.Eventing.publish barfs in request....
     it("Map.status.request gets called with wrong types", function() {
-        var statusHandler = Map.status;
+        //var statusHandler = Map.status;
+        var eventing = OWF.Eventing;
+        spyOn(eventing, 'publish');
+
         spyOn(statusHandler, 'request').andCallThrough();
+        spyOn(errorHandler, 'error').andCallThrough();
+
         statusHandler.request(['foo']);
+
         expect(statusHandler.request).toHaveBeenCalled();
+        expect(statusHandler.request.mostRecentCall.args[0]).toEqual(['foo']);
 
         // expect error to be called...
+        expect(errorHandler.error).toHaveBeenCalled();
 
         // publish will be called, as now we're calling the error channel for issues
+        //  note that this only happens if we 'callThrough' on errorHandler
+        expect(eventing.publish.mostRecentCall.args[0]).toEqual("map.error");
 
 
     });
