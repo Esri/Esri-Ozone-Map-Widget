@@ -208,13 +208,13 @@ Map.status = ( function ( ) {
         },
 
         /**
-         * Invoke handler if CHANNEL_REQUEST message received meets API specifications for map.status.view.
+         * Invoke handler if CHANNEL_VIEW message received meets API specifications for map.status.view.
          * Otherwise, throw map.error
          *
          * @param handler: function has a parameter for sender, bounds, center, and range.
          *      Sender is string / widget id
-         *      Bounds is { }
-         *      Center is { }
+         *      Bounds is { southWest: {lat: , lon: }, northEast: {lat: , lon: }}
+         *      Center is { lat: , lon:  }
          *      Range is number
          *
          */
@@ -223,33 +223,42 @@ Map.status = ( function ( ) {
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
             var newHandler = function( sender, msg) {
 
-                var requester, bounds, center, range;
+                var isValidData = true;
                 jsonMsg = Ozone.util.parseJson(msg);
                 if (jsonMsg.requester) {
-                    // no real validation going on here, and it's an optinonal item..
-                    requester = jsonMsg.requester
+                    // no real validation going on here, and it's an optional item..
                 }
-
-                if (!jsonMsg.bounds) {
-
+                var checkResult = validBounds(jsonMsg.bounds);
+                if (!checkResult.result) {
+                    msg += checkResult.msg +';';
+                    isValidData = false;
                 }
-
-                if (!jsonMsg.center) {
-
+                checkResult = validCenter(jsonMsg.center);
+                if (!checkResult.result) {
+                    msg += checkResult.msg +';';
+                    isValidData = false;
                 }
-                if (!jsonMsg.range) {
-
+                checkResult = validRange(jsonMsg.range);
+                if (!checkResult.result) {
+                    msg += checkResult.msg +';';
+                    isValidData = false;
                 }
-
+                if (isValidData) {
+                    handler(sender, jsonMsg.requester, jsonMsg.bounds, jsonMsg.center, jsonMsg.range )
+                } else {
+                    var msgOut = Ozone.util.toString({requester: jsonMsg.requester, bounds: jsonMsg.bounds,
+                        center: jsonMsg.center, range: jsonMsg.range});
+                    Map.error.error(sender, CHANNEL_VIEW, msgOut, msg );
+                }
             }
 
-
             OWF.Eventing.subscribe(CHANNEL_VIEW, newHandler);
+            return newHandler;
         },
 
         FORMATS_REQUIRED : ["kml", "wms"],
 
-    /**
+        /**
          * Send out the list of data formats that this map supports.
          *
          */

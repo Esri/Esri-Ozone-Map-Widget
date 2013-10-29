@@ -185,7 +185,6 @@ xdescribe("Map.status.request calls and handlers", function() {
 describe("Map.status.view calls and handlers", function() {
 
     var validBounds, validCenter, validRange;
-    var invalidBounds, invalidCenter, invalidRange;
 
     beforeEach(function() {
         // Mock the necessary OWF methods and attach them to the window.  OWF should be in global
@@ -356,6 +355,35 @@ describe("Map.status.view calls and handlers", function() {
         expect(errorHandler.error.mostRecentCall.args[3]).not.toContain('Center');
         expect(eventing.publish.calls.length).toEqual(0);
 
-    })
+    });
+
+    it("Testing map.status.view handler", function() {
+        var eventing = OWF.Eventing;
+        spyOn(eventing, 'subscribe');
+
+        var testHandler = jasmine.createSpy('testHandler');
+        var newHandler = statusHandler.handleView(testHandler);
+        expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.view');
+
+        // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
+        //expect(testHandler).toHaveBeenCalled();
+
+        // But I can test the behavior for newHandler!
+        var jsonVal = { requester: '',
+            bounds: validBounds,
+            range: validRange,
+            center: validCenter };
+        spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
+        spyOn(errorHandler, 'error');
+
+        newHandler('senderFoo', jsonVal );
+        // don't expect error to be called
+        expect(errorHandler.error.calls.length).toEqual(0);
+
+        // Now DO expect testHandler to have been called!
+        expect(testHandler.calls.length).toEqual(1);
+        //expect(testHandler.mostRecentCall.args[1]).toEqual(Map.status.SUPPORTED_STATUS_TYPES);
+
+    });
 
 });
