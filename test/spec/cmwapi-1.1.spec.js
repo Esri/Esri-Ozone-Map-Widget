@@ -1,4 +1,6 @@
 
+define(["cmwapi"], function(Map) {
+
 xdescribe("A suite", function() {
 
 
@@ -650,3 +652,5 @@ describe("Map.status.view calls and handlers", function() {
     })
 
     });
+
+});

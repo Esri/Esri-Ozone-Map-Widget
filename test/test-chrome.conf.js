@@ -9,23 +9,28 @@ module.exports = function(config) {
 
     // Disable the html2js preprocessor to prevent Karma from adding a js extension to any
     // HTML files that need to be included on the Karma server.
-    preprocessors: {'**/*.html': [] },
+    preprocessors: {'**/*.html': []},
 
     // frameworks to use
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'requirejs'],
 
 
     // list of files / patterns to load in the browser
     files: [
-        //include source files here; paths are relative to basePath as defined above.
-        {pattern: 'api/**/*.js', included: true, served: true},
+        // Entry point that uses Require.js to run the specs. All other
+        // files below must have included set false so that Require.js will
+        // run them instead of Karma's default runner.
+        'test/test-main.js',
 
-        //all spec files
-        'test/spec/**/*.spec.js',
+        // Source files here; paths are relative to basePath defined above.
+        {pattern: 'api/**/*.js', included: false},
+
+        // All spec files
+        {pattern: 'test/spec/**/*.spec.js', included: false},
 
         // Make any necessary descriptions, relay files available on the Karma server for tests
         // The relay file under the api-test-widget is provided as an example.
-        {pattern: 'api-test-widget/js/eventing/*.html', included: false, served: true}
+        {pattern: 'api-test-widget/js/eventing/*.html', included: false}
     ],
 
 
