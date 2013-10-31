@@ -23,7 +23,7 @@ module.exports = function(config) {
         'test/test-main.js',
 
         // Source files here; paths are relative to basePath defined above.
-        {pattern: 'api/**/*.js', included: false},
+        {pattern: '*cmwapi*/**/*.js', included: false},
 
         // All spec files
         {pattern: 'test/spec/**/*.spec.js', included: false},
