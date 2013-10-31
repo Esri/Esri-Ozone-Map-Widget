@@ -1,4 +1,4 @@
-define(["cmwapi"], function(CommonMapApi) {
+define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
     /**
      * @classdesc Adapter layer between Common Map Widget API v. 1.1 javascript
      *      implementation and ESRI map implementations
@@ -6,18 +6,52 @@ define(["cmwapi"], function(CommonMapApi) {
      * @version 1.1
      * @param map {object} ESRI map object for which this adapter should apply
      */
-    EsriAdapter = function(map) {
+    var EsriAdapter = function(map) {
+        /**
+         * The container for the ESRI adapter overlay methods
+         * @memberof EsriAdapater
+         * @alias overlay
+         */
+        this.overlay = (function() {
+            var me = this;
+
+            me.handleCreate = function() {
+                //TODO
+            };
+            CommonMapApi.overlay.handleCreate(me.handleCreate);
+
+            me.handleRemove = function() {
+                //TODO
+            };
+            CommonMapApi.overlay.handleRemove(me.handleRemove);
+
+            me.handleHide = function() {
+                //TODO
+            };
+            CommonMapApi.overlay.handleHide(me.handleHide);
+
+            me.handleShow = function() {
+                //TODO
+            };
+            CommonMapApi.overlay.handleShow(me.handleShow);
+
+            me.handleUpdate = function() {
+                //TODO
+            };
+            CommonMapApi.overlay.handleUpdate(me.handleUpdate);
+        })();
+
 
         /**
          * The container for ESRI Adapter status methods
          * @memberof EsriAdapter
          * @alias status
-         */ 
+         */
         this.status = (function() {
             var me = this;
 
             /**
-             * Handler for an incomming map status request.
+             * Handler for an incoming map status request.
              * @method status.handleRequest
              * @param caller {String} optional; the widget making the status request
              * @param types {String[]} optional; the types of status being requested. Array of strings;
@@ -56,12 +90,12 @@ define(["cmwapi"], function(CommonMapApi) {
                         lon: map.geographicExtent.xmax
                     }
                 };
-                
+
                 var center = {
                     lat: map.geographicExtent.getCenter().y,
                     lon: map.geographicExtent.getCenter().x,
                 };
-                
+
                 var range = map.getScale();
 
                 CommonMapApi.status.view(caller, bounds, center, range);
@@ -75,10 +109,10 @@ define(["cmwapi"], function(CommonMapApi) {
              * @memberof! EsriAdapter#
              */
             var sendAbout = function(caller) {
-                var version = esri.version;
+                var version = EsriNS.version;
                 var type = "2-D";
                 var widgetName = ""; //FIXME
-                
+
                 CommonMapApi.status.about(version, type, widgetName);
             };
 
@@ -95,7 +129,7 @@ define(["cmwapi"], function(CommonMapApi) {
                 CommonMapApi.status.format(formats);
             };
 
-            return { handleRequest: me.handleRequest };
+            //return { handleRequest: me.handleRequest };
         })();
 
         // Bind the functions to the CMW API
@@ -108,7 +142,7 @@ define(["cmwapi"], function(CommonMapApi) {
          */
         this.error = (function() {
             var me = this;
-            
+
             /**
              * Build and send an error
              * @method error.error
