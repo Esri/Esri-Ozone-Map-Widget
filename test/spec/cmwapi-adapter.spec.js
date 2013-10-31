@@ -1,6 +1,6 @@
 define(["cmwapi", "cmwapi-adapter"], function(CommonMapApi, Adapter) {
+
     describe("ESRI Common Map API adapter", function() {
-        var validBounds, validCenter, validRange;
 
         beforeEach(function() {
             // Mock the necessary OWF methods and attach them to the window.
@@ -32,11 +32,6 @@ define(["cmwapi", "cmwapi-adapter"], function(CommonMapApi, Adapter) {
 
             window.statusHandler = statusHandler;
             window.errorHandler = errorHandler;
-
-            requestor = 'requestor';
-            validBounds = { southWest: { lat: 1, lon: 1}, northEast: {lat: 1, lon: 1}};
-            validRange = 22;        invalidRange = -22;
-            validCenter = { lat: 1, lon: 1};
 
             // TODO: Mock Esri Map object
         });
