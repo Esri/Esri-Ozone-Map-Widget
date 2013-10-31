@@ -11,11 +11,18 @@ module.exports = function(grunt) {
                       'esri-cmwapi-adapter/**/*.js'],
                 dest: 'target/jsdoc'
             }
+        },
+
+        karma: {
+            unit: {
+                configFile: 'test/test-phantom.conf.js'
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-jsdoc');
+    grunt.loadNpmTasks('grunt-karma');
 
     // Default task(s)
-    grunt.registerTask('default', ['jsdoc']);
+    grunt.registerTask('default', ['karma', 'jsdoc']);
 };
