@@ -12,7 +12,8 @@ requirejs.config({
     baseUrl: '/base',
 
     paths: {
-        'cmwapi': 'api/cmwapi-1.1'
+        'cmwapi': 'api/cmwapi-1.1',
+        'cmwapi-adapter': 'api/cmwapi-1.1-adapter-esri'
     },
 
     // Ask Require.js to load these files (all our tests)
