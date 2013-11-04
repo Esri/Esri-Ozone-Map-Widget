@@ -1,4 +1,4 @@
-define(["cmwapi"], function(CommonMapApi) {
+define(["cmwapi/cmwapi", "cmwapi/Channels"], function(CommonMapApi, Channels) {
     /**
      * @classdesc Adapter layer between Common Map Widget API v. 1.1 javascript
      *      implementation and ESRI map implementations

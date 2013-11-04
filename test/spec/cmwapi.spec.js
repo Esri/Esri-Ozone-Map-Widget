@@ -1,4 +1,4 @@
-define(["cmwapi"], function(Map) {
+define(["cmwapi/cmwapi"], function(Map) {
 
     describe("Common Map API tests", function() {
 

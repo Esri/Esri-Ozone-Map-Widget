@@ -6,7 +6,9 @@ module.exports = function(grunt) {
 
         jsdoc : {
             dist : {
-                src: ['esri-owf-map-widget/js/*.js',
+                src: ['cmwapi/Channels.js',
+                      'cmwapi/Validator.js',
+                      'esri-owf-map-widget/js/*.js',
                       'esri-owf-map-widget/js/models/**/*.js',
                       'esri-cmwapi-adapter/**/*.js'],
                 dest: 'target/jsdoc'

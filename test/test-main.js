@@ -12,7 +12,7 @@ requirejs.config({
     baseUrl: '/base',
 
     paths: {
-        'cmwapi': 'cmwapi/cmwapi',
+        //'cmwapi': 'cmwapi/cmwapi',
         'cmwapi-adapter': 'esri-cmwapi-adapter/esri-cmwapi-adapter'
     },
 
