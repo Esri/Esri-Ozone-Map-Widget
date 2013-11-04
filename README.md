@@ -23,9 +23,10 @@ A modified version of the [Contacts Manager](https://github.com/ozoneplatform/ow
 ## Requirements
 
 1. OWF 7.0 GA
+
 2. Web server to host the widgets
 
-    > You may choose to host the widgets on the same server as OWF for convenience. The [OWF download](https://www.owfgoss.org/download.html) features a bundled [Tomcat](http://tomcat.apache.org/) instance.
+    > NOTE: You may choose to host the widgets on the same server as OWF for convenience. The [OWF download](https://www.owfgoss.org/download.html) features a bundled [Tomcat](http://tomcat.apache.org/) instance.
 
 ## Installation
 
@@ -35,19 +36,38 @@ A modified version of the [Contacts Manager](https://github.com/ozoneplatform/ow
     * http(s)://_**yourserver**_:_**port**_/esri-owf-map-widget/descriptor.html
     * http(s)://_**yourserver**_:_**port**_/contacts/descriptor/descriptor.html
 
-## JavaScript Tests
+## Development Environment Setup
 
-At present, the test folder includes various unit/integration tests for the various JavaScript libraries developed herein.  The tests leverage the [Jasmine v1.3.1](http://pivotal.github.io/jasmine/) testing framework and are executed with [Karma v0.10.2](http://karma-runner.github.io/0.10/index.html).  Karma is a test runner that supports multiple JavaScript testing frameworks and allows for execution of JavaScript tests within targeted browsers (e.g., Chrome, IE, Firefox, PhantomJS).  These tools are provided by the [NPM Registry](http://npmjs.org/) and [Node JS v0.10.21](http://www.nodejs.org).  To install the appropriate tools, a good starting place is the [Karma Installation Instructions](http://karma-runner.github.io/0.10/intro/installation.html).
+The unit tests and JavaScript documentation for this repository can be run/generated using the [GRUNT Task Runner](http://gruntjs.com "GRUNT: The JavaScript Task Runner - Homepage"). Said tests leverage the [Jasmine v1.3.1](http://pivotal.github.io/jasmine "Jasmine Introduction") testing framework and are executed with [Karma v0.10.2](http://karma-runner.github.io/0.10/index.html "Karma: Spectacular Test Runner for JavaScript - Homepage"). The required development tools are provided by the [NPM Registry](http://npmjs.org "Node Packaged Modules - Homepage") and [Node JS v0.10.21](http://nodejs.org "Node.js - Homepage").
 
-*Note:  Older versions of Node/NPM (e.g., v0.8.xx) may not execute the current Karma installation packages correctly on Windows.  An update to the latest version of Node/NPM is recommended.*
+> NOTE: The products of this repository can be developed and extended using any number of current JavaScript and web development frameworks. The installation steps below are provided for the convenience of contributors.
 
-To run the tests from the command line, reference one of the karma configuration files in the test directory:
+To setup the development environment:
+
+1. Install the appropriate [Node JS v0.10.21](http://nodejs.org/download "Node.js Downloads") package for your platform and the accompanying Node Package Manager (NPM).
+
+    > WARNING: Older versions of Node/NPM (e.g., v0.8.x) may not execute the current Karma installation packages correctly on Windows. An update to the latest version of Node/NPM is recommended.
+
+2. Install the GRUNT command line _globally_ by executing:
+
+        npm install -g grunt-cli
+
+3. Install other development dependencies by executing the following in the source code root directory (where the [package.json](package.json) file is located):
+
+        npm install
+
+4. (Optional) Install Karma _globally_ so that it may be executed manually outside of GRUNT (with alternate options specified):
+
+        npm install -g karma
+
+5. To run the unit tests and create JavaScript documentation simply execute `grunt` in the source code root directory.
+
+### Additional JavaScript Test Options
+
+If you have installed Karma globally (as noted above) you may execute it manually from the command and reference a specific configuration file:
 
     karma start test/test-chrome.conf.js
 
-If any tests fail, a common way to debug them is through the use of browser-specific tools.  To enable this, you may override the config file settings for a specifc browser and put Karma in server mode to allow for repeated test execution:
+If any tests fail, a common way to debug them is through the use of browser-specific tools. To enable this, you may override the config file settings for a specific browser and put Karma in server mode to allow for repeated test execution:
 
     karma start test/test-chrome.conf.js --browsers=Chrome --single-run=false
-
-
-

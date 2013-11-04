@@ -11,19 +11,20 @@
  *  General pattern:
  *      request : invoke function
  *      handleRequest : means to handler for invocation, as well as receive info on who requested it
- *      requestMetadata : JSON structure used to build out views to test API
+ *
+ * Pattern of usage
+ *      w1: send:  map.status.request  &#123;types: [view]&#125;
+ *      m1: receive map.status.request
+ *      m1: send: map.status.view &#123;requester: w1, ... &#125;
+ *      w1: receive: map.status.view - and the requester matches, so it handles
  *
  */
-
 define(function() {
     /**
      * @ignore
      */
     var Map = {};
 
-    /**
-     * @ignore
-     */
     Map.status = (function() {
 
         /**
@@ -34,13 +35,6 @@ define(function() {
          *      status.view: would we filter out if the requester isn't me?
          */
 
-        /**
-         * Pattern of usage
-         *      w1: send:  map.status.request  {types: [view]}
-         *      m1: receive map.status.request
-         *      m1: send: map.status.view {requester: w1, ... }
-         *      w1: receive: map.status.view - and the requester matches, so it handles
-         */
 
         /**
          * Channels used for messaging
@@ -53,8 +47,6 @@ define(function() {
         var FORMATS_REQUIRED = ["kml", "wms"];
 
         var TYPES_ALLOWED = ["2-D", "3-D", "other"];
-
-        var DEFAULT_SENDER = '---DEFAULT----';
 
         var validRequestTypes = function(types) {
             if (types) {
@@ -116,6 +108,9 @@ define(function() {
             if (!lat || !lon) {
                 return false;
             }
+            if (!isNumber(lat) || !isNumber(lon)) {
+                return false;
+            }
             return true;        // TODO: Replace this with real validator
         };
 
@@ -125,7 +120,7 @@ define(function() {
 
             /**
              * DO the request for status
-             * @param types : optional; array of strings; 1.1 only supports "about", "format", and "view"
+             * @param {string[]} [types] version 1.1 only supports "about", "format", and "view"
              */
             request : function ( types ) {
                 checkTypes = validRequestTypes(types);
@@ -138,16 +133,16 @@ define(function() {
                     OWF.Eventing.publish(CHANNEL_REQUEST, Ozone.util.toString(objTypes));
                 } else {
                     // TODO: get actual widget id
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_REQUEST, types, checkTypes.msg);
+                    Map.error.error( OWF.getInstanceId(), CHANNEL_REQUEST, types, checkTypes.msg);
                 }
             },
 
             /**
              * HANDLE a request for status...
-             * @param handler : function; means of passing in function handler when message is received
+             * @param handler {function} means of passing in function handler when message is received.<br />
              *   Will be given sender, as well as payload of request message (types).
-             *   Since single item (types), working to leave it as JSON {types: []}
-             *   TODO: Is that idea of sender important???
+             *   Since single item (types), working to leave it as JSON &#123;types: []&#125;.<br />
+             *   TODO: Is that idea of sender important???<br />
              *   TODO: how would we remove handlers here???
              */
             handleRequest : function( handler ) {
@@ -176,11 +171,11 @@ define(function() {
              * Method to send OUT view message.  Only real API requirement here is what goes out over the channel,
              *    not how it comes in...  we can optimize as need be for usage
              *
-             * @param requester : optional; to whom to send, if not to everyone
-             * @param bounds :
-             *      { southWest { lat: , lon: }, northEast { lat: , lon: } }
-             * @param center : { lat: , lon: }
-             * @param range :
+             * @param [requester] to whom to send, if not to everyone
+             * @param bounds
+             *      &#123; southWest &#123; lat: , lon: &#125;, northEast &#123; lat: , lon: &#125; &#125;
+             * @param center &#123; lat: , lon: &#125;
+             * @param range
              */
             view : function ( requester, bounds, center, range) {
 
@@ -208,7 +203,7 @@ define(function() {
                 }
                 msgOut = Ozone.util.toString({requester: requester, bounds: bounds, center: center, range: range});
                 if (!isValidData) {
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_VIEW,
+                    Map.error.error( OWF.getInstanceId(), CHANNEL_VIEW,
                         msgOut,
                         msg);
                 } else {
@@ -221,10 +216,10 @@ define(function() {
              * Invoke handler if CHANNEL_VIEW message received meets API specifications for map.status.view.
              * Otherwise, throw map.error
              *
-             * @param handler: function has a parameter for sender, bounds, center, and range.
-             *      Sender is string / widget id
-             *      Bounds is { southWest: {lat: , lon: }, northEast: {lat: , lon: }}
-             *      Center is { lat: , lon:  }
+             * @param handler {function} has a parameter for sender, bounds, center, and range.<br />
+             *      Sender is string / widget id<br />
+             *      Bounds is &#123; southWest: &#123; lat: , lon: &#125;, northEast: &#123;lat: , lon: &#125; &#125;<br />
+             *      Center is &#123; lat: , lon: &#125;<br />
              *      Range is number
              *
              */
@@ -317,30 +312,35 @@ define(function() {
             about : function ( version, type, widgetName ) {
 
                 var validData = true;
+                var msg; 
+
                 if (!version) {
                     validData = false;
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, version, "Need a version of the CMWAPI");
+                    msg += 'Need a version of the CMWAPI; ';
                 }
 
                 // valid type
                 if (!type) {
                     validData = false;
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, type, "Need a type of widget : see TYPES_ALLOWED");
+                    msg += 'Need a type of widget : see TYPES_ALLOWED; ';                    
                 } else {
                     if (TYPES_ALLOWED.indexOf(type)==-1) {
                         validData = false;
-                        Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, type, "Need a type of widget within TYPES_ALLOWED");
+                        msg += 'Need a type of widget within TYPES_ALLOWED; ';
                     }
                 }
 
                 // has some sort of widget name
                 if (!widgetName) {
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, widgetName, "Need a widget name");
                     validData = false;
+                    msg += 'Need a widget name; '
                 }
 
-                if (validData) {        // otherwise, we've already sent out error messages
-                    OWF.Eventing.publish(CHANNEL_ABOUT, Ozone.util.toString( {version: version, type: type, widgetName: widgetName}));
+                var dataPayload = Ozone.util.toString( {version: version, type: type, widgetName: widgetName});
+                if (validData) {        
+                    OWF.Eventing.publish(CHANNEL_ABOUT, dataPayload);
+                } else {
+                    Map.error.error( OWF.getInstanceId(), CHANNEL_ABOUT, dataPayload, msg);
                 }
 
             },
@@ -387,10 +387,10 @@ define(function() {
         return {
             /**
              *
-             * @param sender : sender of message that caused error
-             * @param type : type of message that caused error (example seems to be cmwapi call: e.g., map.feature.hide)
-             * @param msg : message that caused the error  (example seems to be payload}
-             * @param error : a description of the error
+             * @param sender - sender of message that caused error
+             * @param type - type of message that caused error (example seems to be cmwapi call: e.g., map.feature.hide)
+             * @param msg - message that caused the error  (example seems to be payload)
+             * @param error - a description of the error
              */
             error : function (sender, type, msg, error) {
                 var sendPayload = { sender: sender,
@@ -404,12 +404,12 @@ define(function() {
 
             /**
              *
-             * @param handler
-             *  Handler will receive payload of the following:
-             *   {sender: , type: , msg:, error: }
-             *   sender = sender of message that caused error (since cmwapi is pub/sub, if it's not you, ignore)
-             *   type = type of message that caused error
-             *   msg = payload of message that caused error
+             * @param handler {function}
+             *  Handler will receive payload of the following:<br />
+             *   &#123; sender: , type: , msg:, error: &#125;<br />
+             *   sender = sender of message that caused error (since cmwapi is pub/sub, if it's not you, ignore)<br />
+             *   type = type of message that caused error<br />
+             *   msg = payload of message that caused error<br />
              *   error = description of error
              */
             handleError : function(handler) {

@@ -5,13 +5,20 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         jsdoc : {
-            dist : {
+
+            api: {
                 src: ['cmwapi/Channels.js',
-                      'cmwapi/Validator.js',
-                      'esri-owf-map-widget/js/*.js',
-                      'esri-owf-map-widget/js/models/**/*.js',
-                      'esri-cmwapi-adapter/**/*.js'],
-                dest: 'target/jsdoc'
+                      'cmwapi/Validator.js',],
+                dest: 'target/jsdoc/api'
+            },
+            apiAdapter: {
+                src: ['esri-cmwapi-adapter/**/*.js'],
+                dest: 'target/jsdoc/api-adapter'
+            },
+            widget : {
+                src: ['esri-owf-map-widget/js/*.js',
+                      'esri-owf-map-widget/js/models/**/*.js'],
+                dest: 'target/jsdoc/widget'
             }
         },
 
@@ -24,6 +31,9 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-karma');
+
+    // Helpful aliases
+    grunt.registerTask('test', ['karma']);
 
     // Default task(s)
     grunt.registerTask('default', ['karma', 'jsdoc']);
