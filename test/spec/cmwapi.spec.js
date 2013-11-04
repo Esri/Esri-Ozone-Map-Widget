@@ -295,6 +295,40 @@ define(["cmwapi"], function(Map) {
 
             });
 
+            it("Testing invalid lat/long", function() {
+
+                var invalidLat= 'b',
+                    invalidLon= 'xxxx';
+
+
+                // test through center check - same tests will be made through 
+                var invalidCenter1 = { lat: invalidLat, lon: invalidLon }, 
+                    invalidCenter2 = { lat: 1, lon: invalidLon }, 
+                    invalidCenter3 = { lat: invalidLat, lon: 1 };
+                
+                spyOn(statusHandler, 'view').andCallThrough();
+                spyOn(errorHandler, 'error');
+                var eventing = OWF.Eventing;
+                spyOn(eventing, 'publish');
+
+                statusHandler.view(requestor, validBounds, invalidCenter1, validRange);
+                expect(statusHandler.view).toHaveBeenCalled();
+                expect(errorHandler.error).toHaveBeenCalled();
+                expect(eventing.publish.calls.length).toEqual(0);
+
+                statusHandler.view(requestor, validBounds, invalidCenter2, validRange);
+                expect(statusHandler.view).toHaveBeenCalled();
+                expect(errorHandler.error).toHaveBeenCalled();
+                expect(eventing.publish.calls.length).toEqual(0);
+
+                statusHandler.view(requestor, validBounds, invalidCenter3, validRange);
+                expect(statusHandler.view).toHaveBeenCalled();
+                expect(errorHandler.error).toHaveBeenCalled();
+                expect(eventing.publish.calls.length).toEqual(0);
+
+
+            });
+
             it("Testing multiple invalids for map.status.view", function () {
                 var invalidBounds1 = { southWest: {lat: 1, lon: 1} },
                     invalidRange1 = 'beta';

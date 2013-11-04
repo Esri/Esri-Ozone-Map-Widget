@@ -116,6 +116,9 @@ define(function() {
             if (!lat || !lon) {
                 return false;
             }
+            if (!isNumber(lat) || !isNumber(lon)) {
+                return false;
+            }
             return true;        // TODO: Replace this with real validator
         };
 
