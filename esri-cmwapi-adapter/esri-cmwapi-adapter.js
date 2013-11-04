@@ -1,3 +1,6 @@
+/**
+ * @module EsriAdapter
+ */
 define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
     /**
      * @classdesc Adapter layer between Common Map Widget API v. 1.1 javascript
@@ -5,11 +8,12 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
      * @constructor
      * @version 1.1
      * @param map {object} ESRI map object for which this adapter should apply
+     * @alias module:EsriAdapter
      */
     var EsriAdapter = function(map) {
         /**
          * The container for the ESRI adapter overlay methods
-         * @memberof EsriAdapater
+         * @memberof module:EsriAdapter
          * @alias overlay
          */
         this.overlay = (function() {
@@ -44,7 +48,7 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
 
         /**
          * The container for ESRI Adapter status methods
-         * @memberof EsriAdapter
+         * @memberof module:EsriAdapter
          * @alias status
          */
         this.status = (function() {
@@ -56,7 +60,7 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
              * @param caller {String} optional; the widget making the status request
              * @param types {String[]} optional; the types of status being requested. Array of strings;
              *      1.1 only supports "about", "format", and "view"
-             * @memberof! EsriAdapter#
+             * @memberof! module:EsriAdapter#
              */
             me.handleRequest = function(caller, types) {
                 if(!types || types.contains("view")) {
@@ -77,7 +81,7 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
              * @private
              * @method status.sendView
              * @param caller {String} The Id of the widget which requested the map view status
-             * @memberof! EsriAdapter#
+             * @memberof! module:EsriAdapter#
              */
             var sendView = function(caller) {
                 var bounds = {
@@ -106,7 +110,7 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
              * @private
              * @method status.sendAbout
              * @param caller {object} The Id of the widget which requested the map view status
-             * @memberof! EsriAdapter#
+             * @memberof! module:EsriAdapter#
              */
             var sendAbout = function(caller) {
                 var version = EsriNS.version;
@@ -121,7 +125,7 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
              * @private
              * @method status.sendFormat
              * @param caller {object} The Id of the widget which requested the map view status
-             * @memberof! EsriAdapter#
+             * @memberof! module:EsriAdapter#
              */
             var sendFormat = function(caller) {
                 var formats = ["kml"/*, "geojson", "wms"*/];
@@ -138,7 +142,7 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
         /**
          * The container for EsriAdapter error methods
          * @alias error
-         * @memberof EsriAdapter
+         * @memberof module:EsriAdapter
          */
         this.error = (function() {
             var me = this;
@@ -149,7 +153,7 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
              * @param caller {String} The id of the widget which sent a call triggering the event causing this error
              * @param message {String} The readable message for the error
              * @param err {object} The object representing the error details data
-             * @memberof! EsriAdapter#
+             * @memberof! module:EsriAdapter#
              */
             me.error = function(caller, message, err) {
                 var sender = caller;
@@ -167,7 +171,7 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
              * @param type {String} The type of error for which the message corresponds
              * @param message {String} The readable error message
              * @param error {object} The object representing the error details data
-             * @memberof! EsriAdapter#
+             * @memberof! module:EsriAdapter#
              */
             me.handleError = function(sender, type, message, error) {
                 //TODO
