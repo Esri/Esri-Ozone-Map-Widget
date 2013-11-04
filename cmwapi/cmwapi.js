@@ -11,19 +11,20 @@
  *  General pattern:
  *      request : invoke function
  *      handleRequest : means to handler for invocation, as well as receive info on who requested it
- *      requestMetadata : JSON structure used to build out views to test API
+ *
+ * Pattern of usage
+ *      w1: send:  map.status.request  \{types: [view]\}
+ *      m1: receive map.status.request
+ *      m1: send: map.status.view \{requester: w1, ... \}
+ *      w1: receive: map.status.view - and the requester matches, so it handles
  *
  */
-
 define(function() {
     /**
      * @ignore
      */
     var Map = {};
 
-    /**
-     * @ignore
-     */
     Map.status = (function() {
 
         /**
@@ -34,13 +35,6 @@ define(function() {
          *      status.view: would we filter out if the requester isn't me?
          */
 
-        /**
-         * Pattern of usage
-         *      w1: send:  map.status.request  \{types: [view]\}
-         *      m1: receive map.status.request
-         *      m1: send: map.status.view \{requester: w1, ... \}
-         *      w1: receive: map.status.view - and the requester matches, so it handles
-         */
 
         /**
          * Channels used for messaging
@@ -53,8 +47,6 @@ define(function() {
         var FORMATS_REQUIRED = ["kml", "wms"];
 
         var TYPES_ALLOWED = ["2-D", "3-D", "other"];
-
-        var DEFAULT_SENDER = '---DEFAULT----';
 
         var validRequestTypes = function(types) {
             if (types) {
@@ -141,7 +133,7 @@ define(function() {
                     OWF.Eventing.publish(CHANNEL_REQUEST, Ozone.util.toString(objTypes));
                 } else {
                     // TODO: get actual widget id
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_REQUEST, types, checkTypes.msg);
+                    Map.error.error( OWF.getInstanceId(), CHANNEL_REQUEST, types, checkTypes.msg);
                 }
             },
 
@@ -211,7 +203,7 @@ define(function() {
                 }
                 msgOut = Ozone.util.toString({requester: requester, bounds: bounds, center: center, range: range});
                 if (!isValidData) {
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_VIEW,
+                    Map.error.error( OWF.getInstanceId(), CHANNEL_VIEW,
                         msgOut,
                         msg);
                 } else {
@@ -348,7 +340,7 @@ define(function() {
                 if (validData) {        
                     OWF.Eventing.publish(CHANNEL_ABOUT, dataPayload);
                 } else {
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, dataPayload, msg);
+                    Map.error.error( OWF.getInstanceId(), CHANNEL_ABOUT, dataPayload, msg);
                 }
 
             },

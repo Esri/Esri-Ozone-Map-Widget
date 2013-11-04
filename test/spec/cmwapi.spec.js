@@ -14,6 +14,9 @@ define(["cmwapi"], function(Map) {
                     subscribe : function() {
 
                     }
+                },
+                getInstanceId : function() {
+                    return -1;
                 }
             };
             var Ozone = {
