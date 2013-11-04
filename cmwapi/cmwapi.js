@@ -320,30 +320,35 @@ define(function() {
             about : function ( version, type, widgetName ) {
 
                 var validData = true;
+                var msg; 
+
                 if (!version) {
                     validData = false;
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, version, "Need a version of the CMWAPI");
+                    msg += 'Need a version of the CMWAPI; ';
                 }
 
                 // valid type
                 if (!type) {
                     validData = false;
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, type, "Need a type of widget : see TYPES_ALLOWED");
+                    msg += 'Need a type of widget : see TYPES_ALLOWED; ';                    
                 } else {
                     if (TYPES_ALLOWED.indexOf(type)==-1) {
                         validData = false;
-                        Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, type, "Need a type of widget within TYPES_ALLOWED");
+                        msg += 'Need a type of widget within TYPES_ALLOWED; ';
                     }
                 }
 
                 // has some sort of widget name
                 if (!widgetName) {
-                    Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, widgetName, "Need a widget name");
                     validData = false;
+                    msg += 'Need a widget name; '
                 }
 
-                if (validData) {        // otherwise, we've already sent out error messages
-                    OWF.Eventing.publish(CHANNEL_ABOUT, Ozone.util.toString( {version: version, type: type, widgetName: widgetName}));
+                var dataPayload = Ozone.util.toString( {version: version, type: type, widgetName: widgetName});
+                if (validData) {        
+                    OWF.Eventing.publish(CHANNEL_ABOUT, dataPayload);
+                } else {
+                    Map.error.error( DEFAULT_SENDER, CHANNEL_ABOUT, dataPayload, msg);
                 }
 
             },

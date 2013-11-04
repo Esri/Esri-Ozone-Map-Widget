@@ -499,6 +499,13 @@ define(["cmwapi"], function(Map) {
                     expect(errorHandler.error.calls.length).toEqual(4);
                     expect(eventing.publish.calls.length).toEqual(0);
 
+                    statusHandler.about(null, null, null);
+                    expect(statusHandler.about).toHaveBeenCalled();
+                    expect(errorHandler.error.calls.length).toEqual(5);
+                    expect(errorHandler.error.mostRecentCall.args[3]).toMatch('.+;.+;.+;.+');
+                    expect(eventing.publish.calls.length).toEqual(0);
+
+
                 });
 
                 it("Test handler for map.status.about", function() {
