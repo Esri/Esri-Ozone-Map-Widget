@@ -36,9 +36,9 @@ define(function() {
 
         /**
          * Pattern of usage
-         *      w1: send:  map.status.request  {types: [view]}
+         *      w1: send:  map.status.request  \{types: [view]\}
          *      m1: receive map.status.request
-         *      m1: send: map.status.view {requester: w1, ... }
+         *      m1: send: map.status.view \{requester: w1, ... \}
          *      w1: receive: map.status.view - and the requester matches, so it handles
          */
 
@@ -146,7 +146,7 @@ define(function() {
              * HANDLE a request for status...
              * @param handler : function; means of passing in function handler when message is received
              *   Will be given sender, as well as payload of request message (types).
-             *   Since single item (types), working to leave it as JSON {types: []}
+             *   Since single item (types), working to leave it as JSON \{types: []\}
              *   TODO: Is that idea of sender important???
              *   TODO: how would we remove handlers here???
              */
@@ -178,8 +178,8 @@ define(function() {
              *
              * @param requester : optional; to whom to send, if not to everyone
              * @param bounds :
-             *      { southWest { lat: , lon: }, northEast { lat: , lon: } }
-             * @param center : { lat: , lon: }
+             *      \{ southWest \{ lat: , lon: \}, northEast \{ lat: , lon: \} \}
+             * @param center : \{ lat: , lon: \}
              * @param range :
              */
             view : function ( requester, bounds, center, range) {
@@ -223,8 +223,8 @@ define(function() {
              *
              * @param handler: function has a parameter for sender, bounds, center, and range.
              *      Sender is string / widget id
-             *      Bounds is { southWest: {lat: , lon: }, northEast: {lat: , lon: }}
-             *      Center is { lat: , lon:  }
+             *      Bounds is \{ southWest: \{lat: , lon: \}, northEast: \{lat: , lon: \}\}
+             *      Center is \{ lat: , lon:  \}
              *      Range is number
              *
              */
@@ -406,7 +406,7 @@ define(function() {
              *
              * @param handler
              *  Handler will receive payload of the following:
-             *   {sender: , type: , msg:, error: }
+             *   \{sender: , type: , msg:, error: \}
              *   sender = sender of message that caused error (since cmwapi is pub/sub, if it's not you, ignore)
              *   type = type of message that caused error
              *   msg = payload of message that caused error

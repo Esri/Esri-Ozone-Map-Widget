@@ -8,7 +8,8 @@ module.exports = function(grunt) {
             dist : {
                 src: ['esri-owf-map-widget/js/*.js',
                       'esri-owf-map-widget/js/models/**/*.js',
-                      'esri-cmwapi-adapter/**/*.js'],
+                      'esri-cmwapi-adapter/**/*.js',
+		      'cmwapi/*.js'],
                 dest: 'target/jsdoc'
             }
         },
