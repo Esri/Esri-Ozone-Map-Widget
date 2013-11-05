@@ -2,11 +2,11 @@
  
 ## Description
 
-A set of widgets (light weight web applications) designed for use with the [OZONE Widget Framework (OWF)](https://github.com/ozoneplatform/owf).
+Integration libraries and sample widgets (light weight web applications) designed for use with the [OZONE Widget Framework (OWF)](https://github.com/ozoneplatform/owf).
 
 ## Included Widgets
 
-#### [ESRI OWF Map](esri-owf-map-widget)
+#### [ESRI OWF Map](owf-map-widget)
 
 A simple Map web application using the ESRI JavaScript API. It has additional features when run within OWF:
 
@@ -30,11 +30,15 @@ A modified version of the [Contacts Manager](https://github.com/ozoneplatform/ow
 
 ## Installation
 
-1. Copy the `esri-owf-map-widget` and `contacts` directories to the appropriate **_`webapps`_** location for your web server.
-2. Login to your running OWF instance as an administrator.
-3. [Create](https://github.com/ozoneplatform/owf/wiki/OWF-7-Administrator-Creating-and-Editing-Widgets) entries for the widgets in OWF by importing the following descriptor files from your server:
-    * http(s)://_**yourserver**_:_**port**_/esri-owf-map-widget/descriptor.html
-    * http(s)://_**yourserver**_:_**port**_/contacts/descriptor/descriptor.html
+1. Create an `esri` directory in the appropriate **_`webapps`_** location for your web server.
+
+2. Copy the contents of this project to the newly created directory.
+
+3. Login to your running OWF instance as an administrator.
+
+4. [Create](https://github.com/ozoneplatform/owf/wiki/OWF-7-Administrator-Creating-and-Editing-Widgets) entries for the widgets in OWF by importing the following descriptor files from your server:
+    * http(s)://_**yourserver**_:_**port**_/esri/owf-map-widget/descriptor.html
+    * http(s)://_**yourserver**_:_**port**_/esri/contacts/descriptor/descriptor.html
 
 ## Development Environment Setup
 

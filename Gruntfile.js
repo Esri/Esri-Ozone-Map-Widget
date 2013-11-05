@@ -7,15 +7,15 @@ module.exports = function(grunt) {
         jsdoc : {
             api: {
                 src: ['cmwapi/**/*.js'],
-                dest: 'target/jsdoc/api'
+                dest: 'target/jsdoc/cmwapi'
             },
             apiAdapter: {
-                src: ['esri-cmwapi-adapter/**/*.js'],
-                dest: 'target/jsdoc/api-adapter'
+                src: ['cmwapi-adapter/**/*.js'],
+                dest: 'target/jsdoc/cmwapi-adapter'
             },
             widget : {
-                src: ['esri-owf-map-widget/js/*.js',
-                      'esri-owf-map-widget/js/models/**/*.js'],
+                src: ['owf-map-widget/js/*.js',
+                      'owf-map-widget/js/models/**/*.js'],
                 dest: 'target/jsdoc/widget'
             }
         },
