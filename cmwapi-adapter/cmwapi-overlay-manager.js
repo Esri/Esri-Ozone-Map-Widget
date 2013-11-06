@@ -5,7 +5,7 @@
  * @constructor
  * @param map {object} The ESRI map object which this overlay manager should apply to
  */
-var EsriOverlayManager = function() {
+var EsriOverlayManager = function(adapter, map) {
     var me = this;
 
     me.overlays = {};
@@ -97,7 +97,7 @@ var EsriOverlayManager = function() {
      * @param overlayId {String} the id of the overlay to be deleted from the manager
      * @memberof EsriOverlayManager#
      */
-    me.deleteOverlay = function(overlayId) {
+    me.removeOverlay = function(overlayId) {
         delete me.overlays[overlayId];
         //FIXME what do we do about parents
     };
@@ -130,11 +130,16 @@ var EsriOverlayManager = function() {
      * @memberof EsriOverlayManager#
      */
     me.updateOverlay = function(name, overlayId, parentId) {
-        if(me.overlays[overlayId].name !== name) {
-            me.overlays[overlayId].setName(name);
-        }
-        if(parentId && parentId !== me.overlays[overlayId].parentId) {
-            me.designateParent(overlayId, parentId);
+        if(typeof(me.overlays[overlayId]) === 'undefined') {
+            var msg = "No overlay exists with the provided id of " + overlayId;
+            adapter.error.error(sender, msg, {type: 'map.overlay.update', msg: msg})
+        } else {
+            if(me.overlays[overlayId].name !== name) {
+                me.overlays[overlayId].setName(name);
+            }
+            if(parentId && parentId !== me.overlays[overlayId].parentId) {
+                me.designateParent(overlayId, parentId);
+            }
         }
     };
 
@@ -199,8 +204,6 @@ var EsriOverlayManager = function() {
     me.showFeature = function() {
 
     };
-
-    //I dont believe featureSelected is needed
 
     /**
      * @method updateFeature

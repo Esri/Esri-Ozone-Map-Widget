@@ -1,7 +1,7 @@
 /**
  * @module EsriAdapter
  */
-define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
+define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapApi, EsriNS, OverlayManager) {
     /**
      * @classdesc Adapter layer between Common Map Widget API v. 1.1 javascript
      *      implementation and ESRI map implementations
@@ -11,6 +11,8 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
      * @alias module:EsriAdapter
      */
     var EsriAdapter = function(map) {
+        var overlayManager = new OVerlayManager(this, map);
+
         /**
          * The container for the ESRI adapter overlay methods
          * @memberof module:EsriAdapter
@@ -19,30 +21,197 @@ define(["cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
         this.overlay = (function() {
             var me = this;
 
-            me.handleCreate = function() {
-                //TODO
+            /**
+             * Handler for an incoming map overlay create request.
+             * @method overlay.handleCreate
+             * @param sender {String} the widget making the create overlay request
+             * @param name {String} optional; the non-unique readable name to be given to the created overlay. If
+             *      not provided, the overlayId will be used.
+             * @param overlayId {String} optional; the unique id to be given to the created overlay. If not provided,
+             *      the id of the sender will be used.
+             * @param parentId {String} optional; the id of the overlay to be set as the parent of the created overlay.
+             * @memberof! module:EsriAdapter#
+             */
+            me.handleCreate = function(sender, name, overlayId, parentId) {
+                if(!overlayId) {
+                    overlayId = sender;
+                }
+
+                if(!name) {
+                    name = overlayId;
+                }
+
+                overlayManager.createOverlay(name, overlayId, parentId);
             };
             CommonMapApi.overlay.handleCreate(me.handleCreate);
 
-            me.handleRemove = function() {
-                //TODO
+            /**
+             * Handler for an indcoming request to remove a layer.
+             * @method overlay.handleRemove
+             * @param sender {String} the widget making the remove overlay request
+             * @param overlayId {String} optional; the id of the overlay to be removed; if not provided
+             *      the id of the sender will be assumed.
+             * @memberof! module:EsriAdapter#
+             */
+            me.handleRemove = function(sender, overlayId) {
+                if(!overlayId) {
+                    overlayId = sender;
+                }
+
+                overlayManager.removeOverlay(overlayId);
             };
             CommonMapApi.overlay.handleRemove(me.handleRemove);
 
-            me.handleHide = function() {
-                //TODO
+            /**
+             * Handler for an indcoming request to hide a layer.
+             * @method overlay.handleHide
+             * @param sender {String} the widget making the hide overlay request
+             * @param overlayId {String} optional; the id of the overlay to be removed; if not provided
+             *      the id of the sender will be assumed.
+             * @memberof! module:EsriAdapter#
+             */
+            me.handleHide = function(sender, overlayId) {
+                if(!overlayId) {
+                    overlayId = sender;
+                }
+
+                overlayManager.hideOverlay(overlayId);
             };
             CommonMapApi.overlay.handleHide(me.handleHide);
 
-            me.handleShow = function() {
-                //TODO
+            /**
+             * Handler for an incoming overlay show request
+             * @method overlay.handleShow
+             * @param sender {String} The widget making the show overlay request
+             * @param overlayId {String} optional; the id of the overlay to be shown; if not
+             *      specified, the id of the sender will be assumed.
+             * @memberof! module:EsriAdapter#
+             */
+            me.handleShow = function(sender, overlayId) {
+                if(!overlayId) {
+                    overlayId = sender;
+                }
+
+                overlayManager.showOverlay(overlayId);
             };
             CommonMapApi.overlay.handleShow(me.handleShow);
 
-            me.handleUpdate = function() {
-                //TODO
+            /**
+             * Handler for an incoming overlay update request
+             * @method overlay.handleUpdate
+             * @param sender {String} The widget making the update overlay request
+             * @param name {String} optional; the name to be set for the overlay specified. If
+             *      not specified, the name will not be changed
+             * @param overlayId {Stinrg} optional; the Id of the overlay to be updated. If not
+             *      specified, the id of the sender will be assumed.
+             * @param parentId {String} optional; The id of the overlay to be set as the parent
+             *      of the overlay specified. If not specified, the parent will not be updated.
+             * @memberof! module:EsriAdapter#
+             */
+            var handleUpdate = function(sender, name, overlayId, parentId) {
+                if(!overlayId) {
+                    overlayId = sender;
+                }
+
+                overlayManager.updateOverlay(name, overlayId, parentId);
             };
             CommonMapApi.overlay.handleUpdate(me.handleUpdate);
+        })();
+
+        /**
+         * The container for the ESRI adapter feature methods
+         * @memberof module:EsriAdapter
+         * @alias feature
+         */
+        this.feature = (function() {
+            var me = this;
+
+            /**
+             * Handler for plot feature request
+             * @method feature.handlePlot
+             * @param sender {String} the widget which made the plot feature request
+             * @param overlayId {String} optional; The Id of the overlay to which the feature should be plotted. If
+             *      not specified, the id of the sender is used
+             * @param featureId {String} The id to be given to the feature; unique to the overlayId.
+             * @param name {String} optional; The non-unique readable name to be given to the feature. If not
+             *      specified, the featureId will be used.
+             * @param format {String} optional; The format type of the feature data
+             * @param feature The data for the feature to be plotted
+             * @param zoom {Boolean} Whether or not the feature should be zoomed to when plotted.
+             * @memberof! module:EsriAdapter#
+             */
+            me.handlePlot = function(sender, overlayId, featureId, name, format, feature, zoom) {
+
+            };
+            CommonMapApi.feature.handlePlot(me.handlePlot);
+
+            /**
+             * Handler for plot url request
+             * @method feature.handlePlot
+             * @param sender {String} the widget which made the feature plot url request
+             * @param overlayId {String} optional; The Id of the overlay to which the feature should be plotted. If
+             *      not specified, the id of the sender is used
+             * @param featureId {String} The id to be given to the feature; unique to the overlayId.
+             * @param name {String} optional; The non-unique readable name to be given to the feature. If not
+             *      specified, the featureId will be used.
+             * @param format {String} optional; The format type of the feature data
+             * @param url {String} The url for where the feature data could be retrieved
+             * @param zoom {Boolean} Whether or not the feature should be zoomed to when plotted.
+             * @memberof! module:EsriAdapter#
+             */
+            me.handlePlotUrl = function(sender, overlayId, featureId, name, format, url, params, zoom) {
+                //get url then call plot or vice?
+            };
+            CommonMapApi.feature.handlePlotUrl(me.handlePlotUrl);
+
+            /**
+             * Handler for feature unplot request
+             * @method feature.handleUnplot
+             * @param sender {String} the widget which made the feature unplot request
+             * @param overlayId {String} optional; the id for the overlay from which the feature should be
+             *      unplotted. If not provided, the id of the sender will be assumed
+             * @param featureId {String} The id of the feature to unplot
+             * @memberof! module:EsriAdapter#
+             */
+            me.handleUnplot = function(sender, overlayId, featureId) {
+                if(!overlayId) {
+                    overlayId = sender;
+                }
+                overlayManager.deleteFeature(overlayId, featureId);
+            };
+            CommonMapApi.feature.handleUnplot(me.handleUnplot);
+
+            /**
+             * Handler for request to hide feature
+             * @method feature.handleHide
+             * @param sender {String} the widget which made the feature hide request
+             * @param overlayId {String} optional; the id for the overlay from which the feature should be
+             *      hidden. If not provided, the id of the sender will be assumed
+             * @param featureId {String} The id of the feature to hide
+             * @memberof! module:EsriAdapter#
+             */
+            me.handleHide = function(sender, overlayId, featureId) {
+                if(!overlayId) {
+                    overlayId = sender;
+                }
+                overlayManager.hideFeature(overlayId, featureId);
+            };
+            CommonMapApi.feature.handleHide(me.handleHide);
+
+            me.handleShow = function() {
+
+            };
+            CommonMapApi.feature.handleShow(me.handleShow);
+
+            me.handleSelected = function() {
+
+            };
+            CommonMapApi.feature.handleSelected(me.handleSelected);
+
+            me.handleUpdate = function() {
+
+            };
+            CommonMapApi.feature.handlePlotUrl(me.handlePlotUrl);
         })();
 
 
