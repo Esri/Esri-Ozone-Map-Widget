@@ -13,7 +13,7 @@ requirejs.config({
 
     paths: {
         //'cmwapi': 'cmwapi/cmwapi',
-        'cmwapi-adapter': 'esri-cmwapi-adapter/esri-cmwapi-adapter'
+        'cmwapi-adapter': 'cmwapi-adapter/cmwapi-adapter'
     },
 
     // Ask Require.js to load these files (all our tests)
