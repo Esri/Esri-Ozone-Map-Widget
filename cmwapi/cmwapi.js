@@ -19,7 +19,7 @@
  *      w1: receive: map.status.view - and the requester matches, so it handles
  *
  */
-define(function() {
+define(["cmwapi/Validator"], function(Validator) {
     /**
      * @ignore
      */
@@ -48,71 +48,7 @@ define(function() {
 
         var TYPES_ALLOWED = ["2-D", "3-D", "other"];
 
-        var validRequestTypes = function(types) {
-            if (types) {
-                for (var i = 0; i < types.length; i++  ) {
-                    if (!(SUPPORTED_STATUS_TYPES.indexOf(types[i]) > -1)) {
-                        return {result: false, msg: types[i] + ' is not a supported request type'};
-                    }
-                }
-            }
-            return {result: true};
-        };
-
-        var validBounds = function(bounds) {
-            if (!bounds) {
-                return {result: false, msg: 'Bounds are required'};
-            }
-            if (!bounds.southWest) {
-                return {result: false, msg: 'Bounds needs southWest coordinates'};
-            } else if (!validLatLon(bounds.southWest.lat, bounds.southWest.lon)) {
-                return {result: false, msg: 'Bounds requires a valid southWest lat/lon pair [' + bounds.southWest.lat + ',' + bounds.southWest.lon +"]"};
-            }
-            if (!bounds.northEast) {
-                return {result: false, msg: 'Bounds needs northWest coordinates'};
-            } else if (!validLatLon(bounds.northEast.lat, bounds.northEast.lon)) {
-                return {result: false, msg: 'Bounds requires a valid northEast lat/lon pair [' + bounds.northEast.lat + ',' + bounds.northEast.lon +"]"};
-            }
-
-            return {result: true};
-        };
-
-        var validCenter = function(center) {
-            if (!center) {
-                return {result: false, msg: 'Center is required'};
-            }
-
-            if (!validLatLon(center.lat, center.lon)) {
-                return {result: false, msg: 'Center requires a valid lat/lon pair [' + center.lat + ',' + center.lon +"]"};
-            }
-            return {result: true};
-        };
-
-        var validRange = function(range) {
-           if (!range) {
-               return {result: false, msg: 'Range is required'};
-           }
-           // check that range is a number, and greater than 0
-           if (!(isNumber(range) && (range > 0))) {
-               return {result: false, msg: 'Range must be numeric and >= 0 [' + range + ']'};
-           }
-           return {result: true};
-        };
-
-        var isNumber = function(n) {
-            // from http://stackoverflow.com/a/1830844
-           return !isNaN(parseFloat(n)) && isFinite(n);
-        };
-
-        var validLatLon = function(lat,lon) {
-            if (!lat || !lon) {
-                return false;
-            }
-            if (!isNumber(lat) || !isNumber(lon)) {
-                return false;
-            }
-            return true;        // TODO: Replace this with real validator
-        };
+        var validator = new Validator(SUPPORTED_STATUS_TYPES);
 
         return {
 
@@ -123,7 +59,7 @@ define(function() {
              * @param {string[]} [types] version 1.1 only supports "about", "format", and "view"
              */
             request : function ( types ) {
-                checkTypes = validRequestTypes(types);
+                checkTypes = validator.validRequestTypes(types);
                 if (checkTypes.result) {
                     // build JSON string for types
                     var objTypes = {
@@ -152,7 +88,7 @@ define(function() {
 
                     jsonMsg = Ozone.util.parseJson(msg);
                     if (jsonMsg.types) {
-                        checkTypes = validRequestTypes(jsonMsg.types);
+                        checkTypes = validator.validRequestTypes(jsonMsg.types);
                         if (checkTypes.result) {
                             handler(sender, jsonMsg.types);
                         } else {
@@ -186,17 +122,17 @@ define(function() {
                 var isValidData = true;
 
                 // validate bounds
-                checkBounds = validBounds(bounds);
+                checkBounds = validator.validBounds(bounds);
                 if (!checkBounds.result) {
                     msg += checkBounds.msg +';';
                     isValidData = false;
                 }
-                checkCenter = validCenter(center);
+                checkCenter = validator.validCenter(center);
                 if (!checkCenter.result) {
                     msg += checkCenter.msg+';';
                     isValidData = false;
                 }
-                checkRange = validRange(range);
+                checkRange = validator.validRange(range);
                 if (!checkRange.result) {
                     msg+=checkRange.msg+';';
                     isValidData = false;
@@ -233,17 +169,17 @@ define(function() {
                     if (jsonMsg.requester) {
                         // no real validation going on here, and it's an optional item..
                     }
-                    var checkResult = validBounds(jsonMsg.bounds);
+                    var checkResult = validator.validBounds(jsonMsg.bounds);
                     if (!checkResult.result) {
                         msg += checkResult.msg +';';
                         isValidData = false;
                     }
-                    checkResult = validCenter(jsonMsg.center);
+                    checkResult = validator.validCenter(jsonMsg.center);
                     if (!checkResult.result) {
                         msg += checkResult.msg +';';
                         isValidData = false;
                     }
-                    checkResult = validRange(jsonMsg.range);
+                    checkResult = validator.validRange(jsonMsg.range);
                     if (!checkResult.result) {
                         msg += checkResult.msg +';';
                         isValidData = false;
