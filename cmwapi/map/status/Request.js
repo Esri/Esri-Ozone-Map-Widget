@@ -14,6 +14,9 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
      */
     var Request = {
 
+        /** 
+         * The types of status messages allowed by this version of the CMWAPI.
+         */
         SUPPORTED_STATUS_TYPES : SUPPORTED_STATUS_TYPES,
         /**
          * DO the request for status
@@ -39,8 +42,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * @param handler {function} means of passing in function handler when message is received.<br />
          *   Will be given sender, as well as payload of request message (types).
          *   Since single item (types), working to leave it as JSON &#123;types: []&#125;.<br />
-         *   TODO: Is that idea of sender important???<br />
-         *   TODO: how would we remove handlers here???
+         * @todo Verify - Is the idea of sender important???
          */
         addHandler : function( handler ) {
 

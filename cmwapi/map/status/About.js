@@ -1,8 +1,8 @@
 /**
  * Defines the About channel module according to the CMW API 1.1 specification
  *
- * TODO: status.about - version parameter: how to return that you support multiple versions?  and/or, how could you?
- * TODO: status.about - widgetName: assume that's a "human-readable" name, rather than universal name?
+ * @todo status.about - version parameter: how to return that you support multiple versions?  and/or, how could you?
+ * @todo status.about - widgetName: assume that's a "human-readable" name, rather than universal name?
  * @module cmwapi/map/status/About
  */
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Channels, Validator, Error) {
@@ -65,7 +65,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         /**
          * Registers a handler on to be called whenever a message comes over the map status about channel.
          * Otherwise, throw map.error
-         * TODO: FIll in params docs
+         * @todo FIll in params docs
          *
          */
         addHandler : function (handler) {

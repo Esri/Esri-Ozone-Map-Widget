@@ -1,5 +1,10 @@
 /**
  * Defines A utility class for validating various message elements used for the CMW API.
+ * @todo Consider converting to a static class - this is instanced at present to allow supported request types to
+ *       be passed in.  These are governed by the API spec and not by any specific map implementation.  
+ *       They shouldn't be changed.
+ * @todo Add a simple format validator to cover map types (i.e., 2D vs. 3D vs. Other)
+ * 
  * @module cmwapi/Validator
  */
 define('cmwapi/Validator', function() {

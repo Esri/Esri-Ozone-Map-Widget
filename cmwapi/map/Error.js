@@ -1,8 +1,8 @@
 /**
  * Defines the Error channel module according to the CMW API 1.1 specification
  *
- * TODO: error sender - instance id or widget id? (inferring by example, need to ask on forums)
- * TODO: error description - no common list, correct?
+ * @todo error sender - instance id or widget id? (inferring by example, need to ask on forums)
+ * @todo error description - no common list, correct?
  * @module cmwapi/map/Error
  */
 define(["cmwapi/Channels"], function(Channels) {
