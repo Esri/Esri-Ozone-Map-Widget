@@ -19,7 +19,7 @@
  *      w1: receive: map.status.view - and the requester matches, so it handles
  *
  */
-define(["cmwapi/Validator"], function(Validator) {
+define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
     /**
      * @ignore
      */

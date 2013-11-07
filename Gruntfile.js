@@ -7,8 +7,7 @@ module.exports = function(grunt) {
         jsdoc : {
 
             api: {
-                src: ['cmwapi/Channels.js',
-                      'cmwapi/Validator.js',],
+                src: ['cmwapi/**/*.js',],
                 dest: 'target/jsdoc/cmwapi'
             },
             apiAdapter: {
