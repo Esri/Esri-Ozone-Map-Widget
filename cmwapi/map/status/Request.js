@@ -3,7 +3,7 @@
  *
  * @module cmwapi/map/status/Request
  */
-define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Channels, Validator) {
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Channels, Validator, Error) {
 
     var SUPPORTED_STATUS_TYPES = ["about", "format", "view"];
     var validator = new Validator(SUPPORTED_STATUS_TYPES);
@@ -33,7 +33,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 OWF.Eventing.publish(Channels.MAP_STATUS_REQUEST, Ozone.util.toString(objTypes));
             } else {
                 // TODO: get actual widget id
-                Map.error.error( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, types, checkTypes.msg);
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, types, checkTypes.msg);
             }
         },
 
@@ -55,7 +55,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                     if (checkTypes.result) {
                         handler(sender, jsonMsg.types);
                     } else {
-                        Map.error.error( sender, Channels.MAP_STATUS_REQUEST, msg, checkTypes.msg);
+                        Error.send( sender, Channels.MAP_STATUS_REQUEST, msg, checkTypes.msg);
                     }
                 } else {
                     // if none requested, handle _all_

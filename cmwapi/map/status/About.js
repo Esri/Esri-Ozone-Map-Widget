@@ -57,7 +57,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             if (validData) {        
                 OWF.Eventing.publish(Channels.MAP_STATUS_ABOUT, dataPayload);
             } else {
-                Map.error.error( OWF.getInstanceId(), Channels.MAP_STATUS_ABOUT, dataPayload, msg);
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_ABOUT, dataPayload, msg);
             }
 
         },
@@ -74,15 +74,15 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var newHandler = function( sender, msg) {
                 var validData= true;
                 if (!msg.version) {
-                    Map.error.error(sender, Channels.MAP_STATUS_ABOUT, null, "Need a version of the CMWAPI");
+                    Error.send(sender, Channels.MAP_STATUS_ABOUT, null, "Need a version of the CMWAPI");
                     validData = false;
                 }
                 if (!msg.type) {
-                    Map.error.error(sender, Channels.MAP_STATUS_ABOUT, null, "Need a type of widget : see TYPES_ALLOWED");
+                    Error.send(sender, Channels.MAP_STATUS_ABOUT, null, "Need a type of widget : see TYPES_ALLOWED");
                     validData = false;
                 }
                 if (!msg.widgetName) {
-                    Map.error.error(sender, Channels.MAP_STATUS_ABOUT, null, "Need a widget name");
+                    Error.send(sender, Channels.MAP_STATUS_ABOUT, null, "Need a widget name");
                     validData = false;
                 }
                 if (validData) {

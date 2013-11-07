@@ -65,20 +65,18 @@ define(["cmwapi/cmwapi"], function(Map) {
                 var eventing = OWF.Eventing;
                 expect(eventing).not.toBe(null);
 
-                //var statusHandler = Map.status;
-                //var errorHandler = Map.error;
-                spyOn(statusHandler, 'request').andCallThrough();
+                spyOn(statusHandler.request, 'send').andCallThrough();
                 spyOn(eventing, 'publish');
-                spyOn(errorHandler, 'error');
+                spyOn(errorHandler, 'send');
 
-                statusHandler.request();
-                expect(statusHandler.request).toHaveBeenCalled();
+                statusHandler.request.send();
+                expect(statusHandler.request.send).toHaveBeenCalled();
 
                 // expect publish to be called
                 expect(eventing.publish).toHaveBeenCalled();
 
                 // don't expect error to be called
-                expect(errorHandler.error.calls.length).toEqual(0);
+                expect(errorHandler.send.calls.length).toEqual(0);
             });
 
             it("Map.status.request gets called with wrong types", function() {
@@ -86,16 +84,16 @@ define(["cmwapi/cmwapi"], function(Map) {
                 var eventing = OWF.Eventing;
                 spyOn(eventing, 'publish');
 
-                spyOn(statusHandler, 'request').andCallThrough();
-                spyOn(errorHandler, 'error').andCallThrough();
+                spyOn(statusHandler.request, 'send').andCallThrough();
+                spyOn(errorHandler, 'send').andCallThrough();
 
-                statusHandler.request(['foo']);
+                statusHandler.request.send(['foo']);
 
-                expect(statusHandler.request).toHaveBeenCalled();
-                expect(statusHandler.request.mostRecentCall.args[0]).toEqual(['foo']);
+                expect(statusHandler.request.send).toHaveBeenCalled();
+                expect(statusHandler.request.send.mostRecentCall.args[0]).toEqual(['foo']);
 
                 // expect error to be called...
-                expect(errorHandler.error).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
 
                 // publish will be called, as now we're calling the error channel for issues
                 //  note that this only happens if we 'callThrough' on errorHandler
@@ -108,7 +106,7 @@ define(["cmwapi/cmwapi"], function(Map) {
                 spyOn(eventing, 'subscribe');
 
                 var testHandler = jasmine.createSpy('testHandler');
-                var newHandler = statusHandler.handleRequest(testHandler);
+                var newHandler = statusHandler.request.addHandler(testHandler);
                 expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.request');
 
                 // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
@@ -117,10 +115,10 @@ define(["cmwapi/cmwapi"], function(Map) {
                 // But I can test the behavior for newHandler!
                 var returnVal = { types: ['foo']};
                 spyOn(Ozone.util, 'parseJson').andReturn(returnVal);
-                spyOn(errorHandler, 'error');
+                spyOn(errorHandler, 'send');
 
                 newHandler('senderFoo', { types: ['foo']});
-                expect(errorHandler.error).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
 
                 // DON'T expect testHandler to have been called!
                 expect(testHandler.calls.length).toEqual(0);
@@ -132,7 +130,7 @@ define(["cmwapi/cmwapi"], function(Map) {
                 spyOn(eventing, 'subscribe');
 
                 var testHandler = jasmine.createSpy('testHandler');
-                var newHandler = statusHandler.handleRequest(testHandler);
+                var newHandler = statusHandler.request.addHandler(testHandler);
                 expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.request');
 
                 // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
@@ -141,11 +139,11 @@ define(["cmwapi/cmwapi"], function(Map) {
                 // But I can test the behavior for newHandler!
                 var jsonVal = { types: ['view']};
                 spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
-                spyOn(errorHandler, 'error');
+                spyOn(errorHandler, 'send');
 
                 newHandler('senderFoo', jsonVal);   // cheating: since I know I'm going to parse it anyway
                 // don't expect error to be called
-                expect(errorHandler.error.calls.length).toEqual(0);
+                expect(errorHandler.send.calls.length).toEqual(0);
 
                 // Now DO expect testHandler to have been called!
                 expect(testHandler.calls.length).toEqual(1);
@@ -158,7 +156,7 @@ define(["cmwapi/cmwapi"], function(Map) {
                 spyOn(eventing, 'subscribe');
 
                 var testHandler = jasmine.createSpy('testHandler');
-                var newHandler = statusHandler.handleRequest(testHandler);
+                var newHandler = statusHandler.request.addHandler(testHandler);
                 expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.request');
 
                 // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
@@ -167,11 +165,11 @@ define(["cmwapi/cmwapi"], function(Map) {
                 // But I can test the behavior for newHandler!
                 var jsonVal = { };
                 spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
-                spyOn(errorHandler, 'error');
+                spyOn(errorHandler, 'send');
 
                 newHandler('senderFoo', jsonVal );
                 // don't expect error to be called
-                expect(errorHandler.error.calls.length).toEqual(0);
+                expect(errorHandler.send.calls.length).toEqual(0);
 
                 // Now DO expect testHandler to have been called!
                 expect(testHandler.calls.length).toEqual(1);
@@ -193,13 +191,13 @@ define(["cmwapi/cmwapi"], function(Map) {
 
             it("Testing map.status.view send message: valid data with optional requester", function() {
 
-                spyOn(statusHandler, 'view').andCallThrough();
-                spyOn(errorHandler, 'error');
+                spyOn(statusHandler.view, 'send').andCallThrough();
+                spyOn(errorHandler, 'send');
                 var eventing = OWF.Eventing;
                 spyOn(eventing, 'publish');
 
-                statusHandler.view(requestor, validBounds, validCenter, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, validCenter, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
                 expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.view');
 
             });
@@ -207,29 +205,29 @@ define(["cmwapi/cmwapi"], function(Map) {
             it("Testing invalid centers", function() {
                 var invalidCenter1 = { lat: 1 }, invalidCenter2 = { lon: 1}, invalidCenter3 = {foo: 1, bar: 1};
 
-                spyOn(statusHandler, 'view').andCallThrough();
-                spyOn(errorHandler, 'error');
+                spyOn(statusHandler.view, 'send').andCallThrough();
+                spyOn(errorHandler, 'send');
                 var eventing = OWF.Eventing;
                 spyOn(eventing, 'publish');
 
-                statusHandler.view(requestor, validBounds, invalidCenter1, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, invalidCenter1, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, validBounds, invalidCenter2, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, invalidCenter2, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, validBounds, invalidCenter3, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, invalidCenter3, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, validBounds, null, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, null, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
             });
@@ -239,29 +237,29 @@ define(["cmwapi/cmwapi"], function(Map) {
                     invalidBounds2 = { northEast: {lat: 1, lon: 1} },
                     invalidBounds3 = { southWest : {foo: 1, bar: 1}, northEast: {foo: 1, bar: 1}};
 
-                spyOn(statusHandler, 'view').andCallThrough();
-                spyOn(errorHandler, 'error');
+                spyOn(statusHandler.view, 'send').andCallThrough();
+                spyOn(errorHandler, 'send');
                 var eventing = OWF.Eventing;
                 spyOn(eventing, 'publish');
 
-                statusHandler.view(requestor, invalidBounds1, validCenter, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, invalidBounds1, validCenter, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, invalidBounds2, validCenter, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, invalidBounds2, validCenter, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, invalidBounds3, validCenter, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, invalidBounds3, validCenter, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, null, validCenter, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, null, validCenter, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
             });
@@ -271,29 +269,29 @@ define(["cmwapi/cmwapi"], function(Map) {
                     invalidRange2 = -124,
                     invalidRange3 = 0;
 
-                spyOn(statusHandler, 'view').andCallThrough();
-                spyOn(errorHandler, 'error');
+                spyOn(statusHandler.view, 'send').andCallThrough();
+                spyOn(errorHandler, 'send');
                 var eventing = OWF.Eventing;
                 spyOn(eventing, 'publish');
 
-                statusHandler.view(requestor, validBounds, validCenter, invalidRange1);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, validCenter, invalidRange1);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, validBounds, validCenter, invalidRange2);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, validCenter, invalidRange2);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, validBounds, validCenter, invalidRange3);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, validCenter, invalidRange3);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, validBounds, validCenter, null);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, validCenter, null);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
             });
@@ -309,24 +307,24 @@ define(["cmwapi/cmwapi"], function(Map) {
                     invalidCenter2 = { lat: 1, lon: invalidLon }, 
                     invalidCenter3 = { lat: invalidLat, lon: 1 };
                 
-                spyOn(statusHandler, 'view').andCallThrough();
-                spyOn(errorHandler, 'error');
+                spyOn(statusHandler.view, 'send').andCallThrough();
+                spyOn(errorHandler, 'send');
                 var eventing = OWF.Eventing;
                 spyOn(eventing, 'publish');
 
-                statusHandler.view(requestor, validBounds, invalidCenter1, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, invalidCenter1, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, validBounds, invalidCenter2, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, invalidCenter2, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
-                statusHandler.view(requestor, validBounds, invalidCenter3, validRange);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error).toHaveBeenCalled();
+                statusHandler.view.send(requestor, validBounds, invalidCenter3, validRange);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send).toHaveBeenCalled();
                 expect(eventing.publish.calls.length).toEqual(0);
 
 
@@ -336,16 +334,16 @@ define(["cmwapi/cmwapi"], function(Map) {
                 var invalidBounds1 = { southWest: {lat: 1, lon: 1} },
                     invalidRange1 = 'beta';
 
-                spyOn(statusHandler, 'view').andCallThrough();
-                spyOn(errorHandler, 'error');
+                spyOn(statusHandler.view, 'send').andCallThrough();
+                spyOn(errorHandler, 'send');
                 var eventing = OWF.Eventing;
                 spyOn(eventing, 'publish');
 
-                statusHandler.view(requestor, invalidBounds1, validCenter, invalidRange1);
-                expect(statusHandler.view).toHaveBeenCalled();
-                expect(errorHandler.error.mostRecentCall.args[3]).toContain('Range');
-                expect(errorHandler.error.mostRecentCall.args[3]).toContain('Bounds');
-                expect(errorHandler.error.mostRecentCall.args[3]).not.toContain('Center');
+                statusHandler.view.send(requestor, invalidBounds1, validCenter, invalidRange1);
+                expect(statusHandler.view.send).toHaveBeenCalled();
+                expect(errorHandler.send.mostRecentCall.args[3]).toContain('Range');
+                expect(errorHandler.send.mostRecentCall.args[3]).toContain('Bounds');
+                expect(errorHandler.send.mostRecentCall.args[3]).not.toContain('Center');
                 expect(eventing.publish.calls.length).toEqual(0);
 
             });
@@ -355,7 +353,7 @@ define(["cmwapi/cmwapi"], function(Map) {
                 spyOn(eventing, 'subscribe');
 
                 var testHandler = jasmine.createSpy('testHandler');
-                var newHandler = statusHandler.handleView(testHandler);
+                var newHandler = statusHandler.view.addHandler(testHandler);
                 expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.view');
 
                 // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
@@ -367,11 +365,11 @@ define(["cmwapi/cmwapi"], function(Map) {
                     range: validRange,
                     center: validCenter };
                 spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
-                spyOn(errorHandler, 'error');
+                spyOn(errorHandler, 'send');
 
                 newHandler('senderFoo', jsonVal );
                 // don't expect error to be called
-                expect(errorHandler.error.calls.length).toEqual(0);
+                expect(errorHandler.send.calls.length).toEqual(0);
 
                 // Now DO expect testHandler to have been called!
                 expect(testHandler.calls.length).toEqual(1);
@@ -383,27 +381,27 @@ define(["cmwapi/cmwapi"], function(Map) {
 
                 it("Testing map.status.format send message: don't send any formats", function() {
 
-                    spyOn(statusHandler, 'formats').andCallThrough();
-                    spyOn(errorHandler, 'error');
+                    spyOn(statusHandler.format, 'send').andCallThrough();
+                    spyOn(errorHandler, 'send');
                     spyOn(Ozone.util, 'toString').andCallFake( function(jsonStruct) {
                         return jsonStruct;
                     });
                     var eventing = OWF.Eventing;
                     spyOn(eventing, 'publish');
 
-                    statusHandler.formats();
-                    expect(statusHandler.formats).toHaveBeenCalled();
+                    statusHandler.format.send();
+                    expect(statusHandler.format.send).toHaveBeenCalled();
                     expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.format');
-                    expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: Map.status.FORMATS_REQUIRED});
+                    expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: Map.status.REQUIRED_FORMATS});
 
-                    expect(errorHandler.error.calls.length).toEqual(0);
+                    expect(errorHandler.send.calls.length).toEqual(0);
 
                 });
 
                 it("Testing map.status.format send message: send any formats", function() {
 
-                    spyOn(statusHandler, 'formats').andCallThrough();
-                    spyOn(errorHandler, 'error');
+                    spyOn(statusHandler.format, 'send').andCallThrough();
+                    spyOn(errorHandler, 'send');
                     spyOn(Ozone.util, 'toString').andCallFake( function(jsonStruct) {
                         return jsonStruct;
                     });
@@ -411,13 +409,13 @@ define(["cmwapi/cmwapi"], function(Map) {
                     spyOn(eventing, 'publish');
 
                     var testFormats = ['geoJSON', 'uhf'];
-                    var outputFormats = Map.status.FORMATS_REQUIRED.concat(testFormats);
-                    statusHandler.formats(testFormats);
-                    expect(statusHandler.formats).toHaveBeenCalled();
+                    var outputFormats = Map.status.REQUIRED_FORMATS.concat(testFormats);
+                    statusHandler.format.send(testFormats);
+                    expect(statusHandler.format.send).toHaveBeenCalled();
                     expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.format');
                     expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: outputFormats});
 
-                    expect(errorHandler.error.calls.length).toEqual(0);
+                    expect(errorHandler.send.calls.length).toEqual(0);
                 });
 
 
@@ -457,55 +455,55 @@ define(["cmwapi/cmwapi"], function(Map) {
             describe("Map.status.about calls and handlers", function() {
 
                 it("map.status.about", function() {
-                    spyOn(statusHandler, 'about').andCallThrough();
-                    spyOn(errorHandler, 'error');
+                    spyOn(statusHandler.about, 'send').andCallThrough();
+                    spyOn(errorHandler, 'send');
                     spyOn(Ozone.util, 'toString').andCallFake( function(jsonStruct) {
                         return jsonStruct;
                     });
                     var eventing = OWF.Eventing;
                     spyOn(eventing, 'publish');
 
-                    statusHandler.about("1.1", "2-D", "Widget Foo");
-                    expect(statusHandler.about).toHaveBeenCalled();
+                    statusHandler.about.send("1.1", "2-D", "Widget Foo");
+                    expect(statusHandler.about.send).toHaveBeenCalled();
                     expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.about');
                     expect(eventing.publish.mostRecentCall.args[1]).toEqual({version: "1.1", type: "2-D", widgetName: "Widget Foo"});
 
-                    expect(errorHandler.error.calls.length).toEqual(0);
+                    expect(errorHandler.send.calls.length).toEqual(0);
                 });
 
                 it("map.status.about bad data", function() {
-                    spyOn(statusHandler, 'about').andCallThrough();
-                    spyOn(errorHandler, 'error');
+                    spyOn(statusHandler.about, 'send').andCallThrough();
+                    spyOn(errorHandler, 'send');
                     spyOn(Ozone.util, 'toString').andCallFake( function(jsonStruct) {
                         return jsonStruct;
                     });
                     var eventing = OWF.Eventing;
                     spyOn(eventing, 'publish');
 
-                    statusHandler.about(null, "2-D", "Widget Foo");
-                    expect(statusHandler.about).toHaveBeenCalled();
-                    expect(errorHandler.error.calls.length).toEqual(1);
+                    statusHandler.about.send(null, "2-D", "Widget Foo");
+                    expect(statusHandler.about.send).toHaveBeenCalled();
+                    expect(errorHandler.send.calls.length).toEqual(1);
                     expect(eventing.publish.calls.length).toEqual(0);
 
-                    statusHandler.about("1.1", "foo", "Widget Foo");
-                    expect(statusHandler.about).toHaveBeenCalled();
-                    expect(errorHandler.error.calls.length).toEqual(2);
+                    statusHandler.about.send("1.1", "foo", "Widget Foo");
+                    expect(statusHandler.about.send).toHaveBeenCalled();
+                    expect(errorHandler.send.calls.length).toEqual(2);
                     expect(eventing.publish.calls.length).toEqual(0);
 
-                    statusHandler.about("1.1", "3-D", null);
-                    expect(statusHandler.about).toHaveBeenCalled();
-                    expect(errorHandler.error.calls.length).toEqual(3);
+                    statusHandler.about.send("1.1", "3-D", null);
+                    expect(statusHandler.about.send).toHaveBeenCalled();
+                    expect(errorHandler.send.calls.length).toEqual(3);
                     expect(eventing.publish.calls.length).toEqual(0);
 
-                    statusHandler.about("1.1", "3-D", '');
-                    expect(statusHandler.about).toHaveBeenCalled();
-                    expect(errorHandler.error.calls.length).toEqual(4);
+                    statusHandler.about.send("1.1", "3-D", '');
+                    expect(statusHandler.about.send).toHaveBeenCalled();
+                    expect(errorHandler.send.calls.length).toEqual(4);
                     expect(eventing.publish.calls.length).toEqual(0);
 
-                    statusHandler.about(null, null, null);
-                    expect(statusHandler.about).toHaveBeenCalled();
-                    expect(errorHandler.error.calls.length).toEqual(5);
-                    expect(errorHandler.error.mostRecentCall.args[3]).toMatch('.+;.+;.+;.+');
+                    statusHandler.about.send(null, null, null);
+                    expect(statusHandler.about.send).toHaveBeenCalled();
+                    expect(errorHandler.send.calls.length).toEqual(5);
+                    expect(errorHandler.send.mostRecentCall.args[3]).toMatch('.+;.+;.+;.+');
                     expect(eventing.publish.calls.length).toEqual(0);
 
 
@@ -517,7 +515,7 @@ define(["cmwapi/cmwapi"], function(Map) {
                     spyOn(eventing, 'subscribe');
 
                     var testHandler = jasmine.createSpy('testHandler');
-                    var newHandler = statusHandler.handleAbout(testHandler);
+                    var newHandler = statusHandler.about.addHandler(testHandler);
                     expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.about');
 
                     // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
@@ -535,11 +533,11 @@ define(["cmwapi/cmwapi"], function(Map) {
                         widgetName: 'CMWAPI Spec widget'
                     };
                     spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
-                    spyOn(errorHandler, 'error');
+                    spyOn(errorHandler, 'send');
 
                     newHandler('senderFoo', jsonVal );
                     // don't expect error to be called
-                    expect(errorHandler.error.calls.length).toEqual(0);
+                    expect(errorHandler.send.calls.length).toEqual(0);
 
                     // Now DO expect testHandler to have been called!
                     expect(testHandler.calls.length).toEqual(1);
