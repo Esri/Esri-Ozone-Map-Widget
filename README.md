@@ -6,7 +6,7 @@ Integration libraries and sample widgets (light weight web applications) designe
 
 ## Included Widgets
 
-#### [ESRI OWF Map](owf-map-widget)
+#### [ESRI OWF Map](https://github.com/Esri/Next-Century/tree/master/owf-map-widget)
 
 A simple Map web application using the ESRI JavaScript API. It has additional features when run within OWF:
 
@@ -16,7 +16,7 @@ A simple Map web application using the ESRI JavaScript API. It has additional fe
 
 * Receives [Intents](https://github.com/ozoneplatform/owf/wiki/OWF-7-Developer-Widget-Intents-API) from other OWF widgets that plot a location
 
-#### [Contacts Manager](contacts)
+#### [Contacts Manager](https://github.com/Esri/Next-Century/tree/master/contacts)
 
 A modified version of the [Contacts Manager](https://github.com/ozoneplatform/owf/tree/master/web-app/examples/walkthrough/widgets/contacts) example widget that ships with OWF 7. This version uses Intents to allow the user to select which map widget implementation should receive the address when contact entry is clicked. (The original version was hard coded to send the address to a specific map widget.)
 

@@ -6,18 +6,22 @@ module.exports = function(grunt) {
 
         jsdoc : {
 
-            api: {
-                src: ['cmwapi/**/*.js'],
-                dest: 'target/jsdoc/cmwapi'
-            },
-            apiAdapter: {
-                src: ['cmwapi-adapter/**/*.js'],
-                dest: 'target/jsdoc/cmwapi-adapter'
+            cmwapi: {
+                src: ['README.md', 'cmwapi/**/*.js', 'cmwapi-adapter/**/*.js'],
+                dest: 'target/jsdoc/cmwapi',
+                options: {
+                    template: "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",
+                    configure: "jsdoc.conf.json"
+                }
             },
             widget : {
                 src: ['owf-map-widget/js/*.js',
                       'owf-map-widget/js/models/**/*.js'],
-                dest: 'target/jsdoc/widget'
+                dest: 'target/jsdoc/widget',
+                options: {
+                    template: "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",
+                    configure: "jsdoc.conf.json"
+                }
             }
         },
 

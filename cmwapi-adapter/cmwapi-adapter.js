@@ -6,7 +6,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
      * @version 1.1
      * @param map {object} ESRI map object for which this adapter should apply
      */
-    var EsriAdapter = function(map) {
+    EsriAdapter = function(map) {
 
         /**
          * The container for ESRI Adapter status methods
