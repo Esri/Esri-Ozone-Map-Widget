@@ -25,7 +25,7 @@ define('cmwapi/Validator', function() {
         this.validRequestTypes = function(types) {
             if (types) {
                 for (var i = 0; i < types.length; i++  ) {
-                    if (!(this.types.indexOf(types[i]) > -1)) {
+                    if (this.types.indexOf(types[i]) <= -1) {
                         return {result: false, msg: types[i] + ' is not a supported request type'};
                     }
                 }

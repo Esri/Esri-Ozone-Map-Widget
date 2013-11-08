@@ -9,9 +9,6 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
     var TYPES_ALLOWED = ["2-D", "3-D", "other"];
 
-    /* Creat a validator.  We need not pass in request types as we will not be using those validation functions. */
-    var validator = new Validator([]);
-
     /**
      * @constructor
      * @alias module:cmwapi/map/status/About
@@ -41,7 +38,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 validData = false;
                 msg += 'Need a type of widget : see TYPES_ALLOWED; ';                    
             } else {
-                if (TYPES_ALLOWED.indexOf(type)==-1) {
+                if (TYPES_ALLOWED.indexOf(type) <= -1) {
                     validData = false;
                     msg += 'Need a type of widget within TYPES_ALLOWED; ';
                 }
@@ -50,7 +47,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             // has some sort of widget name
             if (!widgetName) {
                 validData = false;
-                msg += 'Need a widget name; '
+                msg += 'Need a widget name; ';
             }
 
             var dataPayload = Ozone.util.toString( {version: version, type: type, widgetName: widgetName});

@@ -86,6 +86,9 @@
     "-W015"			: true,		// allow staggered indentation 
 
     // Custom Globals
-    "predef"        : [ ]       // additional predefined global variables
+    "predef"        : [ ],       // additional predefined global variables
+    "globals"       : { "OWF": false,
+                        "Ozone": false,
+                        "define": false}
     
 }

@@ -47,7 +47,7 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
             var newHandler = function (sender, msg) {
 
                 if (!msg.formats) {
-                    Map.error.error(sender, Channels.MAP_STATUS_FORMATS, msg, "Unable to determine formats" );
+                    Error.send(sender, Channels.MAP_STATUS_FORMATS, msg, "Unable to determine formats" );
                 } else {
                     handler(sender, msg);
                 }

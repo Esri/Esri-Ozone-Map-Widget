@@ -1,4 +1,4 @@
-define(["cmwapi/cmwapi", "cmwapi/Channels"], function(CommonMapApi, Channels) {
+define(["cmwapi/cmwapi"], function(CommonMapApi) {
     /**
      * @classdesc Adapter layer between Common Map Widget API v. 1.1 javascript
      *      implementation and ESRI map implementations
@@ -6,7 +6,7 @@ define(["cmwapi/cmwapi", "cmwapi/Channels"], function(CommonMapApi, Channels) {
      * @version 1.1
      * @param map {object} ESRI map object for which this adapter should apply
      */
-    EsriAdapter = function(map) {
+    var EsriAdapter = function(map) {
 
         /**
          * The container for ESRI Adapter status methods
@@ -74,7 +74,7 @@ define(["cmwapi/cmwapi", "cmwapi/Channels"], function(CommonMapApi, Channels) {
              * @param caller {object} The Id of the widget which requested the map view status
              * @memberof! EsriAdapter#
              */
-            var sendAbout = function(caller) {
+            var sendAbout = function() {
                 var version = esri.version;
                 var type = "2-D";
                 var widgetName = ""; //FIXME
@@ -89,7 +89,7 @@ define(["cmwapi/cmwapi", "cmwapi/Channels"], function(CommonMapApi, Channels) {
              * @param caller {object} The Id of the widget which requested the map view status
              * @memberof! EsriAdapter#
              */
-            var sendFormat = function(caller) {
+            var sendFormat = function() {
                 var formats = ["kml"/*, "geojson", "wms"*/];
 
                 CommonMapApi.status.format.send(formats);

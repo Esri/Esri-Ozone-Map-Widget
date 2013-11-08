@@ -33,22 +33,22 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var isValidData = true;
 
             // validate bounds
-            checkBounds = validator.validBounds(bounds);
+            var checkBounds = validator.validBounds(bounds);
             if (!checkBounds.result) {
                 msg += checkBounds.msg +';';
                 isValidData = false;
             }
-            checkCenter = validator.validCenter(center);
+            var checkCenter = validator.validCenter(center);
             if (!checkCenter.result) {
                 msg += checkCenter.msg+';';
                 isValidData = false;
             }
-            checkRange = validator.validRange(range);
+            var checkRange = validator.validRange(range);
             if (!checkRange.result) {
                 msg+=checkRange.msg+';';
                 isValidData = false;
             }
-            msgOut = Ozone.util.toString({requester: requester, bounds: bounds, center: center, range: range});
+            var msgOut = Ozone.util.toString({requester: requester, bounds: bounds, center: center, range: range});
             if (!isValidData) {
                 Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_VIEW,
                     msgOut,
@@ -76,10 +76,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var newHandler = function( sender, msg) {
 
                 var isValidData = true;
-                jsonMsg = Ozone.util.parseJson(msg);
-                if (jsonMsg.requester) {
-                    // no real validation going on here, and it's an optional item..
-                }
+                var jsonMsg = Ozone.util.parseJson(msg);
+
+                // No real validation for requester as it is optional; The other
+                // elements need to be validated.
                 var checkResult = validator.validBounds(jsonMsg.bounds);
                 if (!checkResult.result) {
                     msg += checkResult.msg +';';

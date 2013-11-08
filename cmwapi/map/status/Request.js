@@ -23,7 +23,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * @param {string[]} [types] version 1.1 only supports "about", "format", and "view"
          */
         send : function ( types ) {
-            checkTypes = validator.validRequestTypes(types);
+            var checkTypes = validator.validRequestTypes(types);
             if (checkTypes.result) {
                 // build JSON string for types
                 var objTypes = {
@@ -49,9 +49,9 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
             var newHandler = function( sender, msg) {
 
-                jsonMsg = Ozone.util.parseJson(msg);
+                var jsonMsg = Ozone.util.parseJson(msg);
                 if (jsonMsg.types) {
-                    checkTypes = validator.validRequestTypes(jsonMsg.types);
+                    var checkTypes = validator.validRequestTypes(jsonMsg.types);
                     if (checkTypes.result) {
                         handler(sender, jsonMsg.types);
                     } else {
@@ -72,7 +72,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         removeHandlers : function() {
             OWF.Eventing.unsubscribe(Channels.MAP_STATUS_REQUEST);
         }
-    }
+    };
 
     return Request;
 });
