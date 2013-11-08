@@ -64,7 +64,7 @@ define(["cmwapi/cmwapi", "cmwapi/Channels"], function(CommonMapApi, Channels) {
                 
                 var range = map.getScale();
 
-                CommonMapApi.status.view(caller, bounds, center, range);
+                CommonMapApi.status.view.send(caller, bounds, center, range);
             };
 
             /**
@@ -79,7 +79,7 @@ define(["cmwapi/cmwapi", "cmwapi/Channels"], function(CommonMapApi, Channels) {
                 var type = "2-D";
                 var widgetName = ""; //FIXME
                 
-                CommonMapApi.status.about(version, type, widgetName);
+                CommonMapApi.status.about.send(version, type, widgetName);
             };
 
             /**
@@ -92,14 +92,14 @@ define(["cmwapi/cmwapi", "cmwapi/Channels"], function(CommonMapApi, Channels) {
             var sendFormat = function(caller) {
                 var formats = ["kml"/*, "geojson", "wms"*/];
 
-                CommonMapApi.status.format(formats);
+                CommonMapApi.status.format.send(formats);
             };
 
             return { handleRequest: me.handleRequest };
         })();
 
         // Bind the functions to the CMW API
-        CommonMapApi.status.handleRequest(this.status.handleRequest);
+        CommonMapApi.status.request.addHandler(this.status.handleRequest);
 
         /**
          * The container for EsriAdapter error methods
@@ -123,7 +123,7 @@ define(["cmwapi/cmwapi", "cmwapi/Channels"], function(CommonMapApi, Channels) {
                 var msg = message;
                 var error = err;
 
-                CommonMapApi.error.error(sender, type, msg, error);
+                CommonMapApi.error.send(sender, type, msg, error);
             };
 
             /**
@@ -143,7 +143,7 @@ define(["cmwapi/cmwapi", "cmwapi/Channels"], function(CommonMapApi, Channels) {
         })();
 
         // Bind error functions to CMW API
-        CommonMapApi.error.handleError(this.error.handleError);
+        CommonMapApi.error.addHandler(this.error.handleError);
     };
 
     return EsriAdapter;
