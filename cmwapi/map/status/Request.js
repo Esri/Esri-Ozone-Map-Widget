@@ -1,8 +1,5 @@
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Channels, Validator, Error) {
 
-    var SUPPORTED_STATUS_TYPES = ["about", "format", "view"];
-    var validator = new Validator(SUPPORTED_STATUS_TYPES);
-
     /**
      * The Request module provides methods for using a map.status.request OWF Eventing channel
      * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
@@ -14,15 +11,17 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
     var Request = {
 
         /** 
-         * The types of status messages allowed by version 1.1 of the CMWAPI: "about", "format", and "view".
+         * An array of valid status message type strings.  The [CMWAPI 1.1 Specification](http://www.cmwapi.org)
+         * allows for "about", "format", and "view". 
          */
-        SUPPORTED_STATUS_TYPES : SUPPORTED_STATUS_TYPES,
+        SUPPORTED_STATUS_TYPES : Validator.SUPPORTED_STATUS_TYPES,
+
         /**
          * Sends a status request message. 
          * @param {Array<string>} [types] version 1.1 only supports "about", "format", and "view"
          */
         send : function ( types ) {
-            var checkTypes = validator.validRequestTypes(types);
+            var checkTypes = Validator.validRequestTypes(types);
             if (checkTypes.result) {
                 // build JSON string for types
                 var objTypes = {
@@ -50,7 +49,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
                 var jsonMsg = Ozone.util.parseJson(msg);
                 if (jsonMsg.types) {
-                    var checkTypes = validator.validRequestTypes(jsonMsg.types);
+                    var checkTypes = Validator.validRequestTypes(jsonMsg.types);
                     if (checkTypes.result) {
                         handler(sender, jsonMsg.types);
                     } else {
@@ -58,7 +57,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                     }
                 } else {
                     // if none requested, handle _all_
-                    handler(sender, SUPPORTED_STATUS_TYPES);
+                    handler(sender, Validator.SUPPORTED_STATUS_TYPES);
                 }
             };
             OWF.Eventing.subscribe(Channels.MAP_STATUS_REQUEST, newHandler );

@@ -1,7 +1,5 @@
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Channels, Validator, Error) {
 
-    var TYPES_ALLOWED = ["2-D", "3-D", "other"];
-
     /**
      * The About module provides methods for using a map.status.about OWF Eventing channel
      * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
@@ -19,7 +17,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * An array of allowed/expected type strings of map widgets responding to CMWAPI about requests. 
          * The [CMWAPI 1.1 Specification](http://www.cmwapi.org) allows for "2-D", "3-D", and "other".
          */
-        TYPES_ALLOWED : TYPES_ALLOWED,
+        SUPPORTED_MAP_TYPES : Validator.SUPPORTED_MAP_TYPES,
 
         /**
          * Send About information that describes this widget and its level of CMWAPI support.
@@ -40,9 +38,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             // valid type
             if (!type) {
                 validData = false;
-                msg += 'Need a type of widget : see TYPES_ALLOWED; ';                    
+                msg += 'Need a type of widget : see SUPPORTED_MAP_TYPES; ';                    
             } else {
-                if (TYPES_ALLOWED.indexOf(type) <= -1) {
+                var validType = Validator.validMapType(type);
+                if (!validType.result) {
                     validData = false;
                     msg += 'Need a type of widget within TYPES_ALLOWED; ';
                 }

@@ -1,38 +1,57 @@
-/**
- * Defines A utility class for validating various message elements used for the CMW API.
- * @todo Consider converting to a static class - this is instanced at present to allow supported request types to
- *       be passed in.  These are governed by the API spec and not by any specific map implementation.  
- *       They shouldn't be changed.
- * @todo Add a simple format validator to cover map types (i.e., 2D vs. 3D vs. Other)
- * 
- * @module cmwapi/Validator
- */
 define('cmwapi/Validator', function() {
+
+    var SUPPORTED_STATUS_TYPES = ["about", "format", "view"];
+    var SUPPORTED_MAP_TYPES = ["2-D","3-D","other"];
+
     /**
-     * @constructor
-     * @alias module:cmwapi/Validator
-     * @param {Array<string>} types  An array of valid status message type strings.  CMWAPI 1.1 specifies
-     *     "about", "format", and "view".
+     * A utility class for validating various message elements used for the 
+     * [CMWAPI 1.1 Specification](http://www.cmwai.org).  This validator
+     * has static members that specify the supported map status types and map types allowed as well
+     * a number of functions for checking latitude/longitude pairs, various type fields, and bounding
+     * boxes for map views.
+     * @exports cmwapi/Validator
      */
-    var Validator = function(types) {
-        /** The types to consider valid. */
-        this.types = types ? types : [];
+    var Validator = {
+        /** 
+         * An array of valid status message type strings.  The [CMWAPI 1.1 Specification](http://www.cmwapi.org)
+         * allows for "about", "format", and "view". 
+         */
+        SUPPORTED_STATUS_TYPES: SUPPORTED_STATUS_TYPES,
+        /** 
+         * An array of allowed/expected type strings of map widgets responding to CMWAPI about requests. 
+         * The [CMWAPI 1.1 Specification](http://www.cmwapi.org) allows for "2-D", "3-D", and "other".
+         */
+        SUPPORTED_MAP_TYPES: SUPPORTED_MAP_TYPES,
 
         /**
-         * Validate the input types against those provided when this validator was constructed.
+         * Validate the input type against the supported map types.
          * @param types {Array<string>} The types to validate.
          * @returns {module:cmwapi/Validator~Result}
          */
-        this.validRequestTypes = function(types) {
+        validMapType : function(type) {
+            if (type) {
+                if (SUPPORTED_MAP_TYPES.indexOf(type) <= -1) {
+                    return {result: false, msg: type + ' is not a supported map type'};
+                }
+            }
+            return {result: true};
+        },
+
+        /**
+         * Validate the input types against the supported map status request types.
+         * @param types {Array<string>} The types to validate.
+         * @returns {module:cmwapi/Validator~Result}
+         */
+        validRequestTypes : function(types) {
             if (types) {
                 for (var i = 0; i < types.length; i++  ) {
-                    if (this.types.indexOf(types[i]) <= -1) {
-                        return {result: false, msg: types[i] + ' is not a supported request type'};
+                    if (SUPPORTED_STATUS_TYPES.indexOf(types[i]) <= -1) {
+                        return {result: false, msg: types[i] + ' is not a supported a map status request type'};
                     }
                 }
             }
             return {result: true};
-        };
+        },
 
         /**
          * Validate a set of bounds used to drive view messages in the CMWAPI.  Bounds require
@@ -42,8 +61,7 @@ define('cmwapi/Validator', function() {
          * @param {object} bounds.northEast The northeast corner object with attributes {lat: <number>, lon: <number>}
          * @returns {module:cmwapi/Validator~Result}
          */
-
-        this.validBounds = function(bounds) {
+        validBounds : function(bounds) {
             if (!bounds) {
                 return {result: false, msg: 'Bounds are required'};
             }
@@ -59,7 +77,7 @@ define('cmwapi/Validator', function() {
             }
 
             return {result: true};
-        };
+        },
 
         /**
          * Validates the center point as latitude/longitude value.
@@ -68,7 +86,7 @@ define('cmwapi/Validator', function() {
          * @param center.lon {number} The longitude value in decimal degrees.
          * @returns {module:cmwapi/Validator~Result}
          */
-        this.validCenter = function(center) {
+        validCenter : function(center) {
             if (!center) {
                 return {result: false, msg: 'Center is required'};
             }
@@ -77,7 +95,7 @@ define('cmwapi/Validator', function() {
                 return {result: false, msg: 'Center requires a valid lat/lon pair [' + center.lat + ',' + center.lon +"]"};
             }
             return {result: true};
-        };
+        },
 
         /**
          * Validates the range as a positive number.  Note that individual maps may accept any valid range but
@@ -86,7 +104,7 @@ define('cmwapi/Validator', function() {
          * @param range {Number} A range value specifying a map's potential zoom level.
          * @returns {module:cmwapi/Validator~Result}
          */
-        this.validRange = function(range) {
+        validRange : function(range) {
            if (!range) {
                return {result: false, msg: 'Range is required'};
            }
@@ -95,17 +113,17 @@ define('cmwapi/Validator', function() {
                return {result: false, msg: 'Range must be numeric and >= 0 [' + range + ']'};
            }
            return {result: true};
-        };
+        },
 
         /**
          * A basic number validator that checks that the value can be parsed as a float and in finite in value.
          * @param n {number}
          * @returns {boolean}
          */ 
-        this.isNumber = function(n) {
+        isNumber : function(n) {
             // from http://stackoverflow.com/a/1830844
            return !isNaN(parseFloat(n)) && isFinite(n);
-        };
+        },
 
         /**
          * Validates a latitude, longitude pair in decimal degrees.
@@ -113,7 +131,7 @@ define('cmwapi/Validator', function() {
          * @param lon {number} A longitude in decimal degrees
          * @returns {boolean}
          */
-        this.validLatLon = function(lat,lon) {
+        validLatLon : function(lat,lon) {
             // Check that both are numbers.
             if (!this.isNumber(lat) || !this.isNumber(lon)) {
                 return false;
@@ -123,7 +141,7 @@ define('cmwapi/Validator', function() {
                 return false;
             }
             return true;
-        };
+        }
 
         /**
          * A validation results object that includes the boolean result and an error message if

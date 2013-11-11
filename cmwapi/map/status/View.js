@@ -1,6 +1,4 @@
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Channels, Validator, Error) {
-    /* Creat a validator.  We need not pass in request types as we will not be using those validation functions. */
-    var validator = new Validator([]);
 
     /**
      * The View module provides methods for using a map.status.view OWF Eventing channel
@@ -31,17 +29,17 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var isValidData = true;
 
             // validate bounds
-            var checkBounds = validator.validBounds(bounds);
+            var checkBounds = Validator.validBounds(bounds);
             if (!checkBounds.result) {
                 msg += checkBounds.msg +';';
                 isValidData = false;
             }
-            var checkCenter = validator.validCenter(center);
+            var checkCenter = Validator.validCenter(center);
             if (!checkCenter.result) {
                 msg += checkCenter.msg+';';
                 isValidData = false;
             }
-            var checkRange = validator.validRange(range);
+            var checkRange = Validator.validRange(range);
             if (!checkRange.result) {
                 msg+=checkRange.msg+';';
                 isValidData = false;
@@ -72,17 +70,17 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
                 // No real validation for requester as it is optional; The other
                 // elements need to be validated.
-                var checkResult = validator.validBounds(jsonMsg.bounds);
+                var checkResult = Validator.validBounds(jsonMsg.bounds);
                 if (!checkResult.result) {
                     msg += checkResult.msg +';';
                     isValidData = false;
                 }
-                checkResult = validator.validCenter(jsonMsg.center);
+                checkResult = Validator.validCenter(jsonMsg.center);
                 if (!checkResult.result) {
                     msg += checkResult.msg +';';
                     isValidData = false;
                 }
-                checkResult = validator.validRange(jsonMsg.range);
+                checkResult = Validator.validRange(jsonMsg.range);
                 if (!checkResult.result) {
                     msg += checkResult.msg +';';
                     isValidData = false;
