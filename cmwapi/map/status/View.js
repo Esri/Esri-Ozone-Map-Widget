@@ -15,9 +15,16 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * Sends a status view message.  The only real CMWAPI requirement here is what goes out over the channel.
          * @param {string} requester Client that requested this status message be sent (if any). An empty requestor 
          *     denotes that the message is being sent due to a map view change.
-         * @param {Object} bounds 
-         *      &#123; southWest &#123; lat: <number>, lon: <number>&#125;, northEast &#123; lat: <number>, lon: <number>&#125; &#125;
-         * @param {object} center  &#123; lat: <number>, lon: <number>&#125;
+         * @param {object} bounds Information about the bounding view.
+         * @param {object} bounds.southWest The southwest corner object with attributes
+         * @param {number} bounds.southWest.lat A latitude value
+         * @param {number} bounds.southWest.lon A longitude value
+         * @param {object} bounds.northEast The northeast corner object with attributes
+         * @param {number} bounds.northEast.lat A latitude value
+         * @param {number} bounds.northEast.lon A longitude value
+         * @param {object} center A point on which to center a map.
+         * @param {number} center.lat The latitude value in decimal degrees.
+         * @param {number} center.lon The longitude value in decimal degrees.
          * @param {number} range  The current distance in meters the map is zoomed out.
          */
         send : function ( requester, bounds, center, range) {
@@ -109,8 +116,16 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * A function for handling View channel messages.
          * @callback module:cmwapi/map/status/View~Handler
          * @param {string} sender The widget sending a view message
-         * @param {object} bounds &#123; southWest &#123; lat: <number>, lon: <number>&#125;, northEast &#123; lat: <number>, lon: <number>&#125; &#125;
-         * @param {object} center &#123; lat: <number>, lon: <number>&#125;
+         * @param {object} bounds Information about the bounding view.
+         * @param {object} bounds.southWest The southwest corner object with attributes
+         * @param {number} bounds.southWest.lat A latitude value
+         * @param {number} bounds.southWest.lon A longitude value
+         * @param {object} bounds.northEast The northeast corner object with attributes
+         * @param {number} bounds.northEast.lat A latitude value
+         * @param {number} bounds.northEast.lon A longitude value
+         * @param {object} center A point on which to center a map.
+         * @param {number} center.lat The latitude value in decimal degrees.
+         * @param {number} center.lon The longitude value in decimal degrees.
          * @param {number} range The current distance in meters the map is zoomed out.
          */
     };

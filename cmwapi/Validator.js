@@ -5,7 +5,7 @@ define('cmwapi/Validator', function() {
 
     /**
      * A utility class for validating various message elements used for the 
-     * [CMWAPI 1.1 Specification](http://www.cmwai.org).  This validator
+     * [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This validator
      * has static members that specify the supported map status types and map types allowed as well
      * a number of functions for checking latitude/longitude pairs, various type fields, and bounding
      * boxes for map views.
@@ -57,8 +57,12 @@ define('cmwapi/Validator', function() {
          * Validate a set of bounds used to drive view messages in the CMWAPI.  Bounds require
          * latitude/longitude values for the southwest and northeast corners of a bounding box on map.
          * @param {object} bounds Information about the bounding view.
-         * @param {object} bounds.southWest The southwest corner object with attributes {lat: <number>, lon: <number>}
-         * @param {object} bounds.northEast The northeast corner object with attributes {lat: <number>, lon: <number>}
+         * @param {object} bounds.southWest The southwest corner object with attributes
+         * @param {number} bounds.southWest.lat A latitude value
+         * @param {number} bounds.southWest.lon A longitude value
+         * @param {object} bounds.northEast The northeast corner object with attributes
+         * @param {number} bounds.northEast.lat A latitude value
+         * @param {number} bounds.northEast.lon A longitude value
          * @returns {module:cmwapi/Validator~Result}
          */
         validBounds : function(bounds) {
@@ -81,9 +85,9 @@ define('cmwapi/Validator', function() {
 
         /**
          * Validates the center point as latitude/longitude value.
-         * @param center {object} A point on which to center a map.
-         * @param center.lat {number} The latitude value in decimal degrees.
-         * @param center.lon {number} The longitude value in decimal degrees.
+         * @param {object} center A point on which to center a map.
+         * @param {number} center.lat The latitude value in decimal degrees.
+         * @param {number} center.lon The longitude value in decimal degrees.
          * @returns {module:cmwapi/Validator~Result}
          */
         validCenter : function(center) {
@@ -101,7 +105,7 @@ define('cmwapi/Validator', function() {
          * Validates the range as a positive number.  Note that individual maps may accept any valid range but
          * round them to a set of discrete values.  Such refinement is responsibility of any client code/maps using
          * this function.
-         * @param range {Number} A range value specifying a map's potential zoom level.
+         * @param {Number} range A range value specifying a map's potential zoom level.
          * @returns {module:cmwapi/Validator~Result}
          */
         validRange : function(range) {
@@ -117,7 +121,7 @@ define('cmwapi/Validator', function() {
 
         /**
          * A basic number validator that checks that the value can be parsed as a float and in finite in value.
-         * @param n {number}
+         * @param {number} n A value to test
          * @returns {boolean}
          */ 
         isNumber : function(n) {
@@ -127,8 +131,8 @@ define('cmwapi/Validator', function() {
 
         /**
          * Validates a latitude, longitude pair in decimal degrees.
-         * @param lat {number} A latitude in decimal degrees
-         * @param lon {number} A longitude in decimal degrees
+         * @param {number} lat A latitude in decimal degrees
+         * @param {number} lon A longitude in decimal degrees
          * @returns {boolean}
          */
         validLatLon : function(lat,lon) {
