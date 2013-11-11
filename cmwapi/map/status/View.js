@@ -1,28 +1,26 @@
-/**
- * Defines the View channel module according to the CMW API 1.1 specification
- *
- * TODO: status.view: would we filter out if the requester isn't me?
- * @module cmwapi/map/status/View
- */
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Channels, Validator, Error) {
     /* Creat a validator.  We need not pass in request types as we will not be using those validation functions. */
     var validator = new Validator([]);
 
     /**
-     * @constructor
-     * @alias module:cmwapi/map/status/View
+     * The View module provides methods for using a map.status.view OWF Eventing channel
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * abstracts the OWF Eventing channel mechanism from client code and validates messages
+     * using specification rules.  Any errors are published
+     * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
+     * @exports cmwapi/map/status/View
+     * @todo status.view: would we filter out if the requester isn't me?
      */
     var View = {
 
         /**
-         * Method to send OUT view message.  Only real API requirement here is what goes out over the channel,
-         *    not how it comes in...  we can optimize as need be for usage
-         *
-         * @param [requester] to whom to send, if not to everyone
-         * @param bounds
-         *      &#123; southWest &#123; lat: , lon: &#125;, northEast &#123; lat: , lon: &#125; &#125;
-         * @param center &#123; lat: , lon: &#125;
-         * @param range
+         * Sends a status view message.  The only real CMWAPI requirement here is what goes out over the channel.
+         * @param {string} requester Client that requested this status message be sent (if any). An empty requestor 
+         *     denotes that the message is being sent due to a map view change.
+         * @param {Object} bounds 
+         *      &#123; southWest &#123; lat: <number>, lon: <number>&#125;, northEast &#123; lat: <number>, lon: <number>&#125; &#125;
+         * @param {object} center  &#123; lat: <number>, lon: <number>&#125;
+         * @param {number} range  The current distance in meters the map is zoomed out.
          */
         send : function ( requester, bounds, center, range) {
 
@@ -60,15 +58,9 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         },
 
         /**
-         * Invoke handler if Channels.MAP_STATUS_VIEW message received meets API specifications for map.status.view.
-         * Otherwise, throw map.error
+         * Subscribes to the view channel and registers a handler to be called when messages are published to it.
          *
-         * @param handler {function} has a parameter for sender, bounds, center, and range.<br />
-         *      Sender is string / widget id<br />
-         *      Bounds is &#123; southWest: &#123; lat: , lon: &#125;, northEast: &#123;lat: , lon: &#125; &#125;<br />
-         *      Center is &#123; lat: , lon: &#125;<br />
-         *      Range is number
-         *
+         * @param {module:cmwapi/map/status/View~Handler} handler An event handler for any view messages.
          */
         addHandler : function ( handler ) {
 
@@ -109,12 +101,20 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         },
 
         /**
-         * Stop listening to the error channel and handling events upon it.
+         * Stop listening to the channel and handling events upon it.
          */
         removeHandlers : function() {
             OWF.Eventing.unsubscribe(Channels.MAP_STATUS_VIEW);
         }
 
+        /**
+         * A function for handling View channel messages.
+         * @callback module:cmwapi/map/status/View~Handler
+         * @param {string} sender The widget sending a view message
+         * @param {object} bounds &#123; southWest &#123; lat: <number>, lon: <number>&#125;, northEast &#123; lat: <number>, lon: <number>&#125; &#125;
+         * @param {object} center &#123; lat: <number>, lon: <number>&#125;
+         * @param {number} range The current distance in meters the map is zoomed out.
+         */
     };
 
     return View;

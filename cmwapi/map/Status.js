@@ -1,15 +1,12 @@
-/**
- * Defines a convenience module for handling all the map.status interactions according to the CMW API 1.1 specification.
- *
- * @module cmwapi/map/Status
- */
+
 define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/map/status/About", "cmwapi/map/status/Format",
         "cmwapi/map/status/Request", "cmwapi/map/status/View"], 
     function(Channels, Error, About, Format, Request, View) {
 
     /**
-     * @constructor
-     * @alias module:cmwapi/map/Status
+     * Defines a convenience module for handling all the map.status interactions according to the CMW API 1.1 specification.
+     *
+     * @exports cmwapi/map/Status
      */
     var Status = {
 

@@ -1,27 +1,31 @@
-/**
- * Defines the About channel module according to the CMW API 1.1 specification
- *
- * @todo status.about - version parameter: how to return that you support multiple versions?  and/or, how could you?
- * @todo status.about - widgetName: assume that's a "human-readable" name, rather than universal name?
- * @module cmwapi/map/status/About
- */
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Channels, Validator, Error) {
 
     var TYPES_ALLOWED = ["2-D", "3-D", "other"];
 
     /**
-     * @constructor
-     * @alias module:cmwapi/map/status/About
+     * The About module provides methods for using a map.status.about OWF Eventing channel
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * abstracts the OWF Eventing channel mechanism from client code and validates messages
+     * using specification rules.  Any errors are published
+     * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
+     *
+     * @todo status.about - version parameter: how to return that you support multiple versions?  and/or, how could you?
+     * @todo status.about - widgetName: assume that's a "human-readable" name, rather than universal name?
+     * @exports cmwapi/map/status/About
      */
     var About = {
 
+        /** 
+         * An array of allowed/expected type strings of map widgets responding to CMWAPI about requests. 
+         * The [CMWAPI 1.1 Specification](http://www.cmwapi.org) allows for "2-D", "3-D", and "other".
+         */
         TYPES_ALLOWED : TYPES_ALLOWED,
 
         /**
-         *
-         * @param version - what version (s??) of the Common Map Widget API that this map widget supports
-         * @param type - one of TYPES_ALLOWED
-         * @param widgetName - name of the map widget
+         * Send About information that describes this widget and its level of CMWAPI support.
+         * @param {string} version The version of this widget
+         * @param {string} type One of the {@link module:cmwapi/map/status/About.TYPES_ALLOWED|TYPES_ALLOWED} values.
+         * @param {string} widgetName - name of the map widget
          */
         send : function ( version, type, widgetName ) {
 
@@ -60,9 +64,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         },
 
         /**
-         * Registers a handler on to be called whenever a message comes over the map status about channel.
-         * Otherwise, throw map.error
-         * @todo FIll in params docs
+         * Subscribes to the status about channel and registers a handler to be called when messages
+         * are published to it.
+         *
+         * @param {module:cmwapi/map/status/About~Handler} handler An event handler for any format messages.
          *
          */
         addHandler : function (handler) {
@@ -93,11 +98,20 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         },
 
         /**
-         * Stop listening to the error channel and handling events upon it.
+         * Stop listening to the channel and handling events upon it.
          */
         removeHandlers : function() {
             OWF.Eventing.unsubscribe(Channels.MAP_STATUS_ABOUT);
         }
+
+        /**
+         * A function for handling request channel messages.
+         * @callback module:cmwapi/map/status/About~Handler
+         * @param {string} sender The widget sending an about message
+         * @param {string} version The version of the widget
+         * @param {string} type One of the {@link module:cmwapi/map/status/About.TYPES_ALLOWED|TYPES_ALLOWED} values.
+         * @param {string} widgetName  The name of the widget publishing about information
+         */
 
     };
 

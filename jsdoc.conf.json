@@ -4,12 +4,12 @@
 	},
 	"plugins"   : ["plugins/markdown"],
 	"templates" : {
-		"cleverLinks"     : false,
+		"cleverLinks"     : true,
 		"monospaceLinks"  : false,
 		"default"         : {
 			"outputSourceFiles" : true
 		},
-		"systemName"      : "esri Ozone Map Widgets",
+		"systemName"      : "ESRI Components for OWF",
 		"footer"          : "",
 		"copyright"       : "Copyright © 2013-2014 Esri",
 		"navType"         : "vertical",

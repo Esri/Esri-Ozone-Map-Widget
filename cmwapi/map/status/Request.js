@@ -1,26 +1,25 @@
-/**
- * Defines the module for requesting map status information according to the CMW API 1.1 specification.
- *
- * @module cmwapi/map/status/Request
- */
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Channels, Validator, Error) {
 
     var SUPPORTED_STATUS_TYPES = ["about", "format", "view"];
     var validator = new Validator(SUPPORTED_STATUS_TYPES);
 
     /**
-     * @constructor
-     * @alias module:cmwapi/map/status/Request
+     * The Request module provides methods for using a map.status.request OWF Eventing channel
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * abstracts the OWF Eventing channel mechanism from client code and validates messages
+     * using specification rules.  Any errors are published
+     * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
+     * @exports cmwapi/map/status/Request
      */
     var Request = {
 
         /** 
-         * The types of status messages allowed by this version of the CMWAPI.
+         * The types of status messages allowed by version 1.1 of the CMWAPI: "about", "format", and "view".
          */
         SUPPORTED_STATUS_TYPES : SUPPORTED_STATUS_TYPES,
         /**
-         * DO the request for status
-         * @param {string[]} [types] version 1.1 only supports "about", "format", and "view"
+         * Sends a status request message. 
+         * @param {Array<string>} [types] version 1.1 only supports "about", "format", and "view"
          */
         send : function ( types ) {
             var checkTypes = validator.validRequestTypes(types);
@@ -32,16 +31,16 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
                 OWF.Eventing.publish(Channels.MAP_STATUS_REQUEST, Ozone.util.toString(objTypes));
             } else {
-                // TODO: get actual widget id
+                // Send an error with the current widget instance as the sender.
                 Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, types, checkTypes.msg);
             }
         },
 
         /**
-         * HANDLE a request for status...
-         * @param handler {function} means of passing in function handler when message is received.<br />
-         *   Will be given sender, as well as payload of request message (types).
-         *   Since single item (types), working to leave it as JSON &#123;types: []&#125;.<br />
+         * Subscribes to the view channel and registers a handler to be called when messages are published to it.
+         * 
+         * @param {module:cmwapi/map/status/Request~Handler} handler An event handler for any request messages.
+         * @todo Since single item (types), working to leave it as JSON &#123;types: []&#125;.<br />
          * @todo Verify - Is the idea of sender important???
          */
         addHandler : function( handler ) {
@@ -67,11 +66,19 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         },
 
         /**
-         * Stop listening to the request channel and handling events upon it.
+         * Stop listening to the channel and handling events upon it.
          */
         removeHandlers : function() {
             OWF.Eventing.unsubscribe(Channels.MAP_STATUS_REQUEST);
         }
+
+        /**
+         * A function for handling request channel messages.
+         * @callback module:cmwapi/map/status/Request~Handler
+         * @param {string} sender The widget sending a request message
+         * @param {Array<string>} types One or more of the 
+         *     {@link module:cmwapi/map/status/Request.SUPPORTED_STATUS_TYPES|SUPPORTED_STATUS_TYPES} values.
+         */
     };
 
     return Request;

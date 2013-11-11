@@ -1,20 +1,20 @@
-/**
- * Defines the Format channel module according to the CMW API 1.1 specification
- *
- * @module cmwapi/map/status/Format
- */
 define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
 
     var REQUIRED_FORMATS = ["kml", "wms"];
 
     /**
-     * @constructor
-     * @alias module:cmwapi/map/status/Format
+     * The Format module provides methods for using a map.status.format OWF Eventing channel
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * abstracts the OWF Eventing channel mechanism from client code and validates messages
+     * using specification rules.  Any errors are published
+     * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
+     * @exports cmwapi/map/status/Format
      */
     var Format = {
 
         /** 
-         * The minimum formats required by any maps that support the CMW API.
+         * A string array of the minimum formats required by any maps that support the CMWAPI 1.1:  
+         * "kml" and "wms".
          */
         REQUIRED_FORMATS : REQUIRED_FORMATS,
 
@@ -38,8 +38,10 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
         },
 
         /**
+         * Subscribes to the status formats channel and registers a handler to be called when messages
+         * are published to it.
          *
-         * @param handler
+         * @param {module:cmwapi/map/status/Format~Handler} handler An event handler for any format messages.
          */
         addHandler: function (handler) {
 
@@ -59,12 +61,18 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
         },
 
         /**
-         * Stop listening to the format channel and handling events upon it.
+         * Stop listening to the channel and handling events upon it.
          */
         removeHandlers : function() {
             OWF.Eventing.unsubscribe(Channels.MAP_STATUS_FORMAT);
         }
 
+        /**
+         * A function for handling request channel messages.
+         * @callback module:cmwapi/map/status/Format~Handler
+         * @param {string} sender The widget sending a format message
+         * @param {object} msg The formats requested in a JSON object.  {formats: String[]}
+         */
     };
 
     return Format;
