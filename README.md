@@ -66,7 +66,7 @@ To setup the development environment:
 
 5. To run the unit tests and create JavaScript documentation simply execute `grunt` in the source code root directory.
 
-### Grunt targets
+### Grunt Targets
 Once the development environment has been setup, grunt can be used to run JSHint on the JavaScript code, execute the functional tests and generate project documentation.  To run everything in series, use the following command from the top level directory.
 
         grunt
