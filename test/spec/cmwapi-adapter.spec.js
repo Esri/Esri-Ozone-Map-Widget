@@ -1,4 +1,4 @@
-define(["cmwapi", "cmwapi-adapter"], function(CommonMapApi, Adapter) {
+define(["cmwapi/cmwapi", "cmwapi-adapter"], function(CommonMapApi, Adapter) {
 
     describe("ESRI Common Map API adapter", function() {
 

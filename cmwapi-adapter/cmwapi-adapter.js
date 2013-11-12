@@ -261,7 +261,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
 
                 var range = map.getScale();
 
-                CommonMapApi.status.view(caller, bounds, center, range);
+                CommonMapApi.status.view.send(caller, bounds, center, range);
             };
 
             /**
@@ -276,7 +276,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
                 var type = "2-D";
                 var widgetName = ""; //FIXME
 
-                CommonMapApi.status.about(version, type, widgetName);
+                CommonMapApi.status.about.send(version, type, widgetName);
             };
 
             /**
@@ -286,16 +286,16 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
              * @param caller {object} The Id of the widget which requested the map view status
              * @memberof! module:EsriAdapter#
              */
-            var sendFormat = function(caller) {
+            var sendFormat = function() {
                 var formats = ["kml"/*, "geojson", "wms"*/];
 
-                CommonMapApi.status.format(formats);
+                CommonMapApi.status.format.send(formats);
             };
 
             //return { handleRequest: me.handleRequest };
         })();
         // Bind the functions to the CMW API
-        CommonMapApi.status.handleRequest(this.status.handleRequest);
+        CommonMapApi.status.request.addHandler(this.status.handleRequest);
 
         /**
          * The container for EsriAdapter error methods
@@ -319,7 +319,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
                 var msg = message;
                 var error = err;
 
-                CommonMapApi.error.error(sender, type, msg, error);
+                CommonMapApi.error.send(sender, type, msg, error);
             };
 
             /**
@@ -339,7 +339,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
         })();
 
         // Bind error functions to CMW API
-        CommonMapApi.error.handleError(this.error.handleError);
+        CommonMapApi.error.addHandler(this.error.handleError);
     };
 
     return EsriAdapter;
