@@ -14,6 +14,9 @@ define(["cmwapi/Channels", "cmwapi/map/status/Format", "cmwapi/map/Error", "cmwa
                     },
                     subscribe : function() {
 
+                    },
+                    unsubscribe : function() {
+
                     }
                 },
                 getInstanceId : function() {
@@ -51,8 +54,24 @@ define(["cmwapi/Channels", "cmwapi/map/status/Format", "cmwapi/map/Error", "cmwa
 
             Format.send();
             expect(Format.send).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.format');
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_FORMAT);
             expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: Format.REQUIRED_FORMATS});
+
+            expect(Error.send.calls.length).toEqual(0);
+
+        });
+
+        it("Unsubscribes the correct channel when removeHandlers is called", function() {
+
+            var eventing = OWF.Eventing;
+
+            spyOn(Format, 'removeHandlers').andCallThrough();
+            spyOn(Error, 'send');
+            spyOn(eventing, 'unsubscribe');
+
+            Format.removeHandlers();
+            expect(Format.removeHandlers).toHaveBeenCalled();
+            expect(eventing.unsubscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_FORMAT);
 
             expect(Error.send.calls.length).toEqual(0);
 
@@ -72,42 +91,41 @@ define(["cmwapi/Channels", "cmwapi/map/status/Format", "cmwapi/map/Error", "cmwa
             var outputFormats = Format.REQUIRED_FORMATS.concat(testFormats);
             Format.send(testFormats);
             expect(Format.send).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.format');
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_FORMAT);
             expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: outputFormats});
 
             expect(Error.send.calls.length).toEqual(0);
         });
 
 
-        xit("Testing map.status.format handler - not yet implemented", function() {
+        it("Testing map.status.format handler - not yet implemented", function() {
             var eventing = OWF.Eventing;
             spyOn(eventing, 'subscribe');
 
             var testHandler = jasmine.createSpy('testHandler');
-            var newHandler = statusHandler.handleFormats(testHandler);
-            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.view');
+            var newHandler = Format.addHandler(testHandler);
+            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_FORMAT);
 
             // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
             //expect(testHandler).toHaveBeenCalled();
 
             // But I can test the behavior for newHandler!
-            /* TODO: update for formats
-            var jsonVal = { requester: '',
-                bounds: validBounds,
-                range: validRange,
-                center: validCenter };
-            */
+            var testFormats = ['geoJSON', 'uhf'];
+            var outputFormats = Format.REQUIRED_FORMATS.concat(testFormats);
+            var jsonVal = { 
+                formats: outputFormats
+            };
             spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
-            spyOn(Error, 'error');
+            spyOn(Error, 'send');
 
             newHandler('senderFoo', jsonVal );
             // don't expect error to be called
-            expect(Error.error.calls.length).toEqual(0);
+            expect(Error.send.calls.length).toEqual(0);
 
             // Now DO expect testHandler to have been called!
             expect(testHandler.calls.length).toEqual(1);
-            //expect(testHandler.mostRecentCall.args[1]).toEqual(Map.status.SUPPORTED_STATUS_TYPES);
 
         });
+
     });
 });

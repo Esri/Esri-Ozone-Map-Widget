@@ -21,6 +21,9 @@ define(["cmwapi/Channels", "cmwapi/map/status/View", "cmwapi/map/Error", "cmwapi
                     },
                     subscribe : function() {
 
+                    },
+                    unsubscribe : function() {
+
                     }
                 },
                 getInstanceId : function() {
@@ -55,7 +58,23 @@ define(["cmwapi/Channels", "cmwapi/map/status/View", "cmwapi/map/Error", "cmwapi
 
             View.send(requestor, validBounds, validCenter, validRange);
             expect(View.send).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.view');
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_VIEW);
+
+        });
+
+        it("Unsubscribes the correct channel when removeHandlers is called", function() {
+
+            var eventing = OWF.Eventing;
+
+            spyOn(View, 'removeHandlers').andCallThrough();
+            spyOn(Error, 'send');
+            spyOn(eventing, 'unsubscribe');
+
+            View.removeHandlers();
+            expect(View.removeHandlers).toHaveBeenCalled();
+            expect(eventing.unsubscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_VIEW);
+
+            expect(Error.send.calls.length).toEqual(0);
 
         });
 
@@ -211,7 +230,7 @@ define(["cmwapi/Channels", "cmwapi/map/status/View", "cmwapi/map/Error", "cmwapi
 
             var testHandler = jasmine.createSpy('testHandler');
             var newHandler = View.addHandler(testHandler);
-            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.view');
+            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_VIEW);
 
             // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
             //expect(testHandler).toHaveBeenCalled();

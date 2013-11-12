@@ -66,6 +66,19 @@ To setup the development environment:
 
 5. To run the unit tests and create JavaScript documentation simply execute `grunt` in the source code root directory.
 
+### Grunt targets
+Once the development environment has been setup, grunt can be used to run JSHint on the JavaScript code, execute the functional tests and generate project documentation.  To run everything in series, use the following command from the top level directory.
+
+        grunt
+
+Specific build targets are defined in the top level file, Gruntfile.js.  At present, there are a few primary targets:  jshint, test, and jsdoc.  Provide those targets on the command line to execute only those grunt tasks.
+
+        grunt jsdoc
+
+Notes that targets can be nested for further refinement.  For example, to produce only the documentation for the CMWAPI related JavaScript files, use the following command:
+
+        grunt jsdoc:cmwapi
+         
 ### Additional JavaScript Test Options
 
 If you have installed Karma globally (as noted above) you may execute it manually from the command and reference a specific configuration file:

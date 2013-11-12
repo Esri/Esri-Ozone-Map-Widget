@@ -14,6 +14,9 @@ define(["cmwapi/Channels", "cmwapi/map/status/About", "cmwapi/map/Error", "cmwap
                     },
                     subscribe : function() {
 
+                    },
+                    unsubscribe : function() {
+
                     }
                 },
                 getInstanceId : function() {
@@ -50,10 +53,26 @@ define(["cmwapi/Channels", "cmwapi/map/status/About", "cmwapi/map/Error", "cmwap
 
             About.send("1.1", "2-D", "Widget Foo");
             expect(About.send).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toEqual('map.status.about');
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_ABOUT);
             expect(eventing.publish.mostRecentCall.args[1]).toEqual({version: "1.1", type: "2-D", widgetName: "Widget Foo"});
 
             expect(Error.send.calls.length).toEqual(0);
+        });
+
+        it("Unsubscribes the correct channel when removeHandlers is called", function() {
+
+            var eventing = OWF.Eventing;
+
+            spyOn(About, 'removeHandlers').andCallThrough();
+            spyOn(Error, 'send');
+            spyOn(eventing, 'unsubscribe');
+
+            About.removeHandlers();
+            expect(About.removeHandlers).toHaveBeenCalled();
+            expect(eventing.unsubscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_ABOUT);
+
+            expect(Error.send.calls.length).toEqual(0);
+
         });
 
         it("map.status.about bad data", function() {
@@ -101,16 +120,10 @@ define(["cmwapi/Channels", "cmwapi/map/status/About", "cmwapi/map/Error", "cmwap
 
             var testHandler = jasmine.createSpy('testHandler');
             var newHandler = About.addHandler(testHandler);
-            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual('map.status.about');
+            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_ABOUT);
 
             // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
             //expect(testHandler).toHaveBeenCalled();
-
-            // But I can test the behavior for newHandler!
-
-            // This won't actually get called: remember, asynchronous eventing: I'm still waiting for a publish
-            //expect(testHandler).toHaveBeenCalled();
-
             // But I can test the behavior for newHandler!
             var jsonVal = {
                 version: '1.1.0',
@@ -126,23 +139,6 @@ define(["cmwapi/Channels", "cmwapi/map/status/About", "cmwapi/map/Error", "cmwap
 
             // Now DO expect testHandler to have been called!
             expect(testHandler.calls.length).toEqual(1);
-
-
-            /*
-            var jsonVal = {
-                type: '2-D',
-                widgetName: 'CMWAPI Spec widget'
-            }
-            spyOn(Ozone.util, 'parseJson').andReturn(jsonVal);
-            spyOn(Error, 'error');
-            newHandler('senderFoo', jsonVal );
-            // don't expect error to be called
-            expect(Error.error.calls.length).toEqual(1);
-            // Now DO expect testHandler to have been called!
-            expect(testHandler.calls.length).toEqual(0);
-            */
-
-
         });
 
     });
