@@ -11,7 +11,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
      * @alias module:EsriAdapter
      */
     var EsriAdapter = function(map) {
-        var overlayManager = new OVerlayManager(this, map);
+        var overlayManager = new OverlayManager(this, map);
 
         /**
          * The container for the ESRI adapter overlay methods
@@ -25,25 +25,15 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
              * Handler for an incoming map overlay create request.
              * @method overlay.handleCreate
              * @param sender {String} the widget making the create overlay request
-             * @param name {String} optional; the non-unique readable name to be given to the created overlay. If
-             *      not provided, the overlayId will be used.
-             * @param overlayId {String} optional; the unique id to be given to the created overlay. If not provided,
-             *      the id of the sender will be used.
+             * @param name {String} The non-unique readable name to be given to the created overlay.
+             * @param overlayId {String} The unique id to be given to the created overlay.
              * @param parentId {String} optional; the id of the overlay to be set as the parent of the created overlay.
              * @memberof! module:EsriAdapter#
              */
             me.handleCreate = function(sender, name, overlayId, parentId) {
-                if(!overlayId) {
-                    overlayId = sender;
-                }
-
-                if(!name) {
-                    name = overlayId;
-                }
-
                 overlayManager.createOverlay(name, overlayId, parentId);
             };
-            CommonMapApi.overlay.handleCreate(me.handleCreate);
+            //CommonMapApi.overlay.handleCreate(me.handleCreate);
 
             /**
              * Handler for an indcoming request to remove a layer.
@@ -60,7 +50,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
 
                 overlayManager.removeOverlay(overlayId);
             };
-            CommonMapApi.overlay.handleRemove(me.handleRemove);
+            //CommonMapApi.overlay.handleRemove(me.handleRemove);
 
             /**
              * Handler for an indcoming request to hide a layer.
@@ -77,7 +67,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
 
                 overlayManager.hideOverlay(overlayId);
             };
-            CommonMapApi.overlay.handleHide(me.handleHide);
+            //CommonMapApi.overlay.handleHide(me.handleHide);
 
             /**
              * Handler for an incoming overlay show request
@@ -94,7 +84,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
 
                 overlayManager.showOverlay(overlayId);
             };
-            CommonMapApi.overlay.handleShow(me.handleShow);
+            //CommonMapApi.overlay.handleShow(me.handleShow);
 
             /**
              * Handler for an incoming overlay update request
@@ -115,7 +105,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
 
                 overlayManager.updateOverlay(name, overlayId, parentId);
             };
-            CommonMapApi.overlay.handleUpdate(me.handleUpdate);
+            //CommonMapApi.overlay.handleUpdate(me.handleUpdate);
         })();
 
         /**
@@ -143,7 +133,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
             me.handlePlot = function(sender, overlayId, featureId, name, format, feature, zoom) {
 
             };
-            CommonMapApi.feature.handlePlot(me.handlePlot);
+            //CommonMapApi.feature.handlePlot(me.handlePlot);
 
             /**
              * Handler for plot url request
@@ -162,7 +152,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
             me.handlePlotUrl = function(sender, overlayId, featureId, name, format, url, params, zoom) {
                 //get url then call plot or vice?
             };
-            CommonMapApi.feature.handlePlotUrl(me.handlePlotUrl);
+            //CommonMapApi.feature.handlePlotUrl(me.handlePlotUrl);
 
             /**
              * Handler for feature unplot request
@@ -179,7 +169,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
                 }
                 overlayManager.deleteFeature(overlayId, featureId);
             };
-            CommonMapApi.feature.handleUnplot(me.handleUnplot);
+            //CommonMapApi.feature.handleUnplot(me.handleUnplot);
 
             /**
              * Handler for request to hide feature
@@ -196,22 +186,22 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
                 }
                 overlayManager.hideFeature(overlayId, featureId);
             };
-            CommonMapApi.feature.handleHide(me.handleHide);
+            //CommonMapApi.feature.handleHide(me.handleHide);
 
             me.handleShow = function() {
 
             };
-            CommonMapApi.feature.handleShow(me.handleShow);
+            //CommonMapApi.feature.handleShow(me.handleShow);
 
             me.handleSelected = function() {
 
             };
-            CommonMapApi.feature.handleSelected(me.handleSelected);
+            //CommonMapApi.feature.handleSelected(me.handleSelected);
 
             me.handleUpdate = function() {
 
             };
-            CommonMapApi.feature.handlePlotUrl(me.handlePlotUrl);
+            //CommonMapApi.feature.handlePlotUrl(me.handlePlotUrl);
         })();
 
 
@@ -220,7 +210,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
          * @memberof module:EsriAdapter
          * @alias status
          */
-        this.status = (function() {
+        this.status = new (function() {
             var me = this;
 
             /**
@@ -304,7 +294,6 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
 
             //return { handleRequest: me.handleRequest };
         })();
-
         // Bind the functions to the CMW API
         CommonMapApi.status.handleRequest(this.status.handleRequest);
 

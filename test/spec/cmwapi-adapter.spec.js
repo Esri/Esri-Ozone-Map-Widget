@@ -34,6 +34,18 @@ define(["cmwapi", "cmwapi-adapter"], function(CommonMapApi, Adapter) {
             window.errorHandler = errorHandler;
 
             // TODO: Mock Esri Map object
+            var Map = function() {
+                this.geographicExtent= {
+                    xmin: 0,
+                    ymin: 0,
+                    xmax: 0,
+                    ymax: 0,
+                    getCenter: function() {
+                        return {x: 0, y: 0};
+                    }
+                };
+            };
+            window.Map = Map;
         });
 
         afterEach(function() {
@@ -44,13 +56,18 @@ define(["cmwapi", "cmwapi-adapter"], function(CommonMapApi, Adapter) {
 
             delete window.statusHandler;
             delete window.errorHandler;
+
+            delete window.Map;
         });
 
         it("Testing syntax in adapter module definition", function() {
             // Verify the module can be initialized without errors
-            var instance = new Adapter({} /* TODO: Mock Map object*/);
+            var map = new Map();
+
+            var instance = new Adapter(map);
         });
 
         // TODO: Create more (and better) tests
+
     });
 });

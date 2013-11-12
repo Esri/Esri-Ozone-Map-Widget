@@ -24,6 +24,8 @@ module.exports = function(config) {
 
         // Source files here; paths are relative to basePath defined above.
         {pattern: '*cmwapi*/**/*.js', included: false},
+        {pattern: 'test/mock/**/*.js', included: false},
+
 
         // All spec files
         {pattern: 'test/spec/**/*.spec.js', included: false},
@@ -43,7 +45,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: ['progress', 'dots'],
-    
+
 
     // web server port
     port: 9876,
