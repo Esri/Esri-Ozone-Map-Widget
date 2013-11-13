@@ -106,7 +106,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
                 overlayManager.updateOverlay(name, overlayId, parentId);
             };
             //CommonMapApi.overlay.handleUpdate(me.handleUpdate);
-        })();
+        }());
 
         /**
          * The container for the ESRI adapter feature methods
@@ -202,7 +202,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
 
             };
             //CommonMapApi.feature.handlePlotUrl(me.handlePlotUrl);
-        })();
+        }());
 
 
         /**
@@ -210,7 +210,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
          * @memberof module:EsriAdapter
          * @alias status
          */
-        this.status = new (function() {
+        this.status = (function() {
             var me = this;
 
             /**
@@ -293,7 +293,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
             };
 
             //return { handleRequest: me.handleRequest };
-        })();
+        }());
         // Bind the functions to the CMW API
         CommonMapApi.status.request.addHandler(this.status.handleRequest);
 
@@ -336,8 +336,7 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
             };
 
             return { handleError: me.handleError };
-        })();
-
+        }());
         // Bind error functions to CMW API
         CommonMapApi.error.addHandler(this.error.handleError);
     };
