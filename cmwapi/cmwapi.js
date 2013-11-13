@@ -19,8 +19,8 @@
  *      w1: receive: map.status.view - and the requester matches, so it handles
  *
  */
-define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error", "cmwapi/map/Status"], 
-    function(Channels, Validator, Error, Status) {
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error", "cmwapi/map/Status", "cmwapi/map/overlay"],
+    function(Channels, Validator, Error, Status, Overlay) {
     /**
      * @ignore
      */
@@ -29,6 +29,8 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error", "cmwapi/map/S
     Map.status = Status;
 
     Map.error = Error;
+
+    Map.overlay = Overlay;
 
     return Map;
 });
