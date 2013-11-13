@@ -48,7 +48,9 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
             // no real validation here...
             var newHandler = function (sender, msg) {
 
-                if (!msg.formats) {
+                var jsonMsg = Ozone.util.parseJson(msg);
+
+                if (!jsonMsg.formats) {
                     Error.send(sender, Channels.MAP_STATUS_FORMATS, msg, "Unable to determine formats" );
                 } else {
                     handler(sender, msg);
