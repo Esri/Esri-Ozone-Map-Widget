@@ -51,7 +51,7 @@ define(function() {
                 //TODO figure out the type of esri feature, create and return
             }
 
-            this.overlayId = overlayId;
+            this.overlayId = overlayId; //needed?
             this.featureId = featureId;
             this.name = name;
             this.format = format;
@@ -91,7 +91,7 @@ define(function() {
          * @param overlayId {String} The id of the overlay to create; if it exists nothing will be created
          * @memberof EsriOverlayManager#
          */
-        me.createOverlay = function(overlayId, name, parentId) {
+        me.createOverlay = function(caller, overlayId, name, parentId) {
             if(me.overlays[overlayId]) {
                 me.updateOverlay(name, overlayId, parentId);
             } else {
@@ -104,8 +104,11 @@ define(function() {
          * @param overlayId {String} the id of the overlay to be deleted from the manager
          * @memberof EsriOverlayManager#
          */
-        me.removeOverlay = function(overlayId) {
+        me.removeOverlay = function(caller, overlayId) {
+            //TODO Error if overlay not found?
+
             delete me.overlays[overlayId];
+
             //FIXME what do we do about parents
         };
 
@@ -114,9 +117,13 @@ define(function() {
          * @param overlayId {String} the id of the overlay to be hidden
          * @memberof EsriOverlayManager#
          */
-        me.hideOverlay = function(overlayId) {
-            me.overlays[overlayId].isHidden = true;
-            //FIXME hide on the map
+        me.hideOverlay = function(caller, overlayId) {
+            if(typeof(me.overlays[overlayId]) === undefined) {
+                adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
+            } else {
+                me.overlays[overlayId].isHidden = true;
+                //FIXME hide on the map
+            }
         };
 
         /**
@@ -125,8 +132,12 @@ define(function() {
          * @memberof EsriOverlayManager#
          */
         me.showOverlay = function(overlayId) {
-            me.overlays[overlayId].isHidden = false;
-            //FIXME show on the map
+            if(typeof(me.overlays[overlayId]) === undefined) {
+                adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
+            } else {
+                me.overlays[overlayId].isHidden = false;
+                //FIXME show on the map
+            }
         };
 
         /**
@@ -158,12 +169,16 @@ define(function() {
          * @memberof EsriOverlayManager#
          */
         var flattenOverlay = function(overlayId) {
-            var overlay = me.overlays[overlayId];
-            console.log(overlay);
-            for(var i = 0; i < overlay.children.length; i++) {
-                overlay.children[i] = flattenOverlay(overlay.children[i]);
+            if(typeof(me.overlays[overlayId]) === undefined) {
+                adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
+            } else {
+                var overlay = me.overlays[overlayId];
+                console.log(overlay);
+                for(var i = 0; i < overlay.children.length; i++) {
+                    overlay.children[i] = flattenOverlay(overlay.children[i]);
+                }
+                return overlay;
             }
-            return overlay;
         };
 
         /**
@@ -176,8 +191,20 @@ define(function() {
          * @param zoom {boolean} Whether or not the map should zoom to this feature upon creation
          * @memberof EsriOverlayManager#
          */
-        me.createFeature = function(overlayId, featureId, name, format, feature, zoom) {
+        me.plotFeature = function(caller, overlayId, featureId, name, format, feature, zoom) {
+            if(typeof(me.overlays[overlayId]) === undefined) {
+                me.createOverlay(caller, overlayId, overlayId);
+            }
 
+            var overlay = me.overlays[overlayId];
+
+            if(typeof(overlay.features[featureId] !== 'undefined')) {
+                me.deleteFeature(overlayId, featureId);
+            }
+            //create
+            overlay.features[featureId] = new Feature(ovelayId, featureId, name, format, feature, zoom);
+            //add to map
+            //zoom if feature.zoom === true
         };
 
         /**
@@ -187,7 +214,11 @@ define(function() {
          * @memberof EsriOverlayManager#
          */
         me.deleteFeature = function(overlayId, featureId) {
+            var overlay = me.overlays[overlayId];
 
+            //map remove
+
+            delete overlay.features[featureId];
         };
 
         //TODO
@@ -198,7 +229,8 @@ define(function() {
          * @memberof EsriOverlayManager#
          */
         me.hideFeature = function(overlayId, featureId) {
-
+            //check exists
+            //map hide
         };
 
         //TODO
@@ -209,7 +241,8 @@ define(function() {
          * @memberof EsriOverlayManager#
          */
         me.showFeature = function() {
-
+            //check exists
+            //map show
         };
 
         /**
@@ -228,8 +261,14 @@ define(function() {
 
             if(newOverlayId && newOverlayId !== overlayId) {
                 if(typeof(me.overlays[newOverlayId]) !== 'undefined' && me.overlays[newOverlayId] !== null) {
+                    var feature = me.overlays[overlayId].features[featureId];
+                    var newFeature = new Feature(newOverlayId, featureId, name, feature.format, feature.feature, feature.zoom);
+                    me.overlays[newOverlayId].features[featureId] = newFeature;
                     delete me.overlays[overlayId].features[featureId];
-                } //TODO else error
+                } else {
+                    adapter.error.error(caller, "Feature could not be found with id " + featureId +
+                        " and overlayId " + overlayId, {type: "invalid_id"});
+                }
             }
         };
 

@@ -5,13 +5,12 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         jsdoc : {
-<<<<<<< HEAD
             cmwapi: {
                 src: ['README.md', 'cmwapi/**/*.js', 'cmwapi-adapter/**/*.js'],
                 options: {
                     destination: 'target/jsdoc/cmwapi',
                     template: "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",
-                    configure: "jsdoc.conf.json"
+                    configure: "jsdoc.conf.json",
                     private: true
                 }
             },
@@ -20,7 +19,7 @@ module.exports = function(grunt) {
                       'owf-map-widget/js/models/**/*.js'],
                 options: {
                     destination: 'target/jsdoc/widget',
-                    private: true
+                    private: true,
                     template: "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",
                     configure: "jsdoc.conf.json"
                 }
@@ -50,7 +49,7 @@ module.exports = function(grunt) {
     // Workaround for allowing tasks that can fail but should not abort the build chains.
     // Reference: http://stackoverflow.com/questions/16612495/continue-certain-tasks-in-grunt-even-if-one-fails
     grunt.registerTask('usetheforce_on',
-        'force the force option on if needed', 
+        'force the force option on if needed',
         function() {
             if ( !grunt.option( 'force' ) ) {
                 grunt.config.set('usetheforce_set', true);
@@ -58,8 +57,8 @@ module.exports = function(grunt) {
             }
         }
     );
-    grunt.registerTask('usetheforce_restore', 
-        'turn force option off if we have previously set it', 
+    grunt.registerTask('usetheforce_restore',
+        'turn force option off if we have previously set it',
         function() {
             if ( grunt.config.get('usetheforce_set') ) {
                 grunt.option( 'force', false );

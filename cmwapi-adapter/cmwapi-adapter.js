@@ -31,9 +31,9 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
              * @memberof! module:EsriAdapter#
              */
             me.handleCreate = function(sender, name, overlayId, parentId) {
-                overlayManager.createOverlay(name, overlayId, parentId);
+                overlayManager.createOverlay(sender, name, overlayId, parentId);
             };
-            //CommonMapApi.overlay.handleCreate(me.handleCreate);
+            CommonMapApi.overlay.create.addHandler(me.handleCreate);
 
             /**
              * Handler for an indcoming request to remove a layer.
@@ -44,13 +44,9 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
              * @memberof! module:EsriAdapter#
              */
             me.handleRemove = function(sender, overlayId) {
-                if(!overlayId) {
-                    overlayId = sender;
-                }
-
-                overlayManager.removeOverlay(overlayId);
+                overlayManager.removeOverlay(sender, overlayId);
             };
-            //CommonMapApi.overlay.handleRemove(me.handleRemove);
+            CommonMapApi.overlay.remove.addHandler(me.handleRemove);
 
             /**
              * Handler for an indcoming request to hide a layer.
@@ -61,13 +57,9 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
              * @memberof! module:EsriAdapter#
              */
             me.handleHide = function(sender, overlayId) {
-                if(!overlayId) {
-                    overlayId = sender;
-                }
-
-                overlayManager.hideOverlay(overlayId);
+                overlayManager.hideOverlay(sender, overlayId);
             };
-            //CommonMapApi.overlay.handleHide(me.handleHide);
+            CommonMapApi.overlay.hide.addHandler(me.handleHide);
 
             /**
              * Handler for an incoming overlay show request
@@ -78,13 +70,9 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
              * @memberof! module:EsriAdapter#
              */
             me.handleShow = function(sender, overlayId) {
-                if(!overlayId) {
-                    overlayId = sender;
-                }
-
                 overlayManager.showOverlay(overlayId);
             };
-            //CommonMapApi.overlay.handleShow(me.handleShow);
+            CommonMapApi.overlay.show.addHandler(me.handleShow);
 
             /**
              * Handler for an incoming overlay update request
@@ -99,13 +87,9 @@ define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapAp
              * @memberof! module:EsriAdapter#
              */
             var handleUpdate = function(sender, name, overlayId, parentId) {
-                if(!overlayId) {
-                    overlayId = sender;
-                }
-
                 overlayManager.updateOverlay(name, overlayId, parentId);
             };
-            //CommonMapApi.overlay.handleUpdate(me.handleUpdate);
+            CommonMapApi.overlay.update.addHandler(me.handleUpdate);
         }());
 
         /**
