@@ -4,7 +4,7 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
 
     /**
      * The Format module provides methods for using a map.status.format OWF Eventing channel
-     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
@@ -12,11 +12,11 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
      */
     var Format = {
 
-        /** 
-         * A string array of the minimum formats required by any maps that support the CMWAPI 1.1:  
+        /**
+         * A string array of the minimum formats required by any maps that support the CMWAPI 1.1:
          * "kml" and "wms".
          */
-        REQUIRED_FORMATS : REQUIRED_FORMATS,
+        REQUIRED_FORMATS: REQUIRED_FORMATS,
 
         /**
          * Send out the list of data formats that this map supports.
@@ -24,7 +24,7 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
          * at least the required formats.  If not, an error is thrown on the error channel.  Quesion: Do we send only
          * if there is no error?  Or always send the provided formats?
          */
-        send : function ( formats ) {
+        send: function(formats) {
             var sendFormats;
 
             // send at least REQUIRED_FORMATS
@@ -43,10 +43,10 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
          *
          * @param {module:cmwapi/map/status/Format~Handler} handler An event handler for any format messages.
          */
-        addHandler: function (handler) {
+        addHandler: function(handler) {
 
             // no real validation here...
-            var newHandler = function (sender, msg) {
+            var newHandler = function(sender, msg) {
 
                 var jsonMsg = Ozone.util.parseJson(msg);
 
@@ -65,7 +65,7 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
         /**
          * Stop listening to the channel and handling events upon it.
          */
-        removeHandlers : function() {
+        removeHandlers: function() {
             OWF.Eventing.unsubscribe(Channels.MAP_STATUS_FORMAT);
         }
 

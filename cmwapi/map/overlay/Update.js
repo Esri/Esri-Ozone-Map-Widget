@@ -2,7 +2,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
 
     /**
      * The Update module provides methods for using an overlay upate OWF Eventing channel
-     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
@@ -13,16 +13,16 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
 
         /**
          * Send information that upates a map overlay.
-         * @param {Object|Array} data 
+         * @param {Object|Array} data
          * @param {string} [data.name] The name of the overlay.  If a valid name string is not specified, the overlayId is used.
          * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
          * @param {string} [data.parentId] The ID of the parent overlay.  This will establishes or changes a parent/child relationship
          */
-        send : function ( data ) {
+        send: function(data) {
 
-            var payload; 
+            var payload;
 
-            if( Object.prototype.toString.call( data ) === '[object Array]' ) {
+            if(Object.prototype.toString.call(data) === '[object Array]') {
                 payload = data;
             }
             else {
@@ -39,7 +39,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
             }
 
             // Since everything is optional, no major data validation is performed here.  Send
-            // along the payload.    
+            // along the payload.
             if (payload.length === 1) {
                 OWF.Eventing.publish(Channels.MAP_OVERLAY_UPDATE, Ozone.util.toString(payload[0]));
             }
@@ -56,11 +56,11 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
          * @param {module:cmwapi/map/overlay/Update~Handler} handler An event handler for any update messages.
          *
          */
-        addHandler : function (handler) {
+        addHandler: function(handler) {
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
-            var newHandler = function( sender, msg ) {
-              
+            var newHandler = function(sender, msg) {
+
                 // Parse the sender and msg to JSON.
                 var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
@@ -84,7 +84,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
         /**
          * Stop listening to the channel and handling events upon it.
          */
-        removeHandlers : function() {
+        removeHandlers: function() {
             OWF.Eventing.unsubscribe(Channels.MAP_OVERLAY_UPDATE);
         }
 

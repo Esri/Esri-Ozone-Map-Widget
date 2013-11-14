@@ -38,128 +38,128 @@ define(function() {
          * The name of the overlay create channel.
          * @type string
          */
-         MAP_OVERLAY_CREATE : MAP_OVERLAY_CREATE,
+         MAP_OVERLAY_CREATE: MAP_OVERLAY_CREATE,
         /**
          * The name of the overlay remove channel.
          * @type string
          */
-         MAP_OVERLAY_REMOVE : MAP_OVERLAY_REMOVE,
+         MAP_OVERLAY_REMOVE: MAP_OVERLAY_REMOVE,
         /**
          * The name of the overlay hide channel.
          * @type string
          */
-         MAP_OVERLAY_HIDE : MAP_OVERLAY_HIDE,
+         MAP_OVERLAY_HIDE: MAP_OVERLAY_HIDE,
         /**
          * The name of the overlay show channel.
          * @type string
          */
-         MAP_OVERLAY_SHOW : MAP_OVERLAY_SHOW,
+         MAP_OVERLAY_SHOW: MAP_OVERLAY_SHOW,
         /**
          * The name of the overlay update channel.
          * @type string
          */
-         MAP_OVERLAY_UPDATE : MAP_OVERLAY_UPDATE,
+         MAP_OVERLAY_UPDATE: MAP_OVERLAY_UPDATE,
 
         /**
         * The name of the feature plot channel.
         * @type string
         */
-        MAP_FEATURE_PLOT : MAP_FEATURE_PLOT,
+        MAP_FEATURE_PLOT: MAP_FEATURE_PLOT,
         /**
         * The name of the feature plot url channel.
         * @type string
         */
-        MAP_FEATURE_PLOT_URL : MAP_FEATURE_PLOT_URL,
+        MAP_FEATURE_PLOT_URL: MAP_FEATURE_PLOT_URL,
         /**
         * The name of the feature unplot channel.
         * @type string
         */
-        MAP_FEATURE_UNPLOT : MAP_FEATURE_UNPLOT,
+        MAP_FEATURE_UNPLOT: MAP_FEATURE_UNPLOT,
         /**
         * The name of the feature hide channel.
         * @type string
         */
-        MAP_FEATURE_HIDE : MAP_FEATURE_HIDE,
+        MAP_FEATURE_HIDE: MAP_FEATURE_HIDE,
         /**
         * The name of the feature show channel.
         * @type string
         */
-        MAP_FEATURE_SHOW : MAP_FEATURE_SHOW,
+        MAP_FEATURE_SHOW: MAP_FEATURE_SHOW,
         /**
         * The name of the feature selected channel.
         * @type string
         */
-        MAP_FEATURE_SELECTED : MAP_FEATURE_SELECTED,
+        MAP_FEATURE_SELECTED: MAP_FEATURE_SELECTED,
         /**
         * The name of the feature update channel.
         * @type string
         */
-        MAP_FEATURE_UPDATE : MAP_FEATURE_UPDATE,
+        MAP_FEATURE_UPDATE: MAP_FEATURE_UPDATE,
 
         /**
          * The name of the zoom channel.
          * @string
          */
-        MAP_VIEW_ZOOM : MAP_VIEW_ZOOM,
+        MAP_VIEW_ZOOM: MAP_VIEW_ZOOM,
         /**
          * The name of the center on an overlay channel.
          * @string
          */
-        MAP_VIEW_CENTER_OVERLAY : MAP_VIEW_CENTER_OVERLAY,
+        MAP_VIEW_CENTER_OVERLAY: MAP_VIEW_CENTER_OVERLAY,
         /**
          * The name of the center on a feature channel.
          * @string
          */
-        MAP_VIEW_CENTER_FEATURE : MAP_VIEW_CENTER_FEATURE,
+        MAP_VIEW_CENTER_FEATURE: MAP_VIEW_CENTER_FEATURE,
         /**
          * The name of the center on a location channel.
          * @string
          */
-        MAP_VIEW_CENTER_LOCATION : MAP_VIEW_CENTER_LOCATION,
+        MAP_VIEW_CENTER_LOCATION: MAP_VIEW_CENTER_LOCATION,
         /**
          * The name of the center on a bounding box channel.
          * @string
          */
-        MAP_VIEW_CENTER_BOUNDS : MAP_VIEW_CENTER_BOUNDS,
+        MAP_VIEW_CENTER_BOUNDS: MAP_VIEW_CENTER_BOUNDS,
         /**
          * The name of the clicked location channel.
          * @string
          */
-        MAP_VIEW_CLICKED : MAP_VIEW_CLICKED,
+        MAP_VIEW_CLICKED: MAP_VIEW_CLICKED,
 
         /**
          * The name of the status request channel.
          * @type string
          */
-        MAP_STATUS_REQUEST : MAP_STATUS_REQUEST,
+        MAP_STATUS_REQUEST: MAP_STATUS_REQUEST,
         /**
          * The name of the status view channel.
          * @type string
          */
-        MAP_STATUS_VIEW : MAP_STATUS_VIEW,
+        MAP_STATUS_VIEW: MAP_STATUS_VIEW,
         /**
-         * The name of the status format channel. 
+         * The name of the status format channel.
          * @type string
          */
-        MAP_STATUS_FORMAT : MAP_STATUS_FORMAT,
+        MAP_STATUS_FORMAT: MAP_STATUS_FORMAT,
         /**
          * The name of the status about channel.
          * @type string
          */
-        MAP_STATUS_ABOUT : MAP_STATUS_ABOUT,
+        MAP_STATUS_ABOUT: MAP_STATUS_ABOUT,
         /**
          * The name of the error channel.
          * @type string
          */
-        MAP_ERROR : MAP_ERROR,
+        MAP_ERROR: MAP_ERROR,
         /**
          * Returns an array of the OWF channels utilized by this implementation of the CMW API.
-         * @return {Array<string>} 
+         * @return {Array<string>}
          */
-        getChannels : function () {
-            return [this.MAP_OVERLAY_CREATE, this.MAP_OVERLAY_REMOVE, this.MAP_OVERLAY_HIDE, 
+        getChannels: function() {
+            return [this.MAP_OVERLAY_CREATE, this.MAP_OVERLAY_REMOVE, this.MAP_OVERLAY_HIDE,
                 this.MAP_OVERLAY_SHOW, this.MAP_OVERLAY_UPDATE,
-                this.MAP_STATUS_REQUEST, this.MAP_STATUS_REQUEST, this.MAP_STATUS_FORMAT, this.MAP_STATUS_ABOUT, 
+                this.MAP_STATUS_REQUEST, this.MAP_STATUS_REQUEST, this.MAP_STATUS_FORMAT, this.MAP_STATUS_ABOUT,
                 this.MAP_ERROR];
         }
     };

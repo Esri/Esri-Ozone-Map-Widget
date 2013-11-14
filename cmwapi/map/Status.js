@@ -1,6 +1,6 @@
 
 define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/map/status/About", "cmwapi/map/status/Format",
-        "cmwapi/map/status/Request", "cmwapi/map/status/View"], 
+        "cmwapi/map/status/Request", "cmwapi/map/status/View"],
     function(Channels, Error, About, Format, Request, View) {
 
     /**
@@ -13,16 +13,16 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/map/status/About", "cmwap
         /**
          * @see module:cmwapi/map/status/Request.SUPPORTED_STATUS_TYPES
          */
-        SUPPORTED_STATUS_TYPES : Request.SUPPORTED_STATUS_TYPES,
+        SUPPORTED_STATUS_TYPES: Request.SUPPORTED_STATUS_TYPES,
         /**
          * @see module:cmwapi/map/status/Format.REQUIRED_FORMATS
          */
-        REQUIRED_FORMATS : Format.REQUIRED_FORMATS,
+        REQUIRED_FORMATS: Format.REQUIRED_FORMATS,
 
         /**
          * @see module:cmwapi/map/status/Request
          */
-        request : Request,
+        request: Request,
         /**
          * @see module:cmwapi/map/status/View
          */

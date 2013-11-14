@@ -19,7 +19,7 @@ define(["cmwapi/Channels"], function(Channels) {
          * @param msg - message that caused the error  (example seems to be payload)
          * @param error - a description of the error
          */
-        send : function (sender, type, msg, error) {
+        send: function(sender, type, msg, error) {
             var sendPayload = { sender: sender,
                 type: type,
                 msg: msg,
@@ -30,7 +30,7 @@ define(["cmwapi/Channels"], function(Channels) {
         },
 
         /**
-         * Subscribes to the error channel and 
+         * Subscribes to the error channel and
          * @param handler {function}
          *  Handler will receive payload of the following:<br />
          *   &#123; sender: , type: , msg:, error: &#125;<br />
@@ -39,7 +39,7 @@ define(["cmwapi/Channels"], function(Channels) {
          *   msg = payload of message that caused error<br />
          *   error = description of error
          */
-        addHandler : function(handler) {
+        addHandler: function(handler) {
 
             var newHandler = function(sender, msg) {
 
@@ -54,7 +54,7 @@ define(["cmwapi/Channels"], function(Channels) {
         /**
          * Stop listening to the error channel and handling events upon it.
          */
-        removeHandlers : function() {
+        removeHandlers: function() {
             OWF.Eventing.unsubscribe(Channels.MAP_ERROR);
         }
 

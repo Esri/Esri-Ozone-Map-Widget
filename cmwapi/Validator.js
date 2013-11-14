@@ -4,7 +4,7 @@ define('cmwapi/Validator', function() {
     var SUPPORTED_MAP_TYPES = ["2-D","3-D","other"];
 
     /**
-     * A utility class for validating various message elements used for the 
+     * A utility class for validating various message elements used for the
      * [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This validator
      * has static members that specify the supported map status types and map types allowed as well
      * a number of functions for checking latitude/longitude pairs, various type fields, and bounding
@@ -12,13 +12,13 @@ define('cmwapi/Validator', function() {
      * @exports cmwapi/Validator
      */
     var Validator = {
-        /** 
+        /**
          * An array of valid status message type strings.  The [CMWAPI 1.1 Specification](http://www.cmwapi.org)
-         * allows for "about", "format", and "view". 
+         * allows for "about", "format", and "view".
          */
         SUPPORTED_STATUS_TYPES: SUPPORTED_STATUS_TYPES,
-        /** 
-         * An array of allowed/expected type strings of map widgets responding to CMWAPI about requests. 
+        /**
+         * An array of allowed/expected type strings of map widgets responding to CMWAPI about requests.
          * The [CMWAPI 1.1 Specification](http://www.cmwapi.org) allows for "2-D", "3-D", and "other".
          */
         SUPPORTED_MAP_TYPES: SUPPORTED_MAP_TYPES,
@@ -28,7 +28,7 @@ define('cmwapi/Validator', function() {
          * @param types {Array<string>} The types to validate.
          * @returns {module:cmwapi/Validator~Result}
          */
-        validMapType : function(type) {
+        validMapType: function(type) {
             if (type) {
                 if (SUPPORTED_MAP_TYPES.indexOf(type) <= -1) {
                     return {result: false, msg: type + ' is not a supported map type'};
@@ -42,7 +42,7 @@ define('cmwapi/Validator', function() {
          * @param types {Array<string>} The types to validate.
          * @returns {module:cmwapi/Validator~Result}
          */
-        validRequestTypes : function(types) {
+        validRequestTypes: function(types) {
             if (types) {
                 for (var i = 0; i < types.length; i++  ) {
                     if (SUPPORTED_STATUS_TYPES.indexOf(types[i]) <= -1) {
@@ -65,7 +65,7 @@ define('cmwapi/Validator', function() {
          * @param {number} bounds.northEast.lon A longitude value
          * @returns {module:cmwapi/Validator~Result}
          */
-        validBounds : function(bounds) {
+        validBounds: function(bounds) {
             if (!bounds) {
                 return {result: false, msg: 'Bounds are required'};
             }
@@ -90,7 +90,7 @@ define('cmwapi/Validator', function() {
          * @param {number} center.lon The longitude value in decimal degrees.
          * @returns {module:cmwapi/Validator~Result}
          */
-        validCenter : function(center) {
+        validCenter: function(center) {
             if (!center) {
                 return {result: false, msg: 'Center is required'};
             }
@@ -108,7 +108,7 @@ define('cmwapi/Validator', function() {
          * @param {Number} range A range value specifying a map's potential zoom level.
          * @returns {module:cmwapi/Validator~Result}
          */
-        validRange : function(range) {
+        validRange: function(range) {
            if (!range) {
                return {result: false, msg: 'Range is required'};
            }
@@ -123,8 +123,8 @@ define('cmwapi/Validator', function() {
          * A basic number validator that checks that the value can be parsed as a float and in finite in value.
          * @param {number} n A value to test
          * @returns {boolean}
-         */ 
-        isNumber : function(n) {
+         */
+        isNumber: function(n) {
             // from http://stackoverflow.com/a/1830844
            return !isNaN(parseFloat(n)) && isFinite(n);
         },
@@ -135,18 +135,18 @@ define('cmwapi/Validator', function() {
          *     may want to leverage dojo or underscore instead.
          * @see http://stackoverflow.com/questions/1303646/check-whether-variable-is-number-or-string-in-javascript
          */
-        isString : function(data) {
+        isString: function(data) {
             return (Object.prototype.toString(data) === '[object String]');
         },
 
         /**
          * A basic Array test that should handle both literal and Object based strings.
-         * @todo This is similar to our isString implementation.  Using this limits the requirement of 
-         *     this api implementation on other libraries.  However, we may want to leverage dojo or 
+         * @todo This is similar to our isString implementation.  Using this limits the requirement of
+         *     this api implementation on other libraries.  However, we may want to leverage dojo or
          *     underscore instead.
          * @see http://stackoverflow.com/questions/1303646/check-whether-variable-is-number-or-string-in-javascript
          */
-        isArray : function(data) {
+        isArray: function(data) {
             return (Object.prototype.toString.call( data ) === '[object Array]');
         },
 
@@ -156,7 +156,7 @@ define('cmwapi/Validator', function() {
          * @param {number} lon A longitude in decimal degrees
          * @returns {boolean}
          */
-        validLatLon : function(lat,lon) {
+        validLatLon: function(lat,lon) {
             // Check that both are numbers.
             if (!this.isNumber(lat) || !this.isNumber(lon)) {
                 return false;

@@ -20,11 +20,11 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
          * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
          * @param {string} [data.parentId] The ID of the parent overlay.  This will establishes or changes a parent/child relationship
          */
-        send: function ( data ) {
+        send: function(data) {
 
             var payload;
 
-            if( Object.prototype.toString.call( data ) === '[object Array]' ) {
+            if (Object.prototype.toString.call(data) === '[object Array]') {
                 payload = data;
             }
             else {
@@ -61,10 +61,10 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
          * @param {module:cmwapi/map/overlay/Create~Handler} handler An event handler for any creation messages.
          *
          */
-        addHandler: function (handler) {
+        addHandler: function(handler) {
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
-            var newHandler = function( sender, msg ) {
+            var newHandler = function(sender, msg) {
 
                 // Parse the sender and msg to JSON.
                 var jsonSender = Ozone.util.parseJson(sender);

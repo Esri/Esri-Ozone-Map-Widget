@@ -9,8 +9,8 @@
  *  and metadata about the API calls, such that we can build a test harness
  *
  *  General pattern:
- *      request : invoke function
- *      handleRequest : means to handler for invocation, as well as receive info on who requested it
+ *      request: invoke function
+ *      handleRequest: means to handler for invocation, as well as receive info on who requested it
  *
  * Pattern of usage
  *      w1: send:  map.status.request  &#123;types: [view]&#125;

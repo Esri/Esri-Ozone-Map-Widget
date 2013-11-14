@@ -12,7 +12,7 @@ define(["cmwapi/Channels", "cmwapi/map/overlay/Create", "cmwapi/map/overlay/Remo
         /**
          * @see module:cmwapi/map/overlay/Create
          */
-        create : Create,
+        create: Create,
         /**
          * @see module:cmwapi/map/overlay/Remove
          */

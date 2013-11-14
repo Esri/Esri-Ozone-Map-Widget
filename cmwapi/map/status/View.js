@@ -2,7 +2,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
     /**
      * The View module provides methods for using a map.status.view OWF Eventing channel
-     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
@@ -13,7 +13,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
         /**
          * Sends a status view message.  The only real CMWAPI requirement here is what goes out over the channel.
-         * @param {string} requester Client that requested this status message be sent (if any). An empty requestor 
+         * @param {string} requester Client that requested this status message be sent (if any). An empty requestor
          *     denotes that the message is being sent due to a map view change.
          * @param {object} bounds Information about the bounding view.
          * @param {object} bounds.southWest The southwest corner object with attributes
@@ -27,7 +27,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * @param {number} center.lon The longitude value in decimal degrees.
          * @param {number} range  The current distance in meters the map is zoomed out.
          */
-        send : function ( requester, bounds, center, range) {
+        send: function(requester, bounds, center, range) {
 
            /*
             Validate data provided
@@ -67,10 +67,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          *
          * @param {module:cmwapi/map/status/View~Handler} handler An event handler for any view messages.
          */
-        addHandler : function ( handler ) {
+        addHandler: function(handler) {
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
-            var newHandler = function( sender, msg) {
+            var newHandler = function(sender, msg) {
 
                 var isValidData = true;
                 var jsonMsg = Ozone.util.parseJson(msg);
@@ -108,7 +108,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         /**
          * Stop listening to the channel and handling events upon it.
          */
-        removeHandlers : function() {
+        removeHandlers: function() {
             OWF.Eventing.unsubscribe(Channels.MAP_STATUS_VIEW);
         }
 
