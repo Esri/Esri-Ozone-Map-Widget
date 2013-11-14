@@ -130,6 +130,27 @@ define('cmwapi/Validator', function() {
         },
 
         /**
+         * A basic string test that should handle both literal and Object based strings.
+         * @todo using this limits the requirement of this api implementation on other libraries.  However, we
+         *     may want to leverage dojo or underscore instead.
+         * @see http://stackoverflow.com/questions/1303646/check-whether-variable-is-number-or-string-in-javascript
+         */
+        isString : function(data) {
+            return (Object.prototype.toString(data) === '[object String]');
+        },
+
+        /**
+         * A basic Array test that should handle both literal and Object based strings.
+         * @todo This is similar to our isString implementation.  Using this limits the requirement of 
+         *     this api implementation on other libraries.  However, we may want to leverage dojo or 
+         *     underscore instead.
+         * @see http://stackoverflow.com/questions/1303646/check-whether-variable-is-number-or-string-in-javascript
+         */
+        isArray : function(data) {
+            return (Object.prototype.toString.call( data ) === '[object Array]');
+        },
+
+        /**
          * Validates a latitude, longitude pair in decimal degrees.
          * @param {number} lat A latitude in decimal degrees
          * @param {number} lon A longitude in decimal degrees
