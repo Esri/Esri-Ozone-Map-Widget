@@ -1,7 +1,7 @@
 /**
  * @module EsriAdapter
  */
-define(["cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapApi, EsriNS, OverlayManager) {
+define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(CommonMapApi, EsriNS, OverlayManager) {
     /**
      * @classdesc Adapter layer between Common Map Widget API v. 1.1 javascript
      *      implementation and ESRI map implementations

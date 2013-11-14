@@ -1,4 +1,4 @@
-define(["cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(CommonMapApi, Adapter, OverlayManager) {
+define(["cmwapi/cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(CommonMapApi, Adapter, OverlayManager) {
 
     describe("To test Common Map Widget API ESRI overlay manager", function() {
         describe("Overlay functions", function() {
@@ -17,7 +17,7 @@ define(["cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(CommonMa
 
                 expect(Object.keys(overlays).length).toBe(0);
 
-                overlayManager.createOverlay("1111", "Name 1");
+                overlayManager.createOverlay("FakeWidget", "1111", "Name 1");
 
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(1);
@@ -38,6 +38,19 @@ define(["cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(CommonMa
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(2);
                 expect(overlays["1111"].children.length).toBe(1);
+            });
+
+            it("verify overlay remove of one", function() {
+                var overlays = overlayManager.getOverlays();
+
+                expect(Object.keys(overlays).length).toBe(0);
+
+                overlayManager.createOverlay("fake widget", "1111", "Name 1");
+
+                overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+
+                //overlayManager.removeOverlay("1111",)
             });
         });
     });
