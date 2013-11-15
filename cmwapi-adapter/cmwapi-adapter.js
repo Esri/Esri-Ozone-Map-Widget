@@ -19,7 +19,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
          * @alias overlay
          */
         this.overlay = (function() {
-            var me = this;
+            var overlay = {};
 
             /**
              * Handler for an incoming map overlay create request.
@@ -30,10 +30,10 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * @param parentId {String} optional; the id of the overlay to be set as the parent of the created overlay.
              * @memberof! module:EsriAdapter#
              */
-            me.handleCreate = function(sender, name, overlayId, parentId) {
+            overlay.handleCreate = function(sender, name, overlayId, parentId) {
                 overlayManager.createOverlay(sender, name, overlayId, parentId);
             };
-            CommonMapApi.overlay.create.addHandler(me.handleCreate);
+            CommonMapApi.overlay.create.addHandler(overlay.handleCreate);
 
             /**
              * Handler for an indcoming request to remove a layer.
@@ -43,10 +43,10 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              *      the id of the sender will be assumed.
              * @memberof! module:EsriAdapter#
              */
-            me.handleRemove = function(sender, overlayId) {
+            overlay.handleRemove = function(sender, overlayId) {
                 overlayManager.removeOverlay(sender, overlayId);
             };
-            CommonMapApi.overlay.remove.addHandler(me.handleRemove);
+            CommonMapApi.overlay.remove.addHandler(overlay.handleRemove);
 
             /**
              * Handler for an indcoming request to hide a layer.
@@ -56,10 +56,10 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              *      the id of the sender will be assumed.
              * @memberof! module:EsriAdapter#
              */
-            me.handleHide = function(sender, overlayId) {
+            overlay.handleHide = function(sender, overlayId) {
                 overlayManager.hideOverlay(sender, overlayId);
             };
-            CommonMapApi.overlay.hide.addHandler(me.handleHide);
+            CommonMapApi.overlay.hide.addHandler(overlay.handleHide);
 
             /**
              * Handler for an incoming overlay show request
@@ -69,10 +69,10 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              *      specified, the id of the sender will be assumed.
              * @memberof! module:EsriAdapter#
              */
-            me.handleShow = function(sender, overlayId) {
+            overlay.handleShow = function(sender, overlayId) {
                 overlayManager.showOverlay(overlayId);
             };
-            CommonMapApi.overlay.show.addHandler(me.handleShow);
+            CommonMapApi.overlay.show.addHandler(overlay.handleShow);
 
             /**
              * Handler for an incoming overlay update request
@@ -86,11 +86,11 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              *      of the overlay specified. If not specified, the parent will not be updated.
              * @memberof! module:EsriAdapter#
              */
-            var handleUpdate = function(sender, name, overlayId, parentId) {
+            overlay.handleUpdate = function(sender, name, overlayId, parentId) {
                 overlayManager.updateOverlay(name, overlayId, parentId);
             };
-            CommonMapApi.overlay.update.addHandler(me.handleUpdate);
-        }());
+            CommonMapApi.overlay.update.addHandler(overlay.handleUpdate);
+        })();
 
         /**
          * The container for the ESRI adapter feature methods
@@ -98,7 +98,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
          * @alias feature
          */
         this.feature = (function() {
-            var me = this;
+            var feature = {};
 
             /**
              * Handler for plot feature request
@@ -114,10 +114,10 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * @param zoom {Boolean} Whether or not the feature should be zoomed to when plotted.
              * @memberof! module:EsriAdapter#
              */
-            me.handlePlot = function(sender, overlayId, featureId, name, format, feature, zoom) {
+            feature.handlePlot = function(sender, overlayId, featureId, name, format, feature, zoom) {
 
             };
-            //CommonMapApi.feature.handlePlot(me.handlePlot);
+            CommonMapApi.feature.plot.addHandler(feature.handlePlot);
 
             /**
              * Handler for plot url request
@@ -133,10 +133,10 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * @param zoom {Boolean} Whether or not the feature should be zoomed to when plotted.
              * @memberof! module:EsriAdapter#
              */
-            me.handlePlotUrl = function(sender, overlayId, featureId, name, format, url, params, zoom) {
+            feature.handlePlotUrl = function(sender, overlayId, featureId, name, format, url, params, zoom) {
                 //get url then call plot or vice?
             };
-            //CommonMapApi.feature.handlePlotUrl(me.handlePlotUrl);
+            CommonMapApi.feature.plotURL.addHandler(feature.handlePlotUrl);
 
             /**
              * Handler for feature unplot request
@@ -147,13 +147,13 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * @param featureId {String} The id of the feature to unplot
              * @memberof! module:EsriAdapter#
              */
-            me.handleUnplot = function(sender, overlayId, featureId) {
+            feature.handleUnplot = function(sender, overlayId, featureId) {
                 if(!overlayId) {
                     overlayId = sender;
                 }
                 overlayManager.deleteFeature(overlayId, featureId);
             };
-            //CommonMapApi.feature.handleUnplot(me.handleUnplot);
+            CommonMapApi.feature.unplot.addHandler(feature.handleUnplot);
 
             /**
              * Handler for request to hide feature
@@ -164,29 +164,31 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * @param featureId {String} The id of the feature to hide
              * @memberof! module:EsriAdapter#
              */
-            me.handleHide = function(sender, overlayId, featureId) {
+            feature.handleHide = function(sender, overlayId, featureId) {
                 if(!overlayId) {
                     overlayId = sender;
                 }
                 overlayManager.hideFeature(overlayId, featureId);
             };
-            //CommonMapApi.feature.handleHide(me.handleHide);
+            CommonMapApi.feature.hide.addHandler(feature.handleHide);
 
-            me.handleShow = function() {
-
-            };
-            //CommonMapApi.feature.handleShow(me.handleShow);
-
-            me.handleSelected = function() {
+            feature.handleShow = function() {
 
             };
-            //CommonMapApi.feature.handleSelected(me.handleSelected);
+            CommonMapApi.feature.show.addHandler(feature.handleShow);
 
-            me.handleUpdate = function() {
+            feature.handleSelected = function() {
 
             };
-            //CommonMapApi.feature.handlePlotUrl(me.handlePlotUrl);
-        }());
+            CommonMapApi.feature.selected.addHandler(feature.handleSelected);
+
+            feature.handleUpdate = function() {
+
+            };
+            CommonMapApi.feature.update.addHandler(feature.handlePlotUrl);
+
+            return feature;
+        })();
 
 
         /**
@@ -195,7 +197,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
          * @alias status
          */
         this.status = (function() {
-            var me = this;
+            var status = {};
 
             /**
              * Handler for an incoming map status request.
@@ -205,7 +207,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              *      1.1 only supports "about", "format", and "view"
              * @memberof! module:EsriAdapter#
              */
-            me.handleRequest = function(caller, types) {
+            status.handleRequest = function(caller, types) {
                 if(!types || types.contains("view")) {
                     sendView(caller);
                 }
@@ -276,8 +278,8 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
                 CommonMapApi.status.format.send(formats);
             };
 
-            //return { handleRequest: me.handleRequest };
-        }());
+            return status;
+        })();
         // Bind the functions to the CMW API
         CommonMapApi.status.request.addHandler(this.status.handleRequest);
 
@@ -287,7 +289,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
          * @memberof module:EsriAdapter
          */
         this.error = (function() {
-            var me = this;
+            var error = {};
 
             /**
              * Build and send an error
@@ -297,7 +299,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * @param err {object} The object representing the error details data
              * @memberof! module:EsriAdapter#
              */
-            me.error = function(caller, message, err) {
+            error.error = function(caller, message, err) {
                 var sender = caller;
                 var type = err.type;
                 var msg = message;
@@ -315,11 +317,11 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * @param error {object} The object representing the error details data
              * @memberof! module:EsriAdapter#
              */
-            me.handleError = function(sender, type, message, error) {
+            error.handleError = function(sender, type, message, error) {
                 //TODO
             };
 
-            return { handleError: me.handleError };
+            return error;
         }());
         // Bind error functions to CMW API
         CommonMapApi.error.addHandler(this.error.handleError);
