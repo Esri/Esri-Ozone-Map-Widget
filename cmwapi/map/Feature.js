@@ -50,9 +50,9 @@ define(["cmwapi/Channels"],
             send : function(data) {}
         },
         /**
-         * @see module:cmwapi/map/feature/FeatureSelected
+         * @see module:cmwapi/map/feature/Selected
          */
-        featureSelected: {
+        selected: {
             addHandler : function(func) {},
             removeHandlers : function() {},
             send : function(data) {}
