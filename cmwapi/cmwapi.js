@@ -19,8 +19,9 @@
  *      w1: receive: map.status.view - and the requester matches, so it handles
  *
  */
-define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error", "cmwapi/map/Status", "cmwapi/map/Overlay"],
-    function(Channels, Validator, Error, Status, Overlay) {
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error", "cmwapi/map/Status", "cmwapi/map/Overlay",
+	    "cmwapi/map/Feature", "cmwapi/map/View"],
+    function(Channels, Validator, Error, Status, Overlay, Feature, View) {
     /**
      * @ignore
      */
@@ -28,9 +29,17 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error", "cmwapi/map/S
 
     Map.status = Status;
 
+    Map.overlay = Overlay;
+
+    Map.feature = Feature;
+
+    Map.view = View;
+
     Map.error = Error;
 
-    Map.overlay = Overlay;
+    // Add any version information and static config elements here.
+    Map.name = 'Common Map Widget API';
+    Map.version = '1.1';
 
     return Map;
 });
