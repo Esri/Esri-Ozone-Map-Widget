@@ -23,7 +23,8 @@ define(function() {
             this.id= overlayId;
             this.name= name;
             //Overlay IDs of children overlays
-            this.children = [];
+            this.children = {};
+            this.parentId = parentId;
             //Mapping FeatureID->Feature object of children features
             this.features = {}
             this.isHidden = false;
@@ -81,7 +82,7 @@ define(function() {
             }
 
             if(me.overlays[parentId]) {
-                me.overlays[parentId].children.push(childId);
+                me.overlays[parentId].children[childId] = {};
             }
         };
 
@@ -107,9 +108,23 @@ define(function() {
         me.removeOverlay = function(caller, overlayId) {
             //TODO Error if overlay not found?
 
-            delete me.overlays[overlayId];
+            var overlay = me.overlays[overlayId];
 
-            //FIXME what do we do about parents
+            if(overlay) {
+                //find parent
+                var parent = me.overlays[overlay.parentId];
+                if(parent) {
+                    delete parent.children[overlayId];
+                }
+
+                var children = Object.keys(overlay.children);
+                //recursively remove children from this overlay
+                for(var i = 0; i < children.length; i++) {
+                    me.removeOverlay(caller, children[i]);
+                }
+            }
+
+            delete me.overlays[overlayId];
         };
 
         /**

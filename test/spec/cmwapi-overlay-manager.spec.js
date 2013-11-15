@@ -28,16 +28,22 @@ define(["cmwapi/cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(C
 
                 expect(Object.keys(overlays).length).toBe(0);
 
-                overlayManager.createOverlay("1111", "Name 1");
+                overlayManager.createOverlay("FakeWidget", "1111", "Name 1");
 
                 overlays = overlayManager.getOverlays();
-                expect(Object.keys(overlays).length).toBe(1);
-                expect(overlays["1111"].children.length).toBe(0)
 
-                overlayManager.createOverlay("2222", "Name 2", "1111");
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(overlays['1111']).toBeDefined();
+                expect(overlays['1111'].children).toBeDefined();
+                expect(Object.keys(overlays["1111"].children).length).toBe(0)
+
+                overlayManager.createOverlay("FakeWidget 1", "2222", "Name 2", "1111");
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(2);
-                expect(overlays["1111"].children.length).toBe(1);
+                expect(overlays['1111']).toBeDefined();
+                expect(overlays['1111'].children).toBeDefined();
+                expect(Object.keys(overlays["1111"].children).length).toBe(1)
+                expect(overlays["1111"].children["2222"]).toBeDefined();
             });
 
             it("verify overlay remove of one", function() {
@@ -50,7 +56,42 @@ define(["cmwapi/cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(C
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(1);
 
-                //overlayManager.removeOverlay("1111",)
+                overlayManager.removeOverlay("FakeWidget2", "1111")
+                overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(0);
+            });
+
+            it("verify overlay remove of one and resolve parent child pointers", function() {
+                var overlays = overlayManager.getOverlays();
+
+                expect(Object.keys(overlays).length).toBe(0);
+
+                overlayManager.createOverlay("fake widget", "1111", "Name 1");
+                overlayManager.createOverlay("fake widget", "2222", "Name 1", "1111");
+
+                overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(2);
+
+                overlayManager.removeOverlay("Fake widget2", "2222");
+
+            });
+
+            it("verify overlay remove of one and child", function() {
+                var overlays = overlayManager.getOverlays();
+
+                expect(Object.keys(overlays).length).toBe(0);
+
+                overlayManager.createOverlay("fake widget", "1111", "Name 1");
+                overlayManager.createOverlay("fake widget", "2222", "Name 1", "1111");
+
+                overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(2);
+
+                overlayManager.removeOverlay("FakeWidget2", "1111");
+
+                overlays = overlayManager.getOverlays();
+                expect(overlays["1111"]).not.toBeDefined();
+                expect(overlays["2222"]).not.toBeDefined();
             });
         });
     });
