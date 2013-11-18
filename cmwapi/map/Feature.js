@@ -1,6 +1,7 @@
 
-define(["cmwapi/Channels"], 
-    function(Channels) {
+define(["cmwapi/map/feature/Plot", "cmwapi/map/feature/PlotURL", "cmwapi/map/feature/Unplot",
+    "cmwapi/map/feature/Hide", "cmwapi/map/feature/Show", "cmwapi/map/feature/Selected", "cmwapi/map/feature/Update"], 
+    function(Plot, PlotURL, Unplot, Hide, Show, Selected, Update) {
 
     /**
      * Defines a convenience module for handling all the map.feature interactions according to the CMW API 1.1 specification.
@@ -12,60 +13,33 @@ define(["cmwapi/Channels"],
         /**
          * @see module:cmwapi/map/feature/Plot
          */
-        plot : {
-            addHandler : function(func) {},
-            removeHandlers : function() {},
-            send : function(data) {}
-        },
-        /**
-         * @see module:cmwapi/map/feature/PlotURL
-         */
-        plotURL: {
-            addHandler : function(func) {},
-            removeHandlers : function() {},
-            send : function(data) {}
-        },
+        plot : Plot,
         /**
          * @see module:cmwapi/map/feature/Unplot
          */
-        unplot: {
-            addHandler : function(func) {},
-            removeHandlers : function() {},
-            send : function(data) {}
-        },
+        unplot: Unplot,
         /**
          * @see module:cmwapi/map/feature/Hide
          */
-        hide: {
-            addHandler : function(func) {},
-            removeHandlers : function() {},
-            send : function(data) {}
-        },
+        hide: Hide,
         /**
          * @see module:cmwapi/map/feature/Show
          */
-        show: {
-            addHandler : function(func) {},
-            removeHandlers : function() {},
-            send : function(data) {}
-        },
+        show: Show,
         /**
          * @see module:cmwapi/map/feature/Selected
          */
-        selected: {
-            addHandler : function(func) {},
-            removeHandlers : function() {},
-            send : function(data) {}
-        },
+        selected: Selected,
         /**
          * @see module:cmwapi/map/feature/Update
          */
-        update: {
-            addHandler : function(func) {},
-            removeHandlers : function() {},
-            send : function(data) {}
-        }
+        update: Update
     };
+
+    /**
+     * @see module:cmwapi/map/feature/PlotURL
+     */
+    Feature.plot.url = PlotURL;
 
     return Feature;
 });
