@@ -46,6 +46,10 @@ define(["cmwapi/cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(C
                 expect(overlays["1111"].children["2222"]).toBeDefined();
             });
 
+            it("verify overlay create with duplicate id", fucntion() {
+
+            });
+
             it("verify overlay remove of one", function() {
                 var overlays = overlayManager.getOverlays();
 
@@ -74,6 +78,9 @@ define(["cmwapi/cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(C
 
                 overlayManager.removeOverlay("Fake widget2", "2222");
 
+                overlays = overlayManager.getOverlays();
+                expect(overlays["2222"]).not.toBeDefined();
+                expect(overlays["1111"].children["2222"]).not.toBeDefined();
             });
 
             it("verify overlay remove of one and child", function() {
@@ -92,6 +99,14 @@ define(["cmwapi/cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(C
                 overlays = overlayManager.getOverlays();
                 expect(overlays["1111"]).not.toBeDefined();
                 expect(overlays["2222"]).not.toBeDefined();
+            });
+
+            it("verify overlay hide with invalid id calls error", function() {
+
+            });
+
+            it("verify overlay hide with valid id", function() {
+
             });
         });
     });
