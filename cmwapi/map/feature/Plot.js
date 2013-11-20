@@ -23,20 +23,22 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @param {string} data.feature The data of the feature.
          * @param {boolean} [data.zoom] True, if the map should automatically zoom to this feature; false, otherwise.
          *     Defaults to false. 
-         * @todo At present, we're defaulting the name to the feature id if not supplied.  Is this valid?  The API does
+         * @todo At present, we're not defaulting the name to the feature id if not supplied.  Is this valid?  The API does
          *     not require a default; does that imply an empty string?
          */
         send : function ( data ) {
 
-            var payload; 
-            var msg = "";
-            var validData = true;
-            
-            if( Object.prototype.toString.call( data ) === '[object Array]' ) {
-                payload = data;
-            }
-            else {
-                payload = [data];
+            // validData will story results from any Validator and may be resused for internal
+            // error bookkeeping.
+            var validData = Validator.validObjectOrArray( data );
+            var payload = validData.payload;
+
+            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // note the error and return.
+            if (!validData.result) {
+                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_PLOT, data, 
+                    validData.msg);
+                return;
             }
 
             // Check all the feature objects; fill-in any missing attributes.
@@ -45,21 +47,21 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 payload[i].overlayId = (payload[i].overlayId) ? payload[i].overlayId : OWF.getInstanceId();
 
                 if (!payload[i].featureId) {
-                    validData = false;
-                    msg += 'Need a feature Id for feature at index ' + i + '. ';
+                    validData.result = false;
+                    validData.msg += 'Need a feature Id for feature at index ' + i + '. ';
                 }
 
                 // The name is optional; defaults to the feature id if not specified
-                if (payload[i].featureId) {
-                    payload[i].name = (payload[i].name) ? payload[i].name : payload[i].featureId;
-                }
+                // if (payload[i].featureId) {
+                //     payload[i].name = (payload[i].name) ? payload[i].name : payload[i].featureId;
+                // }
 
                 // Check for a format.  If it exists, retain; otherwise, default to kml.
                 payload[i].format = (payload[i].format) ? payload[i].format : "kml";
 
                 if (!payload[i].feature) {
-                    validData = false;
-                    msg += 'Need feature data for feature at index ' + i + '. ';
+                    validData.result = false;
+                    validData.msg += 'Need feature data for feature at index ' + i + '. ';
                 }
 
                 // Zoom is optional; if it doesn't exist, explicitly set it to the default.
@@ -68,7 +70,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
             // Since everything is optional, no major data validation is performed here.  Send
             // along the payload.    
-            if (validData) {
+            if (validData.result) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_PLOT, Ozone.util.toString(payload[0]));
                 }
@@ -79,7 +81,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
             else {
                 Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_PLOT, 
                     Ozone.util.toString(data),
-                    msg);
+                    validData.msg);
             }
 
         },
@@ -113,9 +115,9 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                     }
 
                     // The name is optional; defaults to the feature id if not specified
-                    if (data[i].featureId) {
-                        data[i].name = (data[i].name) ? data[i].name : data[i].featureId;
-                    }
+                    // if (data[i].featureId) {
+                    //     data[i].name = (data[i].name) ? data[i].name : data[i].featureId;
+                    // }
 
                     // Check for a format.  If it exists, retain; otherwise, default to kml.
                     data[i].format = (data[i].format) ? data[i].format : "kml";

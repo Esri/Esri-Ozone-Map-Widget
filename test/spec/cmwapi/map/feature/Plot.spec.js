@@ -1,7 +1,7 @@
-define(["cmwapi/Channels", "cmwapi/map/feature/Unplot", "cmwapi/map/Error", "cmwapi/Validator"], 
-    function(Channels, Unplot, Error, Validator) {
+define(["cmwapi/Channels", "cmwapi/map/feature/Plot", "cmwapi/map/Error", "cmwapi/Validator"], 
+    function(Channels, Plot, Error, Validator) {
 
-    describe(Channels.MAP_FEATURE_UNPLOT + " module", function() {
+    describe(Channels.MAP_FEATURE_PLOT + " module", function() {
 
         var INSTANCE_ID = "TEST_ID";
 
@@ -54,17 +54,25 @@ define(["cmwapi/Channels", "cmwapi/map/feature/Unplot", "cmwapi/map/Error", "cmw
             var eventing = OWF.Eventing;
             expect(eventing).not.toBe(null);
 
-            spyOn(Unplot, 'send').andCallThrough();
-            spyOn(eventing, 'publish');
+            spyOn(Plot, 'send').andCallThrough();
+            spyOn(eventing, 'publish').andCallThrough();
             spyOn(Error, 'send');
 
-            Unplot.send({featureId:"myFeatureId"});
-            expect(Unplot.send).toHaveBeenCalled();
+            Plot.send({featureId:"myFeatureId", feature: "some kml data"});
+            expect(Plot.send).toHaveBeenCalled();
 
             // expect publish to be called
             expect(eventing.publish).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_FEATURE_UNPLOT);
 
+            var payload = Ozone.util.parseJson(eventing.publish.mostRecentCall.args[1]);
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_FEATURE_PLOT);
+            expect(payload.overlayId).toEqual(INSTANCE_ID);
+            expect(payload.featureId).toEqual("myFeatureId");
+            expect(payload.feature).toEqual("some kml data");
+            expect(payload.name).toBe(undefined);
+            expect(payload.format).toEqual("kml");
+            expect(payload.zoom).toBe(false);
+            
             // don't expect error to be called
             expect(Error.send.calls.length).toEqual(0);
         });
@@ -73,12 +81,29 @@ define(["cmwapi/Channels", "cmwapi/map/feature/Unplot", "cmwapi/map/Error", "cmw
             var eventing = OWF.Eventing;
             expect(eventing).not.toBe(null);
 
-            spyOn(Unplot, 'send').andCallThrough();
+            spyOn(Plot, 'send').andCallThrough();
             spyOn(eventing, 'publish');
             spyOn(Error, 'send').andCallThrough();
 
-            Unplot.send({});
-            expect(Unplot.send).toHaveBeenCalled();
+            Plot.send({feature: "some kml data"});
+            expect(Plot.send).toHaveBeenCalled();
+
+            // expect publish to be called on the error channel.
+            expect(eventing.publish).toHaveBeenCalled();
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_ERROR);
+            expect(Error.send.calls.length).toEqual(1);
+        });
+
+        it("fails data missing a feature", function() {
+            var eventing = OWF.Eventing;
+            expect(eventing).not.toBe(null);
+
+            spyOn(Plot, 'send').andCallThrough();
+            spyOn(eventing, 'publish');
+            spyOn(Error, 'send').andCallThrough();
+
+            Plot.send({featureId: "myFeatureId"});
+            expect(Plot.send).toHaveBeenCalled();
 
             // expect publish to be called on the error channel.
             expect(eventing.publish).toHaveBeenCalled();
@@ -90,31 +115,33 @@ define(["cmwapi/Channels", "cmwapi/map/feature/Unplot", "cmwapi/map/Error", "cmw
 
             var eventing = OWF.Eventing;
 
-            spyOn(Unplot, 'removeHandlers').andCallThrough();
+            spyOn(Plot, 'removeHandlers').andCallThrough();
             spyOn(Error, 'send');
             spyOn(eventing, 'unsubscribe');
 
-            Unplot.removeHandlers();
-            expect(Unplot.removeHandlers).toHaveBeenCalled();
-            expect(eventing.unsubscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_FEATURE_UNPLOT);
+            Plot.removeHandlers();
+            expect(Plot.removeHandlers).toHaveBeenCalled();
+            expect(eventing.unsubscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_FEATURE_PLOT);
 
             expect(Error.send.calls.length).toEqual(0);
 
         });
 
-        it("wraps added handlers and passes along any optional elements; a missing overlayId is filled in", function() {
+        it("wraps added handlers and passes along any optional elements; missing overlayId, zoom and format are filled in", function() {
 
             var eventing = OWF.Eventing;
             spyOn(eventing, 'subscribe');
 
             var testHandler = jasmine.createSpy('testHandler');
-            var newHandler = Unplot.addHandler(testHandler);
-            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_FEATURE_UNPLOT);
+            var newHandler = Plot.addHandler(testHandler);
+            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_FEATURE_PLOT);
 
-            // Test the behavior for newHandler  Unplot a sender an empty payload to pass along
+            // Test the behavior for newHandler  Plot a sender an empty payload to pass along
             // Our code should fill in the payload and pass it along to the testHandler.
             var jsonVal = {
-                featureId: "myFeatureId"
+                featureId: "myFeatureId",
+                feature: "some kml data",
+                name: "myName"
             };
             var sender = {
                 id: INSTANCE_ID
@@ -132,6 +159,10 @@ define(["cmwapi/Channels", "cmwapi/map/feature/Unplot", "cmwapi/map/Error", "cmw
             expect(testHandler.calls.length).toEqual(1);
             expect(testHandler.mostRecentCall.args[1].overlayId).toEqual(INSTANCE_ID);
             expect(testHandler.mostRecentCall.args[1].featureId).toEqual("myFeatureId");
+            expect(testHandler.mostRecentCall.args[1].feature).toEqual("some kml data");
+            expect(testHandler.mostRecentCall.args[1].name).toEqual("myName");
+            expect(testHandler.mostRecentCall.args[1].format).toEqual("kml");
+            expect(testHandler.mostRecentCall.args[1].zoom).toBe(false);
         });
 
         it("passes object arrays to added handlers", function() {
@@ -140,16 +171,21 @@ define(["cmwapi/Channels", "cmwapi/map/feature/Unplot", "cmwapi/map/Error", "cmw
             spyOn(eventing, 'subscribe');
 
             var testHandler = jasmine.createSpy('testHandler');
-            var newHandler = Unplot.addHandler(testHandler);
-            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_FEATURE_UNPLOT);
+            var newHandler = Plot.addHandler(testHandler);
+            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_FEATURE_PLOT);
 
             // Test the behavior for newHandler  Create a sender an empty payload to pass along
             // Our code should fill in the payload and pass it along to the testHandler.
             var jsonVal = [{
-                featureId: "myFeatureId1"
+                featureId: "myFeatureId1",
+                feature: "some kml data.1"
             },{
                 overlayId: "myOverlayId2",
-                featureId: "myFeatureId2"
+                featureId: "myFeatureId2",
+                feature: "some kml data.2",
+                name: "myName",
+                format: "wms",
+                zoom: true
             }];
             var sender = {
                 id: INSTANCE_ID
@@ -168,8 +204,16 @@ define(["cmwapi/Channels", "cmwapi/map/feature/Unplot", "cmwapi/map/Error", "cmw
             expect(testHandler.mostRecentCall.args[1].length).toEqual(2);
             expect(testHandler.mostRecentCall.args[1][0].overlayId).toEqual(INSTANCE_ID);
             expect(testHandler.mostRecentCall.args[1][0].featureId).toEqual("myFeatureId1");
+            expect(testHandler.mostRecentCall.args[1][0].feature).toEqual("some kml data.1");
+            expect(testHandler.mostRecentCall.args[1][0].name).toBe(undefined);
+            expect(testHandler.mostRecentCall.args[1][0].format).toEqual("kml");
+            expect(testHandler.mostRecentCall.args[1][0].zoom).toBe(false);
             expect(testHandler.mostRecentCall.args[1][1].overlayId).toEqual("myOverlayId2");
             expect(testHandler.mostRecentCall.args[1][1].featureId).toEqual("myFeatureId2");
+            expect(testHandler.mostRecentCall.args[1][1].feature).toEqual("some kml data.2");
+            expect(testHandler.mostRecentCall.args[1][1].name).toEqual("myName");
+            expect(testHandler.mostRecentCall.args[1][1].format).toEqual("wms");
+            expect(testHandler.mostRecentCall.args[1][1].zoom).toBe(true);
         });
     });
 });

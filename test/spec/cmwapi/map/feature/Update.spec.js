@@ -169,7 +169,7 @@ define(["cmwapi/Channels", "cmwapi/map/feature/Update", "cmwapi/map/Error", "cmw
             expect(Error.send.calls.length).toEqual(0);
 
             // We DO expect testHandler to have been called and the jsonVal values to
-            // carry through unchanged.  Any missing featureId should be filled in.
+            // carry through unchanged.  Any missing elements with defaults should be filled in.
             expect(testHandler.calls.length).toEqual(1);
             expect(testHandler.mostRecentCall.args[1].length).toEqual(2);
             expect(testHandler.mostRecentCall.args[1][0].overlayId).toEqual(INSTANCE_ID);
