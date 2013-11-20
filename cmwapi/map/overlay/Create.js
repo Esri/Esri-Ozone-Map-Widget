@@ -22,16 +22,15 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
          */
         send: function(data) {
 
-            var payload;
+            var validData = Validator.validObjectOrArray( data );
+            var payload = validData.payload;
 
-            if ( typeof data === 'undefined' ) {
-                payload = [{}];
-            } 
-            else if( Object.prototype.toString.call( data ) === '[object Array]' ) {
-                payload = data;
-            }
-            else if (typeof data === 'object') {
-                payload = [data];
+            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // note the error and return.
+            if (!validData.result) {
+                Error.send( OWF.getInstanceId(), Channels.MAP_OVERLAY_CREATE, data, 
+                    validData.msg);
+                return;
             }
 
             // Check all the overlay objects; fill-in any missing attributes.

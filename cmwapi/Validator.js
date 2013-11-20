@@ -120,6 +120,35 @@ define('cmwapi/Validator', function() {
         },
 
         /**
+         * Validates a basic payload structure.  Payloads handed to channels are expected to be Objects or Arrays of 
+         * Objects.  This function will check the type of the input to see if it is an object or object
+         * array.  Undefined inputs are considered valid and returned as an array containing
+         * a single empty object. Note that this function does not evaluate individual payload attributes.
+         * @returns {module:cmwapi/Validator~PayloadResult} 
+         */
+        validObjectOrArray: function(data) {
+            var retVal = {
+                result: true,
+                payload: undefined
+            };
+
+            if ( typeof data === 'undefined' ) {
+                retVal.payload = [{}];
+            } 
+            else if( Object.prototype.toString.call( data ) === '[object Array]' ) {
+                retVal.payload = data;
+            }
+            else if (typeof data === 'object') {
+                retVal.payload = [data];
+            }
+            else {
+                retVal.result = false;
+                retVal.msg = "Input data should be an object or array of like objects.";
+            }
+            return retVal;
+        },
+
+        /**
          * A basic number validator that checks that the value can be parsed as a float and in finite in value.
          * @param {number} n A value to test
          * @returns {boolean}
@@ -173,6 +202,16 @@ define('cmwapi/Validator', function() {
          * validation fails.
          * @typedef {Object} module:cmwapi/Validator~Result
          * @property {boolean} result True, if validation passes; false, otherwise
+         * @property {string} msg An error message denoting types of errors when validation fails
+         */
+
+         /**
+         * A validation results object that includes the boolean result and an error message if
+         * validation fails.  The payload array will contain an empty object if no input was given
+         * or an array of objects that were passed in.  
+         * @typedef {Object} module:cmwapi/Validator~PayloadResult
+         * @property {boolean} result True, if validation passes; false, otherwise
+         * @property {Array.Object} payload An array of payload objects
          * @property {string} msg An error message denoting types of errors when validation fails
          */
     };
