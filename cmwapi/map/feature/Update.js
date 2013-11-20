@@ -1,4 +1,5 @@
-define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], 
+    function(Channels, Validator, Error) {
 
     /**
      * The Update module provides methods for modifying a feature's name and parent overlya via OWF Eventing channels

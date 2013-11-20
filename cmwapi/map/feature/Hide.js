@@ -1,4 +1,5 @@
-define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], 
+    function(Channels, Validator, Error) {
 
     /**
      * The Hide module provides methods for using a feature hiding OWF Eventing channel
@@ -18,16 +19,18 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
          * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
          */
         send : function ( data ) {
-
-            var payload; 
-            var msg = "";
-            var validData = true;
             
-            if( Object.prototype.toString.call( data ) === '[object Array]' ) {
-                payload = data;
-            }
-            else {
-                payload = [data];
+            // validData will story results from any Validator and may be resused for internal
+            // error bookkeeping.
+            var validData = Validator.validObjectOrArray( data );
+            var payload = validData.payload;
+
+            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // note the error and return.
+            if (!validData.result) {
+                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_HIDE, data, 
+                    validData.msg);
+                return;
             }
 
             // Check all the feature objects; fill-in any missing attributes.
@@ -36,14 +39,14 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
                 payload[i].overlayId = (payload[i].overlayId) ? payload[i].overlayId : OWF.getInstanceId();
 
                 if (!payload[i].featureId) {
-                    validData = false;
-                    msg += 'Need a feature Id for feature at index ' + i + '. ';
+                    validData.result = false;
+                    validData.msg += 'Need a feature Id for feature at index ' + i + '. ';
                 }
             }
 
             // Since everything is optional, no major data validation is performed here.  Send
             // along the payload.    
-            if (validData) {
+            if (validData.result) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_HIDE, Ozone.util.toString(payload[0]));
                 }
@@ -54,7 +57,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
             else {
                 Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_HIDE, 
                     Ozone.util.toString(data),
-                    msg);
+                    validData.msg);
             }
 
         },

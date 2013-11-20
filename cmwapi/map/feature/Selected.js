@@ -1,4 +1,5 @@
-define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], 
+    function(Channels, Validator, Error) {
 
     /**
      * The Selected module provides methods for using a feature plotting OWF Eventing channel
