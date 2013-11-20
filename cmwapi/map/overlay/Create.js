@@ -24,23 +24,26 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
 
             var payload;
 
-            if (Object.prototype.toString.call(data) === '[object Array]') {
+            if ( typeof data === 'undefined' ) {
+                payload = [{}];
+            } 
+            else if( Object.prototype.toString.call( data ) === '[object Array]' ) {
                 payload = data;
             }
-            else {
+            else if (typeof data === 'object') {
                 payload = [data];
             }
 
             // Check all the overlay objects; fill-in any missing attributes.
             for (var i = 0; i < payload.length; i ++) {
                 // The overlayId is optional; defaults to widget id if not specified.
-                payload[i].overlayId = (payload[i].overlayId) ? payload[i].overlayId : OWF.getInstanceId();
+                payload[i].overlayId = (Validator.isString(payload[i].overlayId)) ? payload[i].overlayId : OWF.getInstanceId();
 
                 // The name is optional; defaults to overlay id if not specified.
-                payload[i].name = (payload[i].name) ? payload[i].name : payload[i].overlayId;
+                payload[i].name = (Validator.isString(payload[i].name)) ? payload[i].name : payload[i].overlayId;
 
                 // The parentId is optional
-                payload[i].parentId = (payload[i].parentId) ? payload[i].parentId : null;
+                payload[i].parentId = (Validator.isString(payload[i].parentId)) ? payload[i].parentId : null;
             }
 
             // Since everything is optional, no major data validation is performed here.  Send
