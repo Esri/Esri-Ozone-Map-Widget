@@ -1,4 +1,4 @@
-define(function() {
+define(["esri/layers/KMLLayer"], function(KMLLayer) {
     /**
      * @classdesc Manager for overlay layers to be used in conjunction with an ESRI map,
      * the {@link EsriAdapter}, and the {@link Map|Common Map Widget API}
@@ -47,7 +47,7 @@ define(function() {
          * @param Zoom {boolean} Whether or not the map should zoom to this feature upon being added to the map
          * @memberof EsriOverlayManager
          */
-        var Feature = function(overlayId, featureId, name, format, feature, zoom) {
+        var Feature = function(overlayId, featureId, name, format, feature, zoom, esriObject) {
             var resolveFeature = function() {
                 //TODO figure out the type of esri feature, create and return
             }
@@ -59,7 +59,9 @@ define(function() {
             this.feature = feature;
             this.zoom = zoom;
 
-            this.esriObject = resolveFeature();
+            this.isHidden = false;
+
+            this.esriObject = esriObject;
         };
 
         /**
@@ -133,11 +135,16 @@ define(function() {
          * @memberof EsriOverlayManager#
          */
         me.hideOverlay = function(caller, overlayId) {
-            if(typeof(me.overlays[overlayId]) === undefined) {
+            var overlay = me.overlays[overlayId]);
+            if(!overlay) {
                 adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
             } else {
-                me.overlays[overlayId].isHidden = true;
-                //FIXME hide on the map
+                overlay.isHidden = true;
+
+                for(feature in ovelay.features) {
+                    feature.isHidden = true;
+                    feature.esriObject.hide();
+                }
             }
         };
 
@@ -147,11 +154,16 @@ define(function() {
          * @memberof EsriOverlayManager#
          */
         me.showOverlay = function(overlayId) {
-            if(typeof(me.overlays[overlayId]) === undefined) {
+            var overlay = me.overlays[overlayId]);
+            if(!overlay) {
                 adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
             } else {
-                me.overlays[overlayId].isHidden = false;
-                //FIXME show on the map
+                overlay.isHidden = false;
+
+                for(feature in ovelay.features) {
+                    feature.isHidden = false;
+                    feature.esriObject.show();
+                }
             }
         };
 
@@ -197,7 +209,7 @@ define(function() {
         };
 
         /**
-         * @method createFeature
+         * @method plotFeature
          * @param overlayId {String} The id of the overlay on which this feature should be displayed
          * @param featureId {String} The id to be given for the feature, unique to the provided overlayId
          * @param name {String} The readable name for which this feature should be labeled
@@ -217,10 +229,60 @@ define(function() {
                 me.deleteFeature(overlayId, featureId);
             }
             //create
-            overlay.features[featureId] = new Feature(ovelayId, featureId, name, format, feature, zoom);
+            //overlay.features[featureId] = new Feature(ovelayId, featureId, name, format, feature, zoom);
             //add to map
             //zoom if feature.zoom === true
         };
+
+        /**
+         * @method plotFeatureUrl
+         * @param overlayId {String} The id of the overlay on which this feature should be displayed
+         * @param featureId {String} The id to be given for the feature, unique to the provided overlayId
+         * @param name {String} The readable name for which this feature should be labeled
+         * @param format {String} The format type of the feature data included
+         * @param feature The url containing the data for the feature
+         * @param params FIXME what is this
+         * @param zoom {boolean} Whether or not the map should zoom to this feature upon creation
+         * @memberof EsriOverlayManager#
+         */
+        me.plotFeatureUrl = function(caller, overlayId, featureId, name, format, url, params, zoom) {
+            if(typeof(me.overlays[overlayId]) === undefined) {
+                me.createOverlay(caller, overlayId, overlayId);
+            }
+
+            var overlay = me.overlays[overlayId];
+            if(typeof(overlay.features[featureId] !== 'undefined')) {
+                me.deleteFeature(overlayId, featureId);
+            }
+
+            //if a type we like then handler function
+            if(format == 'kml') {
+                plotKmlFeatureUrl(caller, overlayId, featureId, name, url, params, zoom);
+            } else {
+                //error not yet impl
+            }
+        };
+
+        /**
+         * Plots a kml layer via url to the map
+         * @private
+         * @method plotKmlFeatureUrl
+         * @param //TODO
+         * @memberof EsriOverlayManager#
+         */
+        var plotKmlFeatureUrl = function(caller, overlayId, featureId, name, url, params, zoom) {
+            var layer = new KMLLayer(featureId, url);
+
+            map.addLayer(layer);
+
+            var overlay = me.overlays[overlayId];
+            overlay.features[featureId] = new Feature(ovelayId, featureId, name, 'kml-url', url, zoom, layer);
+            if(overlay.isHidden) {
+                me.hideFeature(overlayId, featureId);
+            } else {
+                //TODO handle the zoom... how do we zoom to what is contained in the kml layer?
+            }
+        }
 
         /**
          * @method deleteFeature
@@ -230,13 +292,22 @@ define(function() {
          */
         me.deleteFeature = function(overlayId, featureId) {
             var overlay = me.overlays[overlayId];
+            if(typeof(overlay) === 'undefined') {
+                adapter.error.error(caller, "Overlay could not be found with id " + overlayId, {type: "invalid_id"});
+                return;
+            }
 
-            //map remove
+            var feature = overlay.features[featureId];
+            if(typeof(feature) !== 'undefined') {
+                adapter.error.error(caller, "Feature could not be found with id " + featureId +
+                        " and overlayId " + overlayId, {type: "invalid_id"});
+                return;
+            }
 
+            map.removeLayer(feature.esriObject);
             delete overlay.features[featureId];
         };
 
-        //TODO
         /**
          * @method hideFeature
          * @param overlayId {String} The id of the overlay which contains the feature to be hidden
@@ -244,11 +315,23 @@ define(function() {
          * @memberof EsriOverlayManager#
          */
         me.hideFeature = function(overlayId, featureId) {
-            //check exists
-            //map hide
+            var overlay = me.overlays[overlayId];
+            if(typeof(overlay) === 'undefined') {
+                adapter.error.error(caller, "Overlay could not be found with id " + overlayId, {type: "invalid_id"});
+                return;
+            }
+            var feature = overlay.features[featureId];
+            if(typeof(feature) !== 'undefined') {
+                adapter.error.error(caller, "Feature could not be found with id " + featureId +
+                        " and overlayId " + overlayId, {type: "invalid_id"});
+                return;
+            }
+
+            if(!feature.isHidden()) {
+                feature.esriObject.hide();
+            }
         };
 
-        //TODO
         /**
          * @method showFeature
          * @param overlayId {String} The id of the overlay which contains the feature to be shown
@@ -256,8 +339,21 @@ define(function() {
          * @memberof EsriOverlayManager#
          */
         me.showFeature = function() {
-            //check exists
-            //map show
+            var overlay = me.overlays[overlayId];
+            if(typeof(overlay) === 'undefined') {
+                adapter.error.error(caller, "Overlay could not be found with id " + overlayId, {type: "invalid_id"});
+                return;
+            }
+            var feature = overlay.features[featureId];
+            if(typeof(feature) !== 'undefined') {
+                adapter.error.error(caller, "Feature could not be found with id " + featureId +
+                        " and overlayId " + overlayId, {type: "invalid_id"});
+                return;
+            }
+
+            if(feature.isHidden()) {
+                feature.esriObject.show();
+            }
         };
 
         /**
@@ -286,6 +382,13 @@ define(function() {
                 }
             }
         };
+
+
+
+
+
+
+
 
         me.getOverlays = function() {
             return me.overlays;

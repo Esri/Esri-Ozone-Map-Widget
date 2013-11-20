@@ -134,7 +134,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * @memberof! module:EsriAdapter#
              */
             feature.handlePlotUrl = function(sender, overlayId, featureId, name, format, url, params, zoom) {
-                //get url then call plot or vice?
+                OverlayManager.plotFeatureUrl(sender, overlayId, featureId, name, format, url, params, zoom);
             };
             CommonMapApi.feature.plotURL.addHandler(feature.handlePlotUrl);
 
