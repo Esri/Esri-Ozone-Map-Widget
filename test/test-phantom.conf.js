@@ -24,8 +24,9 @@ module.exports = function(config) {
 
         // Source files here; paths are relative to basePath defined above.
         {pattern: '*cmwapi*/**/*.js', included: false},
-        {pattern: 'test/mock/**/*.js', included: false},
-
+        
+        // All mock files
+        {pattern: 'test/mock/**/*.spec.js', included: false},
 
         // All spec files
         {pattern: 'test/spec/**/*.spec.js', included: false},
