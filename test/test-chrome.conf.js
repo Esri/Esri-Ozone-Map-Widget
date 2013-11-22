@@ -26,7 +26,7 @@ module.exports = function(config) {
         {pattern: '*cmwapi*/**/*.js', included: false},
 
         // All mock files
-        {pattern: 'test/mock/**/*.spec.js', included: false},
+        {pattern: 'test/mock/**/*.js', included: false},
 
         // All spec files
         {pattern: 'test/spec/**/*.spec.js', included: false},
