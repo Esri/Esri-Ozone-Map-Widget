@@ -277,11 +277,11 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
             var overlay = me.overlays[overlayId];
             overlay.features[featureId] = new Feature(ovelayId, featureId, name, 'kml-url', url, zoom, layer);
-            if(overlay.isHidden) {
-                me.hideFeature(overlayId, featureId);
+            /*if(overlay.isHidden) {
+                me.hideFeature(overlayId, featureId); //Dont hide, should be shown to show something happened
             } else {
                 //TODO handle the zoom... how do we zoom to what is contained in the kml layer?
-            }
+            }*/
         }
 
         /**
