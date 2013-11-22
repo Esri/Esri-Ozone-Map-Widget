@@ -46,7 +46,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(C
                 expect(overlays["1111"].children["2222"]).toBeDefined();
             });
 
-            it("verify overlay create with duplicate id", fucntion() {
+            xit("verify overlay create with duplicate id", function() {
 
             });
 

@@ -25,13 +25,20 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * Handler for an incoming map overlay create request.
              * @method overlay.handleCreate
              * @param sender {String} the widget making the create overlay request
-             * @param name {String} The non-unique readable name to be given to the created overlay.
-             * @param overlayId {String} The unique id to be given to the created overlay.
-             * @param parentId {String} optional; the id of the overlay to be set as the parent of the created overlay.
+             * @param data {Object|Object[]}
+             * @param data.name {String} The non-unique readable name to be given to the created overlay.
+             * @param data.overlayId {String} The unique id to be given to the created overlay.
+             * @param [data.parentId] {String} the id of the overlay to be set as the parent of the created overlay.
              * @memberof! module:EsriAdapter#
              */
-            overlay.handleCreate = function(sender, name, overlayId, parentId) {
-                overlayManager.createOverlay(sender, name, overlayId, parentId);
+            overlay.handleCreate = function(sender, data) {
+                if(data.length > 1) {
+                    for(var i = 0; i < data.length; i++) {
+                        overlayManager.createOverlay(sender, data[i].name, data[i].overlayId, data[i].parentId);
+                    }
+                } else {
+                    overlayManager.createOverlay(sender, data.name, data.overlayId, data.parentId);
+                }
             };
             CommonMapApi.overlay.create.addHandler(overlay.handleCreate);
 
@@ -39,12 +46,20 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * Handler for an indcoming request to remove a layer.
              * @method overlay.handleRemove
              * @param sender {String} the widget making the remove overlay request
-             * @param overlayId {String} optional; the id of the overlay to be removed; if not provided
+             * @param data {Object|Object[]}
+             * @param data.overlayId {String} the id of the overlay to be removed; if not provided
              *      the id of the sender will be assumed.
              * @memberof! module:EsriAdapter#
              */
-            overlay.handleRemove = function(sender, overlayId) {
-                overlayManager.removeOverlay(sender, overlayId);
+            overlay.handleRemove = function(sender, data) {
+                if(data.length > 1) {
+                    for(var i = 0; i < data.length; i++) {
+                        overlayManager.removeOverlay(sender, data[i].overlayId);
+                    }
+                } else {
+                    overlayManager.removeOverlay(sender, data.overlayId);
+                }
+
             };
             CommonMapApi.overlay.remove.addHandler(overlay.handleRemove);
 
@@ -52,12 +67,19 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * Handler for an indcoming request to hide a layer.
              * @method overlay.handleHide
              * @param sender {String} the widget making the hide overlay request
-             * @param overlayId {String} optional; the id of the overlay to be removed; if not provided
+             * @param data {Object|Object[]}
+             * @param data.overlayId {String} the id of the overlay to be removed; if not provided
              *      the id of the sender will be assumed.
              * @memberof! module:EsriAdapter#
              */
-            overlay.handleHide = function(sender, overlayId) {
-                overlayManager.hideOverlay(sender, overlayId);
+            overlay.handleHide = function(sender, data) {
+                if(data.length > 1) {
+                    for(var i = 0; i < data.length; i++) {
+                        overlayManager.hideOverlay(sender, data[i].overlayId);
+                    }
+                } else {
+                    overlayManager.hideOverlay(sender, data.overlayId);
+                }
             };
             CommonMapApi.overlay.hide.addHandler(overlay.handleHide);
 
@@ -65,12 +87,19 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * Handler for an incoming overlay show request
              * @method overlay.handleShow
              * @param sender {String} The widget making the show overlay request
-             * @param overlayId {String} optional; the id of the overlay to be shown; if not
+             * @param data {Object|Object[]}
+             * @param data.overlayId {String} the id of the overlay to be shown; if not
              *      specified, the id of the sender will be assumed.
              * @memberof! module:EsriAdapter#
              */
-            overlay.handleShow = function(sender, overlayId) {
-                overlayManager.showOverlay(overlayId);
+            overlay.handleShow = function(sender, data) {
+                if(data.length > 1) {
+                    for(var i = 0; i < data.length; i++) {
+                        overlayManager.showOverlay(sender, data[i].overlayId);
+                    }
+                } else {
+                    overlayManager.showOverlay(sender, data.overlayId);
+                }
             };
             CommonMapApi.overlay.show.addHandler(overlay.handleShow);
 
@@ -78,16 +107,23 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * Handler for an incoming overlay update request
              * @method overlay.handleUpdate
              * @param sender {String} The widget making the update overlay request
-             * @param name {String} optional; the name to be set for the overlay specified. If
+             * @param data {Object|Object[]}
+             * @param [data.name] {String} the name to be set for the overlay specified. If
              *      not specified, the name will not be changed
-             * @param overlayId {Stinrg} optional; the Id of the overlay to be updated. If not
+             * @param data.overlayId {String} the Id of the overlay to be updated. If not
              *      specified, the id of the sender will be assumed.
-             * @param parentId {String} optional; The id of the overlay to be set as the parent
+             * @param [data.parentId] {String} The id of the overlay to be set as the parent
              *      of the overlay specified. If not specified, the parent will not be updated.
              * @memberof! module:EsriAdapter#
              */
-            overlay.handleUpdate = function(sender, name, overlayId, parentId) {
-                overlayManager.updateOverlay(name, overlayId, parentId);
+            overlay.handleUpdate = function(sender, data) {
+                if(data.length > 1) {
+                    for(var i = 0; i < data.length; i++) {
+                        overlayManager.updateOverlay(sender, data[i].name, data[i].overlayId, data[i].parentId);
+                    }
+                } else {
+                    overlayManager.updateOverlay(sender, data.name, data.overlayId, data.parentId);
+                }
             };
             CommonMapApi.overlay.update.addHandler(overlay.handleUpdate);
         })();
@@ -104,18 +140,23 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * Handler for plot feature request
              * @method feature.handlePlot
              * @param sender {String} the widget which made the plot feature request
-             * @param overlayId {String} optional; The Id of the overlay to which the feature should be plotted. If
-             *      not specified, the id of the sender is used
-             * @param featureId {String} The id to be given to the feature; unique to the overlayId.
-             * @param name {String} optional; The non-unique readable name to be given to the feature. If not
-             *      specified, the featureId will be used.
-             * @param format {String} optional; The format type of the feature data
-             * @param feature The data for the feature to be plotted
-             * @param zoom {Boolean} Whether or not the feature should be zoomed to when plotted.
+             * @param data {Object|Object[]}
+             * @param data.overlayId {String} The Id of the overlay to which the feature should be plotted.
+             * @param data.featureId {String} The id to be given to the feature; unique to the overlayId.
+             * @param data.name {String} The non-unique readable name to be given to the feature.
+             * @param data.format {String} The format type of the feature data
+             * @param data.feature The data for the feature to be plotted
+             * @param [data.zoom] {Boolean} Whether or not the feature should be zoomed to when plotted.
              * @memberof! module:EsriAdapter#
              */
-            feature.handlePlot = function(sender, overlayId, featureId, name, format, feature, zoom) {
+            feature.handlePlot = function(sender, data) {
+                if(data.length > 1) {
+                    for(var i = 0; i < data.length; i++) {
 
+                    }
+                } else {
+
+                }
             };
             CommonMapApi.feature.plot.addHandler(feature.handlePlot);
 
@@ -123,20 +164,25 @@ define(["cmwapi/cmwapi", "esri/kernel", "cmwapi-overlay-manager"], function(Comm
              * Handler for plot url request
              * @method feature.handlePlot
              * @param sender {String} the widget which made the feature plot url request
-             * @param overlayId {String} optional; The Id of the overlay to which the feature should be plotted. If
-             *      not specified, the id of the sender is used
-             * @param featureId {String} The id to be given to the feature; unique to the overlayId.
-             * @param name {String} optional; The non-unique readable name to be given to the feature. If not
-             *      specified, the featureId will be used.
-             * @param format {String} optional; The format type of the feature data
-             * @param url {String} The url for where the feature data could be retrieved
-             * @param zoom {Boolean} Whether or not the feature should be zoomed to when plotted.
+             * @param data {Object|Object[]}
+             * @param data.overlayId {String} The Id of the overlay to which the feature should be plotted.
+             * @param data.featureId {String} The id to be given to the feature; unique to the overlayId.
+             * @param data.name {String} The non-unique readable name to be given to the feature.
+             * @param data.format {String} The format type of the feature data
+             * @param data.url {String} The url for where the feature data could be retrieved
+             * @param [data.zoom] {Boolean} Whether or not the feature should be zoomed to when plotted.
              * @memberof! module:EsriAdapter#
              */
             feature.handlePlotUrl = function(sender, overlayId, featureId, name, format, url, params, zoom) {
-                OverlayManager.plotFeatureUrl(sender, overlayId, featureId, name, format, url, params, zoom);
+                if(data.length > 1) {
+                    for(var i = 0; i < data.length; i++) {
+                        OverlayManager.plotFeatureUrl(sender, overlayId, featureId, name, format, url, params, zoom);
+                    }
+                } else {
+                    OverlayManager.plotFeatureUrl(sender, overlayId, featureId, name, format, url, params, zoom);
+                }
             };
-            CommonMapApi.feature.plotURL.addHandler(feature.handlePlotUrl);
+            CommonMapApi.feature.plot.url.addHandler(feature.handlePlotUrl);
 
             /**
              * Handler for feature unplot request
