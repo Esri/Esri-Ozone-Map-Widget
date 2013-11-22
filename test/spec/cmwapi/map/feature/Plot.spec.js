@@ -1,9 +1,10 @@
 define(["cmwapi/Channels", "cmwapi/map/feature/Plot", "cmwapi/map/Error", "cmwapi/Validator"], 
-    function(Channels, Plot, Error, Validator) {
+    function(Channels, myPlot, Error, Validator) {
 
     describe(Channels.MAP_FEATURE_PLOT + " module", function() {
 
         var INSTANCE_ID = "TEST_ID";
+        var Plot = new myPlot();
 
         beforeEach(function() {
             
