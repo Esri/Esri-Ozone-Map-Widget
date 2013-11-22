@@ -1,44 +1,16 @@
-define(["cmwapi/Channels", "cmwapi/map/feature/PlotURL", "cmwapi/map/Error", "cmwapi/Validator"], 
-    function(Channels, PlotURL, Error, Validator) {
+define(["cmwapi/Channels", "cmwapi/map/feature/PlotURL", "cmwapi/map/Error", "cmwapi/Validator",
+    "test/mock/OWF", "test/mock/Ozone"], 
+    function(Channels, PlotURL, Error, Validator, OWF, Ozone) {
 
     describe(Channels.MAP_FEATURE_PLOT_URL + " module", function() {
 
-        var INSTANCE_ID = "TEST_ID";
+        var INSTANCE_ID = OWF.INSTANCE_ID;
 
         beforeEach(function() {
             
             // Mock the necessary OWF methods and attach them to the window.
             // OWF should be in global scope when other libraries attempt to
             // access it.
-            var OWF = {
-                Eventing : {
-                    publish : function() {
-
-                    },
-                    subscribe : function() {
-
-                    },
-                    unsubscribe : function() {
-
-                    }
-                },
-                getInstanceId : function() {
-                    return INSTANCE_ID;
-                }
-            };
-            var Ozone = {
-                util: {
-                    toString : function(value) {
-                        // Just defer to JSON stringify here.
-                        return JSON.stringify(value);
-                    },
-                    parseJson : function(value) {
-                        // Just defer to JSON parse here.
-                        return JSON.parse(value);
-                    }
-                }
-            };
-
             window.OWF = OWF;
             window.Ozone = Ozone;
         });
