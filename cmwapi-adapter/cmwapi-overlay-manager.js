@@ -135,7 +135,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @memberof EsriOverlayManager#
          */
         me.hideOverlay = function(caller, overlayId) {
-            var overlay = me.overlays[overlayId]);
+            var overlay = me.overlays[overlayId];
             if(!overlay) {
                 adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
             } else {
@@ -154,7 +154,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @memberof EsriOverlayManager#
          */
         me.showOverlay = function(overlayId) {
-            var overlay = me.overlays[overlayId]);
+            var overlay = me.overlays[overlayId];
             if(!overlay) {
                 adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
             } else {
