@@ -1,5 +1,6 @@
-define(["cmwapi/Channels", "cmwapi/map/overlay/Create", "cmwapi/map/Error", "cmwapi/Validator"], 
-    function(Channels, Create, Error, Validator) {
+define(["cmwapi/Channels", "cmwapi/map/overlay/Create", "cmwapi/map/Error", "cmwapi/Validator",
+    "test/mock/OWF", "test/mock/Ozone"], 
+    function(Channels, Create, Error, Validator, OWF, Ozone) {
 
     describe(Channels.MAP_OVERLAY_CREATE + " module", function() {
 
@@ -10,35 +11,6 @@ define(["cmwapi/Channels", "cmwapi/map/overlay/Create", "cmwapi/map/Error", "cmw
             // Mock the necessary OWF methods and attach them to the window.
             // OWF should be in global scope when other libraries attempt to
             // access it.
-            var OWF = {
-                Eventing : {
-                    publish : function() {
-
-                    },
-                    subscribe : function() {
-
-                    },
-                    unsubscribe : function() {
-
-                    }
-                },
-                getInstanceId : function() {
-                    return INSTANCE_ID;
-                }
-            };
-            var Ozone = {
-                util: {
-                    toString : function(value) {
-                        // Just defer to JSON stringify here.
-                        return JSON.stringify(value);
-                    },
-                    parseJson : function(value) {
-                        // Just defer to JSON parse here.
-                        return JSON.parse(value);
-                    }
-                }
-            };
-
             window.OWF = OWF;
             window.Ozone = Ozone;
         });

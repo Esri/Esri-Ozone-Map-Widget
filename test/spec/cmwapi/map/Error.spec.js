@@ -1,4 +1,5 @@
-define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
+define(["cmwapi/Channels", "cmwapi/map/Error", "test/mock/OWF", "test/mock/Ozone"], 
+    function(Channels, Error, OWF, Ozone) {
 
     describe("The Error Module ", function() {
 
@@ -6,27 +7,6 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
             // Mock the necessary OWF methods and attach them to the window.
             // OWF should be in global scope when other libraries attempt to
             // access it.
-            var OWF = {
-                Eventing : {
-                    publish : function() {
-
-                    },
-                    subscribe : function() {
-
-                    }
-                },
-                getInstanceId : function() {
-                    return -1;
-                }
-            };
-            var Ozone = {
-                util: {
-                    toString : function() {
-                    },
-                    parseJson : function() {}
-                }
-            };
-
             window.OWF = OWF;
             window.Ozone = Ozone;
         });

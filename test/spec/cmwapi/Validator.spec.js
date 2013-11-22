@@ -33,6 +33,42 @@ define(["cmwapi/Validator"], function(Validator) {
 
                 expect(results.result).toBe(false);
             });
+
+            it("validates undefined objects for payloads and returns a payload array of a single empty object", function() {
+                var results = Validator.validObjectOrArray();
+
+                expect(results.result).toBe(true);
+                expect(results.payload.length).toEqual(1);
+            });
+
+            it("validates an object as a valid payload and returns a payload array of one element", function() {
+                var results = Validator.validObjectOrArray({overlayId: 'myOverlayId'});
+
+                expect(results.result).toBe(true);
+                expect(results.payload.length).toEqual(1);
+                expect(results.payload[0].overlayId).toEqual("myOverlayId");
+            });
+
+            it("validates an object array as a valid payload and returns that as the payload", function() {
+                var results = Validator.validObjectOrArray([{
+                    overlayId: 'myOverlayId1'
+                },{
+                    overlayId: 'myOverlayId2'
+                }]);
+
+                expect(results.result).toBe(true);
+                expect(results.payload.length).toEqual(2);
+                expect(results.payload[0].overlayId).toEqual("myOverlayId1");
+                expect(results.payload[1].overlayId).toEqual("myOverlayId2");
+            });
+
+            it("does not validate non objects or object arrays as payloads", function() {
+                var results = Validator.validObjectOrArray(1);
+
+                expect(results.result).toBe(false);
+                expect(results.msg).not.toBeUndefined();
+            });
+
         });
     });
 });
