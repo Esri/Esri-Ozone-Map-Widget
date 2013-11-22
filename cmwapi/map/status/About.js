@@ -7,6 +7,14 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
+     * According to the 
+     * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
+     * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
+     * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
+     * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
      * @todo status.about - version parameter: how to return that you support multiple versions?  and/or, how could you?
      * @todo status.about - widgetName: assume that's a "human-readable" name, rather than universal name?
      * @exports cmwapi/map/status/About

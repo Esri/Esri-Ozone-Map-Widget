@@ -8,6 +8,14 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
+     * According to the 
+     * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
+     * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
+     * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
+     * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
      * @exports cmwapi/map/feature/Plot
      */
     var Plot = {
@@ -158,11 +166,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @callback module:cmwapi/map/feature/Plot~Handler
          * @param {string} sender The widget sending a format message
          * @param {Object|Array} data  A data object or array of data objects.
-         * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
+         * @param {string} data.overlayId The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
          * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
-         * @param {string} [data.name] The name of the feature.  If a valid name string is not specified,
-         *     the featureId is used.  Names are not unique and are meant purely for display purposes.
-         * @param {string} [data.format] The format of the feature.  If not specified, this defaults to "kml".
+         * @param {string} [data.name] The name of the feature.  Names are not unique and are meant purely for display purposes.
+         * @param {string} data.format The format of the feature.  This defaults to "kml".
          * @param {string} data.feature The data of the feature.
          * @param {boolean} [data.zoom] True, if the map should automatically zoom to this feature; false, otherwise.
          *     Defaults to false. 

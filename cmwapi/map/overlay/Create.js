@@ -7,6 +7,14 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
+     * According to the 
+     * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
+     * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
+     * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
+     * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
      * @todo Discuss how to handle uniqueness rules of overlay ids; these rules must be handled by the adapter and may be
      *     specific to the map implementation.  Should we be able to validate that at this level?
      * @exports cmwapi/map/overlay/Create
@@ -103,9 +111,9 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
          * @callback module:cmwapi/map/overlay/Create~Handler
          * @param {string} sender The widget sending a format message
          * @param {Object|Array} data  A data object or array of data objects.
-         * @param {string} [data.name] The name of the overlay.  If a valid name string is not specified, the overlayId is used.
-         * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
-         * @param {string} [data.parentId] The ID of the parent overlay.  This will establishes or changes a parent/child relationship
+         * @param {string} data.name The name of the overlay. 
+         * @param {string} data.overlayId The ID of the overlay. 
+         * @param {string} [data.parentId] The ID of the parent overlay.  This will establish or changes a parent/child relationship
          */
 
     };

@@ -6,7 +6,15 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
      * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
-     * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
+     * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.  
+     * 
+     * According to the 
+     * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
+     * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
+     * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
+     * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * {@link module:cmwapi/map/Error|Error} channel if that occurs.
      *
      * @exports cmwapi/map/feature/Update
      */
@@ -124,8 +132,8 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @callback module:cmwapi/map/feature/Update~Handler
          * @param {string} sender The widget sending a format message
          * @param {Object|Array} data  A data object or array of data objects.
-         * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
-         * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
+         * @param {string} data.overlayId The ID of the overlay. 
+         * @param {string} data.featureId The ID of the feature.
          * @param {string} [data.name] The name of the feature.  If set, this will override any previous feature name.
          *     If no value is provided, the existing name, if any, will persist.
          * @param {string} [data.newOverlayId] The ID of the new parent overlay for this feature.  Setting this 
