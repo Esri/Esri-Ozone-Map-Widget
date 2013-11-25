@@ -34,7 +34,7 @@ define('cmwapi/Validator', function() {
                     return {result: false, msg: type + ' is not a supported map type'};
                 }
             }
-            return {result: true};
+            return {result: true, msg:""};
         },
 
         /**
@@ -50,7 +50,7 @@ define('cmwapi/Validator', function() {
                     }
                 }
             }
-            return {result: true};
+            return {result: true, msg:""};
         },
 
         /**
@@ -80,7 +80,7 @@ define('cmwapi/Validator', function() {
                 return {result: false, msg: 'Bounds requires a valid northEast lat/lon pair [' + bounds.northEast.lat + ',' + bounds.northEast.lon +"]"};
             }
 
-            return {result: true};
+            return {result: true, msg:""};
         },
 
         /**
@@ -98,7 +98,7 @@ define('cmwapi/Validator', function() {
             if (!this.validLatLon(center.lat, center.lon)) {
                 return {result: false, msg: 'Center requires a valid lat/lon pair [' + center.lat + ',' + center.lon +"]"};
             }
-            return {result: true};
+            return {result: true, msg:""};
         },
 
         /**
@@ -116,7 +116,7 @@ define('cmwapi/Validator', function() {
            if (!(this.isNumber(range) && (range > 0))) {
                return {result: false, msg: 'Range must be numeric and >= 0 [' + range + ']'};
            }
-           return {result: true};
+           return {result: true, msg:""};
         },
 
         /**
@@ -129,6 +129,7 @@ define('cmwapi/Validator', function() {
         validObjectOrArray: function(data) {
             var retVal = {
                 result: true,
+                msg:"",
                 payload: undefined
             };
 
