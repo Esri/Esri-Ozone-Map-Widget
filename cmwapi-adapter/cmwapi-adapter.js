@@ -22,7 +22,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
 
         this.status = new Status(this);
 
-        this.error = Error;
+        this.error = new Error(this);
 
 
     };

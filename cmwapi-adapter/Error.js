@@ -1,5 +1,5 @@
 define(["cmwapi/cmwapi"], function(CommonMapApi) {
-    var Error = (function() {
+    var ErrorAdapter = function() {
         var me = this;
 
         /**
@@ -32,7 +32,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             //TODO
         };
         CommonMapApi.error.addHandler(me.handleError);
-    })();
+    };
 
-    return Error;
+    return ErrorAdapter;
 });
