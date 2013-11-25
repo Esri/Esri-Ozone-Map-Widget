@@ -56,8 +56,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
             }
 
-            // Since everything is optional, no major data validation is performed here.  Send
-            // along the payload.    
+            // Send along the payload if we did not fail validation.      
             if (validData) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_SELECTED, Ozone.util.toString(payload[0]));

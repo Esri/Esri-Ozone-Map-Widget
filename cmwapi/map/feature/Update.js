@@ -56,8 +56,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 // No validation is done on the new name or parent overlay id.
             }
 
-            // Since everything is optional, no major data validation is performed here.  Send
-            // along the payload.    
+            // Send along the payload if we did not fail validation.     
             if (validData) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_UPDATE, Ozone.util.toString(payload[0]));
