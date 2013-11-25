@@ -1,4 +1,4 @@
-define(["cmwapi/cmwapi", "cmwapi-adapter", "cmwapi-overlay-manager"], function(CommonMapApi, Adapter, OverlayManager) {
+define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/cmwapi-overlay-manager"], function(CommonMapApi, Adapter, OverlayManager) {
 
     describe("To test Common Map Widget API ESRI overlay manager", function() {
         describe("Overlay functions", function() {

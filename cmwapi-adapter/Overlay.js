@@ -1,0 +1,113 @@
+define(["cmwapi/cmwapi"], function(CommonMapApi) {
+    var Overlay = function(adapater, overlayManager) {
+        var me = this;
+
+        /**
+         * Handler for an incoming map overlay create request.
+         * @method overlay.handleCreate
+         * @param sender {String} the widget making the create overlay request
+         * @param data {Object|Object[]}
+         * @param data.name {String} The non-unique readable name to be given to the created overlay.
+         * @param data.overlayId {String} The unique id to be given to the created overlay.
+         * @param [data.parentId] {String} the id of the overlay to be set as the parent of the created overlay.
+         * @memberof! module:EsriAdapter#
+         */
+        me.handleCreate = function(sender, data) {
+            if(data.length > 1) {
+                for(var i = 0; i < data.length; i++) {
+                    overlayManager.createOverlay(sender, data[i].name, data[i].overlayId, data[i].parentId);
+                }
+            } else {
+                overlayManager.createOverlay(sender, data.name, data.overlayId, data.parentId);
+            }
+        };
+        CommonMapApi.overlay.create.addHandler(me.handleCreate);
+
+        /**
+         * Handler for an indcoming request to remove a layer.
+         * @method overlay.handleRemove
+         * @param sender {String} the widget making the remove overlay request
+         * @param data {Object|Object[]}
+         * @param data.overlayId {String} the id of the overlay to be removed; if not provided
+         *      the id of the sender will be assumed.
+         * @memberof! module:EsriAdapter#
+         */
+        me.handleRemove = function(sender, data) {
+            if(data.length > 1) {
+                for(var i = 0; i < data.length; i++) {
+                    overlayManager.removeOverlay(sender, data[i].overlayId);
+                }
+            } else {
+                overlayManager.removeOverlay(sender, data.overlayId);
+            }
+
+        };
+        CommonMapApi.overlay.remove.addHandler(me.handleRemove);
+
+        /**
+         * Handler for an indcoming request to hide a layer.
+         * @method overlay.handleHide
+         * @param sender {String} the widget making the hide overlay request
+         * @param data {Object|Object[]}
+         * @param data.overlayId {String} the id of the overlay to be removed; if not provided
+         *      the id of the sender will be assumed.
+         * @memberof! module:EsriAdapter#
+         */
+        me.handleHide = function(sender, data) {
+            if(data.length > 1) {
+                for(var i = 0; i < data.length; i++) {
+                    overlayManager.hideOverlay(sender, data[i].overlayId);
+                }
+            } else {
+                overlayManager.hideOverlay(sender, data.overlayId);
+            }
+        };
+        CommonMapApi.overlay.hide.addHandler(me.handleHide);
+
+        /**
+         * Handler for an incoming overlay show request
+         * @method overlay.handleShow
+         * @param sender {String} The widget making the show overlay request
+         * @param data {Object|Object[]}
+         * @param data.overlayId {String} the id of the overlay to be shown; if not
+         *      specified, the id of the sender will be assumed.
+         * @memberof! module:EsriAdapter#
+         */
+        me.handleShow = function(sender, data) {
+            if(data.length > 1) {
+                for(var i = 0; i < data.length; i++) {
+                    overlayManager.showOverlay(sender, data[i].overlayId);
+                }
+            } else {
+                overlayManager.showOverlay(sender, data.overlayId);
+            }
+        };
+        CommonMapApi.overlay.show.addHandler(me.handleShow);
+
+        /**
+         * Handler for an incoming overlay update request
+         * @method overlay.handleUpdate
+         * @param sender {String} The widget making the update overlay request
+         * @param data {Object|Object[]}
+         * @param [data.name] {String} the name to be set for the overlay specified. If
+         *      not specified, the name will not be changed
+         * @param data.overlayId {String} the Id of the overlay to be updated. If not
+         *      specified, the id of the sender will be assumed.
+         * @param [data.parentId] {String} The id of the overlay to be set as the parent
+         *      of the overlay specified. If not specified, the parent will not be updated.
+         * @memberof! module:EsriAdapter#
+         */
+        me.handleUpdate = function(sender, data) {
+            if(data.length > 1) {
+                for(var i = 0; i < data.length; i++) {
+                    overlayManager.updateOverlay(sender, data[i].name, data[i].overlayId, data[i].parentId);
+                }
+            } else {
+                overlayManager.updateOverlay(sender, data.name, data.overlayId, data.parentId);
+            }
+        };
+        CommonMapApi.overlay.update.addHandler(me.handleUpdate);
+    }
+
+    return Overlay;
+});

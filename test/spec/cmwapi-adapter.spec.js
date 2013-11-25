@@ -1,6 +1,6 @@
-define(["cmwapi/cmwapi", "cmwapi-adapter"], function(CommonMapApi, Adapter) {
+define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter"], function(CommonMapApi, Adapter) {
 
-    describe("ESRI Common Map API adapter", function() {
+    describe("To test ESRI Common Map API adapter", function() {
 
         beforeEach(function() {
             // Mock the necessary OWF methods and attach them to the window.
@@ -60,14 +60,27 @@ define(["cmwapi/cmwapi", "cmwapi-adapter"], function(CommonMapApi, Adapter) {
             delete window.Map;
         });
 
-        it("Testing syntax in adapter module definition", function() {
+        it("test syntax in adapter module definition", function() {
             // Verify the module can be initialized without errors
             var map = new Map();
 
             var instance = new Adapter(map);
         });
 
-        // TODO: Create more (and better) tests
+        it("test that overlay adapter dependency is brought in", function() {
+            expect(true).toBe(false);
+        });
 
+        it("test that feature adapter dependency is brought in", function() {
+            expect(true).toBe(false);
+        });
+
+        it("test that status adapter dependency is brought in", function() {
+            expect(true).toBe(false);
+        });
+
+        it("test that error adapter dependency is brought in", function() {
+            expect(true).toBe(false);
+        });
     });
 });
