@@ -4,7 +4,7 @@ define(["cmwapi/Channels", "cmwapi/map/view/Zoom", "cmwapi/map/Error", "cmwapi/V
 
     describe(Channels.MAP_VIEW_ZOOM + " module", function() {
 
-        var INSTANCE_ID = "TEST_ID";
+        var INSTANCE_ID = OWF.getInstanceId();
 
         beforeEach(function() {
             

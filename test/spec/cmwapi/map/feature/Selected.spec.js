@@ -4,7 +4,7 @@ define(["cmwapi/Channels", "cmwapi/map/feature/Selected", "cmwapi/map/Error", "c
 
     describe(Channels.MAP_FEATURE_SELECTED + " module", function() {
 
-        var INSTANCE_ID = "TEST_ID";
+        var INSTANCE_ID = OWF.getInstanceId();
 
         beforeEach(function() {
             

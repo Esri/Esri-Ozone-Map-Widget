@@ -4,7 +4,7 @@ define(["cmwapi/Channels", "cmwapi/map/feature/PlotURL", "cmwapi/map/Error", "cm
 
     describe(Channels.MAP_FEATURE_PLOT_URL + " module", function() {
 
-        var INSTANCE_ID = OWF.INSTANCE_ID;
+        var INSTANCE_ID = OWF.getInstanceId();
 
         beforeEach(function() {
             

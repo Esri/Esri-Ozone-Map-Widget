@@ -4,7 +4,7 @@ define(["cmwapi/Channels", "cmwapi/map/feature/Hide", "cmwapi/map/Error", "cmwap
 
     describe(Channels.MAP_FEATURE_HIDE + " module", function() {
 
-        var INSTANCE_ID = "TEST_ID";
+        var INSTANCE_ID = OWF.getInstanceId();
 
         beforeEach(function() {
             
