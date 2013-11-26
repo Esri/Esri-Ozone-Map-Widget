@@ -1,6 +1,9 @@
 
-define(["cmwapi/Channels"], 
-    function(Channels) {
+define(["cmwapi/Channels", "cmwapi/map/view/Zoom", "cmwapi/map/view/CenterOverlay",
+    "cmwapi/map/view/CenterFeature", "cmwapi/map/view/CenterLocation",
+    "cmwapi/map/view/CenterBounds", "cmwapi/map/view/Clicked"], 
+    function(Channels, Zoom, CenterOverlay, CenterFeature, CenterLocation,
+        CenterBounds, Clicked) {
 
     /**
      * Defines a convenience module for handling all the map.view interactions according to the CMW API 1.1 specification.
@@ -12,54 +15,30 @@ define(["cmwapi/Channels"],
         /**
          * @see module:cmwapi/map/view/Zoom
          */
-        zoom : {
-            addHandler : function(func) {},
-            removeHandlers : function() {},
-            send : function(data) {}
-        },
+        zoom : Zoom,
         center : {
             /**
              * @see module:cmwapi/map/view/CenterOverlay
              */
-            overlay: {
-                addHandler : function(func) {},
-                removeHandlers : function() {},
-                send : function(data) {}
-            },
+            overlay: CenterOverlay,
             /**
              * @see module:cmwapi/map/view/CenterFeature
              */
-            feature: {
-                addHandler : function(func) {},
-                removeHandlers : function() {},
-                send : function(data) {}
-            },
+            feature: CenterFeature,
             /**
              * @see module:cmwapi/map/view/CenterLocation
              */
-            location: {
-                addHandler : function(func) {},
-                removeHandlers : function() {},
-                send : function(data) {}
-            },
+            location: CenterLocation,
             /**
              * @see module:cmwapi/map/view/CenterBounds
              */
-            bounds: {
-                addHandler : function(func) {},
-                removeHandlers : function() {},
-                send : function(data) {}
-            }
+            bounds: CenterBounds
         },
         
         /**
          * @see module:cmwapi/map/view/Clicked
          */
-        clicked: {
-            addHandler : function(func) {},
-            removeHandlers : function() {},
-            send : function(data) {}
-        }
+        clicked: Clicked
     };
 
     return View;
