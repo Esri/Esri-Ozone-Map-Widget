@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <title>ArcGIS API for JavaScript | Simple Geocoding</title>
+    <link href="http://js.arcgis.com/3.7/js/esri/css/esri.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/map.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <div id="map-controls">
+        <div id="overlay" rel="tooltip" title="Overlay Manager"></div>
+        <div id="basemaps" rel="tooltip" title="Base Maps"></div>
+        <div id="search"></div>
+        <div id="popover_content_wrapper" class='basemaptip'><div id="basemapGallery"></div></div>
+    </div>
+  </body>
+  <script src="http://js.arcgis.com/3.7/"></script>
+  <script src="./js/jquery.min.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+  <script src="./js/map.js"></script>
+  <script>
+    var map = new Map();
+    map.execute();
+  </script>
+</html>
