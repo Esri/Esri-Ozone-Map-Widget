@@ -25,7 +25,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @param {Object|Array} data 
          * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
          * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
-         * @param {number|"auto"} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
+         * @param {number|string} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
          *     to ask a map to best vit the overlay in the user's viewable area.
          */
         send : function ( data ) {
@@ -146,9 +146,9 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @callback module:cmwapi/map/view/CenterFeature~Handler
          * @param {string} sender The widget sending a format message
          * @param {Object|Array} data  A data object or array of data objects.
-         * @param {string} data.overlayId The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
-         * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
-         * @param {number|"auto"} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
+         * @param {string} data.overlayId The ID of the overlay. 
+         * @param {string} data.featureId The ID of the feature. 
+         * @param {number|string} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
          *     to ask a map to best vit the overlay in the user's viewable area.
          */
 

@@ -26,7 +26,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @param {Object} data.location The location on which to center a map.  If missing, an error is published.
          * @param {number} data.location.lat A latitude value in decimal degrees.
          * @param {number} data.location.lon A longitude value in decimal degrees.
-         * @param {number|"auto"} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
+         * @param {number|string} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
          *     to ask a map to best vit the overlay in the user's viewable area.
          */
         send : function ( data ) {
@@ -145,7 +145,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @param {Object} data.location The location on which to center a map.  If missing, an error is published.
          * @param {number} data.location.lat A latitude value in decimal degrees.
          * @param {number} data.location.lon A longitude value in decimal degrees.
-         * @param {number|"auto"} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
+         * @param {number|string} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
          *     to ask a map to best vit the overlay in the user's viewable area.
          */
 

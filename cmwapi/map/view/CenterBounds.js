@@ -23,14 +23,14 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
         /**
          * Send information that centers a map on a bounding box.
          * @param {Object|Array} data 
-         * @param {object} data.bounds Information about the bounding view.
-         * @param {object} data.bounds.southWest The southwest corner object with attributes
+         * @param {Object} data.bounds Information about the bounding view.
+         * @param {Object} data.bounds.southWest The southwest corner object with attributes
          * @param {number} data.bounds.southWest.lat A latitude value
          * @param {number} data.bounds.southWest.lon A longitude value
-         * @param {object} data.bounds.northEast The northeast corner object with attributes
+         * @param {Object} data.bounds.northEast The northeast corner object with attributes
          * @param {number} data.bounds.northEast.lat A latitude value
          * @param {number} data.bounds.northEast.lon A longitude value
-         * @param {number|"auto"} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
+         * @param {number|string} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
          *     to ask a map to best vit the overlay in the user's viewable area.
          */
         send : function ( data ) {
@@ -153,7 +153,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @param {object} data.bounds.northEast The northeast corner object with attributes
          * @param {number} data.bounds.northEast.lat A latitude value
          * @param {number} data.bounds.northEast.lon A longitude value
-         * @param {number|"auto"} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
+         * @param {number|string} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
          *     to ask a map to best vit the overlay in the user's viewable area.
          */
 
