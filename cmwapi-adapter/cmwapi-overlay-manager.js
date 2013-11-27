@@ -1,9 +1,31 @@
 define(["esri/layers/KMLLayer"], function(KMLLayer) {
     /**
-     * @classdesc Manager for overlay layers to be used in conjunction with an ESRI map,
+     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+     *
+     * @license
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at<br>
+     * <br>
+     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+     * <br>
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     *
+     * @description Manager for overlay layers to be used in conjunction with an ESRI map,
      * the {@link EsriAdapter}, and the {@link Map|Common Map Widget API}
      * @version 1.1
+     * @module cmwapi-adapter/EsriOverlayManager
+     */
+
+    /**
      * @constructor
+     * @alias module:cmwapi-adapter/EsriOverlayManager
+     * @param adapter {module:EsriAdapter}
      * @param map {object} The ESRI map object which this overlay manager should apply to
      */
     var EsriOverlayManager = function(adapter, map) {
@@ -17,7 +39,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param overlayId {String} the unique id by which this overlay should be identified
          * @param name {String} optional; the non-unique readable name; if not specified the id will be used
          * @param parentId {String} optional; the parent to be set for this overlay
-         * @memberof EsriOverlayManager
+         * @memberof module:cmwapi-adapter/EsriOverlayManager
          */
         var Overlay = function(overlayId, name, parentId) {
             this.id= overlayId;
@@ -26,7 +48,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
             this.children = {};
             this.parentId = parentId;
             //Mapping FeatureID->Feature object of children features
-            this.features = {}
+            this.features = {};
             this.isHidden = false;
             if(parentId) {
                 resolveParent(overlayId, parentId);
@@ -45,7 +67,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param format {String} The format in which the feature parameter is being specified
          * @param feature The data detailing this feature
          * @param Zoom {boolean} Whether or not the map should zoom to this feature upon being added to the map
-         * @memberof EsriOverlayManager
+         * @memberof module:cmwapi-adapter/EsriOverlayManager
          */
         var Feature = function(overlayId, featureId, name, format, feature, zoom, esriObject) {
             var resolveFeature = function() {
@@ -70,7 +92,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param childId {String} The id of the child for which the parent should be set
          * @param parentId {String} The id of the overlay to be set as parent
          * @param previousParentId {String} optional; The id of the overlay that was previously designated as parent to the childId
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         var resolveParent = function(childId, parentId, previousParentId) {
             if(previousParentId) {
@@ -93,7 +115,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param name {String} optional; The readable name for the overlay; if not specified the id will be used
          * @param overlayId {String} The id of the overlay to create; if it exists nothing will be created
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.createOverlay = function(caller, overlayId, name, parentId) {
             if(me.overlays[overlayId]) {
@@ -107,7 +129,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @method deleteOverlay
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} the id of the overlay to be deleted from the manager
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.removeOverlay = function(caller, overlayId) {
             //TODO Error if overlay not found?
@@ -140,7 +162,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @method hideOverlay
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} the id of the overlay to be hidden
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.hideOverlay = function(caller, overlayId) {
             var overlay = me.overlays[overlayId];
@@ -160,7 +182,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @method showOverlay
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} the id of the overlay to be shown
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.showOverlay = function(overlayId) {
             var overlay = me.overlays[overlayId];
@@ -182,7 +204,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param name {String} The name that should be set; the current or a new name.
          * @param overlayId {String} the id of the overlay to be updated.
          * @param parentId {String} optional; the id of the overlay to be set as the parent.
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.updateOverlay = function(caller, name, overlayId, parentId) {
             if(typeof(me.overlays[overlayId]) === 'undefined') {
@@ -205,7 +227,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @private
          * @method flattenOverlay
          * @param overlayId {String} the Id for the overlay to be flattened
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         var flattenOverlay = function(overlayId) {
             if(typeof(me.overlays[overlayId]) === undefined) {
@@ -229,7 +251,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param format {String} The format type of the feature data included
          * @param feature The data in the format specified providing the detail for this feature
          * @param [zoom] {boolean} Whether or not the map should zoom to this feature upon creation
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.plotFeature = function(caller, overlayId, featureId, name, format, feature, zoom) {
             /*if(typeof(me.overlays[overlayId]) === undefined) {
@@ -257,9 +279,9 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param name {String} The readable name for which this feature should be labeled
          * @param format {String} The format type of the feature data included
          * @param feature The url containing the data for the feature
-         * @param params //FIXME what is this
+         * @param params //FIXME only matters for wms?
          * @param [zoom] {boolean} Whether or not the map should zoom to this feature upon creation
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.plotFeatureUrl = function(caller, overlayId, featureId, name, format, url, params, zoom) {
             if(typeof(me.overlays[overlayId]) === undefined) {
@@ -290,7 +312,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param name {String}
          * @param url {String}
          * @param [zoom] {Boolean}
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         var plotKmlFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
             var layer = new KMLLayer(featureId, url);
@@ -305,7 +327,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @method deleteFeature
          * @param overlayId {String} The id of the overlay which contains the feature to be removed
          * @param featureId {String} The id of the feature which is to be removed
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.deleteFeature = function(overlayId, featureId) {
             var overlay = me.overlays[overlayId];
@@ -330,7 +352,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @method hideFeature
          * @param overlayId {String} The id of the overlay which contains the feature to be hidden
          * @param featureId {String} The id of the feature which is to be hidden
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.hideFeature = function(overlayId, featureId) {
             var overlay = me.overlays[overlayId];
@@ -355,7 +377,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @method showFeature
          * @param overlayId {String} The id of the overlay which contains the feature to be shown
          * @param featureId {String} The id of the feature which is to be shown
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.showFeature = function() {
             var overlay = me.overlays[overlayId];
@@ -380,9 +402,9 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @method updateFeature
          * @param overlayId {String}
          * @param featureId {String}
-         * @param name {String}
-         * @param newOverlayId {String} optional;
-         * @memberof EsriOverlayManager#
+         * @param [name] {String}
+         * @param [newOverlayId] {String}
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.updateFeature = function(overlayId, featureId, name, newOverlayId) {
             var feature = me.overlays[overlayId].features[featureId];
@@ -419,7 +441,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
         /**
          * outputs the current saved overlays
          * @method debug
-         * @memberof EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.debug = function() {
             console.log(me.overlays);

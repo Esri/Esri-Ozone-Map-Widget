@@ -4,7 +4,23 @@ define('cmwapi/Validator', function() {
     var SUPPORTED_MAP_TYPES = ["2-D","3-D","other"];
 
     /**
-     * A utility class for validating various message elements used for the
+     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+     *
+     * @license
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at<br>
+     * <br>
+     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+     * <br>
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     *
+     * @description A utility class for validating various message elements used for the
      * [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This validator
      * has static members that specify the supported map status types and map types allowed as well
      * a number of functions for checking latitude/longitude pairs, various type fields, and bounding
