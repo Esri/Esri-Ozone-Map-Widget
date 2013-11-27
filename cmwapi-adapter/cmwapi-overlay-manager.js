@@ -90,6 +90,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
         /**
          * @method createOverlay
+         * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param name {String} optional; The readable name for the overlay; if not specified the id will be used
          * @param overlayId {String} The id of the overlay to create; if it exists nothing will be created
          * @memberof EsriOverlayManager#
@@ -104,6 +105,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
         /**
          * @method deleteOverlay
+         * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} the id of the overlay to be deleted from the manager
          * @memberof EsriOverlayManager#
          */
@@ -119,6 +121,11 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
                     delete parent.children[overlayId];
                 }
 
+                var features = Object.keys(overlay.features);
+                for(var i = 0; i < features.length; i++) {
+                    me.deleteFeature(overlayId, features[i].featureId);
+                }
+
                 var children = Object.keys(overlay.children);
                 //recursively remove children from this overlay
                 for(var i = 0; i < children.length; i++) {
@@ -131,6 +138,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
         /**
          * @method hideOverlay
+         * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} the id of the overlay to be hidden
          * @memberof EsriOverlayManager#
          */
@@ -150,6 +158,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
         /**
          * @method showOverlay
+         * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} the id of the overlay to be shown
          * @memberof EsriOverlayManager#
          */
@@ -169,12 +178,13 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
         /**
          * @method updateOverlay
+         * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param name {String} The name that should be set; the current or a new name.
          * @param overlayId {String} the id of the overlay to be updated.
          * @param parentId {String} optional; the id of the overlay to be set as the parent.
          * @memberof EsriOverlayManager#
          */
-        me.updateOverlay = function(name, overlayId, parentId) {
+        me.updateOverlay = function(caller, name, overlayId, parentId) {
             if(typeof(me.overlays[overlayId]) === 'undefined') {
                 var msg = "No overlay exists with the provided id of " + overlayId;
                 adapter.error.error(sender, msg, {type: 'map.overlay.update', msg: msg})
@@ -212,12 +222,13 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
         /**
          * @method plotFeature
+         * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} The id of the overlay on which this feature should be displayed
          * @param featureId {String} The id to be given for the feature, unique to the provided overlayId
          * @param name {String} The readable name for which this feature should be labeled
          * @param format {String} The format type of the feature data included
          * @param feature The data in the format specified providing the detail for this feature
-         * @param zoom {boolean} Whether or not the map should zoom to this feature upon creation
+         * @param [zoom] {boolean} Whether or not the map should zoom to this feature upon creation
          * @memberof EsriOverlayManager#
          */
         me.plotFeature = function(caller, overlayId, featureId, name, format, feature, zoom) {
@@ -240,13 +251,14 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
         /**
          * @method plotFeatureUrl
+         * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} The id of the overlay on which this feature should be displayed
          * @param featureId {String} The id to be given for the feature, unique to the provided overlayId
          * @param name {String} The readable name for which this feature should be labeled
          * @param format {String} The format type of the feature data included
          * @param feature The url containing the data for the feature
-         * @param params FIXME what is this
-         * @param zoom {boolean} Whether or not the map should zoom to this feature upon creation
+         * @param params //FIXME what is this
+         * @param [zoom] {boolean} Whether or not the map should zoom to this feature upon creation
          * @memberof EsriOverlayManager#
          */
         me.plotFeatureUrl = function(caller, overlayId, featureId, name, format, url, params, zoom) {
@@ -261,7 +273,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
             //if a type we like then handler function
             if(format == 'kml') {
-                plotKmlFeatureUrl(caller, overlayId, featureId, name, url, params, zoom);
+                plotKmlFeatureUrl(caller, overlayId, featureId, name, url, zoom);
             } else {
                 var msg = "Format, " + format + " of data is not accepted";
                 adapter.error.send(caller, msg, {message: msg, type: 'invalid_data_format'});
@@ -272,10 +284,15 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * Plots a kml layer via url to the map
          * @private
          * @method plotKmlFeatureUrl
-         * @param //TODO
+         * @param caller {String}
+         * @param overlayId {String}
+         * @param featureId {String}
+         * @param name {String}
+         * @param url {String}
+         * @param [zoom] {Boolean}
          * @memberof EsriOverlayManager#
          */
-        var plotKmlFeatureUrl = function(caller, overlayId, featureId, name, url, params, zoom) {
+        var plotKmlFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
             var layer = new KMLLayer(featureId, url);
 
             map.addLayer(layer);
@@ -379,6 +396,8 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
                     var newFeature = new Feature(newOverlayId, featureId, name, feature.format, feature.feature, feature.zoom);
                     me.overlays[newOverlayId].features[featureId] = newFeature;
                     delete me.overlays[overlayId].features[featureId];
+
+                    //FIXME handle if the new overlay is hidden
                 } else {
                     var msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
                     adapter.error.error(caller, msg, {type: "invalid_id", message: msg});

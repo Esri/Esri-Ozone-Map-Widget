@@ -45,11 +45,15 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          */
         me.handlePlotUrl = function(sender, data) {
             if(data.length > 1) {
+                var data_item;
                 for(var i = 0; i < data.length; i++) {
-                    OverlayManager.plotFeatureUrl(sender, overlayId, featureId, name, format, url, params, zoom);
+                    data_item = data[i];
+                    OverlayManager.plotFeatureUrl(data_item.sender, data_item.overlayId, data_item.featureId, data_item.name,
+                        data_item.format, data_item.url, data_item.params, data_item.zoom);
                 }
             } else {
-                OverlayManager.plotFeatureUrl(sender, overlayId, featureId, name, format, url, params, zoom);
+                OverlayManager.plotFeatureUrl(data.sender, data.overlayId, data.featureId, data.name, data.format, data.url,
+                    data.params, data.zoom);
             }
         };
         CommonMapApi.feature.plot.url.addHandler(me.handlePlotUrl);
