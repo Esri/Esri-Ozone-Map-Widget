@@ -3,8 +3,7 @@ var Map = function() {
 		var map, geocoder;
 		require([
 			"esri/map", "esri/dijit/Geocoder", "esri/dijit/BasemapGallery", "esri/arcgis/utils",
-			"dojo/parser",
-			"dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dijit/TitlePane","dojo/domReady!"
+			"dojo/parser","dojo/domReady!"
 			], function(Map, Geocoder, BasemapGallery, arcgisUtils, parser) {
 				parser.parse();
 				map = new Map("map",{
@@ -31,25 +30,75 @@ var Map = function() {
 
 				$('#basemaps').on('click', function() {
 					toggleBaseMaps();
+					toggleOverlay(true);
+				}); 
+				$('#overlay').on('click', function() {
+					toggleOverlay();
+					toggleBaseMaps(true);
 				}); 
 
 				$("[rel=tooltip]").tooltip({ placement: 'bottom'});
-        
-				var toggleBaseMaps = function() {
-					$('#basemaps').toggleClass('selected');
-					if($('#popover_content_wrapper').css('visibility') === 'hidden') {
-						$('#popover_content_wrapper').css('visibility', 'visible');
-					} else {
+
+				var data = [
+					{
+					label: 'node1',
+					children: [
+					{ label: 'child1' },
+					{ label: 'child2' }
+					]
+					},
+					{
+					label: 'node2',
+					children: [
+					{ label: 'child3' }
+					]
+					}
+					];
+
+        		var $tree = $('#overlay-tree');
+				$tree.tree({
+					data: data,
+					autoOpen: 1,
+					onCreateLi: function(node, $li) {
+						$li.find('.jqtree-title').before(
+							'<input type="checkbox" class ="tree-node">'
+						);
+					}
+				});
+
+				$tree.on(
+					'click', '.edit',
+					function(e) {
+					var node_id = $(e.target).data('node-id');
+					var node = $tree.tree('getNodeById', node_id);
+					if (node) {
+						alert(node.name);
+					}
+				});
+
+
+				var toggleBaseMaps = function(close) {
+					!close ? $('#basemaps').toggleClass('selected') : false;
+					if(($('#popover_content_wrapper').css('visibility') === 'visible') || close) {
 						$('#popover_content_wrapper').css('visibility', 'hidden');
+
+					} else {
+						$('#popover_content_wrapper').css('visibility', 'visible');
+						if($('#overlay').hasClass('selected')) {
+							toggleOverlay();
+						}
 					}
 				}
        
-				var toggleOverlay = function() {
-					$('#overlay').toggleClass('selected');
-					if($('#popover_content_wrapper').css('visibility') === 'hidden') {
-						$('#popover_content_wrapper').css('visibility', 'visible');
+				var toggleOverlay = function(close) {
+					!close ? $('#overlay').toggleClass('selected') : false;
+					if(($('#popover_overlay_wrapper').css('visibility') === 'visible')|| close) {
+						$('#popover_overlay_wrapper').css('visibility', 'hidden');
 					} else {
-						$('#popover_content_wrapper').css('visibility', 'hidden');
+						$('#popover_overlay_wrapper').css('visibility', 'visible');
+						if($('#basemaps').hasClass('selected')) {
+							toggleBaseMaps();
+						}
 					}
 				}
 

@@ -35,11 +35,15 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          */
         me.handlePlot = function(sender, data) {
             if(data.length > 1) {
+                var data_item;
                 for(var i = 0; i < data.length; i++) {
-
+                    data_item = data[i];
+                    overlayManager.plotFeature(sender, data_item.overlayId, data_item.featureId, data_item.name,
+                        data_item.format, data_item.feature, data_item.zoom);
                 }
             } else {
-
+                overlayManager.plotFeature(sender, data.overlayId, data.featureId, data.name,
+                        data.format, data.feature, data.zoom);
             }
         };
         CommonMapApi.feature.plot.addHandler(me.handlePlot);
@@ -57,13 +61,17 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          * @param [data.zoom] {Boolean} Whether or not the feature should be zoomed to when plotted.
          * @memberof! module:EsriAdapter#
          */
-        me.handlePlotUrl = function(sender, overlayId, featureId, name, format, url, params, zoom) {
+        me.handlePlotUrl = function(sender, data) {
             if(data.length > 1) {
+                var data_item;
                 for(var i = 0; i < data.length; i++) {
-                    OverlayManager.plotFeatureUrl(sender, overlayId, featureId, name, format, url, params, zoom);
+                    data_item = data[i];
+                    overlayManager.plotFeatureUrl(data_item.sender, data_item.overlayId, data_item.featureId, data_item.name,
+                        data_item.format, data_item.url, data_item.params, data_item.zoom);
                 }
             } else {
-                OverlayManager.plotFeatureUrl(sender, overlayId, featureId, name, format, url, params, zoom);
+                overlayManager.plotFeatureUrl(data.sender, data.overlayId, data.featureId, data.name, data.format, data.url,
+                    data.params, data.zoom);
             }
         };
         CommonMapApi.feature.plot.url.addHandler(me.handlePlotUrl);
@@ -72,16 +80,22 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          * Handler for feature unplot request
          * @method feature.handleUnplot
          * @param sender {String} the widget which made the feature unplot request
-         * @param overlayId {String} optional; the id for the overlay from which the feature should be
+         * @param data {Object|Object[]}
+         * @param data.overlayId {String} optional; the id for the overlay from which the feature should be
          *      unplotted. If not provided, the id of the sender will be assumed
-         * @param featureId {String} The id of the feature to unplot
+         * @param data.featureId {String} The id of the feature to unplot
          * @memberof! module:EsriAdapter#
          */
-        me.handleUnplot = function(sender, overlayId, featureId) {
-            if(!overlayId) {
-                overlayId = sender;
+        me.handleUnplot = function(sender, data) {
+            if(data.length > 1) {
+                var data_item;
+                for(var i = 0; i < data.length; i++) {
+                    data_item = data[i];
+                    overlayManager.deleteFeature(data_item.overlayId, data_item.featureId);
+                }
+            } else {
+                overlayManager.deleteFeature(data.overlayId, data.featureId);
             }
-            overlayManager.deleteFeature(overlayId, featureId);
         };
         CommonMapApi.feature.unplot.addHandler(me.handleUnplot);
 
@@ -89,34 +103,78 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          * Handler for request to hide feature
          * @method feature.handleHide
          * @param sender {String} the widget which made the feature hide request
-         * @param overlayId {String} optional; the id for the overlay from which the feature should be
+         * @param data {Object|Object[]}
+         * @param data.overlayId {String} optional; the id for the overlay from which the feature should be
          *      hidden. If not provided, the id of the sender will be assumed
-         * @param featureId {String} The id of the feature to hide
+         * @param data.featureId {String} The id of the feature to hide
          * @memberof! module:EsriAdapter#
          */
-        me.handleHide = function(sender, overlayId, featureId) {
-            if(!overlayId) {
-                overlayId = sender;
+        me.handleHide = function(sender, data) {
+            if(data.length > 1) {
+                var data_item;
+                for(var i = 0; i < data.length; i++) {
+                    data_item = data[i];
+                    overlayManager.hideFeature(data_item.overlayId, data_item.featureId);
+                }
+            } else {
+                overlayManager.hideFeature(data.overlayId, data.featureId);
             }
-            overlayManager.hideFeature(overlayId, featureId);
+
         };
         CommonMapApi.feature.hide.addHandler(me.handleHide);
 
-        me.handleShow = function() {
-
+        /**
+         * Handler for request to show feature
+         * @param sender {String} The id of the widget making the request to show the feature
+         * @param data {Object|Object[]}
+         * @param data.overlayId {String} The id of the overlay to which the feature to show belongs
+         * @param data.featureId {Stirng} The id of the feature which should be shown
+         */
+        me.handleShow = function(sender, data) {
+            if(data.length > 1) {
+                var data_item;
+                for(var i = 0; i < data.length; i++) {
+                    data_item = data[i];
+                    overlayManager.showFeature(data_item.overlayId, data_item.featureId);
+                }
+            } else {
+                overlayManager.showFeature(data.overlayId, data.featureId);
+            }
         };
         CommonMapApi.feature.show.addHandler(me.handleShow);
 
+        /**
+         * Handler for a given feature being selected
+         * //FIXME
+         */
         me.handleSelected = function() {
-
+            //zoom to the feature on the map
         };
         CommonMapApi.feature.selected.addHandler(me.handleSelected);
 
-        me.handleUpdate = function() {
-
+        /**
+         * Handler for request to update a feature
+         * @param Sender {String} The id of the widgets making the request to update the feature
+         * @param data {Object|Object[]}
+         * @param data.overlayId {String} The id of the overlay for which the feature to be updated belongs.
+         * @param data.featureId {String} The id of the feature to be updated; unique to the given overlayId
+         * @param [data.name] {String} the optional name to be set for the feature; If not provided, the name will not be changed.
+         * @param [data.newOverlayId] {String} The optional id of the new overlay for which the feature should belong. If not
+         *      provided the parent overlay will not be changed.
+         */
+        me.handleUpdate = function(sender, data) {
+            if(data.length > 1) {
+                var data_item;
+                for(var i = 0; i < data.length; i++) {
+                    data_item = data[i];
+                    overlayManager.hideFeature(data_item.overlayId, data_item.featureId, data_item.name, data_item.newOverlayId);
+                }
+            } else {
+                overlayManager.hideFeature(data.overlayId, data.featureId, data.name, data.newOverlayId);
+            }
         };
-        CommonMapApi.feature.update.addHandler(me.handlePlotUrl);
-    }
+        CommonMapApi.feature.update.addHandler(me.handleUpdate);
+    };
 
     return Feature;
 });
