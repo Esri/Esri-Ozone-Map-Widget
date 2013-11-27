@@ -1,5 +1,5 @@
 define(["cmwapi/cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
-    var Status = function() {
+    var Status = function(adapater, map) {
         var me = this;
 
         /**
@@ -11,15 +11,15 @@ define(["cmwapi/cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
          * @memberof! module:EsriAdapter#
          */
         me.handleRequest = function(caller, types) {
-            if(!types || types.contains("view")) {
+            if(!types || types.indexOf("view") != -1) {
                 sendView(caller);
             }
 
-            if(!types || types.contains("about")) {
+            if(!types || types.indexOf("about") != -1) {
                 sendAbout(caller);
             }
 
-            if(!types || types.contains("format")) {
+            if(!types || types.indexOf("format") != -1) {
                 sendFormat(caller);
             }
         };
@@ -64,7 +64,7 @@ define(["cmwapi/cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
         var sendAbout = function(caller) {
             var version = EsriNS.version;
             var type = "2-D";
-            var widgetName = ""; //FIXME
+            var widgetName = OWF.getInstanceId();
 
             CommonMapApi.status.about.send(version, type, widgetName);
         };

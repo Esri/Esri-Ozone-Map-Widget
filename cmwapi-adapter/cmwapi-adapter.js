@@ -20,11 +20,9 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
 
         this.feature = new Feature(this, overlayManager);
 
-        this.status = new Status(this);
+        this.status = new Status(this, map);
 
         this.error = new Error(this);
-
-
     };
 
     return EsriAdapter;
