@@ -28,9 +28,14 @@ html, body, #map {
   background-position: center center;
   background-repeat: no-repeat;
 }
+#overlay.selected{
+  background-image: url("../img/Overlay_Manager_Selected.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+}
 
 #basemaps.selected{
-  background-image: url("../img/Overlay_Manager_Selected.png");
+  background-image: url("../img/BaseMaps_Selected.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -123,6 +128,48 @@ html, body, #map {
   margin-left: -28px;
 }
 
+#popover_overlay_wrapper {
+  visibility: hidden;
+  background: #fff;
+  width: 376px;
+  height: 400px;
+  top: 60px;
+  right:106px;
+  border:2px solid #666;
+}
+
+.overlaytip {
+  position: absolute;
+  background: #fff;
+  border: 2px solid #666;
+  border-radius: 8px;
+}
+
+.overlaytip:after, .overlaytip:before {
+  bottom: 100%;
+  left: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.overlaytip:after {
+  border-color: rgba(255, 255, 255, 0);
+  border-bottom-color: #fff;
+  border-width: 25px;
+  margin-left: -25px;
+}
+
+.overlaytip:before {
+  border-color: rgba(102, 102, 102, 0);
+  border-bottom-color: #666;
+  border-width: 28px;
+  margin-left: -28px;
+}
+
 .esriBasemapGalleryNode {
   padding:5px;
   padding-top: 10px;
@@ -184,6 +231,41 @@ html, body, #map {
 }
 .tooltip.bottom .tooltip-arrow {
   border-bottom-color: #666666; 
+}
+#overlay-hr-wrapper {
+  height:100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+#overlay-tree {
+  position: absolute;
+  left: 20px;
+  top: 10px;
+}
+#overlay-hr {
+  border: 1px solid #666;
+  width: 100%;
+  position: absolute;
+  bottom:25px;
+}
+#overlay-vr {
+  position: absolute;
+  border-left: 2px solid #666;
+  bottom: 0px;
+  height:25px;
+  right: 40px;
+}
+#overlay-icon {
+  height:25px;
+  width:25px;
+  bottom: 0px;
+  right: 8px;
+  position: absolute;
+  background-image: url("../img/gear2.png");
+  background-size:26px 26px;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 @media (max-height: 500px) {

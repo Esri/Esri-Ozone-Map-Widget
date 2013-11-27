@@ -7,6 +7,7 @@
     <link href="http://js.arcgis.com/3.7/js/esri/css/esri.css" rel="stylesheet">
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/map.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/jqtree.css">
   </head>
 
   <body>
@@ -16,12 +17,21 @@
         <div id="basemaps" rel="tooltip" title="Base Maps"></div>
         <div id="search"></div>
         <div id="popover_content_wrapper" class='basemaptip'><div id="basemapGallery"></div></div>
+        <div id="popover_overlay_wrapper" class='overlaytip'>
+          <div id="overlay-hr-wrapper">
+            <div id="overlay-tree"></div>
+            <div id="overlay-hr"></div>
+            <div id="overlay-vr"></div>
+            <div id="overlay-icon"></div>
+          </div>
+        </div>
     </div>
   </body>
   <script src="http://js.arcgis.com/3.7/"></script>
   <script src="./js/jquery.min.js"></script>
   <script src="./js/bootstrap.min.js"></script>
   <script src="./js/map.js"></script>
+  <script src="./js/tree.jquery.js"></script>
   <script>
     var map = new Map();
     map.execute();
