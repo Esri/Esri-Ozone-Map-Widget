@@ -125,7 +125,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             }
         };
         CommonMapApi.overlay.update.addHandler(me.handleUpdate);
-    }
+    };
 
     return Overlay;
 });

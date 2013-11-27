@@ -66,11 +66,11 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
                 var data_item;
                 for(var i = 0; i < data.length; i++) {
                     data_item = data[i];
-                    OverlayManager.plotFeatureUrl(data_item.sender, data_item.overlayId, data_item.featureId, data_item.name,
+                    overlayManager.plotFeatureUrl(data_item.sender, data_item.overlayId, data_item.featureId, data_item.name,
                         data_item.format, data_item.url, data_item.params, data_item.zoom);
                 }
             } else {
-                OverlayManager.plotFeatureUrl(data.sender, data.overlayId, data.featureId, data.name, data.format, data.url,
+                overlayManager.plotFeatureUrl(data.sender, data.overlayId, data.featureId, data.name, data.format, data.url,
                     data.params, data.zoom);
             }
         };
@@ -162,7 +162,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          * @param [data.newOverlayId] {String} The optional id of the new overlay for which the feature should belong. If not
          *      provided the parent overlay will not be changed.
          */
-        me.handleUpdate = function() {
+        me.handleUpdate = function(sender, data) {
             if(data.length > 1) {
                 var data_item;
                 for(var i = 0; i < data.length; i++) {
@@ -174,7 +174,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             }
         };
         CommonMapApi.feature.update.addHandler(me.handleUpdate);
-    }
+    };
 
     return Feature;
 });
