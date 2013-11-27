@@ -1,7 +1,23 @@
 define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
 
     /**
-     * The Hide module provides methods for using an overlay hiding OWF Eventing channel
+     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+     *
+     * @license
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at<br>
+     * <br>
+     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+     * <br>
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     *
+     * @description The Hide module provides methods for using an overlay hiding OWF Eventing channel
      * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
