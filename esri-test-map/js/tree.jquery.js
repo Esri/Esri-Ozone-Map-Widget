@@ -783,7 +783,7 @@ limitations under the License.
       autoOpen: false,
       saveState: false,
       dragAndDrop: false,
-      selectable: true,
+      selectable: false,
       useContextMenu: true,
       onCanSelectNode: null,
       onSetStateFromStorage: null,
@@ -800,7 +800,7 @@ limitations under the License.
       slide: true,
       nodeClass: Node,
       dataFilter: null,
-      keyboardSupport: true
+      keyboardSupport: false
     };
 
     JqTreeWidget.prototype.toggle = function(node, slide) {

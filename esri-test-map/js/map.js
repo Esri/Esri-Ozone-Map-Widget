@@ -66,15 +66,10 @@ var Map = function() {
 					}
 				});
 
-				$tree.on(
-					'click', '.edit',
-					function(e) {
-					var node_id = $(e.target).data('node-id');
-					var node = $tree.tree('getNodeById', node_id);
-					if (node) {
-						alert(node.name);
-					}
-				});
+				
+            $("#overlay-tree input:checkbox").on('change', function () {
+                $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
+            });
 
 
 				var toggleBaseMaps = function(close) {
