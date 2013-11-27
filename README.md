@@ -93,7 +93,7 @@ If any tests fail, a common way to debug them is through the use of browser-spec
 
 Copyright © 2013 [Environmental Systems Research Institute, Inc. (Esri)](http://www.esri.com)
 
-## Licensing
+## License
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
