@@ -1,4 +1,4 @@
-define(["cmwapi/Channels"], function(Channels) {
+define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -25,19 +25,64 @@ define(["cmwapi/Channels"], function(Channels) {
     var Error = {
 
         /**
-         *
-         * @param sender - sender of message that caused error
-         * @param type - type of message that caused error (example seems to be cmwapi call: e.g., map.feature.hide)
-         * @param msg - message that caused the error  (example seems to be payload)
-         * @param error - a description of the error
+         * @private
+         * @param arguments presumably comprised of 4 elements
+         * @param arguments[0] - sender of message that caused error
+         * @param arguments[1] - type of message that caused error (example seems to be cmwapi call: e.g., map.feature.hide)
+         * @param arguments[2] - message that caused the error  (example seems to be payload)
+         * @param arguments[3] error - a description of the error
          */
-        send: function(sender, type, msg, error) {
-            var sendPayload = { sender: sender,
-                type: type,
-                msg: msg,
-                error: error
-            };
-            OWF.Eventing.publish(Channels.MAP_ERROR, Ozone.util.toString(sendPayload));
+        sendHelper: function( ) {
+            var sendPayload = null;
+
+            if (arguments[0].length == 4) {
+                sendPayload = { sender: arguments[0][0],
+                    type: arguments[0][1],
+                    msg: arguments[0][2],
+                    error: arguments[0][3]
+                };
+            }
+            return sendPayload;
+        }, 
+
+        /**
+         * Send information that supports the creation of a map overlay.
+         * @param {Object|Array} data
+         * @param {string} data.sender sender of message that caused error
+         * @param {string} data.type type of message that caused error (example seems to be cmwapi call: e.g., map.feature.hide)
+         * @param {string} data.msg message that caused the error  (example seems to be payload)
+         * @param {string} data.error a description of the error
+         */
+        send: function(data) {
+
+            // cheat, for folks who are using the previous simple approach of sending across sender, type, msg, error...
+            if (arguments.length == 4) {
+                data = Error.sendHelper(arguments); 
+            }
+
+            var validData = Validator.validObjectOrArray( data );
+            var payload = validData.payload;
+
+            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // note the error and return.
+            // If we call Error here, this will get us in a recursive loop!  
+            if (!validData.result) {
+                //console.error ("Unable to send on error channel - sent data is not valid: [data: " + data + "].  " + validData.msg);
+                Error.send( OWF.getInstanceId(), Channels.MAP_ERROR, data, 
+                    validData.msg);
+                return;
+            }
+
+            for (var i=0; i < payload.length; i++) {
+                // all attributes are required
+                if (! payload[i].sender || ! payload[i].type || ! payload[i].msg || ! payload[i].error ) {
+                    Error.send( OWF.getInstanceId(), Channels.MAP_ERROR, payload[i], "Missing attribute in sender, type, msg, or error");
+                } else {
+                    // if an error message fails silently, want the rest to succeed, so sending along as we have them..
+                    OWF.Eventing.publish(Channels.MAP_ERROR, Ozone.util.toString(payload[i]));
+                }
+            }
+
 
         },
 
