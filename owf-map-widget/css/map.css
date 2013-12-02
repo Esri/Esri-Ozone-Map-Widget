@@ -14,7 +14,7 @@ html, body, #map {
   margin-right: 5px;
   width: 30px;
   height: 30px;
-  background-image: url("../img/Overlay_Manager_Default.png");
+  background-image: url("../images/icons/Overlay_Manager_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
   border-radius: 5px;
@@ -24,18 +24,18 @@ html, body, #map {
 }
 
 #overlay:hover{
-  background-image: url("../img/Overlay_Manager_Hover.png");
+  background-image: url("../images/icons/Overlay_Manager_Hover.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
 #overlay.selected{
-  background-image: url("../img/Overlay_Manager_Selected.png");
+  background-image: url("../images/icons/Overlay_Manager_Selected.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
 
 #basemaps.selected{
-  background-image: url("../img/BaseMaps_Selected.png");
+  background-image: url("../images/icons/BaseMaps_Selected.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -44,7 +44,7 @@ html, body, #map {
   margin-right: 5px;
   width: 30px;
   height: 30px;
-  background-image: url("../img/BaseMaps_Default.png");
+  background-image: url("../images/icons/BaseMaps_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
   border: 1.5px solid #928F8F;
@@ -54,13 +54,13 @@ html, body, #map {
 }
 
 #basemaps:hover{
-  background-image: url("../img/BaseMaps_Hover.png");
+  background-image: url("../images/icons/BaseMaps_Hover.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
 
 #basemaps.selected{
-  background-image: url("../img/BaseMaps_Selected.png");
+  background-image: url("../images/icons/BaseMaps_Selected.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -176,14 +176,14 @@ html, body, #map {
 }
 
 .esriSimpleSliderIncrementButton{
-  background-image: url("../img/Zoom_In_Default.png");
+  background-image: url("../images/icons/Zoom_In_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
   border: 1.5px solid #928F8F;
 }
 
 .esriSimpleSliderDecrementButton{
-  background-image: url("../img/Zoom_Out_Default.png");
+  background-image: url("../images/icons/Zoom_Out_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
   border: 1.5px solid #928F8F;
@@ -191,26 +191,26 @@ html, body, #map {
 
 .esriSimpleSliderDecrementButton:hover{
   background-color: transparent;
-  background-image: url("../img/Zoom_Out_Hover.png");
+  background-image: url("../images/icons/Zoom_Out_Hover.png");
   background-position: center center;
   background-color: transparent;
 }
 .esriSimpleSliderIncrementButton:hover{
   background-color: transparent;
-  background-image: url("../img/Zoom_In_Hover.png");
+  background-image: url("../images/icons/Zoom_In_Hover.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
 
 .esriSimpleSliderDecrementButton:active{
   background-color: transparent;
-  background-image: url("../img/Zoom_Out_Selected.png");
+  background-image: url("../images/icons/Zoom_Out_Selected.png");
   background-position: center center;
   background-color: transparent;
 }
 .esriSimpleSliderIncrementButton:active{
   background-color: transparent;
-  background-image: url("../img/Zoom_In_Selected.png");
+  background-image: url("../images/icons/Zoom_In_Selected.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -262,12 +262,12 @@ html, body, #map {
   bottom: 0px;
   right: 8px;
   position: absolute;
-  background-image: url("../img/Settings_Default.png");
+  background-image: url("../images/icons/Settings_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
 #overlay-icon:hover {
-  background-image: url("../img/Settings_Hover.png");
+  background-image: url("../images/icons/Settings_Hover.png");
 }
 input[type="checkbox"] {
   margin: 10px 3px 0;
