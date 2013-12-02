@@ -3,112 +3,111 @@
 // NOTE: Modules that are not compatible with asynchronous module loading
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
-    "models/map", "models/legend",
-    "dojo/mouse", "dojo/on", "dojo/dom", "dojo/json",
+    "models/map", "models/legend", "dojo/mouse", "dojo/on", "dojo/dom", 
+    "dojo/json", "esri/dijit/Geocoder", "esri/layers/KMLLayer","esri/dijit/BasemapGallery", 
+    "esri/arcgis/utils","dojo/parser","dojo/dom-style",
     "dojo/domReady!"],
-    function(Map, Legend, Mouse, On, Dom, JSON) {
-        var map = new Map("mapDiv", {
-                center: [-77.035841, 38.901721],
-                zoom: 8,
-                basemap: "streets"
-            });
+    function(Map, Legend, Mouse, On, Dom, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle) {
+        var map = new Map("map", {
+            center: [-76.809469, 39.168101],
+            zoom: 7,
+            basemap: "streets"
+        });
 
-        Legend.createForMap(map, "legendDiv");
+        var dropZone = Dom.byId("map");
+        var owf_adapter = new OWFAdapter(On , dropZone);
+        
+        geocoder = new Geocoder({ 
+            map: map 
+        }, "search");
+        geocoder.startup();
 
-        var dropZone = Dom.byId("mapDiv");
+        var basemapGallery = new BasemapGallery({
+            showArcGISBasemaps: true,
+            map: map
+        }, "basemapGallery");
+        basemapGallery.startup();
+        
+        basemapGallery.on("error", function(msg) {
+            console.log("basemap gallery error:  ", msg);
+        });
 
-        // Initialize OWF-specific functionality
-        if (OWF.Util.isRunningInOWF()) {
-            OWF.ready(function () {
-                // Listen to channel used by the example Contacts Manager
-                OWF.Eventing.subscribe(
-                    "org.owfgoss.owf.examples.GoogleMapsExample.plotAddress",
-                    function (sender, msg, channel) {
-                        console.log('Got address "' + msg + '"" from "' +
-                                    sender + '" on "' + channel);
-                        var markerData = {};
+        $('#basemaps').on('click', function() {
+            toggleBaseMaps();
+            toggleOverlay(true);
+        }); 
+        $('#overlay').on('click', function() {
+            toggleOverlay();
+            toggleBaseMaps(true);
+        });
 
-                        try {
-                            // Parse the msg as json.
-                            markerData = JSON.parse(msg);
-                        }
-                        catch (e) {
-                            // Treat the msg as plain address text and try to pass it along.
-                            markerData.address = msg;
-                        }
-                        map.placeMarker(markerData);
-                    }
+        var kmlUrl = "http://www.dgs.maryland.gov/ISSSD/FuelManagement/FuelingSites.kml";
+        var kml = new KMLLayer(kmlUrl);
+        map.addLayer(kml);
+        kml.on("load", function() {
+            domStyle.set("loading", "display", "none");
+        });
+
+        $("[rel=tooltip]").tooltip({ placement: 'bottom'});
+
+        //Sample tree data for overlay manager
+        var data = [
+        {
+            label: 'node1',
+            image: './sampleimage.png',
+            children: [
+                { label: 'child1' },
+                { label: 'child2' }
+            ]
+        },
+        {
+            label: 'node2',
+            children: [
+            { label: 'child3' }
+            ]
+        }
+        ];
+
+        var $tree = $('#overlay-tree');
+        $tree.tree({
+            data: data,
+            autoOpen: 1,
+            onCreateLi: function(node, $li) {
+                $li.find('.jqtree-title').before(
+                    '<input type="checkbox" class ="tree-node"/>'
                 );
+            }
+        });
 
-                // Register for intent that plots address
-                OWF.Intents.receive({
-                        action: "plot",
-                        dataType: "application/vnd.owf.sample.address"
-                    },
-                    function (sender, intent, msg) {
-                        console.log('Got address "' + msg + '"" via intent "' +
-                                    intent + '" from "' + sender);
-                        map.placeMarker(msg);
-                    }
-                );
+                
+        $("#overlay-tree input:checkbox").on('change', function () {
+            $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
+        });
 
-                // Register for intent that starts navigation search
-                OWF.Intents.receive({
-                        action: "navigate",
-                        dataType: "application/vnd.owf.sample.addresses"
-                    },
-                    function (sender, intent, msg) {
-                        console.log('Got direction search "' + msg +
-                                    '"" via intent "' + intent + '" from "'
-                                    + sender);
-                        // TODO: Trigger directions search
-                    }
-                );
 
-                OWF.DragAndDrop.onDragStart(function () {
-                    // TODO: Examine available drag metadata and highlight
-                    // drop zone if appropriate
-                });
+        var toggleBaseMaps = function(close) {
+            !close ? $('#basemaps').toggleClass('selected') : false;
+            if(($('#popover_content_wrapper').css('visibility') === 'visible') || close) {
+                $('#popover_content_wrapper').css('visibility', 'hidden');
 
-                OWF.DragAndDrop.onDragStop(function () {
-                    // TODO: Remove drop zone highlighting
-                });
-
-                On(dropZone, Mouse.enter, function(evt) {
-                    OWF.DragAndDrop.setDropEnabled(true);
-                });
-
-                On(dropZone, Mouse.leave, function(evt) {
-                    OWF.DragAndDrop.setDropEnabled(false);
-                });
-
-                OWF.DragAndDrop.addDropZoneHandler({
-                    dropZone: dropZone,
-                    handler: function (msg) {
-                        map.placeMarker(msg.dragDropData);
-                        console.log('Got address "' + msg.dragDropData.address);
-                    }
-                });
-
-                OWF.notifyWidgetReady();
-            });
+            } else {
+                $('#popover_content_wrapper').css('visibility', 'visible');
+                if($('#overlay').hasClass('selected')) {
+                    toggleOverlay();
+                }
+            }
+        }
+       
+        var toggleOverlay = function(close) {
+            !close ? $('#overlay').toggleClass('selected') : false;
+            if(($('#popover_overlay_wrapper').css('visibility') === 'visible')|| close) {
+                $('#popover_overlay_wrapper').css('visibility', 'hidden');
+            } else {
+                $('#popover_overlay_wrapper').css('visibility', 'visible');
+                if($('#basemaps').hasClass('selected')) {
+                    toggleBaseMaps();
+                }
+            }
         }
 
-        // TODO: HTML5 file transfer via drop (does not use OWF)
-        // This will only occur when a file is dragged into the widget from
-        // outside the web browser
-        On(dropZone, "dragenter", function(evt) {
-            // Prevent browser from opening file in this page
-            evt.preventDefault();
-        });
-
-        On(dropZone, "dragover", function(evt) {
-            evt.preventDefault();
-        });
-
-        On(dropZone, "drop", function(evt) {
-            evt.preventDefault();
-            console.log("Got file drop " + evt);
-        });
-    }
-);
+    });

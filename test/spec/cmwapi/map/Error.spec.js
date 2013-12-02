@@ -47,5 +47,88 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "test/mock/OWF", "test/mock/Ozone
 
         });
 
+        it("if given invalid data, sends out an error", function() {
+
+            spyOn(Error, 'send').andCallThrough();
+
+            Error.send('foo');  // not given an object, not given an array of objects, but given something
+            expect(Error.send).toHaveBeenCalled();
+
+            // expect it's going to send out an error on its own error receipt...
+            expect(Error.send.calls.length).toEqual(2);
+            expect(Error.send.mostRecentCall.args[1]).toEqual(Channels.MAP_ERROR);
+        });
+
+        it("if given null data, sends out an error", function() {
+
+            spyOn(Error, 'send').andCallThrough();
+
+            Error.send();  
+            expect(Error.send).toHaveBeenCalled();
+
+            // expect it's going to send out an error on its own error receipt...
+            expect(Error.send.calls.length).toEqual(2);
+            expect(Error.send.mostRecentCall.args[1]).toEqual(Channels.MAP_ERROR);
+        });
+
+
+        it("if given an object without all required fields, sends out an error", function() {
+
+            spyOn(Error, 'send').andCallThrough();
+
+            // not giving it sender...
+            var sendPayload = { msg: 'foo', type: 'any', error: 'error'};
+            Error.send(sendPayload);  
+            expect(Error.send).toHaveBeenCalled();
+
+            // expect it's going to send out an error on its own error receipt...
+            expect(Error.send.calls.length).toEqual(2);
+            expect(Error.send.mostRecentCall.args[1]).toEqual(Channels.MAP_ERROR);
+            expect(Error.send.mostRecentCall.args[3]).toMatch(/^Missing/);
+        });
+
+
+        it("if given an array where some objects are valid, sends out set that are valid...", function() {
+
+            var eventing = OWF.Eventing;
+            expect(eventing).not.toBe(null);
+
+            spyOn(Error, 'send').andCallThrough();
+            spyOn(eventing, 'publish');
+    
+            // not giving it sender...
+            var sendPayload1 = { msg: 'foo', type: 'any', error: 'error'};
+            var sendPayloadGood = { sender: 1, msg: 'foo', type: 'any', error: 'error'};
+
+            Error.send([sendPayloadGood, sendPayload1, sendPayloadGood]);  
+            expect(Error.send).toHaveBeenCalled();
+
+            // expect it's going to send out an error on its own error receipt...
+            expect(Error.send.calls.length).toEqual(2);     // will get called once, and call itself with an error once
+            expect(Error.send.mostRecentCall.args[1]).toEqual(Channels.MAP_ERROR);
+            expect(Error.send.mostRecentCall.args[3]).toMatch(/^Missing/);
+
+            // will ALSO send out on the eventing channel 2 more times..., for a grand total of 3 
+            // (one as its own error, 2 for the good items)
+            expect(eventing.publish.calls.length).toEqual(3); 
+        
+        });
+
+        it("unsubscribes the correct channel when removeHandlers is called", function() {
+
+            var eventing = OWF.Eventing;
+
+            spyOn(Error, 'removeHandlers').andCallThrough();
+            spyOn(Error, 'send');
+            spyOn(eventing, 'unsubscribe');
+
+            Error.removeHandlers();
+            expect(Error.removeHandlers).toHaveBeenCalled();
+            expect(eventing.unsubscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_ERROR);
+
+            expect(Error.send.calls.length).toEqual(0);
+
+        });
+
     });
 });

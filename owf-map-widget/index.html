@@ -11,26 +11,29 @@
 
         <!-- Load non-AMD libs before dojo to avoid timing problems -->
         <script src="js/lib/lodash.compat.js"></script>
-        <script src="js/lib/backbone.js"></script>
-
-        <link rel="stylesheet" href="css/dragAndDrop.css">
-
-        <style>
-            html, body, #mapDiv, .map.container {
-                padding: 0;
-                margin: 0;
-                height: 100%;
-            }
-            #legendDiv {
-                background-color: #fff;
-                position: absolute !important;
-                z-index: 99;
-                top:10px;
-                right:20px;
-            }
-        </style>
+        <script src="js/owf_adapter.js"></script>
+        <link href="css/dragAndDrop.css" rel="stylesheet">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/jqtree.css" rel="stylesheet">
+        
     </head>
-    <body class="claro">
+    <body>
+        <div id="map"></div>
+        <div id="map-controls">
+            <div id="overlay" rel="tooltip" title="Overlay Manager"></div>
+            <div id="basemaps" rel="tooltip" title="Base Maps"></div>
+            <div id="search"></div>
+            <div id="popover_content_wrapper" class='basemaptip'><div id="basemapGallery"></div></div>
+            <div id="popover_overlay_wrapper" class='overlaytip'>
+                <div id="overlay-hr-wrapper">
+                <div id="overlay-tree"></div>
+                <div id="overlay-hr"></div>
+                <div id="overlay-vr"></div>
+                <div id="overlay-icon"></div>
+                </div>
+            </div>
+        </div>
+        <span id="loading"></span>
         <script>
             function addCss(src) {
                 document.writeln('<link rel="stylesheet" href="' + src + '">');
@@ -39,22 +42,22 @@
             function addScript(src) {
                 document.writeln('<script src="' + src + '"><\/script>');
             }
-
-            addCss(window.esriJsPath + "js/dojo/dijit/themes/claro/claro.css");
             addCss(window.esriJsPath + "js/esri/css/esri.css");
+            addCss("css/map.css");
 
             // Add OWF widget API
             addScript(window.owfJsPath + "owf-widget-" +
-                      ((window.isDebug) ? ("debug") : ("min")) + ".js");
+                ((window.isDebug) ? ("debug") : ("min")) + ".js");
 
             // Add ESRI JS API, which starts dojo AMD loader
             addScript(window.esriJsPath + "init.js");
-            //addScript(window.esriJsPath + "js/dojo/dojo/dojo.js");
 
             // Trigger app entry point
             addScript("js/app.js");
         </script>
-        <div id="mapDiv"></div>
-        <div id="legendDiv"></div>
     </body>
+    <script src="js/lib/backbone.js"></script>
+    <script src="js/lib/jquery.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/tree.jquery.js"></script>
 </html>
