@@ -42,17 +42,14 @@ define(["cmwapi/Channels"], function(Channels) {
         },
 
         /**
-         * Subscribes to the error channel and
-         * @param handler {function}
-         *  Handler will receive payload of the following:<br />
-         *   &#123; sender: , type: , msg:, error: &#125;<br />
-         *   sender = sender of message that caused error (since cmwapi is pub/sub, if it's not you, ignore)<br />
-         *   type = type of message that caused error<br />
-         *   msg = payload of message that caused error<br />
-         *   error = description of error
+         * Subscribes to the error channel and registers a handler to be called when messages are published to it.
+         * 
+         * @param {module:cmwapi/map/Error~Handler} handler An event handler for any creation messages.
+         *
          */
         addHandler: function(handler) {
 
+            // Following pattern of wrapping the handler, to let us deal with test code
             var newHandler = function(sender, msg) {
 
                 // nothing really that can be done if the error message itself has an error...
@@ -60,6 +57,8 @@ define(["cmwapi/Channels"], function(Channels) {
             };
 
             OWF.Eventing.subscribe(Channels.MAP_ERROR, newHandler);
+
+            return newHandler;
 
         },
 
@@ -69,6 +68,15 @@ define(["cmwapi/Channels"], function(Channels) {
         removeHandlers: function() {
             OWF.Eventing.unsubscribe(Channels.MAP_ERROR);
         }
+
+        /**
+         * A function for handling error channel messages.
+         * @callback module:cmwapi/map/Error~Handler
+         * @param {string} sender sender of message that caused error (since cmwapi is pub/sub, could be you - can opt to ignore)
+         * @param {string} type type of message that caused error
+         * @param {string} msg the message that caused the error
+         * @param {string} error a description of the error
+         */
 
     };
 
