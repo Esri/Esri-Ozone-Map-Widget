@@ -114,5 +114,21 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "test/mock/OWF", "test/mock/Ozone
         
         });
 
+        it("unsubscribes the correct channel when removeHandlers is called", function() {
+
+            var eventing = OWF.Eventing;
+
+            spyOn(Error, 'removeHandlers').andCallThrough();
+            spyOn(Error, 'send');
+            spyOn(eventing, 'unsubscribe');
+
+            Error.removeHandlers();
+            expect(Error.removeHandlers).toHaveBeenCalled();
+            expect(eventing.unsubscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_ERROR);
+
+            expect(Error.send.calls.length).toEqual(0);
+
+        });
+
     });
 });
