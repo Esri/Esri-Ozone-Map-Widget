@@ -27,10 +27,15 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
         /**
          * @private
          * @param arguments presumably comprised of 4 elements
-         * @param arguments[0] - sender of message that caused error
-         * @param arguments[1] - type of message that caused error (example seems to be cmwapi call: e.g., map.feature.hide)
-         * @param arguments[2] - message that caused the error  (example seems to be payload)
-         * @param arguments[3] error - a description of the error
+         * @param {string} arguments.[0] - sender of message that caused error
+         * @param {string} arguments.[1] - type of message that caused error (example seems to be cmwapi call: e.g., map.feature.hide)
+         * @param {string} arguments.[2] - message that caused the error  (example seems to be payload)
+         * @param {string} arguments.[3] error - a description of the error
+         * @returns {Object} payload - payload or null, if didn't get all 4 values
+         * @returns {string} payload.sender
+         * @returns {string} payload.type
+         * @returns {string} payload.msg
+         * @returns {string} payload.error
          */
         sendHelper: function( ) {
             var sendPayload = null;
@@ -90,7 +95,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
          * Subscribes to the error channel and registers a handler to be called when messages are published to it.
          * 
          * @param {module:cmwapi/map/Error~Handler} handler An event handler for any creation messages.
-         *
+         * @returns {module:cmwapi/map/Error~ReturnedHandler} Wrapped handler, useful for testing
          */
         addHandler: function(handler) {
 
@@ -121,6 +126,16 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
          * @param {string} type type of message that caused error
          * @param {string} msg the message that caused the error
          * @param {string} error a description of the error
+         */
+
+        /**
+         * A function for handling error channel messages.
+         * @callback module:cmwapi/map/Error~ReturnedHandler
+         * @param {string} sender sender of message that caused error (since cmwapi is pub/sub, could be you - can opt to ignore)
+         * @param {string} msg the message that caused the error
+         * @param {string} msg.type
+         * @param {string} msg.msg
+         * @param {string} msg.error
          */
 
     };
