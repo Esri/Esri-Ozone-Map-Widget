@@ -84,6 +84,12 @@ define(["cmwapi/Validator"], function(Validator) {
                 expect(results.msg).not.toBeUndefined();
             });
 
+            it("evaluates stringified JSON objects as strings.", function() {
+                var jsonString = "{\"a\":\"b\"}";
+
+                expect(Validator.isString(jsonString)).toBe(true);
+            });
+
         });
     });
 });

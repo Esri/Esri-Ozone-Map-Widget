@@ -176,13 +176,15 @@ define('cmwapi/Validator', function() {
         },
 
         /**
-         * A basic string test that should handle both literal and Object based strings.
+         * A basic string test that should handle both literal and Object based strings. Note that stringified JSON
+         * objects passed in as data will return true since they are in a string format.
          * @todo using this limits the requirement of this api implementation on other libraries.  However, we
          *     may want to leverage dojo or underscore instead.
          * @see http://stackoverflow.com/questions/1303646/check-whether-variable-is-number-or-string-in-javascript
          */
         isString: function(data) {
-            return (Object.prototype.toString(data) === '[object String]');
+            // The first type will also catch stringified json.
+            return (typeof data === "string" || Object.prototype.toString(data) === '[object String]');
         },
 
         /**
