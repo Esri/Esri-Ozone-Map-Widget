@@ -2,9 +2,9 @@ var Map = function() {
 	this.execute = function() {
 		var map, geocoder;
 		require([
-			"esri/map", "esri/dijit/Geocoder", "esri/dijit/BasemapGallery", "esri/arcgis/utils",
-			"dojo/parser","dojo/domReady!"
-			], function(Map, Geocoder, BasemapGallery, arcgisUtils, parser) {
+			"esri/map", "esri/dijit/Geocoder", "esri/layers/KMLLayer","esri/dijit/BasemapGallery", 
+			"esri/arcgis/utils","dojo/parser","dojo/dom-style", "dojo/domReady!"
+			], function(Map, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle) {
 				parser.parse();
 				map = new Map("map",{
 					basemap: "topo",
@@ -37,6 +37,12 @@ var Map = function() {
 					toggleBaseMaps(true);
 				}); 
 
+				var kmlUrl = "http://www.dgs.maryland.gov/ISSSD/FuelManagement/FuelingSites.kml";
+				var kml = new KMLLayer(kmlUrl);
+				map.addLayer(kml);
+				kml.on("load", function() {
+					domStyle.set("loading", "display", "none");
+				});
 				$("[rel=tooltip]").tooltip({ placement: 'bottom'});
 
 				var data = [
