@@ -88,7 +88,6 @@ html, body, #map {
 }
 
 #popover_content_wrapper {
-  visibility: hidden;
   background: #fff;
   width: 376px;
   top: 60px;
@@ -129,12 +128,11 @@ html, body, #map {
 }
 
 #popover_overlay_wrapper {
-  visibility: hidden;
   background: #fff;
-  width: 376px;
+  width: 330px;
   height: 400px;
   top: 60px;
-  right:106px;
+  right:128px;
   border:2px solid #666;
 }
 
@@ -254,9 +252,9 @@ html, body, #map {
   border-left: 2px solid #666;
   bottom: 0px;
   height:25px;
-  right: 40px;
+  right: 60px;
 }
-#overlay-icon {
+#overlay-add-icon{
   height:25px;
   width:25px;
   bottom: 0px;
@@ -266,9 +264,36 @@ html, body, #map {
   background-position: center center;
   background-repeat: no-repeat;
 }
-#overlay-icon:hover {
+  #overlay-delete-icon{
+  height:25px;
+  width:25px;
+  bottom: 0px;
+  right: 35px;
+  position: absolute;
+  background-image: url("../images/icons/Settings_Default.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+#overlay-back-icon{
+  height:25px;
+  width:25px;
+  bottom: 0px;
+  right: 8px;
+  position: absolute;
+  background-image: url("../images/icons/Back_Default.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+#overlay-add-icon:hover, #overlay-delete-icon:hover {
   background-image: url("../images/icons/Settings_Hover.png");
 }
+#overlay-back-icon:hover {
+  background-image: url("../images/icons/Back_Hover.png");
+}
+#overlay-back-icon:active {
+  background-image: url("../images/icons/Back_Selected.png");
+}
+
 input[type="checkbox"] {
   margin: 10px 3px 0;
 }
@@ -318,7 +343,48 @@ input[type="checkbox"] {
   .esriPopup a:hover {
     text-decoration: underline;
   }
+  #overlay-manager-title {
+    font-size: 18px;
+    margin: 20px 20px 10px;
+  }
+  #overlay-manager-subtitle {
+    margin: 10px 30px 10px;
+  }
 
+path {
+  stroke: #2BA2CD;
+}
+ul.jqtree-tree .jqtree-moving > .jqtree-element .jqtree-title {
+    outline: dashed 1px #2BA2CD;
+}
+
+ul.jqtree-tree span.jqtree-border {
+    position: absolute;
+    display: block;
+    left: -2px;
+    top: 0;
+    border: solid 2px #2BA2CD;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    margin: 0;
+}
+
+ul.jqtree-tree li.jqtree-ghost span.jqtree-line {
+    background-color: #2BA2CD;
+    height: 2px;
+    padding: 0;
+    position: absolute;
+    top: -1px;
+    left: 10px;
+    width: 100%;
+}
+.form-horizontal .control-label {
+  font-weight: normal;
+}
+#overlay-manager-add-button {
+  background-color: #999999;
+}
 
 @media (max-height: 500px) {
   #popover_content_wrapper {
