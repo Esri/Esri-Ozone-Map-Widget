@@ -51,7 +51,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
             this.features = {};
             this.isHidden = false;
             if(parentId) {
-                resolveParent(overlayId, parentId);
+                resolveParent(this, parentId);
             }
         };
 
@@ -94,19 +94,13 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param previousParentId {String} optional; The id of the overlay that was previously designated as parent to the childId
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
-        var resolveParent = function(childId, parentId, previousParentId) {
+        var resolveParent = function(child, parentId, previousParentId) {
             if(previousParentId) {
-                var array = me.overlays[previousParentId].children;
-
-                for(var i = 0; i < array.length; i--) {
-                    if(array[i] === childId) {
-                        array.splice(i, 1);
-                    }
-                }
+                delete me.overlays[previousParentId].children[child.id];
             }
 
             if(me.overlays[parentId]) {
-                me.overlays[parentId].children[childId] = {};
+                me.overlays[parentId].children[child.id] = child;
             }
         };
 
@@ -222,28 +216,6 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
             }
         };
 
-
-
-        /**
-         * Resolves and returns the overlay and children for a specified overlayId
-         * @private
-         * @method flattenOverlay
-         * @param overlayId {String} the Id for the overlay to be flattened
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
-         */
-        var flattenOverlay = function(overlayId) {
-            if(typeof(me.overlays[overlayId]) === undefined) {
-                adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
-            } else {
-                var overlay = me.overlays[overlayId];
-                console.log(overlay);
-                for(var i = 0; i < overlay.children.length; i++) {
-                    overlay.children[i] = flattenOverlay(overlay.children[i]);
-                }
-                return overlay;
-            }
-        };
-
         /**
          * @method plotFeature
          * @param caller {String} the id of the widget which made the request resulting in this function call.
@@ -323,6 +295,8 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
             var overlay = me.overlays[overlayId];
             overlay.features[featureId] = new Feature(ovelayId, featureId, name, 'kml-url', url, zoom, layer);
+
+            me.zoomFeature(caller, overlayId, featureId);
         };
 
         /**
@@ -331,7 +305,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param featureId {String} The id of the feature which is to be removed
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
-        me.deleteFeature = function(overlayId, featureId) {
+        me.deleteFeature = function(caller, overlayId, featureId) {
             var overlay = me.overlays[overlayId];
             var msg;
             if(typeof(overlay) === 'undefined') {
@@ -357,7 +331,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param featureId {String} The id of the feature which is to be hidden
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
-        me.hideFeature = function(overlayId, featureId) {
+        me.hideFeature = function(caller, overlayId, featureId) {
             var overlay = me.overlays[overlayId];
             var msg;
             if(typeof(overlay) === 'undefined') {
@@ -379,11 +353,12 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
         /**
          * @method showFeature
+         * @param caller {String} The id of the widget which made the request resulting in this call.
          * @param overlayId {String} The id of the overlay which contains the feature to be shown
          * @param featureId {String} The id of the feature which is to be shown
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
-        me.showFeature = function() {
+        me.showFeature = function(caller, overlayId, featureId) {
             var overlay = me.overlays[overlayId];
             var msg;
             if(typeof(overlay) === 'undefined') {
@@ -400,6 +375,66 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
             if(feature.isHidden()) {
                 feature.esriObject.show();
+            }
+        };
+
+        /**
+         * @method zoomFeature
+         * @param caller {String}
+         * @param overlayId {String}
+         * @param featureId {String}
+         * @param [selectedId] {String}
+         * @param [selectedName] {String}
+         */
+        me.zoomFeature = function(sender, overlayId, featureId, selectedId, selectedName) {
+            var overlay = me.overlays[overlayId];
+            var msg;
+            if(typeof(overlay) === 'undefined') {
+                msg = "Overlay could not be found with id " + overlayId;
+                adapter.error.error(caller, msg, {type: "invalid_id", message: msg});
+                return;
+            }
+            var feature = overlay.features[featureId];
+            if(typeof(feature) !== 'undefined') {
+                msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
+                adapter.error.error(caller, msg, {type: "invalid_id", message: msg});
+                return;
+            }
+
+            //FIXME zoom to sub feature
+
+            var extent = findExtent(feature.esriObject);
+
+            map.setExtent(extent);
+        };
+
+        var findExtent = function(esriLayer) {
+            var extent = null;
+            var layers = esriLayer.getLayers();
+
+            var layer;
+            for(var i = 0; i < layers.length; i++) {
+                layer = layers[i];
+
+                if(typeof(layer.getLayers) !== 'undefined') { //kmlLayer
+                    determineMaxExtent(findExtent(layer), extent);
+                } else if(typeof(layer.getImages) !== 'undefined') { //mapImageLayer
+                    var images = layer.getImages();
+                    for(var j = 0; j < images.length; j++) {
+                        extent = determineMaxExtent(image.extent, extent);
+                    }
+                } else { //featureLayer
+                    extent = determineMaxExtent(layer.fullExtent, extent);
+                }
+            }
+            return extent;
+        };
+
+        var determineMaxExtent = function(newExtent, currentMax) {
+            if(currentMax === null) {
+                return newExtent;
+            } else {
+                return currentMax.union(newExtent);
             }
         };
 
@@ -421,7 +456,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
                 if(newOverlayId && newOverlayId !== overlayId) {
                     if(typeof(me.overlays[newOverlayId]) === 'undefined') {
-
+                        //FIXME
                     } else {
                         var newFeature = new Feature(newOverlayId, featureId, name, feature.format, feature.feature, feature.zoom);
                         me.overlays[newOverlayId].features[featureId] = newFeature;
@@ -433,29 +468,52 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
                 var msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
                 adapter.error.error(caller, msg, {type: "invalid_id", message: msg});
             }
-
-
         };
 
+        me.getOverlayTree = function() {
+            var result = []
+            for(overlay in me.overlays) {
+                if(!overlay.parentId) {
+                    result.push(resolveOverlayChildren(overlay.id));
+                }
+            }
+        };
 
+        var resolveOverlayChildren = function(overlayId) {
+            var overlay = me.overlays[overlayId];
 
+            var res = {
+                type: 'overlay',
+                id: overlay.id,
+                name: overlay.name,
+                isHidden: overlay.idHidden,
+                children: []
+            };
 
+            var child;
+            var resolvedChild;
 
+            for(child in overlay.children) {
+                resolvedChild = resolveOverlayChildren(child.id)
+                res.children.push(resolvedChild);
+            }
+            for(feature in overlay.features) {
+                res.children.push({
+                    type: 'feature',
+                    id: feature.id,
+                    name: feature.name,
+                    zoom: feature.zoom,
+                    isHidden: feature.isHidden,
+                    esriObject: feature.esriObject
+                });
+            }
 
-
+            return res;
+        };
 
         me.getOverlays = function() {
             return me.overlays;
-        };
-
-        /**
-         * outputs the current saved overlays
-         * @method debug
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
-         */
-        me.debug = function() {
-            console.log(me.overlays);
-        };
+        }
     };
 
     return EsriOverlayManager;

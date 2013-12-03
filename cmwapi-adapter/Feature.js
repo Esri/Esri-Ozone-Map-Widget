@@ -66,11 +66,11 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
                 var data_item;
                 for(var i = 0; i < data.length; i++) {
                     data_item = data[i];
-                    overlayManager.plotFeatureUrl(data_item.sender, data_item.overlayId, data_item.featureId, data_item.name,
+                    overlayManager.plotFeatureUrl(sender, data_item.overlayId, data_item.featureId, data_item.name,
                         data_item.format, data_item.url, data_item.params, data_item.zoom);
                 }
             } else {
-                overlayManager.plotFeatureUrl(data.sender, data.overlayId, data.featureId, data.name, data.format, data.url,
+                overlayManager.plotFeatureUrl(sender, data.overlayId, data.featureId, data.name, data.format, data.url,
                     data.params, data.zoom);
             }
         };
@@ -91,10 +91,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
                 var data_item;
                 for(var i = 0; i < data.length; i++) {
                     data_item = data[i];
-                    overlayManager.deleteFeature(data_item.overlayId, data_item.featureId);
+                    overlayManager.deleteFeature(sender, data_item.overlayId, data_item.featureId);
                 }
             } else {
-                overlayManager.deleteFeature(data.overlayId, data.featureId);
+                overlayManager.deleteFeature(sender, data.overlayId, data.featureId);
             }
         };
         CommonMapApi.feature.unplot.addHandler(me.handleUnplot);
@@ -135,20 +135,34 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
                 var data_item;
                 for(var i = 0; i < data.length; i++) {
                     data_item = data[i];
-                    overlayManager.showFeature(data_item.overlayId, data_item.featureId);
+                    overlayManager.showFeature(sender, data_item.overlayId, data_item.featureId);
                 }
             } else {
-                overlayManager.showFeature(data.overlayId, data.featureId);
+                overlayManager.showFeature(sender, data.overlayId, data.featureId);
             }
         };
         CommonMapApi.feature.show.addHandler(me.handleShow);
 
         /**
          * Handler for a given feature being selected
-         * //FIXME
+         * @param {string} sender The widget sending a format message
+         * @param {Object|Array} data  A data object or array of data objects.
+         * @param {string} data.overlayId The ID of the overlay.
+         * @param {string} data.featureId The ID of the feature.
+         * @param {string} [data.selectedId] The ID of the actual selected object.  This may be an implementation
+         *    specific subfeature id for data within an aggregated feature.
+         * @param {string} [data.selectedName] The name of the selected object.
          */
-        me.handleSelected = function() {
-            //zoom to the feature on the map
+        me.handleSelected = function(sender, data) {
+            if(data.length > 1) {
+                var data_item;
+                for(var i = 0; i < data.length; i++) {
+                    data_item = data[i];
+                    overlayManager.zoomFeature(sender, data_item.overlayId, data_item.featureId, data_item.selectedId, data_item.selectedName);
+                }
+            } else {
+                overlayManager.zoomFeature(sender, data.overlayId, data.featureId, data.selectedId, data.selectedName);
+            }
         };
         CommonMapApi.feature.selected.addHandler(me.handleSelected);
 
