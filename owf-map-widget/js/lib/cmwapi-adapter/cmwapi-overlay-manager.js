@@ -491,7 +491,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
                 type: 'overlay',
                 id: overlay.id,
                 name: overlay.name,
-                isHidden: overlay.idHidden,
+                isHidden: overlay.isHidden,
                 children: []
             };
 
@@ -508,7 +508,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
                 feature = overlay.features[featureId];
                 res.children.push({
                     type: 'feature',
-                    id: feature.id,
+                    id: feature.featureId,
                     name: feature.name,
                     zoom: feature.zoom,
                     isHidden: feature.isHidden,
