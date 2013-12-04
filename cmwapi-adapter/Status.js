@@ -30,27 +30,26 @@ define(["cmwapi/cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
          */
         me.handleRequest = function(caller, types) {
             if(!types || types.indexOf("view") !== -1) {
-                sendView(caller);
+                me.sendView(caller);
             }
 
             if(!types || types.indexOf("about") !== -1) {
-                sendAbout(caller);
+                me.sendAbout(caller);
             }
 
             if(!types || types.indexOf("format") !== -1) {
-                sendFormat(caller);
+                me.sendFormat(caller);
             }
         };
         CommonMapApi.status.request.addHandler(me.handleRequest);
 
         /**
          * Calculate the view details of the map and announce via the CMW-API
-         * @private
          * @method status.sendView
          * @param caller {String} The Id of the widget which requested the map view status
          * @memberof! module:EsriAdapter#
          */
-        var sendView = function(caller) {
+        me.sendView = function(caller) {
             var bounds = {
                 southWest: {
                     lat: map.geographicExtent.ymin,
@@ -79,7 +78,7 @@ define(["cmwapi/cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
          * @param caller {object} The Id of the widget which requested the map view status
          * @memberof! module:EsriAdapter#
          */
-        var sendAbout = function() {
+        me.sendAbout = function() {
             var version = EsriNS.version;
             var type = "2-D";
             var widgetName = OWF.getInstanceId();
@@ -94,7 +93,7 @@ define(["cmwapi/cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
          * @param caller {object} The Id of the widget which requested the map view status
          * @memberof! module:EsriAdapter#
          */
-        var sendFormat = function() {
+        me.sendFormat = function() {
             var formats = ["kml"/*, "geojson", "wms"*/];
 
             CommonMapApi.status.format.send(formats);

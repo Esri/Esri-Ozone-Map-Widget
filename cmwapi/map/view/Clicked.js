@@ -1,9 +1,18 @@
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], 
     function(Channels, Validator, Error) {
 
-    var SUPPORTED_KEYS = ["alt", "ctrl", "shift", "none"];
-    var SUPPORTED_BUTTONS = ["left", "middle", "right"];
-    var SUPPORTED_TYPES = ["single", "double"];
+    var ALT = "alt";
+    var SHIFT = "shift";
+    var CTRL = "ctrl";
+    var NONE = "none";
+    var LEFT = "left";
+    var MIDDLE = "middle";
+    var RIGHT = "right";
+    var SINGLE = "single";
+    var DOUBLE = "double";
+    var SUPPORTED_KEYS = [ALT, CTRL, SHIFT, NONE];
+    var SUPPORTED_BUTTONS = [LEFT, MIDDLE, RIGHT];
+    var SUPPORTED_TYPES = [SINGLE, DOUBLE];
 
     /**
      * Validate the input types against the supported map status request types.
@@ -16,7 +25,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 return (allowedValues.indexOf(item.toString().toLowerCase()) > -1);
             }
         }
-        return true;
+        return false;
     };
 
     /**
@@ -53,6 +62,25 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
      * @exports cmwapi/map/view/Clicked
      */
     var Clicked = {
+
+        /** CMWAPI Representation of a DOM MouseEvent key or button element. */
+        ALT: ALT,
+        /** CMWAPI Representation of a DOM MouseEvent key or button element. */
+        SHIFT: SHIFT,
+        /** CMWAPI Representation of a DOM MouseEvent key or button element. */
+        CTRL: CTRL,
+        /** CMWAPI Representation of a DOM MouseEvent key or button element. */
+        NONE: NONE,
+        /** CMWAPI Representation of a DOM MouseEvent key or button element. */
+        LEFT: LEFT,
+        /** CMWAPI Representation of a DOM MouseEvent key or button element. */
+        MIDDLE: MIDDLE,
+        /** CMWAPI Representation of a DOM MouseEvent key or button element. */
+        RIGHT: RIGHT,
+        /** CMWAPI Representation of a DOM MouseEvent key or button element. */
+        SINGLE: SINGLE,
+        /** CMWAPI Representation of a DOM MouseEvent key or button element. */
+        DOUBLE: DOUBLE,
 
         /** The keys supported by this click module. */
         SUPPORTED_KEYS: SUPPORTED_KEYS,
