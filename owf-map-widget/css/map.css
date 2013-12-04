@@ -382,9 +382,40 @@ ul.jqtree-tree li.jqtree-ghost span.jqtree-line {
 .form-horizontal .control-label {
   font-weight: normal;
 }
-#overlay-manager-add-button {
-  background-color: #999999;
+.btn-custom {
+  background-color: #2BA2CD;
+  border-color: #2BA2CD;
+  color:white;
 }
+.btn-custom:hover,
+.btn-custom:focus,
+.btn-custom:active,
+.btn-custom.active {
+  background-color: #2791b8;
+  border-color: #2281a3;
+  color:white;
+}
+.btn-custom.disabled:hover,
+.btn-custom.disabled:focus,
+.btn-custom.disabled:active,
+.btn-custom.disabled.active,
+.btn-custom[disabled]:hover,
+.btn-custom[disabled]:focus,
+.btn-custom[disabled]:active,
+.btn-custom[disabled].active,
+fieldset[disabled] .btn-custom:hover,
+fieldset[disabled] .btn-custom:focus,
+fieldset[disabled] .btn-custom:active,
+fieldset[disabled] .btn-custom.active {
+  background-color: #2BA2CD;
+  border-color: #2BA2CD;
+  color:white;
+}
+
+#overlay-removal-tree > .jqtree_common {
+  margin-left: 30px;
+}
+
 
 @media (max-height: 500px) {
   #popover_content_wrapper {

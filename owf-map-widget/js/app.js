@@ -5,9 +5,9 @@
 require([
     "models/map", "models/legend", "dojo/mouse", "dojo/on", "dojo/dom", 
     "dojo/json", "esri/dijit/Geocoder", "esri/layers/KMLLayer","esri/dijit/BasemapGallery", 
-    "esri/arcgis/utils","dojo/parser","dojo/dom-style",
+    "esri/arcgis/utils","dojo/parser","dojo/dom-style", "cmwapi-adapter/cmwapi-adapter",
     "dojo/domReady!"],
-    function(Map, Legend, Mouse, On, Dom, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle) {
+    function(Map, Legend, Mouse, On, Dom, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter) {
         var map = new Map("map", {
             center: [-76.809469, 39.168101],
             zoom: 7,
@@ -15,8 +15,7 @@ require([
         });
 
         var dropZone = Dom.byId("map");
-        console.log(dropZone);
-        var owf_adapter = new OWFAdapter(On , dropZone);
+        var owf_adapter = new OWFAdapter(On , dropZone, Mouse, map);
         
         geocoder = new Geocoder({ 
             map: map 
@@ -33,6 +32,8 @@ require([
             console.log("basemap gallery error:  ", msg);
         });
 
+       var adapter = new cmwapiAdapter(map);
+
         $('#basemaps').on('click', function() {
             toggleBaseMaps();
         }); 
@@ -43,14 +44,20 @@ require([
             toggleOverlaySettings();
             $('#overlay-manager-add').toggleClass('hidden');
             $('#overlay-manager-subtitle').text('Add New Feature');
-            $('#popover_overlay_wrapper').css('height', '305px');
+            //$('#popover_overlay_wrapper').css('height', '305px');
         });
         $('#overlay-delete-icon').on('click', function() {
+            $('#overlay-manager-delete').toggleClass('hidden');
             toggleOverlaySettings();
             $('#overlay-manager-subtitle').text('Delete Existing Overlays');
         });
         $('#overlay-back-icon').on('click', function() {
-            $('#overlay-manager-add').toggleClass('hidden');
+            if(!$('#overlay-manager-add').hasClass('hidden')) {
+                $('#overlay-manager-add').toggleClass('hidden');
+            }
+            if(!$('#overlay-manager-delete').hasClass('hidden')) {
+                $('#overlay-manager-delete').toggleClass('hidden');
+            }
             toggleOverlaySettings();
             
         });
@@ -90,7 +97,40 @@ require([
             children: [
             { label: 'child3' }
             ]
-        }
+        },
+        {
+            label: 'node2',
+            children: [
+            { label: 'child3' }
+            ]
+        },
+        {
+            label: 'node2',
+            children: [
+            { label: 'child3' }
+            ]
+        },
+        {
+            label: 'node2',
+            children: [
+            { label: 'child3' }
+            ]
+        },
+        {
+            label: 'node2',
+            children: [
+            { label: 'child3' }
+            ]
+        },
+        {
+            label: 'node1',
+            image: './sampleimage.png',
+            type: 'feature', 
+            children: [
+                { label: 'child1' },
+                { label: 'Aggrevated Assault/ No Firearm ' }
+            ]
+        },
         ];
 
         var $tree = $('#overlay-tree');
@@ -106,8 +146,24 @@ require([
             }
         });
 
+        var $overlayRemoveTree = $('#overlay-removal-tree');
+        $overlayRemoveTree.tree({
+            data: data,
+            autoOpen: 1,
+            openedIcon: '',
+            closedIcon: '',
+            onCreateLi: function(node, $li) {
+                $li.find('.jqtree-title').before(
+                    '<input type="checkbox" class ="tree-node"/>'
+                );
+            }
+        });
+
                 
         $("#overlay-tree input:checkbox").on('change', function () {
+            $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
+        });
+        $("#overlay-removal-tree input:checkbox").on('change', function () {
             $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
         });
 
