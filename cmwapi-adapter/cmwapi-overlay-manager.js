@@ -474,7 +474,9 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
         me.getOverlayTree = function() {
             var result = []
-            for(var overlay in me.overlays) {
+            var overlay;
+            for(var overlayId in me.overlays) {
+                overlay = me.overlays[overlayId];
                 if(!overlay.parentId) {
                     result.push(resolveOverlayChildren(overlay.id));
                 }
@@ -495,12 +497,15 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
             var child;
             var resolvedChild;
+            var feature;
 
-            for(child in overlay.children) {
+            for(var childId in overlay.children) {
+                child = Overlay.children[childId];
                 resolvedChild = resolveOverlayChildren(child.id)
                 res.children.push(resolvedChild);
             }
-            for(feature in overlay.features) {
+            for(var featureId in overlay.features) {
+                feature = overlay.features[featureId];
                 res.children.push({
                     type: 'feature',
                     id: feature.id,
