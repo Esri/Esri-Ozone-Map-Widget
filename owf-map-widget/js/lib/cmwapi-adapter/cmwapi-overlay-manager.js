@@ -479,6 +479,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
                     result.push(resolveOverlayChildren(overlay.id));
                 }
             }
+            return result;
         };
 
         var resolveOverlayChildren = function(overlayId) {
