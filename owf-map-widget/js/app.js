@@ -3,8 +3,8 @@
 // NOTE: Modules that are not compatible with asynchronous module loading
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
-    "models/map", "models/legend", "dojo/mouse", "dojo/on", "dojo/dom", 
-    "dojo/json", "esri/dijit/Geocoder", "esri/layers/KMLLayer","esri/dijit/BasemapGallery", 
+    "models/map", "models/legend", "dojo/mouse", "dojo/on", "dojo/dom",
+    "dojo/json", "esri/dijit/Geocoder", "esri/layers/KMLLayer","esri/dijit/BasemapGallery",
     "esri/arcgis/utils","dojo/parser","dojo/dom-style", "cmwapi-adapter/cmwapi-adapter",
     "dojo/domReady!"],
     function(Map, Legend, Mouse, On, Dom, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter) {
@@ -16,9 +16,9 @@ require([
 
         var dropZone = Dom.byId("map");
         var owf_adapter = new OWFAdapter(On , dropZone, Mouse, map);
-        
-        geocoder = new Geocoder({ 
-            map: map 
+
+        geocoder = new Geocoder({
+            map: map
         }, "search");
         geocoder.startup();
 
@@ -27,7 +27,7 @@ require([
             map: map
         }, "basemapGallery");
         basemapGallery.startup();
-        
+
         basemapGallery.on("error", function(msg) {
             console.log("basemap gallery error:  ", msg);
         });
@@ -36,7 +36,7 @@ require([
 
         $('#basemaps').on('click', function() {
             toggleBaseMaps();
-        }); 
+        });
         $('#overlay').on('click', function() {
             toggleOverlay();
         });
@@ -59,25 +59,25 @@ require([
                 $('#overlay-manager-delete').toggleClass('hidden');
             }
             toggleOverlaySettings();
-            
+
         });
         $('form').find('input').keyup(function() {
             var emptyInputLength = $('form > div > div > input').filter(function() {
-                return $(this).val() === ''; 
+                return $(this).val() === '';
             }).length;
             var buttonActive = (emptyInputLength === 0 &&  $('#overlay-manager-add-button').hasClass('disabled')) ||
                 (emptyInputLength > 0 && !$('#overlay-manager-add-button').hasClass('disabled'));
             if(buttonActive) {
                 $('#overlay-manager-add-button').toggleClass('disabled');
-            } 
+            }
         });
 
-        var kmlUrl = "http://www.dgs.maryland.gov/ISSSD/FuelManagement/FuelingSites.kml";
+        /*var kmlUrl = "http://www.dgs.maryland.gov/ISSSD/FuelManagement/FuelingSites.kml";
         var kml = new KMLLayer(kmlUrl);
         map.addLayer(kml);
         kml.on("load", function() {
             domStyle.set("loading", "display", "none");
-        });
+        });*/
 
         $("[rel=tooltip]").tooltip({ placement: 'bottom'});
 
@@ -86,7 +86,7 @@ require([
         {
             label: 'node1',
             image: './sampleimage.png',
-            type: 'feature', 
+            type: 'feature',
             children: [
                 { label: 'child1' },
                 { label: 'Aggrevated Assault/ No Firearm ' }
@@ -125,7 +125,7 @@ require([
         {
             label: 'node1',
             image: './sampleimage.png',
-            type: 'feature', 
+            type: 'feature',
             children: [
                 { label: 'child1' },
                 { label: 'Aggrevated Assault/ No Firearm ' }
@@ -159,7 +159,7 @@ require([
             }
         });
 
-                
+
         $("#overlay-tree input:checkbox").on('change', function () {
             $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
         });
@@ -176,7 +176,7 @@ require([
             $('#popover_content_wrapper').toggleClass('hidden');
             $('#basemaps').toggleClass('selected');
         }
-       
+
         var toggleOverlay = function() {
             if(!$('#popover_content_wrapper').hasClass('hidden')) {
                 $('#popover_content_wrapper').toggleClass('hidden');

@@ -258,12 +258,12 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.plotFeatureUrl = function(caller, overlayId, featureId, name, format, url, params, zoom) {
-            if(typeof(me.overlays[overlayId]) === undefined) {
+            if(typeof(me.overlays[overlayId]) === 'undefined') {
                 me.createOverlay(caller, overlayId, overlayId);
             }
 
             var overlay = me.overlays[overlayId];
-            if(typeof(overlay.features[featureId] !== 'undefined')) {
+            if(typeof(overlay.features[featureId]) !== 'undefined') {
                 me.deleteFeature(overlayId, featureId);
             }
 
@@ -289,14 +289,16 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         var plotKmlFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
-            var layer = new KMLLayer(featureId, url);
+            var layer = new KMLLayer(url);
 
             map.addLayer(layer);
 
             var overlay = me.overlays[overlayId];
-            overlay.features[featureId] = new Feature(ovelayId, featureId, name, 'kml-url', url, zoom, layer);
+            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'kml-url', url, zoom, layer);
 
-            me.zoomFeature(caller, overlayId, featureId);
+            if(zoom) {
+                me.zoomFeature(caller, overlayId, featureId);
+            }
         };
 
         /**
@@ -315,7 +317,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
             }
 
             var feature = overlay.features[featureId];
-            if(typeof(feature) !== 'undefined') {
+            if(typeof(feature) === 'undefined') {
                 msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
                 adapter.error.error(caller, msg, {type: "invalid_id", message: msg});
                 return;
@@ -340,7 +342,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
                 return;
             }
             var feature = overlay.features[featureId];
-            if(typeof(feature) !== 'undefined') {
+            if(typeof(feature) === 'undefined') {
                 msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
                 adapter.error.error(caller, msg, {type: "invalid_id", message: msg});
                 return;
@@ -367,7 +369,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
                 return;
             }
             var feature = overlay.features[featureId];
-            if(typeof(feature) !== 'undefined') {
+            if(typeof(feature) === 'undefined') {
                 msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
                 adapter.error.error(caller, msg, {type: "invalid_id", message: msg});
                 return;
@@ -386,7 +388,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
          * @param [selectedId] {String}
          * @param [selectedName] {String}
          */
-        me.zoomFeature = function(sender, overlayId, featureId, selectedId, selectedName) {
+        me.zoomFeature = function(caller, overlayId, featureId, selectedId, selectedName) {
             var overlay = me.overlays[overlayId];
             var msg;
             if(typeof(overlay) === 'undefined') {
@@ -395,7 +397,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
                 return;
             }
             var feature = overlay.features[featureId];
-            if(typeof(feature) !== 'undefined') {
+            if(typeof(feature) === 'undefined') {
                 msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
                 adapter.error.error(caller, msg, {type: "invalid_id", message: msg});
                 return;
