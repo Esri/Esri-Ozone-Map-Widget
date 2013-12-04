@@ -474,7 +474,7 @@ define(["esri/layers/KMLLayer"], function(KMLLayer) {
 
         me.getOverlayTree = function() {
             var result = []
-            for(overlay in me.overlays) {
+            for(var overlay in me.overlays) {
                 if(!overlay.parentId) {
                     result.push(resolveOverlayChildren(overlay.id));
                 }
