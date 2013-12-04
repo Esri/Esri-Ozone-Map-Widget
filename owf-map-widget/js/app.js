@@ -32,7 +32,9 @@ require([
             console.log("basemap gallery error:  ", msg);
         });
 
-       var adapter = new cmwapiAdapter(map);
+       //var adapter = new cmwapiAdapter(map);
+       //console.log(adapter.overlayManager.getOverlayTree());
+       console.log("Hi mom");
 
         $('#basemaps').on('click', function() {
             toggleBaseMaps();
@@ -44,12 +46,13 @@ require([
             toggleOverlaySettings();
             $('#overlay-manager-add').toggleClass('hidden');
             $('#overlay-manager-subtitle').text('Add New Feature');
-            //$('#popover_overlay_wrapper').css('height', '305px');
+            $('#popover_overlay_wrapper').css('height', '305px');
         });
         $('#overlay-delete-icon').on('click', function() {
             $('#overlay-manager-delete').toggleClass('hidden');
             toggleOverlaySettings();
             $('#overlay-manager-subtitle').text('Delete Existing Overlays');
+            resizeOverlayToTree('#overlay-removal-tree', 120);
         });
         $('#overlay-back-icon').on('click', function() {
             if(!$('#overlay-manager-add').hasClass('hidden')) {
@@ -59,7 +62,7 @@ require([
                 $('#overlay-manager-delete').toggleClass('hidden');
             }
             toggleOverlaySettings();
-
+            resizeOverlayToTree('#overlay-tree', 40);
         });
         $('form').find('input').keyup(function() {
             var emptyInputLength = $('form > div > div > input').filter(function() {
@@ -183,6 +186,7 @@ require([
                 $('#basemaps').toggleClass('selected');
             }
             $('#popover_overlay_wrapper').toggleClass('hidden');
+            resizeOverlayToTree('#overlay-tree', 40);
             $('#overlay').toggleClass('selected');
         }
 
@@ -193,6 +197,12 @@ require([
             $('#overlay-delete-icon').toggleClass('hidden');
             $('#overlay-back-icon').toggleClass('hidden');
             $('#overlay-vr').css('right', '36px');
+        }
+
+        var resizeOverlayToTree = function(tree, offset) {
+            var treeHeight = $(tree).css('height');
+            treeHeight = parseInt(treeHeight.substr(0, treeHeight.length-2));
+            $('#popover_overlay_wrapper').css('height', (treeHeight + offset) + 'px');
         }
 
     });
