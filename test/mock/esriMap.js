@@ -13,6 +13,10 @@ define(function() {
         this.getScale = function() {
             return 2;
         };
+
+        this.on = function() {
+
+        }
     };
 
     return Map;

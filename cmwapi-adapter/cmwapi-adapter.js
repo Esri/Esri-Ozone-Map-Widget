@@ -36,10 +36,10 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         /**
          * Handles click events on an ArcGIS map and reports the event over a CMWAPI channel.
          * @private
-         * @param evt A MouseEvent fired by an ArcGIS map.  This is essentially a DOM MouseEvent
+         * @param {MouseEvent} evt A MouseEvent fired by an ArcGIS map.  This is essentially a DOM MouseEvent
          *     with added, ArcGIS-specific attributes.
-         * @param type Should be either {@link module:cmwapi/cmwapi/view/Clicked.SINGLE} or 
-         *    {@link module:cmwapi/cmwapi/view/Clicked.DOUBLE}; Default is the former value.
+         * @param {string} type Should be either {@link module:cmwapi/map/view/Clicked|SINGLE} or 
+         *    {@link module:cmwapi/map/view/Clicked|DOUBLE}; Default is the former value.
          * @memberof! module:EsriAdapter#
          */
         var sendClick = function(evt, type) {
@@ -92,7 +92,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         /**
          * Handles double click events on an ArcGIS map and reports the event over a CMWAPI channel.
          * @private
-         * @param evt A MouseEvent fired by an ArcGIS map.  This is essentially a DOM MouseEvent
+         * @param {MouseEvent} evt A MouseEvent fired by an ArcGIS map.  This is essentially a DOM MouseEvent
          *     with added, ArcGIS-specific attributes.
          * @memberof! module:EsriAdapter#
          */
