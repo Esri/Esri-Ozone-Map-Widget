@@ -1,7 +1,11 @@
-var OWFAdapter = function(On, dropZone) {
+var OWFAdapter = function(On, dropZone, Mouse, map) {
 		// Initialize OWF-specific functionality
+		console.log("*****************************************************************8");
 		if (OWF.Util.isRunningInOWF()) {
+			
 			OWF.ready(function () {
+				console.log("*****************************************************************8");
+				console.log(OWF.Eventing.subscribe);
 				// Listen to channel used by the example Contacts Manager
 				OWF.Eventing.subscribe(
 					"org.owfgoss.owf.examples.GoogleMapsExample.plotAddress",
@@ -59,7 +63,7 @@ var OWFAdapter = function(On, dropZone) {
 				On(dropZone, Mouse.leave, function(evt) {
 					OWF.DragAndDrop.setDropEnabled(false);
 				});
-
+				
 				OWF.DragAndDrop.addDropZoneHandler({
 					dropZone: dropZone,
 					handler: function (msg) {
