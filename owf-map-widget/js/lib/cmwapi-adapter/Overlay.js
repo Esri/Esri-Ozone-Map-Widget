@@ -33,10 +33,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
         me.handleCreate = function(sender, data) {
             if(data.length > 1) {
                 for(var i = 0; i < data.length; i++) {
-                    overlayManager.createOverlay(sender, data[i].name, data[i].overlayId, data[i].parentId);
+                    overlayManager.overlay.createOverlay(sender, data[i].name, data[i].overlayId, data[i].parentId);
                 }
             } else {
-                overlayManager.createOverlay(sender, data.name, data.overlayId, data.parentId);
+                overlayManager.overlay.createOverlay(sender, data.name, data.overlayId, data.parentId);
             }
         };
         CommonMapApi.overlay.create.addHandler(me.handleCreate);
@@ -53,10 +53,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
         me.handleRemove = function(sender, data) {
             if(data.length > 1) {
                 for(var i = 0; i < data.length; i++) {
-                    overlayManager.removeOverlay(sender, data[i].overlayId);
+                    overlayManager.overlay.removeOverlay(sender, data[i].overlayId);
                 }
             } else {
-                overlayManager.removeOverlay(sender, data.overlayId);
+                overlayManager.overlay.removeOverlay(sender, data.overlayId);
             }
 
         };
@@ -74,10 +74,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
         me.handleHide = function(sender, data) {
             if(data.length > 1) {
                 for(var i = 0; i < data.length; i++) {
-                    overlayManager.hideOverlay(sender, data[i].overlayId);
+                    overlayManager.overlay.hideOverlay(sender, data[i].overlayId);
                 }
             } else {
-                overlayManager.hideOverlay(sender, data.overlayId);
+                overlayManager.overlay.hideOverlay(sender, data.overlayId);
             }
         };
         CommonMapApi.overlay.hide.addHandler(me.handleHide);
@@ -94,10 +94,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
         me.handleShow = function(sender, data) {
             if(data.length > 1) {
                 for(var i = 0; i < data.length; i++) {
-                    overlayManager.showOverlay(sender, data[i].overlayId);
+                    overlayManager.overlay.showOverlay(sender, data[i].overlayId);
                 }
             } else {
-                overlayManager.showOverlay(sender, data.overlayId);
+                overlayManager.overlay.showOverlay(sender, data.overlayId);
             }
         };
         CommonMapApi.overlay.show.addHandler(me.handleShow);
@@ -118,10 +118,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
         me.handleUpdate = function(sender, data) {
             if(data.length > 1) {
                 for(var i = 0; i < data.length; i++) {
-                    overlayManager.updateOverlay(sender, data[i].name, data[i].overlayId, data[i].parentId);
+                    overlayManager.overlay.updateOverlay(sender, data[i].name, data[i].overlayId, data[i].parentId);
                 }
             } else {
-                overlayManager.updateOverlay(sender, data.name, data.overlayId, data.parentId);
+                overlayManager.overlay.updateOverlay(sender, data.name, data.overlayId, data.parentId);
             }
         };
         CommonMapApi.overlay.update.addHandler(me.handleUpdate);
