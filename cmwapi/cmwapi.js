@@ -65,6 +65,9 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error", "cmwapi/map/S
 
     // Add any version information and static config elements here.
 
+    /** The validator utilizes used by this library to check CMWAPI messages. */
+    Map.validator = Validator;
+    
     /** The version of this implementation of the CMW API specification. */
     Map.version = '1.1';
 

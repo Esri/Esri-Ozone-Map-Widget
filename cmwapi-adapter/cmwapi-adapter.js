@@ -17,9 +17,9 @@
  *
  * @module EsriAdapter
  */
-define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cmwapi-adapter/Status", "cmwapi-adapter/Error",
-        "cmwapi-adapter/EsriOverlayManager"],
-        function(CommonMapApi, Overlay, Feature, Status, Error, OverlayManager) {
+define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cmwapi-adapter/Status",
+        "cmwapi-adapter/View", "cmwapi-adapter/Error", "cmwapi-adapter/EsriOverlayManager"],
+        function(CommonMapApi, Overlay, Feature, Status, View, Error, OverlayManager) {
 
     /**
      * @classdesc Adapter layer between Common Map Widget API v. 1.1 javascript
@@ -128,6 +128,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         this.overlay = new Overlay(this, this.overlayManager);
         this.feature = new Feature(this, this.overlayManager);
         this.status = new Status(this, map );
+        this.view = new View(map, this.overlayManager);
         this.error = new Error(this);
 
         // Attach any custom map handlers.
