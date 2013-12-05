@@ -18,7 +18,7 @@
  * @module EsriAdapter
  */
 define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cmwapi-adapter/Status", "cmwapi-adapter/Error",
-        "cmwapi-adapter/cmwapi-overlay-manager"],
+        "cmwapi-adapter/EsriOverlayManager"],
         function(CommonMapApi, Overlay, Feature, Status, Error, OverlayManager) {
 
     /**
