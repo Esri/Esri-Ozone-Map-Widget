@@ -139,6 +139,7 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
             if(zoom) {
                 me.zoomFeature(caller, overlayId, featureId);
             }
+            manager.treeChanged();
         };
 
         /**
@@ -165,6 +166,7 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
 
             map.removeLayer(feature.esriObject);
             delete overlay.features[featureId];
+            manager.treeChanged();
         };
 
         /**
@@ -190,6 +192,7 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
 
             if(!feature.isHidden()) {
                 feature.esriObject.hide();
+                manager.treeChanged();
             }
         };
 
@@ -217,6 +220,7 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
 
             if(feature.isHidden()) {
                 feature.esriObject.show();
+                manager.treeChanged();
             }
         };
 
@@ -306,6 +310,7 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
                         //FIXME handle if the new overlay is hidden
                     }
                 }
+                manager.treeChanged();
             } else {
                 var msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
                 adapter.error.error(caller, msg, {type: "invalid_id", message: msg});
