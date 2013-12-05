@@ -34,16 +34,29 @@ require([
 
        var adapter = new cmwapiAdapter(map);
 
+        $('#tooltip-x-button').on('click', function() {
+            $('#no-overlay-tooltip').toggleClass('hidden');
+        });
+        $('#overlay').on('click', function() {
+            toggleOverlayManager();
+            closeManagerWindowsIfOpen();
+            if(isOverlayTreeEmpty()) {
+                toggleManagerTooltip('show');
+            } else {
+                toggleManagerTooltip('hide');
+                updateTreeData()
+                toggleOverlayTree('show');
+            }
+            console.log(adapter.overlayManager.getOverlayTree());
+        });
+
         $('#basemaps').on('click', function() {
             toggleBaseMaps();
         });
-        $('#overlay').on('click', function() {
-            toggleOverlay();
-            $('#overlay-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
-            console.log(adapter.overlayManager.getOverlayTree());
-        });
         $('#overlay-add-icon').on('click', function() {
             toggleOverlaySettings();
+            toggleOverlayTree('hide');
+            toggleManagerTooltip('hide');
             $('#overlay-manager-add').toggleClass('hidden');
             $('#overlay-manager-subtitle').text('Add New Feature');
             $('#popover_overlay_wrapper').css('height', '305px');
@@ -51,19 +64,29 @@ require([
         $('#overlay-delete-icon').on('click', function() {
             $('#overlay-manager-delete').toggleClass('hidden');
             toggleOverlaySettings();
+            toggleOverlayTree('hide');
+            toggleManagerTooltip('hide');
             $('#overlay-manager-subtitle').text('Delete Existing Overlays');
             resizeOverlayToTree('#overlay-removal-tree', 120);
         });
         $('#overlay-back-icon').on('click', function() {
-            if(!$('#overlay-manager-add').hasClass('hidden')) {
-                $('#overlay-manager-add').toggleClass('hidden');
-            }
-            if(!$('#overlay-manager-delete').hasClass('hidden')) {
-                $('#overlay-manager-delete').toggleClass('hidden');
-            }
+            closeManagerWindowsIfOpen();
             toggleOverlaySettings();
+            toggleOverlayTree('show');
+            if(isOverlayTreeEmpty()) {
+                toggleManagerTooltip('show');
+            }
             resizeOverlayToTree('#overlay-tree', 40);
         });
+
+
+        var isOverlayTreeEmpty = function() {
+            console.log(adapter.overlayManager.getOverlayTree().length);
+            return adapter.overlayManager.getOverlayTree().length === 0;
+        };
+
+
+
         $('form').find('input').keyup(function() {
             var emptyInputLength = $('form > div > div > input').filter(function() {
                 return $(this).val() === '';
@@ -75,66 +98,7 @@ require([
             }
         });
 
-        /*var kmlUrl = "http://www.dgs.maryland.gov/ISSSD/FuelManagement/FuelingSites.kml";
-        var kml = new KMLLayer(kmlUrl);
-        map.addLayer(kml);
-        kml.on("load", function() {
-            domStyle.set("loading", "display", "none");
-        });*/
-
         $("[rel=tooltip]").tooltip({ placement: 'bottom'});
-
-        //Sample tree data for overlay manager
-        // var data = [
-        // {
-        //     name: 'node1',
-        //     image: './sampleimage.png',
-        //     type: 'feature',
-        //     children: [
-        //         { label: 'child1' },
-        //         { label: 'Aggrevated Assault/ No Firearm ' }
-        //     ]
-        // },
-        // {
-        //     label: 'node2',
-        //     children: [
-        //     { label: 'child3' }
-        //     ]
-        // },
-        // {
-        //     label: 'node2',
-        //     children: [
-        //     { label: 'child3' }
-        //     ]
-        // },
-        // {
-        //     label: 'node2',
-        //     children: [
-        //     { label: 'child3' }
-        //     ]
-        // },
-        // {
-        //     label: 'node2',
-        //     children: [
-        //     { label: 'child3' }
-        //     ]
-        // },
-        // {
-        //     label: 'node2',
-        //     children: [
-        //     { label: 'child3' }
-        //     ]
-        // },
-        // {
-        //     label: 'node1',
-        //     image: './sampleimage.png',
-        //     type: 'feature',
-        //     children: [
-        //         { label: 'child1' },
-        //         { label: 'Aggrevated Assault/ No Firearm ' }
-        //     ]
-        // },
-        // ];
         var data = adapter.overlayManager.getOverlayTree();
         console.log(data);
         var $tree = $('#overlay-tree');
@@ -163,14 +127,40 @@ require([
             }
         });
 
-        $("#overlay-tree input:checkbox").on('change', function () {
-            $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
-        });
-        $("#overlay-removal-tree input:checkbox").on('change', function () {
+        /**
+        * Whenever either the trees parent nodes are clicked the children nodes are also checked
+        * respectively.
+        **/
+        $("#overlay-tree input:checkbox, #overlay-removal-tree input:checkbox").on('change', function () {
             $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
         });
 
 
+
+        var closeManagerWindowsIfOpen = function() {
+            if(!$('#overlay-manager-add').hasClass('hidden')) {
+                $('#overlay-manager-add').toggleClass('hidden');
+            }
+            if(!$('#overlay-manager-delete').hasClass('hidden')) {
+                $('#overlay-manager-delete').toggleClass('hidden');
+            }
+                $('#overlay-manager-subtitle').text('');
+        };
+
+
+        var toggleOverlaySettings = function() {
+            $('#overlay-manager').toggleClass('hidden');
+            $('#overlay-add-icon').toggleClass('hidden');
+            $('#overlay-delete-icon').toggleClass('hidden');
+            $('#overlay-back-icon').toggleClass('hidden');
+            $('#overlay-vr').css('right', '36px');
+        }
+
+        /**
+        * Method used by the button binded to the basemaps icon.
+        * Toggles the basemaps popover open/close.
+        * If the overlay manager popover is already open then close it.
+        **/
         var toggleBaseMaps = function() {
             if(!$('#popover_overlay_wrapper').hasClass('hidden')) {
                 $('#popover_overlay_wrapper').toggleClass('hidden');
@@ -180,7 +170,13 @@ require([
             $('#basemaps').toggleClass('selected');
         }
 
-        var toggleOverlay = function() {
+        /**
+        * Method used by the button binded to the overlay manager icon.
+        * Toggles the overlay manager open/close.
+        * If the basemap popover is already open then close it.
+        * Resize the window to the correct size given the tree.
+        **/
+        var toggleOverlayManager = function() {
             if(!$('#popover_content_wrapper').hasClass('hidden')) {
                 $('#popover_content_wrapper').toggleClass('hidden');
                 $('#basemaps').toggleClass('selected');
@@ -190,19 +186,50 @@ require([
             $('#overlay').toggleClass('selected');
         }
 
-        var toggleOverlaySettings = function() {
-            $('#overlay-tree').toggleClass('hidden');
-            $('#overlay-manager').toggleClass('hidden');
-            $('#overlay-add-icon').toggleClass('hidden');
-            $('#overlay-delete-icon').toggleClass('hidden');
-            $('#overlay-back-icon').toggleClass('hidden');
-            $('#overlay-vr').css('right', '36px');
-        }
-
+        /**
+        * This function is used to automatically adjust the size of the window to the size of the tree plus
+        * a given specified offset/padding.
+        **/
         var resizeOverlayToTree = function(tree, offset) {
             var treeHeight = $(tree).css('height');
             treeHeight = parseInt(treeHeight.substr(0, treeHeight.length-2));
             $('#popover_overlay_wrapper').css('height', (treeHeight + offset) + 'px');
         }
+
+        /**
+        * This function is called each time the tree needs to be updated, the updating is handled through
+        * jquery tree.
+        **/
+        var updateTreeData = function() {
+            $('#overlay-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
+            $('#overlay-removal-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
+            resizeOverlayToTree('#overlay-tree', 40);
+        }
+
+        /**
+        * This is used to toggle the overlay tree within the Overlay manager window.  If
+        * there are any overlays to display and you are not adding or removing overlays/features
+        * then the tree should be visible.
+        **/
+        var toggleOverlayTree = function(action) {
+            var hideOpenTree = (action === 'hide' && !$('#overlay-tree').hasClass('hidden'));
+            var openClosedTree = (action === 'show' && $('#overlay-tree').hasClass('hidden'));
+            if(hideOpenTree || openClosedTree){
+                $('#overlay-tree').toggleClass('hidden');
+            }
+        };
+
+        /**
+        * This is used to toggle the tooltip within the Overlay manager window.  This tooltip
+        * should only display if there are no overlays to display.  This is a convenience method
+        * to close or open the tooltip depending on action paramater given.
+        **/
+        var toggleManagerTooltip= function(action) {
+            var hideOpenTooltip = (action === 'hide' && !$('#no-overlay-tooltip').hasClass('hidden'));
+            var openClosedTooltip = (action === 'show' && $('#no-overlay-tooltip').hasClass('hidden'));
+            if(hideOpenTooltip || openClosedTooltip){
+                $('#no-overlay-tooltip').toggleClass('hidden');
+            }
+        };
 
     });
