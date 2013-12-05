@@ -32,15 +32,15 @@ require([
             console.log("basemap gallery error:  ", msg);
         });
 
-       //var adapter = new cmwapiAdapter(map);
-       //console.log(adapter.overlayManager.getOverlayTree());
-       console.log("Hi mom");
+       var adapter = new cmwapiAdapter(map);
 
         $('#basemaps').on('click', function() {
             toggleBaseMaps();
         });
         $('#overlay').on('click', function() {
             toggleOverlay();
+            $('#overlay-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
+            console.log(adapter.overlayManager.getOverlayTree());
         });
         $('#overlay-add-icon').on('click', function() {
             toggleOverlaySettings();
@@ -85,57 +85,58 @@ require([
         $("[rel=tooltip]").tooltip({ placement: 'bottom'});
 
         //Sample tree data for overlay manager
-        var data = [
-        {
-            label: 'node1',
-            image: './sampleimage.png',
-            type: 'feature',
-            children: [
-                { label: 'child1' },
-                { label: 'Aggrevated Assault/ No Firearm ' }
-            ]
-        },
-        {
-            label: 'node2',
-            children: [
-            { label: 'child3' }
-            ]
-        },
-        {
-            label: 'node2',
-            children: [
-            { label: 'child3' }
-            ]
-        },
-        {
-            label: 'node2',
-            children: [
-            { label: 'child3' }
-            ]
-        },
-        {
-            label: 'node2',
-            children: [
-            { label: 'child3' }
-            ]
-        },
-        {
-            label: 'node2',
-            children: [
-            { label: 'child3' }
-            ]
-        },
-        {
-            label: 'node1',
-            image: './sampleimage.png',
-            type: 'feature',
-            children: [
-                { label: 'child1' },
-                { label: 'Aggrevated Assault/ No Firearm ' }
-            ]
-        },
-        ];
-
+        // var data = [
+        // {
+        //     name: 'node1',
+        //     image: './sampleimage.png',
+        //     type: 'feature',
+        //     children: [
+        //         { label: 'child1' },
+        //         { label: 'Aggrevated Assault/ No Firearm ' }
+        //     ]
+        // },
+        // {
+        //     label: 'node2',
+        //     children: [
+        //     { label: 'child3' }
+        //     ]
+        // },
+        // {
+        //     label: 'node2',
+        //     children: [
+        //     { label: 'child3' }
+        //     ]
+        // },
+        // {
+        //     label: 'node2',
+        //     children: [
+        //     { label: 'child3' }
+        //     ]
+        // },
+        // {
+        //     label: 'node2',
+        //     children: [
+        //     { label: 'child3' }
+        //     ]
+        // },
+        // {
+        //     label: 'node2',
+        //     children: [
+        //     { label: 'child3' }
+        //     ]
+        // },
+        // {
+        //     label: 'node1',
+        //     image: './sampleimage.png',
+        //     type: 'feature',
+        //     children: [
+        //         { label: 'child1' },
+        //         { label: 'Aggrevated Assault/ No Firearm ' }
+        //     ]
+        // },
+        // ];
+        var data = adapter.overlayManager.getOverlayTree();
+        console.log(data);
         var $tree = $('#overlay-tree');
         $tree.tree({
             data: data,
@@ -161,7 +162,6 @@ require([
                 );
             }
         });
-
 
         $("#overlay-tree input:checkbox").on('change', function () {
             $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
