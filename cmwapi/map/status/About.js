@@ -45,43 +45,64 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
         /**
          * Send About information that describes this widget and its level of CMWAPI support.
-         * @param {string} version The version of this widget
-         * @param {string} type One of the {@link module:cmwapi/map/status/About.TYPES_ALLOWED|TYPES_ALLOWED} values.
-         * @param {string} widgetName - name of the map widget
+         * @param {Object|Array} data
+         * 
+         * @param {string} data.version The version of this widget
+         * @param {string} data.type One of the {@link module:cmwapi/map/status/About.TYPES_ALLOWED|TYPES_ALLOWED} values.
+         * @param {string} data.widgetName - name of the map widget
          */
-        send: function(version, type, widgetName) {
+        send: function(data) {
 
-            var validData = true;
+            // validData will story results from any Validator and may be reused for internal
+            // error bookkeeping.
+            var validData = Validator.validObjectOrArray( data );
+            var payload = validData.payload;
             var msg;
 
-            if (!version) {
-                validData = false;
-                msg += 'Need a version of the CMWAPI; ';
+            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // note the error and return.
+            if (!validData.result) {
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_ABOUT, data, 
+                    validData.msg);
+                return;
             }
 
-            // valid type
-            if (!type) {
-                validData = false;
-                msg += 'Need a type of widget: see SUPPORTED_MAP_TYPES; ';
-            } else {
-                var validType = Validator.validMapType(type);
-                if (!validType.result) {
+            for (var i=0; i < payload.length; i++) {
+
+                if (!data.version) {
                     validData = false;
-                    msg += 'Need a type of widget within TYPES_ALLOWED; ';
+                    msg += 'Need a version of the CMWAPI; ';
+                }
+
+                // valid type
+                if (!data.type) {
+                    validData = false;
+                    msg += 'Need a type of widget: see SUPPORTED_MAP_TYPES; ';
+                } else {
+                    var validType = Validator.validMapType(data.type);
+                    if (!validType.result) {
+                        validData = false;
+                        msg += 'Need a type of widget within TYPES_ALLOWED; ';
+                    }
+                }
+
+                // has some sort of widget name
+                if (!data.widgetName) {
+                    validData = false;
+                    msg += 'Need a widget name; ';
                 }
             }
 
-            // has some sort of widget name
-            if (!widgetName) {
-                validData = false;
-                msg += 'Need a widget name; ';
-            }
-
-            var dataPayload = Ozone.util.toString( {version: version, type: type, widgetName: widgetName});
-            if (validData) {
-                OWF.Eventing.publish(Channels.MAP_STATUS_ABOUT, dataPayload);
+            // Send along the payload if we did not fail validation.    
+            if (validData.result) {
+                if (payload.length === 1) {
+                    OWF.Eventing.publish(Channels.MAP_STATUS_ABOUT, Ozone.util.toString(payload[0]));
+                }
+                else {
+                    OWF.Eventing.publish(Channels.MAP_STATUS_ABOUT, Ozone.util.toString(payload));
+                }
             } else {
-                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_ABOUT, dataPayload, msg);
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_ABOUT, payload, msg);
             }
 
         },
@@ -97,23 +118,41 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
             var newHandler = function( sender, msg) {
+
+                // Parse the sender and msg to JSON.
+                var jsonSender = Ozone.util.parseJson(sender);
+                var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
+                var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
+                var validData = true;
+                var errorMsg = "";
+
                 var validData= true;
-                if (!msg.version) {
-                    Error.send(sender, Channels.MAP_STATUS_ABOUT, null, "Need a version of the CMWAPI");
-                    validData = false;
-                }
-                if (!msg.type) {
-                    Error.send(sender, Channels.MAP_STATUS_ABOUT, null, "Need a type of widget: see TYPES_ALLOWED");
-                    validData = false;
-                }
-                if (!msg.widgetName) {
-                    Error.send(sender, Channels.MAP_STATUS_ABOUT, null, "Need a widget name");
-                    validData = false;
-                }
+
+                for (var i = 0; i < data.length; i ++) {
+                    if (!data[i].version) {
+                        errorMsg += 'Need a version for the status at index ' + i + '. ';
+                        validData = false;
+                    }
+                    if (!data[i].type) {
+                        errorMsg += 'Need a type of widget (see TYPES_ALLOWED) for the status at index ' + i + '. ';
+                        validData = false;
+                    }
+                    if (!data[i].widgetName) {
+                        errorMsg += 'Need a widget name for the status at index ' + i + '. ';
+                        validData = false;
+                    }
+                } 
+
                 if (validData) {
-                    handler(sender, msg.version, msg.type, msg.widgetName);
+                    handler(sender, (data.length === 1) ? data[0] : data);
+                }
+                else {
+                    Error.send(sender, Channels.MAP_STATUS_ABOUT, 
+                        msg,
+                        errorMsg);
                 }
             };
+
 
 
             OWF.Eventing.subscribe(Channels.MAP_STATUS_ABOUT, newHandler);
