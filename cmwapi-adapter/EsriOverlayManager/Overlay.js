@@ -74,7 +74,7 @@ define(function() {
          */
         me.createOverlay = function(caller, overlayId, name, parentId) {
             if(manager.overlays[overlayId]) {
-                manager.updateOverlay(name, overlayId, parentId);
+                me.updateOverlay(caller, name, overlayId, parentId);
             } else {
                 manager.overlays[overlayId] = new Overlay(overlayId, name, parentId);
                 manager.treeChanged();

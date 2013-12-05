@@ -33,10 +33,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
         me.handleCreate = function(sender, data) {
             if(data.length > 1) {
                 for(var i = 0; i < data.length; i++) {
-                    overlayManager.overlay.createOverlay(sender, data[i].name, data[i].overlayId, data[i].parentId);
+                    overlayManager.overlay.createOverlay(sender, data[i].overlayId, data[i].name, data[i].parentId);
                 }
             } else {
-                overlayManager.overlay.createOverlay(sender, data.name, data.overlayId, data.parentId);
+                overlayManager.overlay.createOverlay(sender, data.overlayId, data.name, data.parentId);
             }
         };
         CommonMapApi.overlay.create.addHandler(me.handleCreate);
