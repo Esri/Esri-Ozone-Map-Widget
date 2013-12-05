@@ -34,6 +34,7 @@ require([
 
        var adapter = new cmwapiAdapter(map);
 
+
         $('#tooltip-x-button').on('click', function() {
             $('#no-overlay-tooltip').toggleClass('hidden');
         });
@@ -201,11 +202,12 @@ require([
         * jquery tree.
         **/
         var updateTreeData = function() {
+            console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             $('#overlay-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
             $('#overlay-removal-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
             resizeOverlayToTree('#overlay-tree', 40);
-        }
-
+        };
+        adapter.overlayManager.bindTreeChangeHandler(updateTreeData);
         /**
         * This is used to toggle the overlay tree within the Overlay manager window.  If
         * there are any overlays to display and you are not adding or removing overlays/features
