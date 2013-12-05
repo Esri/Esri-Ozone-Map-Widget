@@ -190,7 +190,8 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
                 return;
             }
 
-            if(!feature.isHidden()) {
+            if(!feature.isHidden) {
+                feature.isHidden = true;
                 feature.esriObject.hide();
                 manager.treeChanged();
             }
@@ -218,7 +219,9 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
                 return;
             }
 
-            if(feature.isHidden()) {
+            if(feature.isHidden) {
+                console.log("about to call");
+                feature.isHidden = false;
                 feature.esriObject.show();
                 manager.treeChanged();
             }

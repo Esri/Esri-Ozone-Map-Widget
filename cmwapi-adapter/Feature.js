@@ -114,10 +114,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
                 var data_item;
                 for(var i = 0; i < data.length; i++) {
                     data_item = data[i];
-                    overlayManager.feature.hideFeature(data_item.overlayId, data_item.featureId);
+                    overlayManager.feature.hideFeature(sender, data_item.overlayId, data_item.featureId);
                 }
             } else {
-                overlayManager.feature.hideFeature(data.overlayId, data.featureId);
+                overlayManager.feature.hideFeature(sender, data.overlayId, data.featureId);
             }
 
         };
@@ -181,10 +181,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
                 var data_item;
                 for(var i = 0; i < data.length; i++) {
                     data_item = data[i];
-                    overlayManager.feature.hideFeature(data_item.overlayId, data_item.featureId, data_item.name, data_item.newOverlayId);
+                    overlayManager.feature.hideFeature(sender, data_item.overlayId, data_item.featureId, data_item.name, data_item.newOverlayId);
                 }
             } else {
-                overlayManager.feature.hideFeature(data.overlayId, data.featureId, data.name, data.newOverlayId);
+                overlayManager.feature.hideFeature(sender, data.overlayId, data.featureId, data.name, data.newOverlayId);
             }
         };
         CommonMapApi.feature.update.addHandler(me.handleUpdate);
