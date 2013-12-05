@@ -318,7 +318,7 @@ html, body, #map {
   bottom: 0px;
   right: 8px;
   position: absolute;
-  background-image: url("../images/icons/Back_Default.png");
+  background-image: url("../images/icons/Overlay_Manager_Back_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -335,10 +335,10 @@ html, body, #map {
   background-image: url("../images/icons/Remove_Overlay_Selected.png");
 }
 #overlay-back-icon:hover {
-  background-image: url("../images/icons/Back_Hover.png");
+  background-image: url("../images/icons/Overlay_Manager_Back_Hover.png");
 }
 #overlay-back-icon:active {
-  background-image: url("../images/icons/Back_Selected.png");
+  background-image: url("../images/icons/Overlay_Manager_Back_Selected.png");
 }
 
 input[type="checkbox"] {
