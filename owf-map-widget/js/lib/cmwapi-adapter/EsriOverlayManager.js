@@ -79,7 +79,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             var feature;
 
             for(var childId in overlay.children) {
-                child = Overlay.children[childId];
+                child = overlay.children[childId];
                 resolvedChild = resolveOverlayChildren(child.id)
                 res.children.push(resolvedChild);
             }
