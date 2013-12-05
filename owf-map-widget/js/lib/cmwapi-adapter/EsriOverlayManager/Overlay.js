@@ -172,10 +172,11 @@ define(function() {
                 var msg = "No overlay exists with the provided id of " + overlayId;
                 adapter.error.error(sender, msg, {type: 'map.overlay.update', msg: msg});
             } else {
-                if(me.overlays[overlayId].name !== name) {
-                    me.overlays[overlayId].setName(name);
+                var overlay = manager.overlays[overlayId];
+                if(overlay.name !== name) {
+                    overlay.name = name;
                 }
-                if(parentId && parentId !== me.overlays[overlayId].parentId) {
+                if(parentId && parentId !== overlay.parentId) {
                     me.designateParent(overlayId, parentId);
                 }
                 manager.treeChanged();
