@@ -53,17 +53,17 @@ define(["cmwapi/cmwapi", "esri/kernel"], function(CommonMapApi, EsriNS) {
             var bounds = {
                 southWest: {
                     lat: map.geographicExtent.ymin,
-                    lon: map.geographicExtent.xmin
+                    lon: esri.geometry.Extent.prototype._normalizeX(map.geographicExtent.xmin, map.geographicExtent.spatialReference._getInfo()).x
                 },
                 northEast: {
                     lat: map.geographicExtent.ymax,
-                    lon: map.geographicExtent.xmax
+                    lon: esri.geometry.Extent.prototype._normalizeX(map.geographicExtent.xmax, map.geographicExtent.spatialReference._getInfo()).x
                 }
             };
 
             var center = {
                 lat: map.geographicExtent.getCenter().y,
-                lon: map.geographicExtent.getCenter().x,
+                lon: esri.geometry.Extent.prototype._normalizeX(map.geographicExtent.getCenter().x, map.geographicExtent.spatialReference._getInfo()).x
             };
 
             var range = map.getScale();
