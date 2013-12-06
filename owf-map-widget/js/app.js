@@ -19,7 +19,6 @@ require([
             OWF.notifyWidgetReady();
 
             var dropZone = Dom.byId("map");
-            //var owf_adapter = new OWFAdapter(On , dropZone, Mouse, map);
 
             geocoder = new Geocoder({
                 map: map
@@ -44,103 +43,172 @@ require([
             });
             $('#overlay').on('click', function() {
                 toggleOverlayManager();
-                //toggleOverlaySettings('reset');
-                closeManagerWindowsIfOpen();
-                if(isOverlayTreeEmpty()) {
-                    toggleManagerTooltip('show');
-                } else {
-                    toggleManagerTooltip('hide');
-                    toggleOverlayTree('show');
-                }
             });
 
             $('#basemaps').on('click', function() {
                 toggleBaseMaps();
             });
             $('#overlay-add-icon').on('click', function() {
-                toggleOverlaySettings();
-                toggleOverlayTree('hide');
-                toggleManagerTooltip('hide');
-                $('#overlay-manager-add').toggleClass('hidden');
-                $('#overlay-manager-subtitle').text('Add New Feature');
-                $('#popover_overlay_wrapper').css('height', '305px');
+                setStateAdd();
             });
             $('#overlay-delete-icon').on('click', function() {
-                $('#overlay-manager-delete').toggleClass('hidden');
-                toggleOverlaySettings();
-                toggleOverlayTree('hide');
-                toggleManagerTooltip('hide');
-                $('#overlay-manager-subtitle').text('Delete Existing Overlays');
-                resizeOverlayToTree('#overlay-removal-tree', 120);
+                setStateRemove();
             });
             $('#overlay-back-icon').on('click', function() {
-                closeManagerWindowsIfOpen();
-                toggleOverlaySettings();
-                toggleOverlayTree('show');
-                if(isOverlayTreeEmpty()) {
-                    toggleManagerTooltip('show');
+                setStateInit();
+            });
+            $('#overlay-manager-add-button').on('click', function() {
+                var featureName = $('#feature-add-name').val();
+                var featureId = $('#feature-add-id').val();
+                var featureUrl = $('#feature-add-url').val();
+                var featureParams = $('#feature-add-params').val();
+                var overlayName = $('#overlay-add-name').val();
+                var overlayId = $('#overlay-add-id').val();
+                if($('#overlay-selection').val() == 'Add New Overlay') {
+                    adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
+                    adapter.overlayManager.sendFeaturePlotUrl(overlayId, featureId, featureName,
+                        'kml', featureUrl, featureParams);
+                } else if('Default Overlay') {
+                    adapter.overlayManager.sendOverlayCreate('default-overlay-id', 'Default Overlay');
+                    adapter.overlayManager.sendFeaturePlotUrl('default-overlay-id',
+                        featureId, featureName,'kml', featureUrl, featureParams);
                 }
-                resizeOverlayToTree('#overlay-tree', 40);
+                else {
+                    adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
+                        featureId, featureName,'kml', featureUrl, featureParams);
+                }
+                setStateInit();
             });
 
+            $('#overlay-manager-delete-button').on('click', function() {
+                $("#overlay-tree input:checkbox:checked").each(function(index) {
+                    if($(this).attr('node-type') === 'overlay') {
+                        adapter.overlayManager.sendOverlayRemove($(this).attr('id'));
+                    }
+                    if($(this).attr('node-type') === 'feature') {
+                        var node = $('#overlay-tree').tree('getNodeById', $(this).attr('id'));
+                        adapter.overlayManager.sendFeatureUnplot(node.parent.id,$(this).attr('id'));
+                    }
+
+                });
+
+            });
+
+            $('#overlay-selection').on('change', function() {
+                if(this.value === 'Add New Overlay') {
+                    $('#popover_overlay_wrapper').css('height', '435px');
+                    $('#add-overlay-div').toggleClass('hidden');
+                } else if(!($('#add-overlay-div').hasClass('hidden'))) {
+                    $('#add-overlay-div').toggleClass('hidden');
+                    $('#popover_overlay_wrapper').css('height', '305px');
+                }
+                checkAddFormCompleted();
+            });
+
+            var setInitManagerState = function() {
+                closeManagerWindowsIfOpen();
+                toggleOverlaySettings('reset')
+                updateTreeData();
+                toggleOverlayTree('show')
+            };
+
+
+            var updateOverlaySelection = function() {
+                $('#overlay-selection > option').remove();
+                var defaultHtml = '<option id= "default-overlay-id">Default Overlay</option>';
+                $('#overlay-selection').append(defaultHtml);
+                var overlayObject = adapter.overlayManager.getOverlays();
+                for(var key in overlayObject) {
+                    if(!(overlayObject[key].id == 'default-overlay-id')) {
+                        var appendHtml = ' <option id= "'+ overlayObject[key].id +'">' + overlayObject[key].name + '</option>'
+                        $('#overlay-selection').append(appendHtml);
+                    }
+                }
+                var defaultHtmlAdd = '<option id= "add-new-overlay-option">Add New Overlay</option>'
+                $('#overlay-selection').append(defaultHtmlAdd);
+                $('#overlay-selection').val('Default Overlay');
+            }
 
             var isOverlayTreeEmpty = function() {
-                console.log(adapter.overlayManager.getOverlayTree().length);
                 return adapter.overlayManager.getOverlayTree().length === 0;
             };
 
 
 
             $('form').find('input').keyup(function() {
-                var emptyInputLength = $('form > div > div > input').filter(function() {
-                    return $(this).val() === '';
-                }).length;
-                var buttonActive = (emptyInputLength === 0 &&  $('#overlay-manager-add-button').hasClass('disabled')) ||
-                    (emptyInputLength > 0 && !$('#overlay-manager-add-button').hasClass('disabled'));
-                if(buttonActive) {
-                    $('#overlay-manager-add-button').toggleClass('disabled');
-                }
+                checkAddFormCompleted();
             });
 
+            var toggleManagerAddButton = function(action) {
+                var toggle = ($('#overlay-manager-add-button').hasClass('disabled') && action === 'enable') ||
+                    (!($('#overlay-manager-add-button').hasClass('disabled')) && action === 'disable');
+                if(toggle) {
+                    $('#overlay-manager-add-button').toggleClass('disabled');
+                }
+            }
+
+            var checkAddFormCompleted = function() {
+                var hasFeatureName = !($('#feature-add-name').val() === '');
+                var hasFeatureId = !($('#feature-add-id').val() === '');
+                var hasFeatureUrl = !($('#feature-add-url').val() === '');
+                var hasFeatureParams = !($('#feature-add-params').val() === '');
+                var hasOverlayName = !($('#overlay-add-name').val() === '');
+                var hasOverlayId = !($('#overlay-add-id').val() === '');
+                if($('#overlay-selection').val() === 'Add New Overlay') {
+                    if(hasFeatureName && hasFeatureId && hasFeatureUrl && hasOverlayName && hasOverlayId) {
+                        toggleManagerAddButton('enable');
+                    } else {
+                        toggleManagerAddButton('disable');
+                    }
+                } else {
+                    if(hasFeatureName && hasFeatureId && hasFeatureUrl) {
+                        toggleManagerAddButton('enable');
+                    } else {
+                        toggleManagerAddButton('disable');
+                    }
+                }
+            };
+
             $("[rel=tooltip]").tooltip({ placement: 'bottom'});
+
             var data = adapter.overlayManager.getOverlayTree();
-            console.log(data);
             var $tree = $('#overlay-tree');
             $tree.tree({
                 data: data,
                 dragAndDrop:true,
                 autoOpen: 1,
                 onCreateLi: function(node, $li) {
+                    node['node-type'] = node.type;
                     $li.find('.jqtree-title').before(
-                        '<input type="checkbox" class ="tree-node"/>' +
+                        '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type + '"/>' +
                         '<img src="http://img0056.popscreencdn.com/103222765_watchmen-smiley-1-pin-button-badge-magnet-moore-gibbons-.jpg" alt="Overlay Icon" height="25" width="25">'
                     );
                 }
             });
 
-            var $overlayRemoveTree = $('#overlay-removal-tree');
-            $overlayRemoveTree.tree({
-                data: data,
-                autoOpen: 1,
-                openedIcon: '',
-                closedIcon: '',
-                onCreateLi: function(node, $li) {
-                    $li.find('.jqtree-title').before(
-                        '<input type="checkbox" class ="tree-node"/>'
-                    );
-                }
-            });
 
+            var clearAddInputs = function() {
+                $('#feature-add-name').val('');
+                $('#feature-add-id').val('');
+                $('#feature-add-url').val('');
+                $('#feature-add-params').val('');
+                $('#overlay-add-name').val('');
+                $('#overlay-add-id').val('');
+            };
 
             /**
             * Whenever either the trees parent nodes are clicked the children nodes are also checked
             * respectively.
             **/
             var bindSelectionHandlers = function() {
-                $("#overlay-tree input:checkbox, #overlay-removal-tree input:checkbox").off('change');
-                $("#overlay-tree input:checkbox, #overlay-removal-tree input:checkbox").on('change', function () {
-                    console.log('hi');
+                $("#overlay-tree input:checkbox").off('change');
+                $("#overlay-tree input:checkbox").on('change', function () {
                     $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
+                    if($(this).attr('checked','checked') && $(this).attr('type') === 'overlay') {
+                        adapter.overlayManager.sendOverlayShow($(this).attr('id'));
+                    } else if($(this).attr('checked','unchecked') && $(this).attr('type') === 'overlay') {
+                        adapter.overlayManager.sendOverlayHide($(this).attr('id'));
+                    }
                 });
             }
 
@@ -169,13 +237,11 @@ require([
                     if(!$('#overlay-back-icon').hasClass('hidden')) {
                         $('#overlay-back-icon').toggleClass('hidden');
                     }
-                    $('#overlay-vr').css('right', '60px');
                 } else {
                     $('#overlay-manager').toggleClass('hidden');
                     $('#overlay-add-icon').toggleClass('hidden');
                     $('#overlay-delete-icon').toggleClass('hidden');
                     $('#overlay-back-icon').toggleClass('hidden');
-                    $('#overlay-vr').css('right', '36px');
                 }
             }
 
@@ -204,9 +270,11 @@ require([
                     $('#popover_content_wrapper').toggleClass('hidden');
                     $('#basemaps').toggleClass('selected');
                 }
+
                 $('#popover_overlay_wrapper').toggleClass('hidden');
-                resizeOverlayToTree('#overlay-tree', 40);
-                $('#overlay').toggleClass('selected');
+                setStateInit()
+                // resizeOverlayToTree('#overlay-tree', 40);
+                // $('#overlay').toggleClass('selected');
             }
 
             /**
@@ -225,12 +293,19 @@ require([
             **/
             var updateTreeData = function() {
                 $('#overlay-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
-                $('#overlay-removal-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
-                resizeOverlayToTree('#overlay-tree', 85);
+                resizeOverlayToTree('#overlay-tree', 90);
                 if(!isOverlayTreeEmpty()) {
-                    toggleManagerTooltip('hide')
+                    toggleManagerTooltip('hide');
+                } else {
+                    toggleManagerTooltip('show');
                 }
+                $("#overlay-tree input:checkbox").each(function(index) {
+                    if(!($(this).attr('isHidden'))) {
+                        $(this).attr('checked', 'checked');
+                    }
+                });
                 bindSelectionHandlers();
+                setStateInit();
             }
             adapter.overlayManager.bindTreeChangeHandler(updateTreeData);
             /**
@@ -256,8 +331,127 @@ require([
                 var openClosedTooltip = (action === 'show' && $('#no-overlay-tooltip').hasClass('hidden'));
                 if(hideOpenTooltip || openClosedTooltip){
                     $('#no-overlay-tooltip').toggleClass('hidden');
+                    $('#overlay-delete-icon').toggleClass('disabled')
                 }
             };
+
+
+
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////
+            var setStateInit = function() {
+                if(isOverlayTreeEmpty()) {
+                    toggleManagerTooltip('show');
+                }
+                if(!$('#overlay-manager-add-button').hasClass('hidden')) {
+                    $('#overlay-manager-add-button').toggleClass('hidden');
+                }
+                if(!$('#overlay-manager-delete-button').hasClass('hidden')) {
+                    $('#overlay-manager-delete-button').toggleClass('hidden');
+                }
+                if(!$('#overlay-manager-add').hasClass('hidden')) {
+                    $('#overlay-manager-add').toggleClass('hidden');
+                }
+                if(!$('#overlay-manager-delete').hasClass('hidden')) {
+                    $('#overlay-manager-delete').toggleClass('hidden');
+                }
+                if(!$('#overlay-back-icon').hasClass('hidden')) {
+                    $('#overlay-back-icon').toggleClass('hidden');
+                }
+                if($('#overlay-add-icon').hasClass('hidden')) {
+                    $('#overlay-add-icon').toggleClass('hidden');
+                }
+                if($('#overlay-delete-icon').hasClass('hidden')) {
+                    $('#overlay-delete-icon').toggleClass('hidden');
+                }
+                if($('#overlay-tree').hasClass('hidden')) {
+                    $('#overlay-tree').toggleClass('hidden');
+                }
+                $('#overlay-tree').css('top','50px');
+                resizeOverlayToTree('#overlay-tree', 90);
+            }
+            var setStateAdd = function() {
+                toggleManagerTooltip('hide');
+                clearAddInputs();
+                if(!($('#overlay-add-icon').hasClass('hidden'))) {
+                    $('#overlay-add-icon').toggleClass('hidden');
+                }
+                if(!($('#overlay-delete-icon').hasClass('hidden'))) {
+                    $('#overlay-delete-icon').toggleClass('hidden');
+                }
+                if($('#overlay-back-icon').hasClass('hidden')) {
+                    $('#overlay-back-icon').toggleClass('hidden');
+                }
+                if($('#overlay-manager-add').hasClass('hidden')) {
+                    $('#overlay-manager-add').toggleClass('hidden');
+                }
+                if(!$('#overlay-manager-delete').hasClass('hidden')) {
+                    $('#overlay-manager-delete').toggleClass('hidden');
+                }
+                if($('#overlay-manager-add-button').hasClass('hidden')) {
+                    $('#overlay-manager-add-button').toggleClass('hidden');
+                }
+                if($('#overlay-manager').hasClass('hidden')) {
+                    $('#overlay-manager').toggleClass('hidden');
+                }
+                if(!$('#overlay-manager-delete-button').hasClass('hidden')) {
+                    $('#overlay-manager-delete-button').toggleClass('hidden');
+                }
+                if($('#overlay-manager-subtitle').hasClass('hidden')) {
+                    $('#overlay-manager-subtitle').toggleClass('hidden');
+                }
+                if(!$('#add-overlay-div').hasClass('hidden')) {
+                    $('#add-overlay-div').toggleClass('hidden');
+                }
+                if(!$('#overlay-tree').hasClass('hidden')) {
+                    $('#overlay-tree').toggleClass('hidden');
+                }
+                $('#overlay-manager-subtitle').text('Add New Feature');
+                updateOverlaySelection();
+                $('#popover_overlay_wrapper').css('height', '305px');
+            }
+            var setStateRemove = function() {
+                toggleManagerTooltip('hide');
+                if(!($('#overlay-add-icon').hasClass('hidden'))) {
+                    $('#overlay-add-icon').toggleClass('hidden');
+                }
+                if(!($('#overlay-delete-icon').hasClass('hidden'))) {
+                    $('#overlay-delete-icon').toggleClass('hidden');
+                }
+                if($('#overlay-back-icon').hasClass('hidden')) {
+                    $('#overlay-back-icon').toggleClass('hidden');
+                }
+                if(!$('#overlay-manager-add').hasClass('hidden')) {
+                    $('#overlay-manager-add').toggleClass('hidden');
+                }
+                if($('#overlay-manager-delete').hasClass('hidden')) {
+                    $('#overlay-manager-delete').toggleClass('hidden');
+                }
+                if(!$('#overlay-manager-add-button').hasClass('hidden')) {
+                    $('#overlay-manager-add-button').toggleClass('hidden');
+                }
+                if($('#overlay-manager').hasClass('hidden')) {
+                    $('#overlay-manager').toggleClass('hidden');
+                }
+                if($('#overlay-manager-delete-button').hasClass('hidden')) {
+                    $('#overlay-manager-delete-button').toggleClass('hidden');
+                }
+                if($('#delete-feature-subtitle').hasClass('hidden')) {
+                    $('#delete-feature-subtitle').toggleClass('hidden');
+                }
+                if(!$('#add-overlay-div').hasClass('hidden')) {
+                    $('#add-overlay-div').toggleClass('hidden');
+                }
+                if($('#overlay-tree').hasClass('hidden')) {
+                    $('#overlay-tree').toggleClass('hidden');
+                }
+                $('#overlay-manager-subtitle').text('Add New Feature');
+                updateOverlaySelection();
+                $('#overlay-tree').css('top','85px');
+                resizeOverlayToTree('#overlay-tree', 125);
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////
         });
     }
     });
