@@ -83,12 +83,13 @@
 
     // Suppressing specific error messages
     "-W099"			: true,		// allow mixed tabs and spaces
-    "-W015"			: true,		// allow staggered indentation 
+    "-W015"			: true,		// allow staggered indentation
+    "-W089"         : true,
 
     // Custom Globals
     "predef"        : [ ],       // additional predefined global variables
     "globals"       : { "OWF": false,
                         "Ozone": false,
                         "define": false}
-    
+
 }
