@@ -1,4 +1,4 @@
-define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
+define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Channels, Error, Validator) {
 
     var REQUIRED_FORMATS = ["kml", "wms"];
 
@@ -49,17 +49,44 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
          * at least the required formats.  If not, an error is thrown on the error channel.  Quesion: Do we send only
          * if there is no error?  Or always send the provided formats?
          */
-        send: function(formats) {
-            var sendFormats;
+        send: function(data) {
 
-            // send at least REQUIRED_FORMATS
-            if (formats instanceof Array) {
-                sendFormats = REQUIRED_FORMATS.concat(formats);
-            } else { sendFormats = REQUIRED_FORMATS; }
+            // validData will story results from any Validator and may be reused for internal
+            // error bookkeeping.
+            var validData = Validator.validObjectOrArray( data );
+            var payload = validData.payload;
+            var msg;
+
+            if (!validData.result) {
+                //console.error ("Unable to send on error channel - sent data is not valid: [data: " + data + "].  " + validData.msg);
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_FORMAT, data, 
+                    validData.msg);
+                return;
+            }
+
+            var formatsSet = [];
+            for (var i=0; i < payload.length; i++)  {
+                var listedFormats = payload[i].formats; 
+
+                if (listedFormats instanceof Array) {
+                    for (var j=0; j < listedFormats.length; j++ ) {
+                        if (! formatsSet.indexOf(listedFormats[j]) >= 0) {
+                            formatsSet.push(listedFormats[j]);
+                        }
+                    }
+                } 
+            };
+            
+            // verify that we're also including REQUIRED_FORMATS
+            for (var k=0; k < REQUIRED_FORMATS.length; k++) {
+                if (! formatsSet.indexOf(REQUIRED_FORMATS[k]) >= 0) {
+                    formatsSet.push(REQUIRED_FORMATS[k]);
+                }
+            }
 
             // note: this may cause us to send the same format value more than once...
             // blend data given with REQUIRED_FORMATS...
-            OWF.Eventing.publish(Channels.MAP_STATUS_FORMAT, Ozone.util.toString({formats: sendFormats}));
+            OWF.Eventing.publish(Channels.MAP_STATUS_FORMAT, Ozone.util.toString({'formats': formatsSet}));
         },
 
         /**
@@ -73,13 +100,22 @@ define(["cmwapi/Channels", "cmwapi/map/Error"], function(Channels, Error) {
             // no real validation here...
             var newHandler = function(sender, msg) {
 
-                var jsonMsg = Ozone.util.parseJson(msg);
+                // Parse the sender and msg to JSON.
+                var jsonSender = Ozone.util.parseJson(sender);
+                var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
+                var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
+                var validData = true;
+                var errorMsg = "";
 
-                if (!jsonMsg.formats) {
-                    Error.send(sender, Channels.MAP_STATUS_FORMATS, msg, "Unable to determine formats" );
-                } else {
-                    handler(sender, msg);
-                }
+                var validData= true;
+
+                for (var i = 0; i < data.length; i ++) {
+                    if (!data[i].formats) { 
+                        Error.send(sender, Channels.MAP_STATUS_FORMATS, msg, "Unable to determine formats" );
+                    } else {
+                        handler(sender, data[i]);
+                    }
+                };
             };
 
             OWF.Eventing.subscribe(Channels.MAP_STATUS_FORMAT, newHandler);

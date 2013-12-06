@@ -25,6 +25,34 @@ define(["cmwapi/Channels", "cmwapi/map/status/Format", "cmwapi/map/Error", "cmwa
             // access it.
             window.OWF = OWF;
             window.Ozone = Ozone;
+
+            this.addMatchers( {
+                toMatchArrays: function(expected) {
+                    // counting on quick failure...
+                    var matches;
+                    var actual = this.actual;
+
+                    matches = (Validator.isArray(actual) && Validator.isArray(expected)
+                                    && (actual.length == expected.length));
+
+                    if (!matches) {
+                        return false;
+                    }
+
+
+                    actual.sort();
+                    expected.sort();
+                    
+                    for (var i= 0; i< actual.length; i++) {
+                        if (!actual[i]==expected[i]) {
+                            return false;
+                        }
+                    };
+
+                    return true;
+                    
+                }
+            });
         });
 
         afterEach(function() {
@@ -47,7 +75,7 @@ define(["cmwapi/Channels", "cmwapi/map/status/Format", "cmwapi/map/Error", "cmwa
             Format.send();
             expect(Format.send).toHaveBeenCalled();
             expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_FORMAT);
-            expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: Format.REQUIRED_FORMATS});
+            expect(eventing.publish.mostRecentCall.args[1].formats).toMatchArrays(Format.REQUIRED_FORMATS);
 
             expect(Error.send.calls.length).toEqual(0);
 
@@ -79,12 +107,12 @@ define(["cmwapi/Channels", "cmwapi/map/status/Format", "cmwapi/map/Error", "cmwa
             var eventing = OWF.Eventing;
             spyOn(eventing, 'publish');
 
-            var testFormats = ['geoJSON', 'uhf'];
-            var outputFormats = Format.REQUIRED_FORMATS.concat(testFormats);
+            var testFormats = {formats: ['geoJSON', 'uhf']};
+            var outputFormats = Format.REQUIRED_FORMATS.concat(testFormats.formats).sort();
             Format.send(testFormats);
             expect(Format.send).toHaveBeenCalled();
             expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_FORMAT);
-            expect(eventing.publish.mostRecentCall.args[1]).toEqual({formats: outputFormats});
+            expect(eventing.publish.mostRecentCall.args[1].formats).toMatchArrays(outputFormats);
 
             expect(Error.send.calls.length).toEqual(0);
         });
@@ -102,8 +130,8 @@ define(["cmwapi/Channels", "cmwapi/map/status/Format", "cmwapi/map/Error", "cmwa
             //expect(testHandler).toHaveBeenCalled();
 
             // But I can test the behavior for newHandler!
-            var testFormats = ['geoJSON', 'uhf'];
-            var outputFormats = Format.REQUIRED_FORMATS.concat(testFormats);
+            var testFormats = {formats: ['geoJSON', 'uhf']};
+            var outputFormats = Format.REQUIRED_FORMATS.concat(testFormats.formats);
             var jsonVal = { 
                 formats: outputFormats
             };
