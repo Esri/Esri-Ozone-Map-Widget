@@ -41,7 +41,7 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
          */
         var Feature = function(overlayId, featureId, name, format, feature, zoom, esriObject) {
             var resolveFeature = function() {
-                //TODO figure out the type of esri feature, create and return
+                //TODO figure out the type of esri feature and return
             };
 
             this.overlayId = overlayId; //needed?
@@ -270,7 +270,7 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
                 } else if(typeof(layer.getImages) !== 'undefined') { //mapImageLayer
                     var images = layer.getImages();
                     for(var j = 0; j < images.length; j++) {
-                        extent = determineMaxExtent(image.extent, extent);
+                        extent = determineMaxExtent(images[j].extent, extent);
                     }
                 } else { //featureLayer
                     extent = determineMaxExtent(layer.fullExtent, extent);
@@ -295,7 +295,7 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
          * @param [newOverlayId] {String}
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
-        me.updateFeature = function(overlayId, featureId, name, newOverlayId) {
+        me.updateFeature = function(caller, overlayId, featureId, name, newOverlayId) {
             if(typeof(manager.overlays[overlayId]) !== 'undefined' && typeof(manager.overlays[overlayId].features[featureId]) !== 'undefined') {
                 var feature = manager.overlays[overlayId].features[featureId];
 
@@ -305,12 +305,13 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
 
                 if(newOverlayId && newOverlayId !== overlayId) {
                     if(typeof(manager.overlays[newOverlayId]) === 'undefined') {
-                        //FIXME
+                        //FIXME What should happen here?
                     } else {
                         var newFeature = new Feature(newOverlayId, featureId, name, feature.format, feature.feature, feature.zoom);
                         manager.overlays[newOverlayId].features[featureId] = newFeature;
                         delete manager.overlays[overlayId].features[featureId];
-                        //FIXME handle if the new overlay is hidden
+
+                        //FIXME should we do something to handle if the new overlay is hidden
                     }
                 }
                 manager.treeChanged();

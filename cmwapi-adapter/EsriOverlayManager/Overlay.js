@@ -130,8 +130,8 @@ define(function() {
 
                 var features = Object.keys(overlay.features);
                 for(var i = 0; i < features.length; i++) {
-                    feature[i].isHidden = true;
-                    feature[i].esriObject.hide();
+                    features[i].isHidden = true;
+                    features[i].esriObject.hide();
                 }
                 manager.treeChanged();
             }
@@ -143,7 +143,7 @@ define(function() {
          * @param overlayId {String} the id of the overlay to be shown
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
-        me.showOverlay = function(overlayId) {
+        me.showOverlay = function(caller, overlayId) {
             var overlay = manager.overlays[overlayId];
             if(!overlay) {
                 adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
@@ -152,8 +152,8 @@ define(function() {
 
                 var features = Object.keys(overlay.features);
                 for(var i = 0; i < features.length; i++) {
-                    feature[i].isHidden = false;
-                    feature[i].esriObject.show();
+                    features[i].isHidden = false;
+                    features[i].esriObject.show();
                 }
                 manager.treeChanged();
             }
@@ -170,7 +170,7 @@ define(function() {
         me.updateOverlay = function(caller, name, overlayId, parentId) {
             if(typeof(manager.overlays[overlayId]) === 'undefined') {
                 var msg = "No overlay exists with the provided id of " + overlayId;
-                adapter.error.error(sender, msg, {type: 'map.overlay.update', msg: msg});
+                adapter.error.error(caller, msg, {type: 'map.overlay.update', msg: msg});
             } else {
                 var overlay = manager.overlays[overlayId];
                 if(overlay.name !== name) {

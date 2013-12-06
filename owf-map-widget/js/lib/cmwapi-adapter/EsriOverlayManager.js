@@ -52,7 +52,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
         };
 
         me.getOverlayTree = function() {
-            var result = []
+            var result = [];
             var overlay;
             for(var overlayId in me.overlays) {
                 overlay = me.overlays[overlayId];
@@ -80,7 +80,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
             for(var childId in overlay.children) {
                 child = overlay.children[childId];
-                resolvedChild = resolveOverlayChildren(child.id)
+                resolvedChild = resolveOverlayChildren(child.id);
                 res.children.push(resolvedChild);
             }
             for(var featureId in overlay.features) {
@@ -134,6 +134,33 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             cmwapi.feature.unplot.send({
                 overlayId: overlayId,
                 featureId: featureId
+            });
+        };
+
+        me.sendOverlayHide = function(overlayId) {
+            cmwapi.overlay.hide.send({
+                overlayId: overlayId
+            });
+        };
+
+        me.sendOverlayShow = function(overlayId) {
+            cmwapi.overlay.show.send({
+                overlayId: overlayId
+            });
+        };
+
+        me.sendFeatureHide = function(overlayId, featureId) {
+            cmwapi.feature.hide.send({
+                overlayId: overlayId,
+                featureId: featureId
+            });
+        };
+
+        me.sendFeatureShow = function(overlayId, featureId, zoom) {
+            cmwapi.feature.show.send({
+                overlayId: overlayId,
+                featureId: featureId,
+                zoom: (zoom ? zoom : false)
             });
         };
     };
