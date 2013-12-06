@@ -15,7 +15,7 @@
         <link href="css/dragAndDrop.css" rel="stylesheet">
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/jqtree.css" rel="stylesheet">
-        
+
     </head>
     <body>
         <div id="map"></div>
@@ -26,9 +26,13 @@
             <div id="popover_content_wrapper" class='basemaptip hidden'><div id="basemapGallery"></div></div>
             <div id="popover_overlay_wrapper" class='overlaytip hidden'>
                 <div id="overlay-hr-wrapper">
+                <b><p id="overlay-manager-title">Overlay Manager</p></b>
+                <div id="no-overlay-tooltip" class='no-overlays-tip hidden'>
+                    <button id = "tooltip-x-button"type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <p>Please add an overlay.</p>
+                </div>
                     <div id="overlay-tree"></div>
                     <div id="overlay-manager" class="hidden">
-                        <b><p id="overlay-manager-title">Overlay Manager</p></b>
                         <b><p id="overlay-manager-subtitle"></p></b>
                         <div id="overlay-manager-add" class="hidden">
                             <form class="form-horizontal" role="form">

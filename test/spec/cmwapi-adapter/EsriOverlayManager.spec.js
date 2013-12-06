@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/cmwapi-overlay-manager"], function(CommonMapApi, Adapter, OverlayManager) {
+define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOverlayManager"], function(CommonMapApi, Adapter, OverlayManager) {
 
     describe("To test Common Map Widget API ESRI overlay manager", function() {
         describe("Overlay functions", function() {
@@ -32,7 +32,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/cmwapi
 
                 expect(Object.keys(overlays).length).toBe(0);
 
-                overlayManager.createOverlay("FakeWidget", "1111", "Name 1");
+                overlayManager.overlay.createOverlay("FakeWidget", "1111", "Name 1");
 
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(1);
@@ -43,7 +43,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/cmwapi
 
                 expect(Object.keys(overlays).length).toBe(0);
 
-                overlayManager.createOverlay("FakeWidget", "1111", "Name 1");
+                overlayManager.overlay.createOverlay("FakeWidget", "1111", "Name 1");
 
                 overlays = overlayManager.getOverlays();
 
@@ -52,7 +52,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/cmwapi
                 expect(overlays['1111'].children).toBeDefined();
                 expect(Object.keys(overlays["1111"].children).length).toBe(0)
 
-                overlayManager.createOverlay("FakeWidget 1", "2222", "Name 2", "1111");
+                overlayManager.overlay.createOverlay("FakeWidget 1", "2222", "Name 2", "1111");
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(2);
                 expect(overlays['1111']).toBeDefined();
@@ -74,12 +74,12 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/cmwapi
 
                 expect(Object.keys(overlays).length).toBe(0);
 
-                overlayManager.createOverlay("fake widget", "1111", "Name 1");
+                overlayManager.overlay.createOverlay("fake widget", "1111", "Name 1");
 
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(1);
 
-                overlayManager.removeOverlay("FakeWidget2", "1111")
+                overlayManager.overlay.removeOverlay("FakeWidget2", "1111")
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(0);
             });
@@ -89,13 +89,13 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/cmwapi
 
                 expect(Object.keys(overlays).length).toBe(0);
 
-                overlayManager.createOverlay("fake widget", "1111", "Name 1");
-                overlayManager.createOverlay("fake widget", "2222", "Name 1", "1111");
+                overlayManager.overlay.createOverlay("fake widget", "1111", "Name 1");
+                overlayManager.overlay.createOverlay("fake widget", "2222", "Name 1", "1111");
 
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(2);
 
-                overlayManager.removeOverlay("Fake widget2", "2222");
+                overlayManager.overlay.removeOverlay("Fake widget2", "2222");
 
                 overlays = overlayManager.getOverlays();
                 expect(overlays["2222"]).not.toBeDefined();
@@ -107,13 +107,13 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/cmwapi
 
                 expect(Object.keys(overlays).length).toBe(0);
 
-                overlayManager.createOverlay("fake widget", "1111", "Name 1");
-                overlayManager.createOverlay("fake widget", "2222", "Name 1", "1111");
+                overlayManager.overlay.createOverlay("fake widget", "1111", "Name 1");
+                overlayManager.overlay.createOverlay("fake widget", "2222", "Name 1", "1111");
 
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(2);
 
-                overlayManager.removeOverlay("FakeWidget2", "1111");
+                overlayManager.overlay.removeOverlay("FakeWidget2", "1111");
 
                 overlays = overlayManager.getOverlays();
                 expect(overlays["1111"]).not.toBeDefined();
@@ -126,6 +126,23 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/cmwapi
 
             it("verify overlay hide with valid id", function() {
 
+            });
+
+        });
+
+        describe("change handler", function() {
+            it("verify the handlers are called on tree change", function() {
+                var overlayManager = new OverlayManager({}, {});
+
+                var handler = jasmine.createSpy('changeHandler');
+
+                overlayManager.bindTreeChangeHandler(handler);
+
+                expect(handler).not.toHaveBeenCalled();
+
+                overlayManager.overlay.createOverlay("fake widget", "1111", "Name 1");
+
+                expect(handler).toHaveBeenCalled();
             });
         });
     });

@@ -7,6 +7,9 @@ define(function() {
             ymax: 2,
             getCenter: function() {
                 return {x: 1, y: 1};
+            },
+            spatialReference: {
+                _getInfo: function() {}
             }
         };
 
@@ -16,7 +19,7 @@ define(function() {
 
         this.on = function() {
 
-        }
+        };
     };
 
     return Map;

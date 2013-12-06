@@ -13,196 +13,251 @@ require([
             zoom: 7,
             basemap: "streets"
         });
+    if (OWF.Util.isRunningInOWF()) {
 
-        var dropZone = Dom.byId("map");
-        var owf_adapter = new OWFAdapter(On , dropZone, Mouse, map);
+        OWF.ready(function () {
+            OWF.notifyWidgetReady();
 
-        geocoder = new Geocoder({
-            map: map
-        }, "search");
-        geocoder.startup();
+            var dropZone = Dom.byId("map");
+            //var owf_adapter = new OWFAdapter(On , dropZone, Mouse, map);
 
-        var basemapGallery = new BasemapGallery({
-            showArcGISBasemaps: true,
-            map: map
-        }, "basemapGallery");
-        basemapGallery.startup();
+            geocoder = new Geocoder({
+                map: map
+            }, "search");
+            geocoder.startup();
 
-        basemapGallery.on("error", function(msg) {
-            console.log("basemap gallery error:  ", msg);
-        });
+            var basemapGallery = new BasemapGallery({
+                showArcGISBasemaps: true,
+                map: map
+            }, "basemapGallery");
+            basemapGallery.startup();
 
-       var adapter = new cmwapiAdapter(map);
+            basemapGallery.on("error", function(msg) {
+                console.log("basemap gallery error:  ", msg);
+            });
 
-        $('#basemaps').on('click', function() {
-            toggleBaseMaps();
-        });
-        $('#overlay').on('click', function() {
-            toggleOverlay();
-            $('#overlay-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
-            console.log(adapter.overlayManager.getOverlayTree());
-        });
-        $('#overlay-add-icon').on('click', function() {
-            toggleOverlaySettings();
-            $('#overlay-manager-add').toggleClass('hidden');
-            $('#overlay-manager-subtitle').text('Add New Feature');
-            $('#popover_overlay_wrapper').css('height', '305px');
-        });
-        $('#overlay-delete-icon').on('click', function() {
-            $('#overlay-manager-delete').toggleClass('hidden');
-            toggleOverlaySettings();
-            $('#overlay-manager-subtitle').text('Delete Existing Overlays');
-            resizeOverlayToTree('#overlay-removal-tree', 120);
-        });
-        $('#overlay-back-icon').on('click', function() {
-            if(!$('#overlay-manager-add').hasClass('hidden')) {
+           var adapter = new cmwapiAdapter(map);
+
+
+            $('#tooltip-x-button').on('click', function() {
+                $('#no-overlay-tooltip').toggleClass('hidden');
+            });
+            $('#overlay').on('click', function() {
+                toggleOverlayManager();
+                //toggleOverlaySettings('reset');
+                closeManagerWindowsIfOpen();
+                if(isOverlayTreeEmpty()) {
+                    toggleManagerTooltip('show');
+                } else {
+                    toggleManagerTooltip('hide');
+                    toggleOverlayTree('show');
+                }
+            });
+
+            $('#basemaps').on('click', function() {
+                toggleBaseMaps();
+            });
+            $('#overlay-add-icon').on('click', function() {
+                toggleOverlaySettings();
+                toggleOverlayTree('hide');
+                toggleManagerTooltip('hide');
                 $('#overlay-manager-add').toggleClass('hidden');
-            }
-            if(!$('#overlay-manager-delete').hasClass('hidden')) {
+                $('#overlay-manager-subtitle').text('Add New Feature');
+                $('#popover_overlay_wrapper').css('height', '305px');
+            });
+            $('#overlay-delete-icon').on('click', function() {
                 $('#overlay-manager-delete').toggleClass('hidden');
+                toggleOverlaySettings();
+                toggleOverlayTree('hide');
+                toggleManagerTooltip('hide');
+                $('#overlay-manager-subtitle').text('Delete Existing Overlays');
+                resizeOverlayToTree('#overlay-removal-tree', 120);
+            });
+            $('#overlay-back-icon').on('click', function() {
+                closeManagerWindowsIfOpen();
+                toggleOverlaySettings();
+                toggleOverlayTree('show');
+                if(isOverlayTreeEmpty()) {
+                    toggleManagerTooltip('show');
+                }
+                resizeOverlayToTree('#overlay-tree', 40);
+            });
+
+
+            var isOverlayTreeEmpty = function() {
+                console.log(adapter.overlayManager.getOverlayTree().length);
+                return adapter.overlayManager.getOverlayTree().length === 0;
+            };
+
+
+
+            $('form').find('input').keyup(function() {
+                var emptyInputLength = $('form > div > div > input').filter(function() {
+                    return $(this).val() === '';
+                }).length;
+                var buttonActive = (emptyInputLength === 0 &&  $('#overlay-manager-add-button').hasClass('disabled')) ||
+                    (emptyInputLength > 0 && !$('#overlay-manager-add-button').hasClass('disabled'));
+                if(buttonActive) {
+                    $('#overlay-manager-add-button').toggleClass('disabled');
+                }
+            });
+
+            $("[rel=tooltip]").tooltip({ placement: 'bottom'});
+            var data = adapter.overlayManager.getOverlayTree();
+            console.log(data);
+            var $tree = $('#overlay-tree');
+            $tree.tree({
+                data: data,
+                dragAndDrop:true,
+                autoOpen: 1,
+                onCreateLi: function(node, $li) {
+                    $li.find('.jqtree-title').before(
+                        '<input type="checkbox" class ="tree-node"/>' +
+                        '<img src="http://img0056.popscreencdn.com/103222765_watchmen-smiley-1-pin-button-badge-magnet-moore-gibbons-.jpg" alt="Overlay Icon" height="25" width="25">'
+                    );
+                }
+            });
+
+            var $overlayRemoveTree = $('#overlay-removal-tree');
+            $overlayRemoveTree.tree({
+                data: data,
+                autoOpen: 1,
+                openedIcon: '',
+                closedIcon: '',
+                onCreateLi: function(node, $li) {
+                    $li.find('.jqtree-title').before(
+                        '<input type="checkbox" class ="tree-node"/>'
+                    );
+                }
+            });
+
+
+            /**
+            * Whenever either the trees parent nodes are clicked the children nodes are also checked
+            * respectively.
+            **/
+            var bindSelectionHandlers = function() {
+                $("#overlay-tree input:checkbox, #overlay-removal-tree input:checkbox").off('change');
+                $("#overlay-tree input:checkbox, #overlay-removal-tree input:checkbox").on('change', function () {
+                    console.log('hi');
+                    $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
+                });
             }
-            toggleOverlaySettings();
-            resizeOverlayToTree('#overlay-tree', 40);
-        });
-        $('form').find('input').keyup(function() {
-            var emptyInputLength = $('form > div > div > input').filter(function() {
-                return $(this).val() === '';
-            }).length;
-            var buttonActive = (emptyInputLength === 0 &&  $('#overlay-manager-add-button').hasClass('disabled')) ||
-                (emptyInputLength > 0 && !$('#overlay-manager-add-button').hasClass('disabled'));
-            if(buttonActive) {
-                $('#overlay-manager-add-button').toggleClass('disabled');
+
+            var closeManagerWindowsIfOpen = function() {
+                if(!$('#overlay-manager-add').hasClass('hidden')) {
+                    $('#overlay-manager-add').toggleClass('hidden');
+                }
+                if(!$('#overlay-manager-delete').hasClass('hidden')) {
+                    $('#overlay-manager-delete').toggleClass('hidden');
+                }
+                    $('#overlay-manager-subtitle').text('');
+            };
+
+
+            var toggleOverlaySettings = function(action) {
+                if(action === 'reset') {
+                    if($('#overlay-manager').hasClass('hidden')) {
+                        $('#overlay-manager').toggleClass('hidden');
+                    }
+                    if($('#overlay-add-icon').hasClass('hidden')) {
+                        $('#overlay-add-icon').toggleClass('hidden');
+                    }
+                    if($('#overlay-delete-icon').hasClass('hidden')) {
+                        $('#overlay-delete-icon').toggleClass('hidden');
+                    }
+                    if(!$('#overlay-back-icon').hasClass('hidden')) {
+                        $('#overlay-back-icon').toggleClass('hidden');
+                    }
+                    $('#overlay-vr').css('right', '60px');
+                } else {
+                    $('#overlay-manager').toggleClass('hidden');
+                    $('#overlay-add-icon').toggleClass('hidden');
+                    $('#overlay-delete-icon').toggleClass('hidden');
+                    $('#overlay-back-icon').toggleClass('hidden');
+                    $('#overlay-vr').css('right', '36px');
+                }
             }
-        });
 
-        /*var kmlUrl = "http://www.dgs.maryland.gov/ISSSD/FuelManagement/FuelingSites.kml";
-        var kml = new KMLLayer(kmlUrl);
-        map.addLayer(kml);
-        kml.on("load", function() {
-            domStyle.set("loading", "display", "none");
-        });*/
-
-        $("[rel=tooltip]").tooltip({ placement: 'bottom'});
-
-        //Sample tree data for overlay manager
-        // var data = [
-        // {
-        //     name: 'node1',
-        //     image: './sampleimage.png',
-        //     type: 'feature',
-        //     children: [
-        //         { label: 'child1' },
-        //         { label: 'Aggrevated Assault/ No Firearm ' }
-        //     ]
-        // },
-        // {
-        //     label: 'node2',
-        //     children: [
-        //     { label: 'child3' }
-        //     ]
-        // },
-        // {
-        //     label: 'node2',
-        //     children: [
-        //     { label: 'child3' }
-        //     ]
-        // },
-        // {
-        //     label: 'node2',
-        //     children: [
-        //     { label: 'child3' }
-        //     ]
-        // },
-        // {
-        //     label: 'node2',
-        //     children: [
-        //     { label: 'child3' }
-        //     ]
-        // },
-        // {
-        //     label: 'node2',
-        //     children: [
-        //     { label: 'child3' }
-        //     ]
-        // },
-        // {
-        //     label: 'node1',
-        //     image: './sampleimage.png',
-        //     type: 'feature',
-        //     children: [
-        //         { label: 'child1' },
-        //         { label: 'Aggrevated Assault/ No Firearm ' }
-        //     ]
-        // },
-        // ];
-        var data = adapter.overlayManager.getOverlayTree();
-        console.log(data);
-        var $tree = $('#overlay-tree');
-        $tree.tree({
-            data: data,
-            dragAndDrop:true,
-            autoOpen: 1,
-            onCreateLi: function(node, $li) {
-                $li.find('.jqtree-title').before(
-                    '<input type="checkbox" class ="tree-node"/>' +
-                    '<img src="http://img0056.popscreencdn.com/103222765_watchmen-smiley-1-pin-button-badge-magnet-moore-gibbons-.jpg" alt="Overlay Icon" height="25" width="25">'
-                );
-            }
-        });
-
-        var $overlayRemoveTree = $('#overlay-removal-tree');
-        $overlayRemoveTree.tree({
-            data: data,
-            autoOpen: 1,
-            openedIcon: '',
-            closedIcon: '',
-            onCreateLi: function(node, $li) {
-                $li.find('.jqtree-title').before(
-                    '<input type="checkbox" class ="tree-node"/>'
-                );
-            }
-        });
-
-        $("#overlay-tree input:checkbox").on('change', function () {
-            $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
-        });
-        $("#overlay-removal-tree input:checkbox").on('change', function () {
-            $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
-        });
-
-
-        var toggleBaseMaps = function() {
-            if(!$('#popover_overlay_wrapper').hasClass('hidden')) {
-                $('#popover_overlay_wrapper').toggleClass('hidden');
-                $('#overlay').toggleClass('selected');
-            }
-            $('#popover_content_wrapper').toggleClass('hidden');
-            $('#basemaps').toggleClass('selected');
-        }
-
-        var toggleOverlay = function() {
-            if(!$('#popover_content_wrapper').hasClass('hidden')) {
+            /**
+            * Method used by the button binded to the basemaps icon.
+            * Toggles the basemaps popover open/close.
+            * If the overlay manager popover is already open then close it.
+            **/
+            var toggleBaseMaps = function() {
+                if(!$('#popover_overlay_wrapper').hasClass('hidden')) {
+                    $('#popover_overlay_wrapper').toggleClass('hidden');
+                    $('#overlay').toggleClass('selected');
+                }
                 $('#popover_content_wrapper').toggleClass('hidden');
                 $('#basemaps').toggleClass('selected');
             }
-            $('#popover_overlay_wrapper').toggleClass('hidden');
-            resizeOverlayToTree('#overlay-tree', 40);
-            $('#overlay').toggleClass('selected');
-        }
 
-        var toggleOverlaySettings = function() {
-            $('#overlay-tree').toggleClass('hidden');
-            $('#overlay-manager').toggleClass('hidden');
-            $('#overlay-add-icon').toggleClass('hidden');
-            $('#overlay-delete-icon').toggleClass('hidden');
-            $('#overlay-back-icon').toggleClass('hidden');
-            $('#overlay-vr').css('right', '36px');
-        }
+            /**
+            * Method used by the button binded to the overlay manager icon.
+            * Toggles the overlay manager open/close.
+            * If the basemap popover is already open then close it.
+            * Resize the window to the correct size given the tree.
+            **/
+            var toggleOverlayManager = function() {
+                if(!$('#popover_content_wrapper').hasClass('hidden')) {
+                    $('#popover_content_wrapper').toggleClass('hidden');
+                    $('#basemaps').toggleClass('selected');
+                }
+                $('#popover_overlay_wrapper').toggleClass('hidden');
+                resizeOverlayToTree('#overlay-tree', 40);
+                $('#overlay').toggleClass('selected');
+            }
 
-        var resizeOverlayToTree = function(tree, offset) {
-            var treeHeight = $(tree).css('height');
-            treeHeight = parseInt(treeHeight.substr(0, treeHeight.length-2));
-            $('#popover_overlay_wrapper').css('height', (treeHeight + offset) + 'px');
-        }
+            /**
+            * This function is used to automatically adjust the size of the window to the size of the tree plus
+            * a given specified offset/padding.
+            **/
+            var resizeOverlayToTree = function(tree, offset) {
+                var treeHeight = $(tree).css('height');
+                treeHeight = parseInt(treeHeight.substr(0, treeHeight.length-2));
+                $('#popover_overlay_wrapper').css('height', (treeHeight + offset) + 'px');
+            }
 
+            /**
+            * This function is called each time the tree needs to be updated, the updating is handled through
+            * jquery tree.
+            **/
+            var updateTreeData = function() {
+                $('#overlay-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
+                $('#overlay-removal-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
+                resizeOverlayToTree('#overlay-tree', 85);
+                if(!isOverlayTreeEmpty()) {
+                    toggleManagerTooltip('hide')
+                }
+                bindSelectionHandlers();
+            }
+            adapter.overlayManager.bindTreeChangeHandler(updateTreeData);
+            /**
+            * This is used to toggle the overlay tree within the Overlay manager window.  If
+            * there are any overlays to display and you are not adding or removing overlays/features
+            * then the tree should be visible.
+            **/
+            var toggleOverlayTree = function(action) {
+                var hideOpenTree = (action === 'hide' && !$('#overlay-tree').hasClass('hidden'));
+                var openClosedTree = (action === 'show' && $('#overlay-tree').hasClass('hidden'));
+                if(hideOpenTree || openClosedTree){
+                    $('#overlay-tree').toggleClass('hidden');
+                }
+            };
+
+            /**
+            * This is used to toggle the tooltip within the Overlay manager window.  This tooltip
+            * should only display if there are no overlays to display.  This is a convenience method
+            * to close or open the tooltip depending on action paramater given.
+            **/
+            var toggleManagerTooltip= function(action) {
+                var hideOpenTooltip = (action === 'hide' && !$('#no-overlay-tooltip').hasClass('hidden'));
+                var openClosedTooltip = (action === 'show' && $('#no-overlay-tooltip').hasClass('hidden'));
+                if(hideOpenTooltip || openClosedTooltip){
+                    $('#no-overlay-tooltip').toggleClass('hidden');
+                }
+            };
+        });
+    }
     });

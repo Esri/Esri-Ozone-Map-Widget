@@ -77,8 +77,8 @@ html, body, #map {
   visibility: hidden;
 }
 
-.esriBasemapGallerySelectedNode .esriBasemapGalleryThumbnail{ 
-  border-color: #2BA2CD !important; 
+.esriBasemapGallerySelectedNode .esriBasemapGalleryThumbnail{
+  border-color: #2BA2CD !important;
   margin-bottom: 2px;
 }
 
@@ -130,7 +130,7 @@ html, body, #map {
 #popover_overlay_wrapper {
   background: #fff;
   width: 330px;
-  height: 400px;
+  min-height: 150px;
   top: 60px;
   right:128px;
   border:2px solid #666;
@@ -166,6 +166,43 @@ html, body, #map {
   border-bottom-color: #666;
   border-width: 28px;
   margin-left: -28px;
+}
+
+
+.no-overlays-tip {
+  position: relative;
+  background: #666666;
+  border: 2px solid #999999;
+  width: 170px;
+  top: 12px;
+  left: 148px;
+  border-radius: 8px;
+  color: white;
+  padding-left: 5px;
+  padding-top: 5px;
+}
+.no-overlays-tip:after, .no-overlays-tip:before {
+  top: 100%;
+  left: 88%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.no-overlays-tip:after {
+ border-color: rgba(102, 102, 102, 0);
+  border-top-color: #666666;
+  border-width: 12px;
+  margin-left: -30px;
+}
+.no-overlays-tip:before {
+  border-color: rgba(153, 153, 153, 0);
+  border-top-color: #999999;
+  border-width: 15px;
+  margin-left: -33px;
 }
 
 .esriBasemapGalleryNode {
@@ -228,7 +265,7 @@ html, body, #map {
   background-color: #666666;
 }
 .tooltip.bottom .tooltip-arrow {
-  border-bottom-color: #666666; 
+  border-bottom-color: #666666;
 }
 #overlay-hr-wrapper {
   height:100%;
@@ -239,7 +276,7 @@ html, body, #map {
 #overlay-tree {
   position: absolute;
   left: 20px;
-  top: 10px;
+  top: 50px;
 }
 #overlay-hr {
   border: 1px solid #666;
@@ -258,9 +295,9 @@ html, body, #map {
   height:25px;
   width:25px;
   bottom: 0px;
-  right: 8px;
+  right: 35px;
   position: absolute;
-  background-image: url("../images/icons/Settings_Default.png");
+  background-image: url("../images/icons/Add_Overlay_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -268,9 +305,10 @@ html, body, #map {
   height:25px;
   width:25px;
   bottom: 0px;
-  right: 35px;
+
+  right: 8px;
   position: absolute;
-  background-image: url("../images/icons/Settings_Default.png");
+  background-image: url("../images/icons/Remove_Overlay_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -280,18 +318,27 @@ html, body, #map {
   bottom: 0px;
   right: 8px;
   position: absolute;
-  background-image: url("../images/icons/Back_Default.png");
+  background-image: url("../images/icons/Overlay_Manager_Back_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
-#overlay-add-icon:hover, #overlay-delete-icon:hover {
-  background-image: url("../images/icons/Settings_Hover.png");
+#overlay-add-icon:hover {
+  background-image: url("../images/icons/Add_Overlay_Hover.png");
+}
+#overlay-add-icon:active {
+  background-image: url("../images/icons/Add_Overlay_Selected.png");
+}
+#overlay-delete-icon:hover {
+  background-image: url("../images/icons/Remove_Overlay_Hover.png");
+}
+#overlay-delete-icon:active {
+  background-image: url("../images/icons/Remove_Overlay_Selected.png");
 }
 #overlay-back-icon:hover {
-  background-image: url("../images/icons/Back_Hover.png");
+  background-image: url("../images/icons/Overlay_Manager_Back_Hover.png");
 }
 #overlay-back-icon:active {
-  background-image: url("../images/icons/Back_Selected.png");
+  background-image: url("../images/icons/Overlay_Manager_Back_Selected.png");
 }
 
 input[type="checkbox"] {
@@ -310,7 +357,7 @@ input[type="checkbox"] {
     border: 2px solid #666;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
-    border-radius: 5px; 
+    border-radius: 5px;
     font-family: arial;
     font-size: 0.9em;
   }
@@ -321,7 +368,7 @@ input[type="checkbox"] {
     margin: 0px;
     display: inline-block;
   }
-  #loading { 
+  #loading {
     float: right;
   }
 
@@ -414,6 +461,11 @@ fieldset[disabled] .btn-custom.active {
 
 #overlay-removal-tree > .jqtree_common {
   margin-left: 30px;
+}
+
+#tooltip-x-button {
+  margin-top: -7px;
+  margin-right:2px;
 }
 
 

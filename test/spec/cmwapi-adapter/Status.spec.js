@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define(["cmwapi/cmwapi", "cmwapi-adapter/Status", "esri/kernel", "test/mock/esriMap", "test/mock/OWF", "test/mock/Ozone"],
-        function(CommonMapApi, Status, EsriNS, Map, OWF, Ozone) {
+define(["cmwapi/cmwapi", "cmwapi-adapter/Status", "esri/kernel", "test/mock/esriMap", 
+    "test/mock/OWF", "test/mock/Ozone"],
+    function(CommonMapApi, Status, EsriNS, Map, OWF, Ozone) {
 
     describe("To test the CMWAPI Adapter status module", function() {
         beforeEach(function() {
