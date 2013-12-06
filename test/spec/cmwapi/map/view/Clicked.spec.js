@@ -136,7 +136,7 @@ define(["cmwapi/Channels", "cmwapi/map/view/Clicked", "cmwapi/map/Error", "cmwap
                 lat: 1, 
                 lon: 2,
                 type: "double",
-                button: "test",
+                button: "test"
             });
             expect(Clicked.send).toHaveBeenCalled();
 

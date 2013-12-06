@@ -114,7 +114,7 @@ define(["cmwapi/Channels", "cmwapi/map/overlay/Remove", "cmwapi/map/Error", "cmw
             // Test the behavior for newHandler  Remove a sender an empty payload to pass along
             // Our code should fill in the payload and pass it along to the testHandler.
             var jsonVal = {
-                overlayId: "myOverlay",
+                overlayId: "myOverlay"
             };
             var sender = {
                 id: INSTANCE_ID
