@@ -38,51 +38,72 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
         /**
          * Sends a status view message.  The only real CMWAPI requirement here is what goes out over the channel.
-         * @param {string} requester Client that requested this status message be sent (if any). An empty requestor
+         * @param {Object|Array} data
+         * @param {string} data.requester Client that requested this status message be sent (if any). An empty requestor
          *     denotes that the message is being sent due to a map view change.
-         * @param {object} bounds Information about the bounding view.
-         * @param {object} bounds.southWest The southwest corner object with attributes
-         * @param {number} bounds.southWest.lat A latitude value
-         * @param {number} bounds.southWest.lon A longitude value
-         * @param {object} bounds.northEast The northeast corner object with attributes
-         * @param {number} bounds.northEast.lat A latitude value
-         * @param {number} bounds.northEast.lon A longitude value
-         * @param {object} center A point on which to center a map.
-         * @param {number} center.lat The latitude value in decimal degrees.
-         * @param {number} center.lon The longitude value in decimal degrees.
-         * @param {number} range  The current distance in meters the map is zoomed out.
+         * @param {object} data.bounds Information about the bounding view.
+         * @param {object} data.bounds.southWest The southwest corner object with attributes
+         * @param {number} data.bounds.southWest.lat A latitude value
+         * @param {number} data.bounds.southWest.lon A longitude value
+         * @param {object} data.bounds.northEast The northeast corner object with attributes
+         * @param {number} data.bounds.northEast.lat A latitude value
+         * @param {number} data.bounds.northEast.lon A longitude value
+         * @param {object} data.center A point on which to center a map.
+         * @param {number} data.center.lat The latitude value in decimal degrees.
+         * @param {number} data.center.lon The longitude value in decimal degrees.
+         * @param {number} data.range  The current distance in meters the map is zoomed out.
          */
-        send: function(requester, bounds, center, range) {
+        send: function(data) {
 
            /*
             Validate data provided
             */
             var msg = '';
+
+            // validData will story results from any Validator and may be resused for internal
+            // error bookkeeping.
+            var validData = Validator.validObjectOrArray( data );
+            var payload = validData.payload;
             var isValidData = true;
 
-            // validate bounds
-            var checkBounds = Validator.validBounds(bounds);
-            if (!checkBounds.result) {
-                msg += checkBounds.msg +';';
-                isValidData = false;
+            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // note the error and return.
+            if (!validData.result) {
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_VIEW, data, 
+                    validData.msg);
+                return;
             }
-            var checkCenter = Validator.validCenter(center);
-            if (!checkCenter.result) {
-                msg += checkCenter.msg+';';
-                isValidData = false;
+
+            // Check all the feature objects; fill-in any missing attributes.
+            for (var i = 0; i < payload.length; i++) {
+
+                // validate bounds
+                var checkBounds = Validator.validBounds(payload[i].bounds);
+                if (!checkBounds.result) {
+                    msg += checkBounds.msg +'  for view index[' + i + ']. ';
+                    isValidData = false;
+                }
+                var checkCenter = Validator.validCenter(payload[i].center);
+                if (!checkCenter.result) {
+                    msg += checkCenter.msg+' for view index[' + i + ']. ';
+                    isValidData = false;
+                }
+                var checkRange = Validator.validRange(payload[i].range);
+                if (!checkRange.result) {
+                    msg+=checkRange.msg+' for view index[' + i + ']. ';
+                    isValidData = false;
+                }
             }
-            var checkRange = Validator.validRange(range);
-            if (!checkRange.result) {
-                msg+=checkRange.msg+';';
-                isValidData = false;
-            }
-            var msgOut = Ozone.util.toString({requester: requester, bounds: bounds, center: center, range: range});
             if (!isValidData) {
                 Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_VIEW,
-                    msgOut,
+                    payload,
                     msg);
             } else {
-                OWF.Eventing.publish(Channels.MAP_STATUS_VIEW, msgOut);
+                if (payload.length === 1) {                
+                    OWF.Eventing.publish(Channels.MAP_STATUS_VIEW, payload[0]);
+                } else {
+                    OWF.Eventing.publisH(Channels.MAP_STATUS_VIEW, payload);
+                }
             }
 
         },
@@ -97,26 +118,36 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
             var newHandler = function(sender, msg) {
 
-                var isValidData = true;
-                var jsonMsg = Ozone.util.parseJson(msg);
+                // Parse the sender and msg to JSON.
+                var jsonSender = Ozone.util.parseJson(sender);
+                var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
+                var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
+                var validData = true;
+                var errorMsg = "";
 
-                // No real validation for requester as it is optional; The other
-                // elements need to be validated.
-                var checkResult = Validator.validBounds(jsonMsg.bounds);
-                if (!checkResult.result) {
-                    msg += checkResult.msg +';';
-                    isValidData = false;
+                var isValidData= true;
+
+                for (var i = 0; i < data.length; i ++) {
+
+                    // No real validation for requester as it is optional; The other
+                    // elements need to be validated.
+                    var checkResult = Validator.validBounds(data[i].bounds);
+                    if (!checkResult.result) {
+                        msg += checkResult.msg + ' for the status at index ' + i + '. ';
+                        isValidData = false;
+                    }
+                    checkResult = Validator.validCenter(data[i].center);
+                    if (!checkResult.result) {
+                        msg += checkResult.msg +';';
+                        isValidData = false;
+                    }
+                    checkResult = Validator.validRange(data[i].range);
+                    if (!checkResult.result) {
+                        msg += checkResult.msg +';';
+                        isValidData = false;
+                    }
                 }
-                checkResult = Validator.validCenter(jsonMsg.center);
-                if (!checkResult.result) {
-                    msg += checkResult.msg +';';
-                    isValidData = false;
-                }
-                checkResult = Validator.validRange(jsonMsg.range);
-                if (!checkResult.result) {
-                    msg += checkResult.msg +';';
-                    isValidData = false;
-                }
+    
                 if (isValidData) {
                     handler(sender, jsonMsg.requester, jsonMsg.bounds, jsonMsg.center, jsonMsg.range );
                 } else {
@@ -140,18 +171,19 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         /**
          * A function for handling View channel messages.
          * @callback module:cmwapi/map/status/View~Handler
-         * @param {string} sender The widget sending a view message
-         * @param {object} bounds Information about the bounding view.
-         * @param {object} bounds.southWest The southwest corner object with attributes
-         * @param {number} bounds.southWest.lat A latitude value
-         * @param {number} bounds.southWest.lon A longitude value
-         * @param {object} bounds.northEast The northeast corner object with attributes
-         * @param {number} bounds.northEast.lat A latitude value
-         * @param {number} bounds.northEast.lon A longitude value
-         * @param {object} center A point on which to center a map.
-         * @param {number} center.lat The latitude value in decimal degrees.
-         * @param {number} center.lon The longitude value in decimal degrees.
-         * @param {number} range The current distance in meters the map is zoomed out.
+         * @param {Object|Array} data         
+         * @param {string} data.sender The widget sending a view message
+         * @param {object} data.bounds Information about the bounding view.
+         * @param {object} data.bounds.southWest The southwest corner object with attributes
+         * @param {number} data.bounds.southWest.lat A latitude value
+         * @param {number} data.bounds.southWest.lon A longitude value
+         * @param {object} data.bounds.northEast The northeast corner object with attributes
+         * @param {number} data.bounds.northEast.lat A latitude value
+         * @param {number} data.bounds.northEast.lon A longitude value
+         * @param {object} data.center A point on which to center a map.
+         * @param {number} data.center.lat The latitude value in decimal degrees.
+         * @param {number} data.center.lon The longitude value in decimal degrees.
+         * @param {number} data.range The current distance in meters the map is zoomed out.
          */
     };
 

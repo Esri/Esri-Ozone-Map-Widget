@@ -158,10 +158,10 @@ define(["cmwapi/Channels", "cmwapi/map/status/About", "cmwapi/map/Error", "cmwap
             spyOn(Error, 'send');
 
             newHandler('senderFoo', jsonVal );
-            // don't expect error to be called
+
             expect(Error.send.calls.length).toEqual(1);
 
-            // Now DO expect testHandler to have been called!
+
             expect(testHandler.calls.length).toEqual(0);
         });
 
@@ -208,6 +208,42 @@ define(["cmwapi/Channels", "cmwapi/map/status/About", "cmwapi/map/Error", "cmwap
             expect(testHandler.mostRecentCall.args[1][1].version).toEqual("1.3.0");
             expect(testHandler.mostRecentCall.args[1][1].type).toEqual("2-D");
             expect(testHandler.mostRecentCall.args[1][1].widgetName).toEqual("CMWAPI Spec Test widget");
+
+        });
+
+        it("Test that handler only sends back one error, even with multiple objects in array", function() {
+
+
+            var eventing = OWF.Eventing;
+            spyOn(eventing, 'subscribe');
+
+            var testHandler = jasmine.createSpy('testHandler');
+            var newHandler = About.addHandler(testHandler);            
+            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_ABOUT);
+
+            // Test the behavior for newHandler  Create a sender an empty payload to pass along
+            var jsonVal = [{
+                //version: '1.1.0',     // missing version
+                type: '2-D',
+                widgetName: 'CMWAPI Spec widget'
+            },{
+                //version: '1.3.0',     // missing version
+                //type: '2-D',
+                type: 'foo',    // bad type
+                widgetName: 'CMWAPI Spec Test widget'
+            }];
+            var sender = {
+                id: INSTANCE_ID
+            };
+
+            // Spy on Error and call our wrapper handler.
+            spyOn(Error, 'send');
+            newHandler(Ozone.util.toString(sender), jsonVal); 
+
+            // We expect error to be called only once
+            expect(Error.send.calls.length).toEqual(1);
+
+            expect(testHandler.calls.length).toEqual(0);
 
         });
 

@@ -46,7 +46,6 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         /**
          * Send About information that describes this widget and its level of CMWAPI support.
          * @param {Object|Array} data
-         * 
          * @param {string} data.version The version of this widget
          * @param {string} data.type One of the {@link module:cmwapi/map/status/About.TYPES_ALLOWED|TYPES_ALLOWED} values.
          * @param {string} data.widgetName - name of the map widget
@@ -169,11 +168,13 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         /**
          * A function for handling request channel messages.
          * @callback module:cmwapi/map/status/About~Handler
-         * @param {string} sender The widget sending an about message
-         * @param {string} version The version of the widget
-         * @param {string} type One of the {@link module:cmwapi/map/status/About.TYPES_ALLOWED|TYPES_ALLOWED} values.
-         * @param {string} widgetName  The name of the widget publishing about information
+         * @param {Object|Array} data
+         * @param {string} data.sender The widget sending an about message
+         * @param {string} data.version The version of the widget
+         * @param {string} data.type One of the {@link module:cmwapi/map/status/About.TYPES_ALLOWED|TYPES_ALLOWED} values.
+         * @param {string} data.widgetName  The name of the widget publishing about information
          */
+
 
     };
 

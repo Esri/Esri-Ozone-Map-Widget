@@ -48,7 +48,7 @@ define(["cmwapi/Channels", "cmwapi/map/status/View", "cmwapi/map/Error", "cmwapi
             var eventing = OWF.Eventing;
             spyOn(eventing, 'publish');
 
-            View.send(requestor, validBounds, validCenter, validRange);
+            View.send({requestor: requestor, bounds: validBounds, center: validCenter, range: validRange});
             expect(View.send).toHaveBeenCalled();
             expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_VIEW);
 
@@ -78,24 +78,28 @@ define(["cmwapi/Channels", "cmwapi/map/status/View", "cmwapi/map/Error", "cmwapi
             var eventing = OWF.Eventing;
             spyOn(eventing, 'publish');
 
-            View.send(requestor, validBounds, invalidCenter1, validRange);
+            View.send({requestor: requestor, bounds: validBounds, center: invalidCenter1, range: validRange});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Center');
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, validBounds, invalidCenter2, validRange);
+            View.send({requestor: requestor, bounds: validBounds, center: invalidCenter2, range: validRange});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Center');
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, validBounds, invalidCenter3, validRange);
+            View.send({requestor: requestor, bounds: validBounds, center: invalidCenter3, range: validRange});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Center');
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, validBounds, null, validRange);
+            View.send({requestor: requestor, bounds: validBounds, center: null, range: validRange});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Center');
             expect(eventing.publish.calls.length).toEqual(0);
 
         });
@@ -110,24 +114,28 @@ define(["cmwapi/Channels", "cmwapi/map/status/View", "cmwapi/map/Error", "cmwapi
             var eventing = OWF.Eventing;
             spyOn(eventing, 'publish');
 
-            View.send(requestor, invalidBounds1, validCenter, validRange);
+            View.send({requestor: requestor, bounds: invalidBounds1, center: validCenter, range: validRange});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Bounds');
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, invalidBounds2, validCenter, validRange);
+            View.send({requestor: requestor, bounds: invalidBounds2, center: validCenter, range: validRange});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Bounds');
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, invalidBounds3, validCenter, validRange);
+            View.send({requestor: requestor, bounds: invalidBounds3, center: validCenter, range: validRange});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Bounds');
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, null, validCenter, validRange);
+            View.send({requestor: requestor, bounds: null, center: validCenter, range: validRange});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Bounds');
             expect(eventing.publish.calls.length).toEqual(0);
 
         });
@@ -142,24 +150,28 @@ define(["cmwapi/Channels", "cmwapi/map/status/View", "cmwapi/map/Error", "cmwapi
             var eventing = OWF.Eventing;
             spyOn(eventing, 'publish');
 
-            View.send(requestor, validBounds, validCenter, invalidRange1);
+            View.send({requestor: requestor, bounds: validBounds, center: validCenter, range: invalidRange1});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Range');
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, validBounds, validCenter, invalidRange2);
+            View.send({requestor: requestor, bounds: validBounds, center: validCenter, range: invalidRange2});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Range');
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, validBounds, validCenter, invalidRange3);
+            View.send({requestor: requestor, bounds: validBounds, center: validCenter, range: invalidRange3});            
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Range');            
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, validBounds, validCenter, null);
+            View.send({requestor: requestor, bounds: validBounds, center: validCenter, range: null});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Range');            
             expect(eventing.publish.calls.length).toEqual(0);
 
         });
@@ -180,19 +192,22 @@ define(["cmwapi/Channels", "cmwapi/map/status/View", "cmwapi/map/Error", "cmwapi
             var eventing = OWF.Eventing;
             spyOn(eventing, 'publish');
 
-            View.send(requestor, validBounds, invalidCenter1, validRange);
+            View.send({requestor: requestor, bounds: validBounds, center: invalidCenter1, range: validRange});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Center');            
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, validBounds, invalidCenter2, validRange);
+            View.send({requestor: requestor, bounds: validBounds, center: invalidCenter2, range: validRange});            
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Center');                        
             expect(eventing.publish.calls.length).toEqual(0);
 
-            View.send(requestor, validBounds, invalidCenter3, validRange);
+            View.send({requestor: requestor, bounds: validBounds, center: invalidCenter3, range: validRange});                        
             expect(View.send).toHaveBeenCalled();
             expect(Error.send).toHaveBeenCalled();
+            expect(Error.send.mostRecentCall.args[3]).toContain('Center');                        
             expect(eventing.publish.calls.length).toEqual(0);
 
 
@@ -207,7 +222,7 @@ define(["cmwapi/Channels", "cmwapi/map/status/View", "cmwapi/map/Error", "cmwapi
             var eventing = OWF.Eventing;
             spyOn(eventing, 'publish');
 
-            View.send(requestor, invalidBounds1, validCenter, invalidRange1);
+            View.send({requestor: requestor, bounds: invalidBounds1, center: validCenter, range: invalidRange1});
             expect(View.send).toHaveBeenCalled();
             expect(Error.send.mostRecentCall.args[3]).toContain('Range');
             expect(Error.send.mostRecentCall.args[3]).toContain('Bounds');
