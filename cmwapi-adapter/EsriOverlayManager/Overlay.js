@@ -99,15 +99,19 @@ define(function() {
                     delete parent.children[overlayId];
                 }
 
-                var features = Object.keys(overlay.features);
-                for(var i = 0; i < features.length; i++) {
-                    manager.feature.deleteFeature(overlayId, features[i].featureId);
+                var features = overlay.features;
+                for(var i in features) {
+                    if(features.hasOwnProperty(i)) {
+                        manager.feature.deleteFeature(caller, overlayId, features[i].featureId);
+                    }
                 }
 
-                var children = Object.keys(overlay.children);
+                var children = overlay.children;
                 //recursively remove children from this overlay
-                for(i = 0; i < children.length; i++) {
-                    me.removeOverlay(caller, children[i]);
+                for(i in children) {
+                    if(children.hasOwnProperty(i)) {
+                        me.removeOverlay(caller, children[i]);
+                    }
                 }
             }
 
@@ -128,10 +132,12 @@ define(function() {
             } else {
                 overlay.isHidden = true;
 
-                var features = Object.keys(overlay.features);
-                for(var i = 0; i < features.length; i++) {
-                    features[i].isHidden = true;
-                    features[i].esriObject.hide();
+                var features = overlay.features;
+                for(var i in features) {
+                    if(features.hasOwnProperty(i)) {
+                        features[i].isHidden = true;
+                        features[i].esriObject.hide();
+                    }
                 }
                 manager.treeChanged();
             }
@@ -150,10 +156,12 @@ define(function() {
             } else {
                 overlay.isHidden = false;
 
-                var features = Object.keys(overlay.features);
-                for(var i = 0; i < features.length; i++) {
-                    features[i].isHidden = false;
-                    features[i].esriObject.show();
+                var features = overlay.features;
+                for(var i in features) {
+                    if(features.hasOwnProperty(i)) {
+                        features[i].isHidden = false;
+                        features[i].esriObject.show();
+                    }
                 }
                 manager.treeChanged();
             }

@@ -220,7 +220,6 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
             }
 
             if(feature.isHidden) {
-                console.log("about to call");
                 feature.isHidden = false;
                 feature.esriObject.show();
                 manager.treeChanged();
@@ -254,12 +253,14 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
 
             var extent = findExtent(feature.esriObject);
 
+            console.log(extent);
             map.setExtent(extent);
         };
 
         var findExtent = function(esriLayer) {
             var extent = null;
             var layers = esriLayer.getLayers();
+            console.log(layers);
 
             var layer;
             for(var i = 0; i < layers.length; i++) {
