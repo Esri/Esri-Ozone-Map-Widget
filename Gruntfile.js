@@ -39,12 +39,25 @@ module.exports = function(grunt) {
             options: {
                 jshintrc: true
             }
+        },
+
+        copy: {
+            main: {
+                files: [
+                  // includes files within path and its sub-directories
+                  {expand: true, src: ['cmwapi/**'], dest: 'owf-map-widget/js/lib'},
+
+                  {expand: true, src: ['cmwapi-adapter/**'], dest: 'owf-map-widget/js/lib'}
+                  
+                  ]
+             },
         }
     });
 
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
     // Workaround for allowing tasks that can fail but should not abort the build chains.
     // Reference: http://stackoverflow.com/questions/16612495/continue-certain-tasks-in-grunt-even-if-one-fails
@@ -70,5 +83,5 @@ module.exports = function(grunt) {
     grunt.registerTask('test', ['karma']);
 
     // Default task(s)
-    grunt.registerTask('default', ['usetheforce_on', 'jshint', 'usetheforce_restore', 'karma', 'jsdoc']);
+    grunt.registerTask('default', ['usetheforce_on', 'jshint', 'usetheforce_restore', 'karma', 'jsdoc', 'copy']);
 };
