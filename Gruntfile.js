@@ -83,5 +83,5 @@ module.exports = function(grunt) {
     grunt.registerTask('test', ['karma']);
 
     // Default task(s)
-    grunt.registerTask('default', ['usetheforce_on', 'jshint', 'usetheforce_restore', 'karma', 'jsdoc'/**, 'copy'] **/);
+    grunt.registerTask('default', ['usetheforce_on', 'jshint', 'usetheforce_restore', 'karma', 'jsdoc'/**, 'copy'**/]  );
 };
