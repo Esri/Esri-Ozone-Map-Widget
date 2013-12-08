@@ -87,8 +87,6 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
                     OWF.Eventing.publish(Channels.MAP_ERROR, Ozone.util.toString(payload[i]));
                 }
             }
-
-
         },
 
         /**
@@ -102,8 +100,20 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
             // Following pattern of wrapping the handler, to let us deal with test code
             var newHandler = function(sender, msg) {
 
-                // nothing really that can be done if the error message itself has an error...
-                handler(sender, msg.type, msg.msg, msg.error);
+                // Parse the sender and msg to JSON.
+                var jsonSender = Ozone.util.parseJson(sender);
+                var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
+                var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
+                var validData = true;
+                var errorMsg = "";
+
+                if (validData) {
+                    handler(sender, (data.length === 1) ? data[0] : data);
+                } else {
+                    // nothing really that can be done if the error message itself has an error...
+                    console.log("Error handler is being given invalid data: " + msg);
+                }
+
             };
 
             OWF.Eventing.subscribe(Channels.MAP_ERROR, newHandler);
