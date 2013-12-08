@@ -79,7 +79,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent"], function(Common
          * @memberof! module:EsriAdapter#
          */
         me.sendAbout = function() {
-            var version = "1.1";    // version of the CMWAPI supported
+            var version = CommonMapApi.version;    
             var type = "2-D";
             var widgetName = OWF.getInstanceId();
 
