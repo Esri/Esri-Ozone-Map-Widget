@@ -58,8 +58,9 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Status", "esri/kernel", "test/mock/esri
                 var map = new Map();
                 var status  = new Status({}, map);
                 status.handleRequest("FakeWidget", ["view"]);
-                expect(CommonMapApi.status.view.send).toHaveBeenCalledWith('FakeWidget',
-                    {southWest: {lat: 0, lon: 0}, northEast: {lat: 2, lon: 2}}, {lat: 1, lon: 1 }, 2);
+                expect(CommonMapApi.status.view.send).toHaveBeenCalledWith(
+                    {bounds: {southWest: {lat: 0, lon: 0}, northEast: {lat: 2, lon: 2}}, center: {lat: 1, lon: 1 },
+                     range: 2, requester: 'FakeWidget'});
                 expect(CommonMapApi.status.about.send).not.toHaveBeenCalled();
                 expect(CommonMapApi.status.format.send).not.toHaveBeenCalled();
             });
@@ -69,7 +70,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Status", "esri/kernel", "test/mock/esri
                 var status  = new Status({}, map);
                 status.handleRequest("FakeWidget", ["about"]);
                 expect(CommonMapApi.status.view.send).not.toHaveBeenCalled();
-                expect(CommonMapApi.status.about.send).toHaveBeenCalledWith(EsriNS.version, "2-D", OWF.getInstanceId());
+                expect(CommonMapApi.status.about.send).toHaveBeenCalledWith({version: CommonMapApi.version, type: "2-D", widgetName: OWF.getInstanceId()});
                 expect(CommonMapApi.status.format.send).not.toHaveBeenCalled();
             });
 
@@ -79,7 +80,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Status", "esri/kernel", "test/mock/esri
                 status.handleRequest("FakeWidget", ["format"]);
                 expect(CommonMapApi.status.view.send).not.toHaveBeenCalled();
                 expect(CommonMapApi.status.about.send).not.toHaveBeenCalled();
-                expect(CommonMapApi.status.format.send).toHaveBeenCalledWith(["kml"]);
+                expect(CommonMapApi.status.format.send).toHaveBeenCalledWith({formats: ["kml"]});
             });
 
             it("and check that the view and format send are called with 'format' and 'view' types as params", function() {

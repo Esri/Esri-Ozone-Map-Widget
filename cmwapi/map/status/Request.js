@@ -43,20 +43,38 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
         /**
          * Sends a status request message.
-         * @param {Array<string>} [types] version 1.1 only supports "about", "format", and "view"
+         * @param {Object|Array} data
+         * @param {Array<string>} data.[types] version 1.1 only supports "about", "format", and "view"
          */
-        send: function(types) {
-            var checkTypes = Validator.validRequestTypes(types);
-            if (checkTypes.result) {
-                // build JSON string for types
-                var objTypes = {
-                    types: types
-                };
+        send: function(data) {
 
-                OWF.Eventing.publish(Channels.MAP_STATUS_REQUEST, Ozone.util.toString(objTypes));
-            } else {
+            // validData will story results from any Validator and may be reused for internal
+            // error bookkeeping.
+            var validData = Validator.validObjectOrArray( data );
+            var payload = validData.payload;
+            var msg;
+
+            if (!validData.result) {
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, data, 
+                    validData.msg);
+                return;
+            }
+
+            var isValidData = true, errorMsg = '';
+
+            for (var i=0 ; i < payload.length ; i++ ) {
+                var checkTypes = Validator.validRequestTypes(payload[i].types);
+                if (!checkTypes.result) {
+                    isValidData = false;                    
+                    errorMsg += checkTypes.msg + ' at index[' + i + ']. ';
+                }         
+                
+            } 
+            if (!isValidData) {
                 // Send an error with the current widget instance as the sender.
-                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, types, checkTypes.msg);
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, payload, errorMsg);
+            } else {
+                OWF.Eventing.publish(Channels.MAP_STATUS_REQUEST, payload);
             }
         },
 
@@ -65,24 +83,23 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          *
          * @param {module:cmwapi/map/status/Request~Handler} handler An event handler for any request messages.
          * @todo Since single item (types), working to leave it as JSON &#123;types: []&#125;.<br />
-         * @todo Verify - Is the idea of sender important???
          */
         addHandler: function(handler) {
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
             var newHandler = function(sender, msg) {
-
+                var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = Ozone.util.parseJson(msg);
                 if (jsonMsg.types) {
                     var checkTypes = Validator.validRequestTypes(jsonMsg.types);
                     if (checkTypes.result) {
-                        handler(sender, jsonMsg.types);
+                        handler(jsonSender.id, jsonMsg.types);
                     } else {
-                        Error.send( sender, Channels.MAP_STATUS_REQUEST, msg, checkTypes.msg);
+                        Error.send( jsonSender.id, Channels.MAP_STATUS_REQUEST, msg, checkTypes.msg);
                     }
                 } else {
                     // if none requested, handle _all_
-                    handler(sender, Validator.SUPPORTED_STATUS_TYPES);
+                    handler(jsonSender.id, Validator.SUPPORTED_STATUS_TYPES);
                 }
             };
             OWF.Eventing.subscribe(Channels.MAP_STATUS_REQUEST, newHandler );

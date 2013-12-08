@@ -68,7 +68,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent"], function(Common
 
             var range = map.getScale();
 
-            CommonMapApi.status.view.send(caller, bounds, center, range);
+            CommonMapApi.status.view.send( {bounds: bounds, center: center, range: range, requester: caller});
         };
 
         /**
@@ -79,11 +79,11 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent"], function(Common
          * @memberof! module:EsriAdapter#
          */
         me.sendAbout = function() {
-            var version = EsriNS.version;
+            var version = "1.1";    // version of the CMWAPI supported
             var type = "2-D";
             var widgetName = OWF.getInstanceId();
 
-            CommonMapApi.status.about.send(version, type, widgetName);
+            CommonMapApi.status.about.send({version: version, type: type, widgetName: widgetName});
         };
 
         /**
@@ -96,7 +96,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent"], function(Common
         me.sendFormat = function() {
             var formats = ["kml"/*, "geojson", "wms"*/];
 
-            CommonMapApi.status.format.send(formats);
+            CommonMapApi.status.format.send({formats: formats});
         };
     };
 

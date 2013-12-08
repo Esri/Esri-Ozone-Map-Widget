@@ -92,7 +92,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 if (!checkRange.result) {
                     msg+=checkRange.msg+' for view index[' + i + ']. ';
                     isValidData = false;
-                }
+                }                
             }
             if (!isValidData) {
                 Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_VIEW,
@@ -100,9 +100,9 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                     msg);
             } else {
                 if (payload.length === 1) {                
-                    OWF.Eventing.publish(Channels.MAP_STATUS_VIEW, payload[0]);
+                    OWF.Eventing.publish(Channels.MAP_STATUS_VIEW, Ozone.util.toString(payload[0]));
                 } else {
-                    OWF.Eventing.publisH(Channels.MAP_STATUS_VIEW, payload);
+                    OWF.Eventing.publish(Channels.MAP_STATUS_VIEW, Ozone.util.toString(payload));
                 }
             }
 
