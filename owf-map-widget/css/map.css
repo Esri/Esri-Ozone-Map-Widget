@@ -450,8 +450,11 @@ ul.jqtree-tree li.jqtree-ghost span.jqtree-line {
 }
 
 #overlay-manager-add-button {
-  height:26px;
-  margin-left: 50px;
+  height:25px;
+  width:25px;
+  bottom: 1px;
+  right: 8px;
+  position: absolute;
   background-image: url("../images/icons/Add_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
@@ -484,8 +487,12 @@ height:25px;
   background-image: url("../images/icons/Remove_Selected.png");
 }
 
-
-
+.form-horizontal .control-label {
+  text-align: left;
+}
+.help-block {
+  display: none;
+}
 
 @media (max-height: 500px) {
   #popover_content_wrapper {

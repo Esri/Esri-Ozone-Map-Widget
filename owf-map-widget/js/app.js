@@ -37,9 +37,8 @@ require([
 
            var adapter = new cmwapiAdapter(map);
 
-
             $('#tooltip-x-button').on('click', function() {
-                $('#no-overlay-tooltip').toggleClass('hidden');
+                $('#no-overlay-tooltip').hide();
             });
             $('#overlay').on('click', function() {
                 toggleOverlayManager();
@@ -96,14 +95,20 @@ require([
 
             $('#overlay-selection').on('change', function() {
                 if(this.value === 'Add New Overlay') {
+                    var height = checkInvalidUrl ? '455px': '435px';
                     $('#popover_overlay_wrapper').css('height', '435px');
                     $('#add-overlay-div').show();
                 } else {
+                    var height = checkInvalidUrl ? '325px': '305px';
                     $('#add-overlay-div').hide();
                     $('#popover_overlay_wrapper').css('height', '305px');
                 }
                 checkAddFormCompleted();
             });
+
+            var checkInvalidUrl = function() {
+                return $('#feature-add-url').parent().hasClass('has-error');
+            }
 
             var updateOverlaySelection = function() {
                 $('#overlay-selection > option').remove();
@@ -127,6 +132,25 @@ require([
             $('form').find('.form-control.default').keyup(function() {
                 checkAddFormCompleted();
             });
+            $('#feature-add-url').keyup(function() {
+                if(!isValidUrl($(this).val())) {
+                    $(this).parent().removeClass('has-success');
+                    $(this).parent().addClass('has-error');
+                    $('#popover_overlay_wrapper').css('height', '325px');
+                    $('.help-block').show();
+                } else {
+                    $(this).parent().removeClass('has-error');
+                    $(this).parent().addClass('has-success');
+                    $(this).removeClass('has-error');
+                    $('.help-block').hide();
+                    $('#popover_overlay_wrapper').css('height', '305px');
+                }
+
+            });
+
+            var isValidUrl = function(url){
+                  return /\b(https?|ftp|file):\/\/[\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\-A-Za-z0-9+&@#\/%=~_|‌​]/.test(url);
+            }
 
             var checkAddFormCompleted = function() {
                 var emptyInputs = $('.form-control.default').filter(function() {
@@ -276,6 +300,9 @@ require([
                 $('#overlay-tree').addClass('default');
                 $('#overlay-tree').removeClass('remove');
                 $('#overlay-tree').css('top','50px');
+                $('.help-block').hide();
+                $('#feature-add-url').parent().removeClass('has-success');
+                $('#feature-add-url').parent().removeClass('has-error');
                 updateCheckBoxes();
                 bindSelectionHandlers();
                 resizeOverlayToTree('#overlay-tree', 90);
