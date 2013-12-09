@@ -97,21 +97,13 @@ require([
             $('#overlay-selection').on('change', function() {
                 if(this.value === 'Add New Overlay') {
                     $('#popover_overlay_wrapper').css('height', '435px');
-                    $('#add-overlay-div').toggleClass('hidden');
-                } else if(!($('#add-overlay-div').hasClass('hidden'))) {
-                    $('#add-overlay-div').toggleClass('hidden');
+                    $('#add-overlay-div').show();
+                } else {
+                    $('#add-overlay-div').hide();
                     $('#popover_overlay_wrapper').css('height', '305px');
                 }
                 checkAddFormCompleted();
             });
-
-            var setInitManagerState = function() {
-                closeManagerWindowsIfOpen();
-                toggleOverlaySettings('reset')
-                updateTreeData();
-                toggleOverlayTree('show')
-            };
-
 
             var updateOverlaySelection = function() {
                 $('#overlay-selection > option').remove();
@@ -133,39 +125,18 @@ require([
                 return adapter.overlayManager.getOverlayTree().length === 0;
             };
 
-
-
             $('form').find('input').keyup(function() {
                 checkAddFormCompleted();
             });
 
-            var toggleManagerAddButton = function(action) {
-                var toggle = ($('#overlay-manager-add-button').hasClass('disabled') && action === 'enable') ||
-                    (!($('#overlay-manager-add-button').hasClass('disabled')) && action === 'disable');
-                if(toggle) {
-                    $('#overlay-manager-add-button').toggleClass('disabled');
-                }
-            }
-
             var checkAddFormCompleted = function() {
-                var hasFeatureName = !($('#feature-add-name').val() === '');
-                var hasFeatureId = !($('#feature-add-id').val() === '');
-                var hasFeatureUrl = !($('#feature-add-url').val() === '');
-                var hasFeatureParams = !($('#feature-add-params').val() === '');
-                var hasOverlayName = !($('#overlay-add-name').val() === '');
-                var hasOverlayId = !($('#overlay-add-id').val() === '');
-                if($('#overlay-selection').val() === 'Add New Overlay') {
-                    if(hasFeatureName && hasFeatureId && hasFeatureUrl && hasOverlayName && hasOverlayId) {
-                        toggleManagerAddButton('enable');
-                    } else {
-                        toggleManagerAddButton('disable');
-                    }
+                var emptyInputs = $('.form-control.default').filter(function() {
+                    return $(this).val() === '' && $(this).is(':visible');
+                }).length;
+                if(emptyInputs === 0) {
+                    $('#overlay-manager-add-button').removeClass('disabled');
                 } else {
-                    if(hasFeatureName && hasFeatureId && hasFeatureUrl) {
-                        toggleManagerAddButton('enable');
-                    } else {
-                        toggleManagerAddButton('disable');
-                    }
+                    $('#overlay-manager-add-button').addClass('disabled');
                 }
             };
 
@@ -186,7 +157,6 @@ require([
                 }
             });
 
-
             var clearAddInputs = function() {
                 $('#feature-add-name').val('');
                 $('#feature-add-id').val('');
@@ -204,45 +174,13 @@ require([
                 $("#overlay-tree input:checkbox").off('change');
                 $("#overlay-tree input:checkbox").on('change', function () {
                     $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
-                    if($(this).attr('checked','checked') && $(this).attr('type') === 'overlay') {
+                    $(this).prop('checked');
+                    if($(this).prop('checked') && $(this).attr('type') === 'overlay') {
                         adapter.overlayManager.sendOverlayShow($(this).attr('id'));
                     } else if($(this).attr('checked','unchecked') && $(this).attr('type') === 'overlay') {
                         adapter.overlayManager.sendOverlayHide($(this).attr('id'));
                     }
                 });
-            }
-
-            var closeManagerWindowsIfOpen = function() {
-                if(!$('#overlay-manager-add').hasClass('hidden')) {
-                    $('#overlay-manager-add').toggleClass('hidden');
-                }
-                if(!$('#overlay-manager-delete').hasClass('hidden')) {
-                    $('#overlay-manager-delete').toggleClass('hidden');
-                }
-                    $('#overlay-manager-subtitle').text('');
-            };
-
-
-            var toggleOverlaySettings = function(action) {
-                if(action === 'reset') {
-                    if($('#overlay-manager').hasClass('hidden')) {
-                        $('#overlay-manager').toggleClass('hidden');
-                    }
-                    if($('#overlay-add-icon').hasClass('hidden')) {
-                        $('#overlay-add-icon').toggleClass('hidden');
-                    }
-                    if($('#overlay-delete-icon').hasClass('hidden')) {
-                        $('#overlay-delete-icon').toggleClass('hidden');
-                    }
-                    if(!$('#overlay-back-icon').hasClass('hidden')) {
-                        $('#overlay-back-icon').toggleClass('hidden');
-                    }
-                } else {
-                    $('#overlay-manager').toggleClass('hidden');
-                    $('#overlay-add-icon').toggleClass('hidden');
-                    $('#overlay-delete-icon').toggleClass('hidden');
-                    $('#overlay-back-icon').toggleClass('hidden');
-                }
             }
 
             /**
@@ -251,11 +189,9 @@ require([
             * If the overlay manager popover is already open then close it.
             **/
             var toggleBaseMaps = function() {
-                if(!$('#popover_overlay_wrapper').hasClass('hidden')) {
-                    $('#popover_overlay_wrapper').toggleClass('hidden');
-                    $('#overlay').toggleClass('selected');
-                }
-                $('#popover_content_wrapper').toggleClass('hidden');
+                $('#popover_content_wrapper').toggle();
+                $('#overlay').removeClass('selected');
+                $('#popover_overlay_wrapper').hide();
                 $('#basemaps').toggleClass('selected');
             }
 
@@ -266,15 +202,11 @@ require([
             * Resize the window to the correct size given the tree.
             **/
             var toggleOverlayManager = function() {
-                if(!$('#popover_content_wrapper').hasClass('hidden')) {
-                    $('#popover_content_wrapper').toggleClass('hidden');
-                    $('#basemaps').toggleClass('selected');
-                }
-
-                $('#popover_overlay_wrapper').toggleClass('hidden');
+                $('#popover_overlay_wrapper').toggle();
+                $('#basemaps').removeClass('selected');
+                $('#popover_content_wrapper').hide();
+                $('#overlay').toggleClass('selected');
                 setStateInit()
-                // resizeOverlayToTree('#overlay-tree', 40);
-                // $('#overlay').toggleClass('selected');
             }
 
             /**
@@ -308,18 +240,6 @@ require([
                 setStateInit();
             }
             adapter.overlayManager.bindTreeChangeHandler(updateTreeData);
-            /**
-            * This is used to toggle the overlay tree within the Overlay manager window.  If
-            * there are any overlays to display and you are not adding or removing overlays/features
-            * then the tree should be visible.
-            **/
-            var toggleOverlayTree = function(action) {
-                var hideOpenTree = (action === 'hide' && !$('#overlay-tree').hasClass('hidden'));
-                var openClosedTree = (action === 'show' && $('#overlay-tree').hasClass('hidden'));
-                if(hideOpenTree || openClosedTree){
-                    $('#overlay-tree').toggleClass('hidden');
-                }
-            };
 
             /**
             * This is used to toggle the tooltip within the Overlay manager window.  This tooltip
@@ -335,123 +255,55 @@ require([
                 }
             };
 
-
-
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////
             var setStateInit = function() {
                 if(isOverlayTreeEmpty()) {
                     toggleManagerTooltip('show');
                 }
-                if(!$('#overlay-manager-add-button').hasClass('hidden')) {
-                    $('#overlay-manager-add-button').toggleClass('hidden');
-                }
-                if(!$('#overlay-manager-delete-button').hasClass('hidden')) {
-                    $('#overlay-manager-delete-button').toggleClass('hidden');
-                }
-                if(!$('#overlay-manager-add').hasClass('hidden')) {
-                    $('#overlay-manager-add').toggleClass('hidden');
-                }
-                if(!$('#overlay-manager-delete').hasClass('hidden')) {
-                    $('#overlay-manager-delete').toggleClass('hidden');
-                }
-                if(!$('#overlay-back-icon').hasClass('hidden')) {
-                    $('#overlay-back-icon').toggleClass('hidden');
-                }
-                if($('#overlay-add-icon').hasClass('hidden')) {
-                    $('#overlay-add-icon').toggleClass('hidden');
-                }
-                if($('#overlay-delete-icon').hasClass('hidden')) {
-                    $('#overlay-delete-icon').toggleClass('hidden');
-                }
-                if($('#overlay-tree').hasClass('hidden')) {
-                    $('#overlay-tree').toggleClass('hidden');
-                }
+                $('#overlay-manager-add-button').hide();
+                $('#overlay-manager-delete-button').hide();
+                $('#overlay-manager-add').hide();
+                $('#overlay-manager-delete').hide();
+                $('#overlay-back-icon').hide();
+                $('#overlay-add-icon').show();
+                $('#overlay-delete-icon').show();
+                $('#overlay-tree').show();
                 $('#overlay-tree').css('top','50px');
                 resizeOverlayToTree('#overlay-tree', 90);
             }
             var setStateAdd = function() {
                 toggleManagerTooltip('hide');
                 clearAddInputs();
-                if(!($('#overlay-add-icon').hasClass('hidden'))) {
-                    $('#overlay-add-icon').toggleClass('hidden');
-                }
-                if(!($('#overlay-delete-icon').hasClass('hidden'))) {
-                    $('#overlay-delete-icon').toggleClass('hidden');
-                }
-                if($('#overlay-back-icon').hasClass('hidden')) {
-                    $('#overlay-back-icon').toggleClass('hidden');
-                }
-                if($('#overlay-manager-add').hasClass('hidden')) {
-                    $('#overlay-manager-add').toggleClass('hidden');
-                }
-                if(!$('#overlay-manager-delete').hasClass('hidden')) {
-                    $('#overlay-manager-delete').toggleClass('hidden');
-                }
-                if($('#overlay-manager-add-button').hasClass('hidden')) {
-                    $('#overlay-manager-add-button').toggleClass('hidden');
-                }
-                if($('#overlay-manager').hasClass('hidden')) {
-                    $('#overlay-manager').toggleClass('hidden');
-                }
-                if(!$('#overlay-manager-delete-button').hasClass('hidden')) {
-                    $('#overlay-manager-delete-button').toggleClass('hidden');
-                }
-                if($('#overlay-manager-subtitle').hasClass('hidden')) {
-                    $('#overlay-manager-subtitle').toggleClass('hidden');
-                }
-                if(!$('#add-overlay-div').hasClass('hidden')) {
-                    $('#add-overlay-div').toggleClass('hidden');
-                }
-                if(!$('#overlay-tree').hasClass('hidden')) {
-                    $('#overlay-tree').toggleClass('hidden');
-                }
-                $('#overlay-manager-subtitle').text('Add New Feature');
+                $('#overlay-add-icon').hide();
+                $('#overlay-delete-icon').hide();
+                $('#overlay-manager-delete-button').hide();
+                $('#add-overlay-div').hide();
+                $('#overlay-manager-delete').hide();
+                $('#overlay-tree').hide();
+                $('#overlay-back-icon').show();
+                $('#overlay-manager-add').show();
+                $('#overlay-manager-add-button').show();
+                $('#overlay-manager').show();
+                $('#overlay-manager-subtitle').show();
                 updateOverlaySelection();
                 $('#popover_overlay_wrapper').css('height', '305px');
             }
             var setStateRemove = function() {
                 toggleManagerTooltip('hide');
-                if(!($('#overlay-add-icon').hasClass('hidden'))) {
-                    $('#overlay-add-icon').toggleClass('hidden');
-                }
-                if(!($('#overlay-delete-icon').hasClass('hidden'))) {
-                    $('#overlay-delete-icon').toggleClass('hidden');
-                }
-                if($('#overlay-back-icon').hasClass('hidden')) {
-                    $('#overlay-back-icon').toggleClass('hidden');
-                }
-                if(!$('#overlay-manager-add').hasClass('hidden')) {
-                    $('#overlay-manager-add').toggleClass('hidden');
-                }
-                if($('#overlay-manager-delete').hasClass('hidden')) {
-                    $('#overlay-manager-delete').toggleClass('hidden');
-                }
-                if(!$('#overlay-manager-add-button').hasClass('hidden')) {
-                    $('#overlay-manager-add-button').toggleClass('hidden');
-                }
-                if($('#overlay-manager').hasClass('hidden')) {
-                    $('#overlay-manager').toggleClass('hidden');
-                }
-                if($('#overlay-manager-delete-button').hasClass('hidden')) {
-                    $('#overlay-manager-delete-button').toggleClass('hidden');
-                }
-                if($('#delete-feature-subtitle').hasClass('hidden')) {
-                    $('#delete-feature-subtitle').toggleClass('hidden');
-                }
-                if(!$('#add-overlay-div').hasClass('hidden')) {
-                    $('#add-overlay-div').toggleClass('hidden');
-                }
-                if($('#overlay-tree').hasClass('hidden')) {
-                    $('#overlay-tree').toggleClass('hidden');
-                }
-                $('#overlay-manager-subtitle').text('Add New Feature');
+                $('#overlay-add-icon').hide();
+                $('#overlay-delete-icon').hide();
+                $('#add-overlay-div').hide();
+                $('#overlay-manager-add-button').hide();
+                $('#overlay-manager-add').hide();
+                $('#overlay-manager-delete').show();
+                $('#overlay-manager').show();
+                $('#overlay-manager-delete-button').show();
+                $('#delete-feature-subtitle').show();
+                $('#overlay-back-icon').show();
+                $('#overlay-tree').show();
                 updateOverlaySelection();
                 $('#overlay-tree').css('top','85px');
                 resizeOverlayToTree('#overlay-tree', 125);
             }
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////
         });
     }
     });

@@ -88,6 +88,7 @@ html, body, #map {
 }
 
 #popover_content_wrapper {
+  display:none;
   background: #fff;
   width: 376px;
   top: 60px;
@@ -128,6 +129,7 @@ html, body, #map {
 }
 
 #popover_overlay_wrapper {
+  display:none;
   background: #fff;
   width: 330px;
   min-height: 150px;
