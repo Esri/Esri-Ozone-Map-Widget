@@ -124,8 +124,7 @@ require([
             var isOverlayTreeEmpty = function() {
                 return adapter.overlayManager.getOverlayTree().length === 0;
             };
-
-            $('form').find('input').keyup(function() {
+            $('form').find('.form-control.default').keyup(function() {
                 checkAddFormCompleted();
             });
 
@@ -150,9 +149,15 @@ require([
                 autoOpen: 1,
                 onCreateLi: function(node, $li) {
                     node['node-type'] = node.type;
+                    var image = 'http://www.graphicsfuel.com/wp-content/uploads/2012/03/folder-icon-512x512.png';
+                    if(node.type === 'overlay') {
+                        image = 'http://www.graphicsfuel.com/wp-content/uploads/2012/03/folder-icon-512x512.png';
+                    } else {
+                        image = 'http://img0056.popscreencdn.com/103222765_watchmen-smiley-1-pin-button-badge-magnet-moore-gibbons-.jpg';
+                    }
                     $li.find('.jqtree-title').before(
-                        '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type + '"/>' +
-                        '<img src="http://img0056.popscreencdn.com/103222765_watchmen-smiley-1-pin-button-badge-magnet-moore-gibbons-.jpg" alt="Overlay Icon" height="25" width="25">'
+                        '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type + '" isHidden="' + node.isHidden + '"/>' +
+                        '<img src=' + image + ' alt="Overlay Icon" height="25" width="25">'
                     );
                 }
             });
@@ -171,15 +176,23 @@ require([
             * respectively.
             **/
             var bindSelectionHandlers = function() {
-                $("#overlay-tree input:checkbox").off('change');
-                $("#overlay-tree input:checkbox").on('change', function () {
+                $("#overlay-tree.default input:checkbox").off('change');
+                $("#overlay-tree.default input:checkbox").on('change', function () {
+                    var node = $('#overlay-tree').tree('getNodeById', $(this).attr('id'));
                     $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
-                    $(this).prop('checked');
-                    if($(this).prop('checked') && $(this).attr('type') === 'overlay') {
+                    if($(this).is(':checked') && $(this).attr('node-type') === 'overlay') {
                         adapter.overlayManager.sendOverlayShow($(this).attr('id'));
-                    } else if($(this).attr('checked','unchecked') && $(this).attr('type') === 'overlay') {
+                    } else if(!($(this).is(':checked')) && $(this).attr('node-type') === 'overlay') {
                         adapter.overlayManager.sendOverlayHide($(this).attr('id'));
+                    } else if($(this).is(':checked') && $(this).attr('node-type') === 'feature') {
+                        adapter.overlayManager.sendFeatureShow(node.parent.id, $(this).attr('id'))
+                    } else if(!($(this).is(':checked')) && $(this).attr('node-type') === 'feature') {
+                        adapter.overlayManager.sendFeatureHide(node.parent.id, $(this).attr('id'))
                     }
+                    $(this).prop('checked');
+                });
+                $("#overlay-tree.remove input:checkbox").on('change', function () {
+                    $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
                 });
             }
 
@@ -231,8 +244,8 @@ require([
                 } else {
                     toggleManagerTooltip('show');
                 }
-                $("#overlay-tree input:checkbox").each(function(index) {
-                    if(!($(this).attr('isHidden'))) {
+                $("#overlay-tree.default input:checkbox").each(function(index) {
+                    if(($(this).attr('ishidden') == 'false')) {
                         $(this).attr('checked', 'checked');
                     }
                 });
@@ -267,6 +280,8 @@ require([
                 $('#overlay-add-icon').show();
                 $('#overlay-delete-icon').show();
                 $('#overlay-tree').show();
+                $('#overlay-tree').addClass('default');
+                $('#overlay-tree').removeClass('remove');
                 $('#overlay-tree').css('top','50px');
                 resizeOverlayToTree('#overlay-tree', 90);
             }
@@ -300,6 +315,11 @@ require([
                 $('#delete-feature-subtitle').show();
                 $('#overlay-back-icon').show();
                 $('#overlay-tree').show();
+                $("#overlay-tree.default input:checkbox").off('change');
+                $('#overlay-tree').removeClass('default');
+                $('#overlay-tree').addClass('remove');
+                $("#overlay-tree.remove input:checkbox").removeAttr('checked');
+                bindSelectionHandlers();
                 updateOverlaySelection();
                 $('#overlay-tree').css('top','85px');
                 resizeOverlayToTree('#overlay-tree', 125);
