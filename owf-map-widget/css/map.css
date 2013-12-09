@@ -175,13 +175,13 @@ html, body, #map {
   position: relative;
   background: #666666;
   border: 2px solid #999999;
-  width: 170px;
-  top: 12px;
-  left: 148px;
+  width: 176px;
+  top: 11px;
+  left: 141px;
   border-radius: 8px;
   color: white;
-  padding-left: 5px;
-  padding-top: 5px;
+  padding-left: 10px;
+  padding-top: 10px;
 }
 .no-overlays-tip:after, .no-overlays-tip:before {
   top: 100%;
@@ -429,7 +429,7 @@ ul.jqtree-tree li.jqtree-ghost span.jqtree-line {
 }
 
 #tooltip-x-button {
-  margin-top: -7px;
+  margin-top: -12px;
   margin-right:2px;
 }
 

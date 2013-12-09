@@ -240,37 +240,30 @@ require([
                 $('#overlay-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
                 resizeOverlayToTree('#overlay-tree', 90);
                 if(!isOverlayTreeEmpty()) {
-                    toggleManagerTooltip('hide');
+                    $('#no-overlay-tooltip').hide();
                 } else {
-                    toggleManagerTooltip('show');
+                    $('#no-overlay-tooltip').show();
                 }
-                $("#overlay-tree.default input:checkbox").each(function(index) {
-                    if(($(this).attr('ishidden') == 'false')) {
-                        $(this).attr('checked', 'checked');
-                    }
-                });
+                updateCheckBoxes();
                 bindSelectionHandlers();
                 setStateInit();
             }
             adapter.overlayManager.bindTreeChangeHandler(updateTreeData);
 
-            /**
-            * This is used to toggle the tooltip within the Overlay manager window.  This tooltip
-            * should only display if there are no overlays to display.  This is a convenience method
-            * to close or open the tooltip depending on action paramater given.
-            **/
-            var toggleManagerTooltip= function(action) {
-                var hideOpenTooltip = (action === 'hide' && !$('#no-overlay-tooltip').hasClass('hidden'));
-                var openClosedTooltip = (action === 'show' && $('#no-overlay-tooltip').hasClass('hidden'));
-                if(hideOpenTooltip || openClosedTooltip){
-                    $('#no-overlay-tooltip').toggleClass('hidden');
-                    $('#overlay-delete-icon').toggleClass('disabled')
-                }
-            };
+            var updateCheckBoxes = function() {
+                $("#overlay-tree.default input:checkbox").each(function(index) {
+                    if(($(this).attr('ishidden') == 'false')) {
+                        $(this).attr('checked', 'checked');
+                    }
+                });
+            }
 
             var setStateInit = function() {
+                $('#overlay-delete-icon').removeClass('disabled');
+                $('#no-overlay-tooltip').hide();
                 if(isOverlayTreeEmpty()) {
-                    toggleManagerTooltip('show');
+                    $('#no-overlay-tooltip').show();
+                    $('#overlay-delete-icon').addClass('disabled');
                 }
                 $('#overlay-manager-add-button').hide();
                 $('#overlay-manager-delete-button').hide();
@@ -283,10 +276,12 @@ require([
                 $('#overlay-tree').addClass('default');
                 $('#overlay-tree').removeClass('remove');
                 $('#overlay-tree').css('top','50px');
+                updateCheckBoxes();
+                bindSelectionHandlers();
                 resizeOverlayToTree('#overlay-tree', 90);
             }
             var setStateAdd = function() {
-                toggleManagerTooltip('hide');
+                $('#no-overlay-tooltip').hide();
                 clearAddInputs();
                 $('#overlay-add-icon').hide();
                 $('#overlay-delete-icon').hide();
@@ -299,11 +294,12 @@ require([
                 $('#overlay-manager-add-button').show();
                 $('#overlay-manager').show();
                 $('#overlay-manager-subtitle').show();
+                checkAddFormCompleted();
                 updateOverlaySelection();
                 $('#popover_overlay_wrapper').css('height', '305px');
             }
             var setStateRemove = function() {
-                toggleManagerTooltip('hide');
+                $('#no-overlay-tooltip').hide();
                 $('#overlay-add-icon').hide();
                 $('#overlay-delete-icon').hide();
                 $('#add-overlay-div').hide();
