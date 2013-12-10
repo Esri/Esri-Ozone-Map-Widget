@@ -67,7 +67,7 @@ require([
                     adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
                     adapter.overlayManager.sendFeaturePlotUrl(overlayId, featureId, featureName,
                         'kml', featureUrl, featureParams);
-                } else if('Default Overlay') {
+                } else if($('#overlay-selection').val() == 'Default Overlay') {
                     adapter.overlayManager.sendOverlayCreate('default-overlay-id', 'Default Overlay');
                     adapter.overlayManager.sendFeaturePlotUrl('default-overlay-id',
                         featureId, featureName,'kml', featureUrl, featureParams);
