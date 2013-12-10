@@ -3,11 +3,11 @@
 // NOTE: Modules that are not compatible with asynchronous module loading
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
-    "models/map", "models/legend", "dojo/mouse", "dojo/on", "dojo/dom",
+    "models/map", "models/legend", "dojo/mouse", "dojo/on", "dojo/dom", "esri/dijit/Scalebar",
     "dojo/json", "esri/dijit/Geocoder", "esri/layers/KMLLayer","esri/dijit/BasemapGallery",
     "esri/arcgis/utils","dojo/parser","dojo/dom-style", "cmwapi-adapter/cmwapi-adapter",
     "dojo/domReady!"],
-    function(Map, Legend, Mouse, On, Dom, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter) {
+    function(Map, Legend, Mouse, On, Dom, Scalebar, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter) {
         var map = new Map("map", {
             center: [-76.809469, 39.168101],
             zoom: 7,
@@ -35,7 +35,13 @@ require([
                 console.log("basemap gallery error:  ", msg);
             });
 
-           var adapter = new cmwapiAdapter(map);
+            var adapter = new cmwapiAdapter(map);
+
+            var scalebar = new Scalebar({
+                map:map,
+                attachTo:"bottom-left",
+                scalebarUnit: "dual"
+            });
 
             $('#tooltip-x-button').on('click', function() {
                 $('#no-overlay-tooltip').hide();
