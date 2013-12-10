@@ -321,9 +321,11 @@ html, body, #map {
   background-repeat: no-repeat;
 }
 #overlay-add-icon:hover {
+  bottom: 0px;
   background-image: url("../images/icons/Add_Overlay_Hover.png");
 }
 #overlay-add-icon:active {
+  bottom: 0px;
   background-image: url("../images/icons/Add_Overlay_Selected.png");
 }
 #overlay-delete-icon:hover {
@@ -496,6 +498,9 @@ height:25px;
 
 ul.jqtree-tree .jqtree-title {
   padding-left: 3px;
+}
+ul.jqtree-tree .jqtree-element{
+  margin-bottom: 0px;
 }
 
 @media (max-height: 500px) {

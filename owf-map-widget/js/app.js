@@ -94,9 +94,7 @@ require([
                         var node = $('#overlay-tree').tree('getNodeById', $(this).attr('id'));
                         adapter.overlayManager.sendFeatureUnplot(node.parent.id,$(this).attr('id'));
                     }
-
                 });
-
             });
 
             $('#overlay-selection').on('change', function() {
@@ -137,6 +135,9 @@ require([
                 return adapter.overlayManager.getOverlayTree().length === 0;
             };
             $('form').find('.form-control.default').keyup(function() {
+                if($(this).attr('id') !== 'feature-add-url') {
+                    $('#feature-add-url').parent().removeClass('has-success');
+                }
                 checkAddFormCompleted();
             });
             $('#feature-add-url').keyup(function() {
@@ -192,7 +193,34 @@ require([
             });
         $tree.bind('tree.dblclick',
             function(event) {
-                console.log(event.node);
+                var span = $('#' + event.node.id).siblings('span');
+                var text = $(span).text();
+                var html = '<input value ="' + text + '" type="text">'
+                $(span).parent().addClass('form-group');
+                $(span).html(html)
+                $(span).find('input').focus();
+
+                $(span).find('input').keypress(function(e) {
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == '13') {
+                        doneInput();
+                    }
+                });
+
+                $(span).find('input').focusout(function() {
+                    doneInput();
+                });
+
+                var doneInput = function() {
+                    var inputValue = $(span).find('input').val();
+                    $(span).find('input').remove();
+                    if(event.node['node-type'] === 'overlay' || inputValue !== '') {
+                        $(span).text(inputValue);
+                        adapter.overlayManager.sendOverlayCreate(event.node.id, inputValue);
+                    } else if(event.node['node-type'] === 'overlay' || inputValue === '') {
+                        $(span).text(text);
+                    }
+                };
             }
         );
             var clearAddInputs = function() {
@@ -226,6 +254,7 @@ require([
                 });
                 $("#overlay-tree.remove input:checkbox").on('change', function () {
                     $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
+                    checkDeleteButtonDisabled();
                 });
             }
 
@@ -291,6 +320,13 @@ require([
                 });
             }
 
+            var checkDeleteButtonDisabled = function() {
+                $('#overlay-manager-delete-button').addClass('disabled');
+                if($('#overlay-tree.remove').is(':visible') && $("#overlay-tree input:checkbox:checked").length > 0) {
+                    $('#overlay-manager-delete-button').removeClass('disabled');
+                }
+            };
+
             var setStateInit = function() {
                 $('#overlay-delete-icon').removeClass('disabled');
                 $('#no-overlay-tooltip').hide();
@@ -353,6 +389,7 @@ require([
                 $("#overlay-tree.remove input:checkbox").removeAttr('checked');
                 bindSelectionHandlers();
                 updateOverlaySelection();
+                checkDeleteButtonDisabled();
                 $('#overlay-tree').css('top','85px');
                 resizeOverlayToTree('#overlay-tree', 125);
             }
