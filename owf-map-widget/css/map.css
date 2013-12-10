@@ -494,6 +494,10 @@ height:25px;
   display: none;
 }
 
+ul.jqtree-tree .jqtree-title {
+  padding-left: 3px;
+}
+
 @media (max-height: 500px) {
   #popover_content_wrapper {
     width: 616px;

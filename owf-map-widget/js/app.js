@@ -95,17 +95,18 @@ require([
 
             $('#overlay-selection').on('change', function() {
                 if(this.value === 'Add New Overlay') {
-                    var height = checkInvalidUrl ? '455px': '435px';
-                    $('#popover_overlay_wrapper').css('height', '435px');
                     $('#add-overlay-div').show();
                 } else {
-                    var height = checkInvalidUrl ? '325px': '305px';
                     $('#add-overlay-div').hide();
-                    $('#popover_overlay_wrapper').css('height', '305px');
                 }
+                resizeOverlayManager();
                 checkAddFormCompleted();
             });
 
+            var resizeOverlayManager = function() {
+                var height = $('#overlay-manager-add').height() + 100;
+                $('#popover_overlay_wrapper').css('height', height + 'px');
+            }
             var checkInvalidUrl = function() {
                 return $('#feature-add-url').parent().hasClass('has-error');
             }
@@ -136,16 +137,14 @@ require([
                 if(!isValidUrl($(this).val())) {
                     $(this).parent().removeClass('has-success');
                     $(this).parent().addClass('has-error');
-                    $('#popover_overlay_wrapper').css('height', '325px');
                     $('.help-block').show();
                 } else {
                     $(this).parent().removeClass('has-error');
                     $(this).parent().addClass('has-success');
                     $(this).removeClass('has-error');
                     $('.help-block').hide();
-                    $('#popover_overlay_wrapper').css('height', '305px');
                 }
-
+                resizeOverlayManager();
             });
 
             var isValidUrl = function(url){
@@ -185,7 +184,11 @@ require([
                     );
                 }
             });
-
+        $tree.bind('tree.dblclick',
+            function(event) {
+                console.log(event.node);
+            }
+        );
             var clearAddInputs = function() {
                 $('#feature-add-name').val('');
                 $('#feature-add-id').val('');
@@ -323,7 +326,7 @@ require([
                 $('#overlay-manager-subtitle').show();
                 checkAddFormCompleted();
                 updateOverlaySelection();
-                $('#popover_overlay_wrapper').css('height', '305px');
+                resizeOverlayManager();
             }
             var setStateRemove = function() {
                 $('#no-overlay-tooltip').hide();
