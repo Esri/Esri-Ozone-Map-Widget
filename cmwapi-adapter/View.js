@@ -16,13 +16,9 @@
  * limitations under the License.
  *
  */
-define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/Point"],
-    function(CommonMapApi, EsriNS, Extent, Point) {
-
-    /** Assumed default DPI for your average screen resolution. */
-    var DEFAULT_DPI = 96;
-    /** Assumed DPI for a high DPI screen.*/
-    var HIGH_DPI = 120;
+define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/Point",
+    "cmwapi-adapter/Constants"],
+    function(CommonMapApi, EsriNS, Extent, Point, Constants) {
 
     /**
      * Calculates the scale at which to simulate a view at the given altitude in meters. We are assuming
@@ -44,11 +40,11 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
      */
     var zoomAltitudeToScale = function(map, alt) {
         // (altitude in meters) * sin(60 deg) / sin(30 deg) to get half the view width in meters.
-        var widthInMeters = (alt * Math.sin(1.04719755)) / Math.sin(0.523598776);
+        var widthInMeters = (alt * Constants.SINE_60_DEG) / Constants.SINE_30_DEG;
         // scale = width in meters * 39.37 inches/meter * screen resolution / (0.5 * map.width)
         // map.width is halved because widgetInMeters represents half the user's view.
         // Using high dpi value here as it seems to match more closely with other map implementations.
-        var scale = (widthInMeters * 39.37 * HIGH_DPI) / (0.5 * map.width);
+        var scale = (widthInMeters * Constants.INCHES_PER_METER * Constants.HIGH_DPI) / (0.5 * map.width);
         return scale;
     };
 

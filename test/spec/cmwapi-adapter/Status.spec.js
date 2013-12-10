@@ -58,9 +58,20 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Status", "esri/kernel", "test/mock/esri
                 var map = new Map();
                 var status  = new Status({}, map);
                 status.handleRequest("FakeWidget", ["view"]);
-                expect(CommonMapApi.status.view.send).toHaveBeenCalledWith(
-                    {bounds: {southWest: {lat: 0, lon: 0}, northEast: {lat: 2, lon: 2}}, center: {lat: 1, lon: 1 },
-                     range: 2, requester: 'FakeWidget'});
+                // Test all call values except for range since that is likely to be NaN.  It is 
+                // a calculated value on a mock object, not an actual ArcGIS map at this point.
+                expect(CommonMapApi.status.view.send.mostRecentCall.args[0].bounds).toEqual({
+                    southWest: {lat: 0, lon: 0}, 
+                    northEast: {lat: 2, lon: 2}
+                });
+                expect(CommonMapApi.status.view.send.mostRecentCall.args[0].center).toEqual({
+                    lat: 1, 
+                    lon: 1 
+                });
+                expect(CommonMapApi.status.view.send.mostRecentCall.args[0].requester).toEqual('FakeWidget');
+                // expect(CommonMapApi.status.view.send).toHaveBeenCalledWith(
+                //     {bounds: {southWest: {lat: 0, lon: 0}, northEast: {lat: 2, lon: 2}}, center: {lat: 1, lon: 1 },
+                //      range: NaN, requester: 'FakeWidget'});
                 expect(CommonMapApi.status.about.send).not.toHaveBeenCalled();
                 expect(CommonMapApi.status.format.send).not.toHaveBeenCalled();
             });
