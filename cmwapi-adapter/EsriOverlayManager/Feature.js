@@ -1,4 +1,4 @@
-define(["esri/layers/KMLLayer"],function(KMLLayer) {
+define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, ViewUtils) {
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -234,10 +234,10 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
          * @param caller {String}
          * @param overlayId {String}
          * @param featureId {String}
-         * @param [selectedId] {String}
-         * @param [selectedName] {String}
+         * @param [selectedId] {String}  Not used at present
+         * @param [selectedName] {String} Not used at present
          */
-        me.zoomFeature = function(caller, overlayId, featureId, selectedId, selectedName) {
+        me.zoomFeature = function(caller, overlayId, featureId, selectedId, selectedName, range) {
             var overlay = manager.overlays[overlayId];
             var msg;
             if(typeof(overlay) === 'undefined') {
@@ -254,8 +254,23 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
 
             var extent = findExtent(feature.esriObject);
 
-            console.log(extent);
-            map.setExtent(extent, true);
+            // If auto zoom, reset the entire extent.
+            if (range && range.toString().toLowerCase() === "auto") {
+                map.setExtent(extent, true);
+                map.centerAt(extent.getCenter());
+            }
+            // If we have a non-auto zoom, recenter the map and zoom.
+            else if (typeof range !== "undefined") {
+                // Set the zoom level.
+                map.setScale(ViewUtils.zoomAltitudeToScale(map, range));
+
+                // Recenter the map.
+                map.centerAt(extent.getCenter());
+            }
+            // Otherwise, use recenter the map.
+            else {
+                map.centerAt(extent.getCenter());
+            }
         };
 
         var findExtent = function(esriLayer) {

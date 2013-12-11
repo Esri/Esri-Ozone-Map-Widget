@@ -17,36 +17,8 @@
  *
  */
 define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/Point",
-    "cmwapi-adapter/Constants"],
-    function(CommonMapApi, EsriNS, Extent, Point, Constants) {
-
-    /**
-     * Calculates the scale at which to simulate a view at the given altitude in meters. We are assuming
-     * either an average 96 dpi or high 120 dpi for screen resolution since there's few reliable
-     * ways to query that across a range of legacy browsers. Assuming an altitude above a flat map, 
-     * we can use the law of sines and an estimated view angle of 60 degrees to the left/right of 
-     * a viewer's centerline to determine how much of the map they can view.  This distance is then 
-     * converted to a scale value and set on the input map.  This course method assumes basic trigonometric
-     * functions on a mercator projection and is not likely to be exact.  However, given that most basemaps
-     * use discrete scales and zoom levels, this value will map to the nearest scale anyway and may
-     * suffice for this application.
-     * @private
-     * @param {Map} map An ArcGIS JavaScript map
-     * @param {number} alt An viewing altitude in meters for which we need to find an equivalent scale.
-     * @returns {number} A scale value appropriate to the input map.
-     * @todo In testing against other maps, this appears to be correct assuming the units 
-     * in ArcGIS map.getScale().
-     * @see http://resources.esri.com/help/9.3/arcgisserver/apis/silverlight/apiref/topic380.html  
-     */
-    var zoomAltitudeToScale = function(map, alt) {
-        // (altitude in meters) * sin(60 deg) / sin(30 deg) to get half the view width in meters.
-        var widthInMeters = (alt * Constants.SINE_60_DEG) / Constants.SINE_30_DEG;
-        // scale = width in meters * 39.37 inches/meter * screen resolution / (0.5 * map.width)
-        // map.width is halved because widgetInMeters represents half the user's view.
-        // Using high dpi value here as it seems to match more closely with other map implementations.
-        var scale = (widthInMeters * Constants.INCHES_PER_METER * Constants.HIGH_DPI) / (0.5 * map.width);
-        return scale;
-    };
+    "cmwapi-adapter/ViewUtils"],
+    function(CommonMapApi, EsriNS, Extent, Point, ViewUtils) {
 
     var View = function(map, overlayManager) {
         var me = this;
@@ -60,10 +32,10 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
                 // Only respond to the last position sent.  No need to make the map jump around.
                 var lastPos = data.length - 1;
                 //map.setScale(data[lastPos].range);
-                map.setScale(zoomAltitudeToScale(map, data[lastPos].range));
+                map.setScale(ViewUtils.zoomAltitudeToScale(map, data[lastPos].range));
             } else {
                 //map.setScale(data.range);
-                map.setScale(zoomAltitudeToScale(map, data.range));
+                map.setScale(ViewUtils.zoomAltitudeToScale(map, data.range));
             }
         };
         CommonMapApi.view.zoom.addHandler(me.handleZoom);
@@ -82,8 +54,12 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             if(data.length > 1) {
                 // Only respond to the last position sent.  No need to make the map jump around.
                 var lastPos = data.length - 1;
+                var lastData = data[lastPos];
+                overlayManager.feature.zoomFeature(sender, lastData.overlayId, lastData.featureId,
+                    null, null, lastData.zoom);
             } else {
-
+                overlayManager.feature.zoomFeature(sender, data.overlayId, data.featureId,
+                    null, null, data.zoom);
             }
         };
         CommonMapApi.view.center.feature.addHandler(me.handleCenterFeature);
@@ -109,7 +85,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
                     map.setZoom(map.getMaxZoom());
                 }
                 else if (data[lastPos].zoom) {
-                    map.setScale(zoomAltitudeToScale(map, data[lastPos].zoom));
+                    map.setScale(ViewUtils.zoomAltitudeToScale(map, data[lastPos].zoom));
                 }
 
                 // Recenter the map.
@@ -124,7 +100,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
                     map.setZoom(map.getMaxZoom());
                 }
                 else if (data.zoom) {
-                    map.setScale(zoomAltitudeToScale(map, data.zoom));
+                    map.setScale(ViewUtils.zoomAltitudeToScale(map, data.zoom));
                 }
 
                 // Recenter the map.
@@ -170,7 +146,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             // If we have a non-auto zoom, recenter the map and zoom.
             else if (typeof payload.zoom !== "undefined") {
                 // Set the zoom level.
-                map.setScale(zoomAltitudeToScale(map, payload.zoom));
+                map.setScale(ViewUtils.zoomAltitudeToScale(map, payload.zoom));
 
                 // Recenter the map.
                 map.centerAt(extent.getCenter());
