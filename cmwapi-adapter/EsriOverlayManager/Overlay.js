@@ -190,7 +190,7 @@ define(function() {
                 if(parentId && parentId !== overlay.parentId) {
                     var oldParent = overlay.parentId;
                     overlay.parentId = parentId;
-                    me.resolveParent(overlay, parentId, oldParent);
+                    resolveParent(overlay, parentId, oldParent);
                 }
                 manager.treeChanged();
             }
