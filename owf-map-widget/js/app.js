@@ -176,7 +176,7 @@ require([
                 var emptyInputs = $('.form-control.default').filter(function() {
                     return $(this).val() === '' && $(this).is(':visible');
                 }).length;
-                if(emptyInputs === 0) {
+                if(emptyInputs === 0 || !($('#add-feature-div').is(':visible'))) {
                     $('#overlay-manager-add-button').removeClass('disabled');
                 } else {
                     $('#overlay-manager-add-button').addClass('disabled');
