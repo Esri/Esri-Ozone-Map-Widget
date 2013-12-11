@@ -79,7 +79,7 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
             
             // verify that we're also including REQUIRED_FORMATS
             for (var k=0; k < REQUIRED_FORMATS.length; k++) {
-                if (! formatsSet.indexOf(REQUIRED_FORMATS[k]) >= 0) {
+                if (formatsSet.indexOf(REQUIRED_FORMATS[k]) == -1) {
                     formatsSet.push(REQUIRED_FORMATS[k]);
                 }
             }

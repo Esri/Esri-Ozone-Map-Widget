@@ -147,5 +147,26 @@ define(["cmwapi/Channels", "cmwapi/map/status/Format", "cmwapi/map/Error", "cmwa
 
         });
 
+        it("Testing map.status.format send message: send a dup of REQUIRED_FORMAT", function() {
+
+            spyOn(Format, 'send').andCallThrough();
+            spyOn(Error, 'send');
+            spyOn(Ozone.util, 'toString').andCallFake( function(jsonStruct) {
+                return jsonStruct;
+            });
+            var eventing = OWF.Eventing;
+            spyOn(eventing, 'publish');
+
+            var testFormats = {formats: ['kml', 'uhf']};
+            var outputFormats = Format.REQUIRED_FORMATS.concat(['uhf']);
+            outputFormats.sort();   
+            Format.send(testFormats);
+            expect(Format.send).toHaveBeenCalled();
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_STATUS_FORMAT);
+            expect(eventing.publish.mostRecentCall.args[1].formats).toMatchArrays(outputFormats);
+
+            expect(Error.send.calls.length).toEqual(0);
+        });
+
     });
 });

@@ -16,7 +16,8 @@
  * limitations under the License.
  *
  */
-define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent"], function(CommonMapApi, EsriNS, Extent) {
+define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/Constants"], 
+    function(CommonMapApi, EsriNS, Extent, Constants) {
     var Status = function(adapater, map) {
         var me = this;
 
@@ -66,9 +67,15 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent"], function(Common
                 lon: Extent.prototype._normalizeX(map.geographicExtent.getCenter().x, map.geographicExtent.spatialReference._getInfo()).x
             };
 
-            var range = map.getScale();
+            // Calculate the range from the current scale using law of sines and a triangle from user's
+            // viewpoint to center of extent, to the edge of the map. This assumes a user as a 120 degree field of view.
+            // Triangle widthInMeters = scale * (1m / InchesPerMeter) * (1 / screen DPI) * (map width * 0.5).  We half
+            // the map width in pixels since only half forms one side of our triangle to determine range.   
+            var widthInMeters = (map.getScale() * map.width * (0.5)) / (Constants.INCHES_PER_METER * Constants.HIGH_DPI);
+            // Using law of sines, range = widthInMeters * sine(30 deg) / sine(60 deg). 
+            var range = (widthInMeters * Constants.SINE_30_DEG) / Constants.SINE_60_DEG;
 
-            CommonMapApi.status.view.send(caller, bounds, center, range);
+            CommonMapApi.status.view.send( {bounds: bounds, center: center, range: range, requester: caller});
         };
 
         /**
@@ -79,11 +86,11 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent"], function(Common
          * @memberof! module:EsriAdapter#
          */
         me.sendAbout = function() {
-            var version = EsriNS.version;
+            var version = CommonMapApi.version;    
             var type = "2-D";
             var widgetName = OWF.getInstanceId();
 
-            CommonMapApi.status.about.send(version, type, widgetName);
+            CommonMapApi.status.about.send({version: version, type: type, widgetName: widgetName});
         };
 
         /**
@@ -96,7 +103,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent"], function(Common
         me.sendFormat = function() {
             var formats = ["kml"/*, "geojson", "wms"*/];
 
-            CommonMapApi.status.format.send(formats);
+            CommonMapApi.status.format.send({formats: formats});
         };
     };
 

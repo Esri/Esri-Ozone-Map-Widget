@@ -72,6 +72,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                     validData = false;
                     msg += 'Need a version of the CMWAPI; ';
                 }
+                //todo: should we validate against the set of potential versions here?
 
                 // valid type
                 if (!data.type) {

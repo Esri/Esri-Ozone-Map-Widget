@@ -16,24 +16,54 @@
  * limitations under the License.
  *
  */
-define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/Point"],
-    function(CommonMapApi, EsriNS, Extent, Point) {
+define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/Point",
+    "cmwapi-adapter/Constants"],
+    function(CommonMapApi, EsriNS, Extent, Point, Constants) {
+
+    /**
+     * Calculates the scale at which to simulate a view at the given altitude in meters. We are assuming
+     * either an average 96 dpi or high 120 dpi for screen resolution since there's few reliable
+     * ways to query that across a range of legacy browsers. Assuming an altitude above a flat map, 
+     * we can use the law of sines and an estimated view angle of 60 degrees to the left/right of 
+     * a viewer's centerline to determine how much of the map they can view.  This distance is then 
+     * converted to a scale value and set on the input map.  This course method assumes basic trigonometric
+     * functions on a mercator projection and is not likely to be exact.  However, given that most basemaps
+     * use discrete scales and zoom levels, this value will map to the nearest scale anyway and may
+     * suffice for this application.
+     * @private
+     * @param {Map} map An ArcGIS JavaScript map
+     * @param {number} alt An viewing altitude in meters for which we need to find an equivalent scale.
+     * @returns {number} A scale value appropriate to the input map.
+     * @todo In testing against other maps, this appears to be correct assuming the units 
+     * in ArcGIS map.getScale().
+     * @see http://resources.esri.com/help/9.3/arcgisserver/apis/silverlight/apiref/topic380.html  
+     */
+    var zoomAltitudeToScale = function(map, alt) {
+        // (altitude in meters) * sin(60 deg) / sin(30 deg) to get half the view width in meters.
+        var widthInMeters = (alt * Constants.SINE_60_DEG) / Constants.SINE_30_DEG;
+        // scale = width in meters * 39.37 inches/meter * screen resolution / (0.5 * map.width)
+        // map.width is halved because widgetInMeters represents half the user's view.
+        // Using high dpi value here as it seems to match more closely with other map implementations.
+        var scale = (widthInMeters * Constants.INCHES_PER_METER * Constants.HIGH_DPI) / (0.5 * map.width);
+        return scale;
+    };
+
     var View = function(map, overlayManager) {
         var me = this;
 
         /**
          * A function for a zooming a map to a particular range.
-         * @todo Correct the zoom implementation.  At present, we're just setting the scale.  This needs to 
-         * be calculated from a range value instead.
          * @see module:cmwapi/map/view/Zoom~Handler
          */
         me.handleZoom = function(sender, data) {
             if(data.length > 1) {
                 // Only respond to the last position sent.  No need to make the map jump around.
                 var lastPos = data.length - 1;
-                map.setScale(data[lastPos].range);
+                //map.setScale(data[lastPos].range);
+                map.setScale(zoomAltitudeToScale(map, data[lastPos].range));
             } else {
-                map.setScale(data.range);
+                //map.setScale(data.range);
+                map.setScale(zoomAltitudeToScale(map, data.range));
             }
         };
         CommonMapApi.view.zoom.addHandler(me.handleZoom);
@@ -47,16 +77,6 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             }
         };
         CommonMapApi.view.center.overlay.addHandler(me.handleCenterOverlay);
-
-        me.handleCenterFeature = function(sender, data) {
-            if(data.length > 1) {
-                // Only respond to the last position sent.  No need to make the map jump around.
-                var lastPos = data.length - 1;
-            } else {
-
-            }
-        };
-        CommonMapApi.view.center.overlay.addHandler(me.handleCenterFeature);
 
         me.handleCenterFeature = function(sender, data) {
             if(data.length > 1) {
@@ -85,6 +105,12 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
                     map.geographicExtent.spatialReference);
 
                 // TODO: set the zoom level.
+                if (data[lastPos].zoom && data[lastPos].zoom.toString().toLowerCase() === "auto") {
+                    map.setZoom(map.getMaxZoom());
+                }
+                else if (data[lastPos].zoom) {
+                    map.setScale(zoomAltitudeToScale(map, data[lastPos].zoom));
+                }
 
                 // Recenter the map.
                 map.centerAt(point);
@@ -94,6 +120,12 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
                     data.location.lat,
                     map.geographicExtent.spatialReference);
                 // TODO: set the zoom level.
+                if (data.zoom && data.zoom.toString().toLowerCase() === "auto") {
+                    map.setZoom(map.getMaxZoom());
+                }
+                else if (data.zoom) {
+                    map.setScale(zoomAltitudeToScale(map, data.zoom));
+                }
 
                 // Recenter the map.
                 map.centerAt(point);
@@ -137,7 +169,8 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             }
             // If we have a non-auto zoom, recenter the map and zoom.
             else if (typeof payload.zoom !== "undefined") {
-                // TODO: set the zoom level.
+                // Set the zoom level.
+                map.setScale(zoomAltitudeToScale(map, payload.zoom));
 
                 // Recenter the map.
                 map.centerAt(extent.getCenter());
@@ -150,13 +183,15 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         CommonMapApi.view.center.bounds.addHandler(me.handleCenterBounds);
 
         /**
+         * Commented out as we may not need this at present.  We respond to feature selections but not
+         * random clicks in other maps.
          * Handles click events sent from 
          * @see module:cmwapi/map/view/Clicked~Handler
          */
-        me.handleClicked = function(sender, data) {
-            // Nothing to do.
-        };
-        CommonMapApi.view.clicked.addHandler(me.handleClicked);
+        // me.handleClicked = function(sender, data) {
+        //     // Nothing to do.
+        // };
+        // CommonMapApi.view.clicked.addHandler(me.handleClicked);
 
         
     };

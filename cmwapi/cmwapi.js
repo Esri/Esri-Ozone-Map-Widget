@@ -69,7 +69,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error", "cmwapi/map/S
     Map.validator = Validator;
     
     /** The version of this implementation of the CMW API specification. */
-    Map.version = '1.1';
+    Map.version = '1.1.0';
 
     /** The name of this library for display purposes. */
     Map.name = 'Common Map Widget Application Program Interface (CMW API) ' + Map.version;

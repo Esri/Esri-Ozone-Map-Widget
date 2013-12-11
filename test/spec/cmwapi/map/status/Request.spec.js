@@ -76,17 +76,17 @@ define(["cmwapi/Channels", "cmwapi/map/status/Request", "cmwapi/map/Error", "cmw
             spyOn(Request, 'send').andCallThrough();
             spyOn(Error, 'send').andCallThrough();
 
-            Request.send(['foo']);
+            Request.send({types: ['foo']});
 
             expect(Request.send).toHaveBeenCalled();
-            expect(Request.send.mostRecentCall.args[0]).toEqual(['foo']);
+            expect(Request.send.mostRecentCall.args[0]).toEqual({types: ['foo']});
 
             // expect error to be called...
             expect(Error.send).toHaveBeenCalled();
 
             // publish will be called, as now we're calling the error channel for issues
             //  note that this only happens if we 'callThrough' on Error
-            expect(eventing.publish.mostRecentCall.args[0]).toEqual("map.error");
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_ERROR);
         });
 
         it("Testing handler for map.status.request message when given invalid type", function() {

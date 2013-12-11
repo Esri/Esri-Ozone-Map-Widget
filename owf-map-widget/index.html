@@ -11,7 +11,6 @@
 
         <!-- Load non-AMD libs before dojo to avoid timing problems -->
         <script src="js/lib/lodash.compat.js"></script>
-        <script src="js/owf_adapter.js"></script>
         <link href="css/dragAndDrop.css" rel="stylesheet">
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/jqtree.css" rel="stylesheet">
@@ -23,56 +22,81 @@
             <div id="overlay" rel="tooltip" title="Overlay Manager"></div>
             <div id="basemaps" rel="tooltip" title="Base Maps"></div>
             <div id="search"></div>
-            <div id="popover_content_wrapper" class='basemaptip hidden'><div id="basemapGallery"></div></div>
-            <div id="popover_overlay_wrapper" class='overlaytip hidden'>
+            <div id="popover_content_wrapper" class='basemaptip'><div id="basemapGallery"></div></div>
+            <div id="popover_overlay_wrapper" class='overlaytip'>
                 <div id="overlay-hr-wrapper">
                 <b><p id="overlay-manager-title">Overlay Manager</p></b>
-                <div id="no-overlay-tooltip" class='no-overlays-tip hidden'>
+                <div id="no-overlay-tooltip" class='no-overlays-tip'>
                     <button id = "tooltip-x-button"type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <p>Please add an overlay.</p>
                 </div>
-                    <div id="overlay-tree"></div>
-                    <div id="overlay-manager" class="hidden">
-                        <b><p id="overlay-manager-subtitle"></p></b>
-                        <div id="overlay-manager-add" class="hidden">
+                    <div id="overlay-tree" class='default'></div>
+                    <div id="overlay-manager">
+                        <div id="overlay-manager-add">
+                            <b><p id="add-feature-subtitle">Add New Feature</p></b>
                             <form class="form-horizontal" role="form">
                               <div class="form-group">
                                 <label for="overlay-manager-add-name" class="col-sm-offset-1 col-sm-2 control-label">Name</label>
                                 <div class="col-sm-8">
-                                  <input type="text" class="form-control input-sm" id="overlay-manager-add-name" placeholder="Name">
+                                  <input type="text" class="form-control default input-sm" id="feature-add-name" placeholder="Name">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label for="overlay-manager-add-id" class="col-sm-offset-1 col-sm-2 control-label">ID</label>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control default input-sm" id="feature-add-id" placeholder="ID">
                                 </div>
                               </div>
                               <div class="form-group">
                                 <label for="overlay-manager-add-url" class="col-sm-offset-1 col-sm-2 control-label">URL</label>
                                 <div class="col-sm-8">
-                                  <input type="text" class="form-control input-sm" id="overlay-manager-add-url" placeholder="URL">
+                                  <input type="text" class="form-control default input-sm" id="feature-add-url" placeholder="URL">
+                                  <span class="help-block">Please enter a valid URL.</span>
+                                </div>
+                              </div>
+                              <div class="form-group hidden">
+                                <label for="overlay-manager-add-params" class="col-sm-offset-1 col-sm-2 control-label">Params</label>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control input-sm" id="feature-add-params" placeholder="Params">
                                 </div>
                               </div>
                               <div class="form-group">
                                 <label for="overlay-manager-add-overlay" class="col-sm-offset-1 col-sm-2 control-label">Overlay</label>
                                 <div class="col-sm-8">
-                                  <select class="form-control input-sm">
-                                      <option>Default Overlay</option>
-                                      <option>Add New Overlay</option>
+                                  <select id = "overlay-selection" class="form-control input-sm">
                                 </select>
                                 </div>
                               </div>
-                              <div class="form-group">
-                                <div class="col-sm-offset-9">
-                                  <button type="add" class="btn btn-custom disabled" id="overlay-manager-add-button">Add</button>
-                                </div>
-                              </div>
                             </form>
-                        </div>
-                        <div id="overlay-manager-delete" class="hidden">
-                            <div id="overlay-removal-tree"></div>
+                            <div id= "add-overlay-div">
+                                <b><p id="add-overlay-subtitle">Add New Overlay</p></b>
+                                <form class="form-horizontal" role="form">
+                                  <div class="form-group">
+                                    <label for="overlay-add-name" class="col-sm-offset-1 col-sm-2 control-label">Name</label>
+                                    <div class="col-sm-8">
+                                      <input type="text" class="form-control default add input-sm" id="overlay-add-name" placeholder="Name">
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="overlay-add-id" class="col-sm-offset-1 col-sm-2 control-label">ID</label>
+                                    <div class="col-sm-8">
+                                      <input type="text" class="form-control default add input-sm" id="overlay-add-id" placeholder="ID">
+                                    </div>
+                                  </div>
+                                </form>
+                            </div>
+                          </div>
+                        <div id="overlay-manager-delete">
+                            <b><p id="delete-feature-subtitle">Delete Existing Overlays & Features</p></b>
+                          </div>
                         </div>
                     </div>
                     <div id="overlay-hr"></div>
-                    <div id="overlay-vr"></div>
                     <div id="overlay-add-icon"></div>
-                    <div id="overlay-delete-icon"></div>
-                    <div id="overlay-back-icon" class="hidden"></div>
+                    <div class='btn disabled' id="overlay-delete-icon"></div>
+                    <div class="btn" id="overlay-manager-delete-button" class='hidden'></div>
+                    <div class="btn disabled" id="overlay-manager-add-button"></div>
+                    <div id="overlay-back-icon"></div>
                 </div>
             </div>
         </div>

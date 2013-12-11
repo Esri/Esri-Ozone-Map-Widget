@@ -3,11 +3,11 @@
 // NOTE: Modules that are not compatible with asynchronous module loading
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
-    "models/map", "models/legend", "dojo/mouse", "dojo/on", "dojo/dom",
+    "models/map", "models/legend", "dojo/mouse", "dojo/on", "dojo/dom", "esri/dijit/Scalebar",
     "dojo/json", "esri/dijit/Geocoder", "esri/layers/KMLLayer","esri/dijit/BasemapGallery",
     "esri/arcgis/utils","dojo/parser","dojo/dom-style", "cmwapi-adapter/cmwapi-adapter",
     "dojo/domReady!"],
-    function(Map, Legend, Mouse, On, Dom, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter) {
+    function(Map, Legend, Mouse, On, Dom, Scalebar, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter) {
         var map = new Map("map", {
             center: [-76.809469, 39.168101],
             zoom: 7,
@@ -19,7 +19,6 @@ require([
             OWF.notifyWidgetReady();
 
             var dropZone = Dom.byId("map");
-            //var owf_adapter = new OWFAdapter(On , dropZone, Mouse, map);
 
             geocoder = new Geocoder({
                 map: map
@@ -36,147 +35,227 @@ require([
                 console.log("basemap gallery error:  ", msg);
             });
 
-           var adapter = new cmwapiAdapter(map);
+            var adapter = new cmwapiAdapter(map);
 
+            var scalebar = new Scalebar({
+                map:map,
+                attachTo:"bottom-left",
+                scalebarUnit: "dual"
+            });
 
             $('#tooltip-x-button').on('click', function() {
-                $('#no-overlay-tooltip').toggleClass('hidden');
+                $('#no-overlay-tooltip').hide();
             });
             $('#overlay').on('click', function() {
                 toggleOverlayManager();
-                //toggleOverlaySettings('reset');
-                closeManagerWindowsIfOpen();
-                if(isOverlayTreeEmpty()) {
-                    toggleManagerTooltip('show');
-                } else {
-                    toggleManagerTooltip('hide');
-                    toggleOverlayTree('show');
-                }
             });
 
             $('#basemaps').on('click', function() {
                 toggleBaseMaps();
             });
             $('#overlay-add-icon').on('click', function() {
-                toggleOverlaySettings();
-                toggleOverlayTree('hide');
-                toggleManagerTooltip('hide');
-                $('#overlay-manager-add').toggleClass('hidden');
-                $('#overlay-manager-subtitle').text('Add New Feature');
-                $('#popover_overlay_wrapper').css('height', '305px');
+                setStateAdd();
             });
             $('#overlay-delete-icon').on('click', function() {
-                $('#overlay-manager-delete').toggleClass('hidden');
-                toggleOverlaySettings();
-                toggleOverlayTree('hide');
-                toggleManagerTooltip('hide');
-                $('#overlay-manager-subtitle').text('Delete Existing Overlays');
-                resizeOverlayToTree('#overlay-removal-tree', 120);
+                setStateRemove();
             });
             $('#overlay-back-icon').on('click', function() {
-                closeManagerWindowsIfOpen();
-                toggleOverlaySettings();
-                toggleOverlayTree('show');
-                if(isOverlayTreeEmpty()) {
-                    toggleManagerTooltip('show');
+                setStateInit();
+            });
+            $('#overlay-manager-add-button').on('click', function() {
+                var featureName = $('#feature-add-name').val();
+                var featureId = $('#feature-add-id').val();
+                var featureUrl = $('#feature-add-url').val();
+                var featureParams = $('#feature-add-params').val();
+                var overlayName = $('#overlay-add-name').val();
+                var overlayId = $('#overlay-add-id').val();
+                if($('#overlay-selection').val() == 'Add New Overlay') {
+                    adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
+                    adapter.overlayManager.sendFeaturePlotUrl(overlayId, featureId, featureName,
+                        'kml', featureUrl, featureParams);
+                } else if($('#overlay-selection').val() == 'Default Overlay') {
+                    adapter.overlayManager.sendOverlayCreate('default-overlay-id', 'Default Overlay');
+                    adapter.overlayManager.sendFeaturePlotUrl('default-overlay-id',
+                        featureId, featureName,'kml', featureUrl, featureParams);
                 }
-                resizeOverlayToTree('#overlay-tree', 40);
+                else {
+                    adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
+                        featureId, featureName,'kml', featureUrl, featureParams);
+                }
+                setStateInit();
             });
 
+            $('#overlay-manager-delete-button').on('click', function() {
+                $("#overlay-tree input:checkbox:checked").each(function(index) {
+                    if($(this).attr('node-type') === 'overlay') {
+                        adapter.overlayManager.sendOverlayRemove($(this).attr('id'));
+                    }
+                    if($(this).attr('node-type') === 'feature') {
+                        var node = $('#overlay-tree').tree('getNodeById', $(this).attr('id'));
+                        adapter.overlayManager.sendFeatureUnplot(node.parent.id,$(this).attr('id'));
+                    }
+                });
+            });
+
+            $('#overlay-selection').on('change', function() {
+                if(this.value === 'Add New Overlay') {
+                    $('#add-overlay-div').show();
+                } else {
+                    $('#add-overlay-div').hide();
+                }
+                resizeOverlayManager();
+                checkAddFormCompleted();
+            });
+
+            var resizeOverlayManager = function() {
+                var height = $('#overlay-manager-add').height() + 100;
+                $('#popover_overlay_wrapper').css('height', height + 'px');
+            }
+            var checkInvalidUrl = function() {
+                return $('#feature-add-url').parent().hasClass('has-error');
+            }
+
+            var updateOverlaySelection = function() {
+                $('#overlay-selection > option').remove();
+                var defaultHtml = '<option id= "default-overlay-id">Default Overlay</option>';
+                $('#overlay-selection').append(defaultHtml);
+                var overlayObject = adapter.overlayManager.getOverlays();
+                for(var key in overlayObject) {
+                    if(!(overlayObject[key].id == 'default-overlay-id')) {
+                        var appendHtml = ' <option id= "'+ overlayObject[key].id +'">' + overlayObject[key].name + '</option>'
+                        $('#overlay-selection').append(appendHtml);
+                    }
+                }
+                var defaultHtmlAdd = '<option id= "add-new-overlay-option">Add New Overlay</option>'
+                $('#overlay-selection').append(defaultHtmlAdd);
+                $('#overlay-selection').val('Default Overlay');
+            }
 
             var isOverlayTreeEmpty = function() {
-                console.log(adapter.overlayManager.getOverlayTree().length);
                 return adapter.overlayManager.getOverlayTree().length === 0;
             };
-
-
-
-            $('form').find('input').keyup(function() {
-                var emptyInputLength = $('form > div > div > input').filter(function() {
-                    return $(this).val() === '';
-                }).length;
-                var buttonActive = (emptyInputLength === 0 &&  $('#overlay-manager-add-button').hasClass('disabled')) ||
-                    (emptyInputLength > 0 && !$('#overlay-manager-add-button').hasClass('disabled'));
-                if(buttonActive) {
-                    $('#overlay-manager-add-button').toggleClass('disabled');
+            $('form').find('.form-control.default').keyup(function() {
+                if($(this).attr('id') !== 'feature-add-url') {
+                    $('#feature-add-url').parent().removeClass('has-success');
                 }
+                checkAddFormCompleted();
+            });
+            $('#feature-add-url').keyup(function() {
+                if(!isValidUrl($(this).val())) {
+                    $(this).parent().removeClass('has-success');
+                    $(this).parent().addClass('has-error');
+                    $('.help-block').show();
+                } else {
+                    $(this).parent().removeClass('has-error');
+                    $(this).parent().addClass('has-success');
+                    $(this).removeClass('has-error');
+                    $('.help-block').hide();
+                }
+                resizeOverlayManager();
             });
 
+            var isValidUrl = function(url){
+                  return /\b(https?|ftp|file):\/\/[\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\-A-Za-z0-9+&@#\/%=~_|‌​]/.test(url);
+            }
+
+            var checkAddFormCompleted = function() {
+                var emptyInputs = $('.form-control.default').filter(function() {
+                    return $(this).val() === '' && $(this).is(':visible');
+                }).length;
+                if(emptyInputs === 0) {
+                    $('#overlay-manager-add-button').removeClass('disabled');
+                } else {
+                    $('#overlay-manager-add-button').addClass('disabled');
+                }
+            };
+
             $("[rel=tooltip]").tooltip({ placement: 'bottom'});
+
             var data = adapter.overlayManager.getOverlayTree();
-            console.log(data);
             var $tree = $('#overlay-tree');
             $tree.tree({
                 data: data,
                 dragAndDrop:true,
                 autoOpen: 1,
                 onCreateLi: function(node, $li) {
+                    node['node-type'] = node.type;
+                    var image = 'http://www.graphicsfuel.com/wp-content/uploads/2012/03/folder-icon-512x512.png';
+                    if(node.type === 'overlay') {
+                        image = 'http://www.graphicsfuel.com/wp-content/uploads/2012/03/folder-icon-512x512.png';
+                    } else {
+                        image = 'http://img0056.popscreencdn.com/103222765_watchmen-smiley-1-pin-button-badge-magnet-moore-gibbons-.jpg';
+                    }
                     $li.find('.jqtree-title').before(
-                        '<input type="checkbox" class ="tree-node"/>' +
-                        '<img src="http://img0056.popscreencdn.com/103222765_watchmen-smiley-1-pin-button-badge-magnet-moore-gibbons-.jpg" alt="Overlay Icon" height="25" width="25">'
+                        '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type + '" isHidden="' + node.isHidden + '"/>' +
+                        '<img src=' + image + ' alt="Overlay Icon" height="25" width="25">'
                     );
                 }
             });
+        $tree.bind('tree.dblclick',
+            function(event) {
+                var span = $('#' + event.node.id).siblings('span');
+                var text = $(span).text();
+                var html = '<input value ="' + text + '" type="text">'
+                $(span).parent().addClass('form-group');
+                $(span).html(html)
+                $(span).find('input').focus();
 
-            var $overlayRemoveTree = $('#overlay-removal-tree');
-            $overlayRemoveTree.tree({
-                data: data,
-                autoOpen: 1,
-                openedIcon: '',
-                closedIcon: '',
-                onCreateLi: function(node, $li) {
-                    $li.find('.jqtree-title').before(
-                        '<input type="checkbox" class ="tree-node"/>'
-                    );
-                }
-            });
+                $(span).find('input').keypress(function(e) {
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == '13') {
+                        doneInput();
+                    }
+                });
 
+                $(span).find('input').focusout(function() {
+                    doneInput();
+                });
+
+                var doneInput = function() {
+                    var inputValue = $(span).find('input').val();
+                    $(span).find('input').remove();
+                    if(event.node['node-type'] === 'overlay' || inputValue !== '') {
+                        $(span).text(inputValue);
+                        adapter.overlayManager.sendOverlayCreate(event.node.id, inputValue);
+                    } else if(event.node['node-type'] === 'overlay' || inputValue === '') {
+                        $(span).text(text);
+                    }
+                };
+            }
+        );
+            var clearAddInputs = function() {
+                $('#feature-add-name').val('');
+                $('#feature-add-id').val('');
+                $('#feature-add-url').val('');
+                $('#feature-add-params').val('');
+                $('#overlay-add-name').val('');
+                $('#overlay-add-id').val('');
+            };
 
             /**
             * Whenever either the trees parent nodes are clicked the children nodes are also checked
             * respectively.
             **/
             var bindSelectionHandlers = function() {
-                $("#overlay-tree input:checkbox, #overlay-removal-tree input:checkbox").off('change');
-                $("#overlay-tree input:checkbox, #overlay-removal-tree input:checkbox").on('change', function () {
-                    console.log('hi');
+                $("#overlay-tree.default input:checkbox").off('change');
+                $("#overlay-tree.default input:checkbox").on('change', function () {
+                    var node = $('#overlay-tree').tree('getNodeById', $(this).attr('id'));
                     $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
+                    if($(this).is(':checked') && $(this).attr('node-type') === 'overlay') {
+                        adapter.overlayManager.sendOverlayShow($(this).attr('id'));
+                    } else if(!($(this).is(':checked')) && $(this).attr('node-type') === 'overlay') {
+                        adapter.overlayManager.sendOverlayHide($(this).attr('id'));
+                    } else if($(this).is(':checked') && $(this).attr('node-type') === 'feature') {
+                        adapter.overlayManager.sendFeatureShow(node.parent.id, $(this).attr('id'))
+                    } else if(!($(this).is(':checked')) && $(this).attr('node-type') === 'feature') {
+                        adapter.overlayManager.sendFeatureHide(node.parent.id, $(this).attr('id'))
+                    }
+                    $(this).prop('checked');
                 });
-            }
-
-            var closeManagerWindowsIfOpen = function() {
-                if(!$('#overlay-manager-add').hasClass('hidden')) {
-                    $('#overlay-manager-add').toggleClass('hidden');
-                }
-                if(!$('#overlay-manager-delete').hasClass('hidden')) {
-                    $('#overlay-manager-delete').toggleClass('hidden');
-                }
-                    $('#overlay-manager-subtitle').text('');
-            };
-
-
-            var toggleOverlaySettings = function(action) {
-                if(action === 'reset') {
-                    if($('#overlay-manager').hasClass('hidden')) {
-                        $('#overlay-manager').toggleClass('hidden');
-                    }
-                    if($('#overlay-add-icon').hasClass('hidden')) {
-                        $('#overlay-add-icon').toggleClass('hidden');
-                    }
-                    if($('#overlay-delete-icon').hasClass('hidden')) {
-                        $('#overlay-delete-icon').toggleClass('hidden');
-                    }
-                    if(!$('#overlay-back-icon').hasClass('hidden')) {
-                        $('#overlay-back-icon').toggleClass('hidden');
-                    }
-                    $('#overlay-vr').css('right', '60px');
-                } else {
-                    $('#overlay-manager').toggleClass('hidden');
-                    $('#overlay-add-icon').toggleClass('hidden');
-                    $('#overlay-delete-icon').toggleClass('hidden');
-                    $('#overlay-back-icon').toggleClass('hidden');
-                    $('#overlay-vr').css('right', '36px');
-                }
+                $("#overlay-tree.remove input:checkbox").on('change', function () {
+                    $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
+                    checkDeleteButtonDisabled();
+                });
             }
 
             /**
@@ -185,11 +264,9 @@ require([
             * If the overlay manager popover is already open then close it.
             **/
             var toggleBaseMaps = function() {
-                if(!$('#popover_overlay_wrapper').hasClass('hidden')) {
-                    $('#popover_overlay_wrapper').toggleClass('hidden');
-                    $('#overlay').toggleClass('selected');
-                }
-                $('#popover_content_wrapper').toggleClass('hidden');
+                $('#popover_content_wrapper').toggle();
+                $('#overlay').removeClass('selected');
+                $('#popover_overlay_wrapper').hide();
                 $('#basemaps').toggleClass('selected');
             }
 
@@ -200,13 +277,11 @@ require([
             * Resize the window to the correct size given the tree.
             **/
             var toggleOverlayManager = function() {
-                if(!$('#popover_content_wrapper').hasClass('hidden')) {
-                    $('#popover_content_wrapper').toggleClass('hidden');
-                    $('#basemaps').toggleClass('selected');
-                }
-                $('#popover_overlay_wrapper').toggleClass('hidden');
-                resizeOverlayToTree('#overlay-tree', 40);
+                $('#popover_overlay_wrapper').toggle();
+                $('#basemaps').removeClass('selected');
+                $('#popover_content_wrapper').hide();
                 $('#overlay').toggleClass('selected');
+                setStateInit()
             }
 
             /**
@@ -225,39 +300,99 @@ require([
             **/
             var updateTreeData = function() {
                 $('#overlay-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
-                $('#overlay-removal-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
-                resizeOverlayToTree('#overlay-tree', 85);
+                resizeOverlayToTree('#overlay-tree', 90);
                 if(!isOverlayTreeEmpty()) {
-                    toggleManagerTooltip('hide')
+                    $('#no-overlay-tooltip').hide();
+                } else {
+                    $('#no-overlay-tooltip').show();
                 }
+                updateCheckBoxes();
                 bindSelectionHandlers();
+                setStateInit();
             }
             adapter.overlayManager.bindTreeChangeHandler(updateTreeData);
-            /**
-            * This is used to toggle the overlay tree within the Overlay manager window.  If
-            * there are any overlays to display and you are not adding or removing overlays/features
-            * then the tree should be visible.
-            **/
-            var toggleOverlayTree = function(action) {
-                var hideOpenTree = (action === 'hide' && !$('#overlay-tree').hasClass('hidden'));
-                var openClosedTree = (action === 'show' && $('#overlay-tree').hasClass('hidden'));
-                if(hideOpenTree || openClosedTree){
-                    $('#overlay-tree').toggleClass('hidden');
+
+            var updateCheckBoxes = function() {
+                $("#overlay-tree.default input:checkbox").each(function(index) {
+                    if(($(this).attr('ishidden') == 'false')) {
+                        $(this).attr('checked', 'checked');
+                    }
+                });
+            }
+
+            var checkDeleteButtonDisabled = function() {
+                $('#overlay-manager-delete-button').addClass('disabled');
+                if($('#overlay-tree.remove').is(':visible') && $("#overlay-tree input:checkbox:checked").length > 0) {
+                    $('#overlay-manager-delete-button').removeClass('disabled');
                 }
             };
 
-            /**
-            * This is used to toggle the tooltip within the Overlay manager window.  This tooltip
-            * should only display if there are no overlays to display.  This is a convenience method
-            * to close or open the tooltip depending on action paramater given.
-            **/
-            var toggleManagerTooltip= function(action) {
-                var hideOpenTooltip = (action === 'hide' && !$('#no-overlay-tooltip').hasClass('hidden'));
-                var openClosedTooltip = (action === 'show' && $('#no-overlay-tooltip').hasClass('hidden'));
-                if(hideOpenTooltip || openClosedTooltip){
-                    $('#no-overlay-tooltip').toggleClass('hidden');
+            var setStateInit = function() {
+                $('#overlay-delete-icon').removeClass('disabled');
+                $('#no-overlay-tooltip').hide();
+                if(isOverlayTreeEmpty()) {
+                    $('#no-overlay-tooltip').show();
+                    $('#overlay-delete-icon').addClass('disabled');
                 }
-            };
+                $('#overlay-manager-add-button').hide();
+                $('#overlay-manager-delete-button').hide();
+                $('#overlay-manager-add').hide();
+                $('#overlay-manager-delete').hide();
+                $('#overlay-back-icon').hide();
+                $('#overlay-add-icon').show();
+                $('#overlay-delete-icon').show();
+                $('#overlay-tree').show();
+                $('#overlay-tree').addClass('default');
+                $('#overlay-tree').removeClass('remove');
+                $('#overlay-tree').css('top','50px');
+                $('.help-block').hide();
+                $('#feature-add-url').parent().removeClass('has-success');
+                $('#feature-add-url').parent().removeClass('has-error');
+                updateCheckBoxes();
+                bindSelectionHandlers();
+                resizeOverlayToTree('#overlay-tree', 90);
+            }
+            var setStateAdd = function() {
+                $('#no-overlay-tooltip').hide();
+                clearAddInputs();
+                $('#overlay-add-icon').hide();
+                $('#overlay-delete-icon').hide();
+                $('#overlay-manager-delete-button').hide();
+                $('#add-overlay-div').hide();
+                $('#overlay-manager-delete').hide();
+                $('#overlay-tree').hide();
+                $('#overlay-back-icon').show();
+                $('#overlay-manager-add').show();
+                $('#overlay-manager-add-button').show();
+                $('#overlay-manager').show();
+                $('#overlay-manager-subtitle').show();
+                checkAddFormCompleted();
+                updateOverlaySelection();
+                resizeOverlayManager();
+            }
+            var setStateRemove = function() {
+                $('#no-overlay-tooltip').hide();
+                $('#overlay-add-icon').hide();
+                $('#overlay-delete-icon').hide();
+                $('#add-overlay-div').hide();
+                $('#overlay-manager-add-button').hide();
+                $('#overlay-manager-add').hide();
+                $('#overlay-manager-delete').show();
+                $('#overlay-manager').show();
+                $('#overlay-manager-delete-button').show();
+                $('#delete-feature-subtitle').show();
+                $('#overlay-back-icon').show();
+                $('#overlay-tree').show();
+                $("#overlay-tree.default input:checkbox").off('change');
+                $('#overlay-tree').removeClass('default');
+                $('#overlay-tree').addClass('remove');
+                $("#overlay-tree.remove input:checkbox").removeAttr('checked');
+                bindSelectionHandlers();
+                updateOverlaySelection();
+                checkDeleteButtonDisabled();
+                $('#overlay-tree').css('top','85px');
+                resizeOverlayToTree('#overlay-tree', 125);
+            }
         });
     }
     });
