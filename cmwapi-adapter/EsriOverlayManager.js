@@ -111,29 +111,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
-        me.sendFeaturePlotUrl = function(overlayId, featureId, name, format, url, params, zoom) {
-            cmwapi.feature.plot.url.send({
-                overlayId: overlayId,
-                featureId: featureId,
-                name: name,
-                format: format,
-                url: url,
-                params: params,
-                zoom: zoom
-            });
-        };
-
         me.sendOverlayRemove = function(overlayId) {
             cmwapi.overlay.remove.send({
                 overlayId: overlayId
-            });
-        };
-
-
-        me.sendFeatureUnplot = function(overlayId, featureId) {
-            cmwapi.feature.unplot.send({
-                overlayId: overlayId,
-                featureId: featureId
             });
         };
 
@@ -146,6 +126,40 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
         me.sendOverlayShow = function(overlayId) {
             cmwapi.overlay.show.send({
                 overlayId: overlayId
+            });
+        };
+
+        me.sendOverlayUpdate = function(overlayId, newParentId) {
+            cmwapi.overlay.update.send({
+                overlayId: overlayId,
+                parentId: newParentId
+            });
+        }
+
+        me.sendFeaturePlotUrl = function(overlayId, featureId, name, format, url, params, zoom) {
+            cmwapi.feature.plot.url.send({
+                overlayId: overlayId,
+                featureId: featureId,
+                name: name,
+                format: format,
+                url: url,
+                params: params,
+                zoom: zoom
+            });
+        };
+
+        me.sendFeatureUnplot = function(overlayId, featureId) {
+            cmwapi.feature.unplot.send({
+                overlayId: overlayId,
+                featureId: featureId
+            });
+        };
+
+        me.sendFeatureUpdate = function(overlayId, featureId, newOverlayId) {
+            cmwapi.feature.update.send({
+                overlayId: overlayId,
+                featureId: featureId,
+                newOverlayId: newOverlayId
             });
         };
 

@@ -118,10 +118,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
         me.handleUpdate = function(sender, data) {
             if(data.length > 1) {
                 for(var i = 0; i < data.length; i++) {
-                    overlayManager.overlay.updateOverlay(sender, data[i].name, data[i].overlayId, data[i].parentId);
+                    overlayManager.overlay.updateOverlay(sender, data[i].overlayId, data[i].name, data[i].parentId);
                 }
             } else {
-                overlayManager.overlay.updateOverlay(sender, data.name, data.overlayId, data.parentId);
+                overlayManager.overlay.updateOverlay(sender, data.overlayId, data.name, data.parentId);
             }
         };
         CommonMapApi.overlay.update.addHandler(me.handleUpdate);

@@ -65,8 +65,20 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
 
-            xit("verify overlay create with duplicate id", function() {
+            it("verify overlay create with duplicate id", function() {
+                var update = spyOn(overlayManager.overlay, 'updateOverlay').andCallThrough();
 
+                expect(Object.keys(overlayManager.getOverlays()).length).toBe(0);
+
+                //create the overlay
+                overlayManager.overlay.createOverlay("FakeWidget", "1111", "Name 1");
+
+                expect(update).not.toHaveBeenCalled();
+
+                //create with same ID
+                overlayManager.overlay.createOverlay("FakeWidget", "1111", "Name 2");
+
+                expect(update).toHaveBeenCalledWith("FakeWidget", "1111", "Name 2", undefined);
             });
 
             it("verify overlay remove of one", function() {
@@ -120,13 +132,26 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 expect(overlays["2222"]).not.toBeDefined();
             });
 
+            it("verify overlay hide with valid id", function() {
+
+            });
+
+            it("verify remove of bad id does not call error", function() {
+
+            });
+
+            it("verify update of bad id calls error", function() {
+
+            });
+
             it("verify overlay hide with invalid id calls error", function() {
 
             });
 
-            it("verify overlay hide with valid id", function() {
+            it("verify overlay show with invalid id calls error", function() {
 
             });
+
 
         });
 
@@ -143,6 +168,26 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 overlayManager.overlay.createOverlay("fake widget", "1111", "Name 1");
 
                 expect(handler).toHaveBeenCalled();
+            });
+        });
+
+        describe("ui api relay calls", function() {
+            var overlayManager;
+
+            beforeEach(function() {
+                overlayManager = new OverlayManager({}, {});
+            });
+        });
+
+        describe("feature handlers", function() {
+            var overlayManager;
+
+            beforeEach(function() {
+                overlayManager = new OverlayManager({}, {});
+            });
+
+            it("check ", function() {
+
             });
         });
     });

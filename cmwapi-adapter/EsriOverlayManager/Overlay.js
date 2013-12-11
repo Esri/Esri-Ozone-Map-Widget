@@ -70,11 +70,12 @@ define(function() {
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param name {String} optional; The readable name for the overlay; if not specified the id will be used
          * @param overlayId {String} The id of the overlay to create; if it exists nothing will be created
+         * @param parentId {String} The id of the overlay to be set as the parent of the overlay being created.
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.createOverlay = function(caller, overlayId, name, parentId) {
             if(manager.overlays[overlayId]) {
-                me.updateOverlay(caller, name, overlayId, parentId);
+                me.updateOverlay(caller, overlayId, name, parentId);
             } else {
                 manager.overlays[overlayId] = new Overlay(overlayId, name, parentId);
                 manager.treeChanged();
@@ -110,7 +111,7 @@ define(function() {
                 //recursively remove children from this overlay
                 for(i in children) {
                     if(children.hasOwnProperty(i)) {
-                        me.removeOverlay(caller, children[i]);
+                        me.removeOverlay(caller, i);
                     }
                 }
             }
@@ -170,12 +171,12 @@ define(function() {
         /**
          * @method updateOverlay
          * @param caller {String} the id of the widget which made the request resulting in this function call.
-         * @param name {String} The name that should be set; the current or a new name.
          * @param overlayId {String} the id of the overlay to be updated.
+         * @param name {String} The name that should be set; the current or a new name.
          * @param parentId {String} optional; the id of the overlay to be set as the parent.
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
-        me.updateOverlay = function(caller, name, overlayId, parentId) {
+        me.updateOverlay = function(caller, overlayId, name, parentId) {
             if(typeof(manager.overlays[overlayId]) === 'undefined') {
                 var msg = "No overlay exists with the provided id of " + overlayId;
                 adapter.error.error(caller, msg, {type: 'map.overlay.update', msg: msg});
