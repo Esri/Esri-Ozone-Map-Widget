@@ -106,6 +106,16 @@ require([
                 resizeOverlayManager();
                 checkAddFormCompleted();
             });
+            $('.type-radio').on('change', function() {
+                console.log('hi');
+                if($('#wms-radio').is(':checked')) {
+                    $('#feature-params-group').show();
+                } else {
+                    $('#feature-params-group').hide();
+                }
+                resizeOverlayManager();
+                checkAddFormCompleted();
+            });
 
             var resizeOverlayManager = function() {
                 var height = $('#overlay-manager-add').height() + 100;
@@ -179,10 +189,8 @@ require([
                 autoOpen: 1,
                 onCreateLi: function(node, $li) {
                     node['node-type'] = node.type;
-                    var image = 'http://www.graphicsfuel.com/wp-content/uploads/2012/03/folder-icon-512x512.png';
-                    if(node.type === 'overlay') {
-                        image = 'http://www.graphicsfuel.com/wp-content/uploads/2012/03/folder-icon-512x512.png';
-                    } else {
+                    var image = './images/icons/Tree_Folder.png';
+                    if(node.type === 'feature') {
                         image = './images/icons/kml_icon.gif';
                     }
                     $li.find('.jqtree-title').before(

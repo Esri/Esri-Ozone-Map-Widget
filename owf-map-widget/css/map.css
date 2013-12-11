@@ -517,6 +517,12 @@ ul.jqtree-tree .jqtree-element{
 .esriPopup .pointer.top {
   background-position: -73px -618px;
 }
+.radio-inline, .checkbox-inline {
+  padding-left: 35px;
+}
+#feature-params-group{
+  display:none;
+}
 
 @media (max-height: 500px) {
   #popover_content_wrapper {
