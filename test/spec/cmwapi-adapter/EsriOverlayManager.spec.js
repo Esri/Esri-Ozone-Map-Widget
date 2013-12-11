@@ -13,18 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOverlayManager"], function(CommonMapApi, Adapter, OverlayManager) {
+define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOverlayManager",
+        "test/mock/esriMap", "test/mock/OWF", "test/mock/Ozone"],
+        function(CommonMapApi, Adapter, OverlayManager, Map, OWF, Ozone) {
 
     describe("To test Common Map Widget API ESRI overlay manager", function() {
         describe("Overlay functions", function() {
             var overlayManager;
-
-            var mapStub = {
-
-            };
+            var adapter;
 
             beforeEach(function() {
-                overlayManager = new OverlayManager({}, mapStub);
+                window.OWF = OWF;
+                window.Ozone = Ozone;
+                window.Map = Map;
+
+                adapter = new Adapter(new Map());
+                overlayManager = new OverlayManager(adapter, new Map());
+            });
+
+            afterEach(function() {
+                // Remove our mock objects from the window so neither they nor
+                // any spies upon them hang around for other test suites.
+                delete window.OWF;
+                delete window.Ozone;
+                delete window.Map;
             });
 
             it("verify the overlay create without parent", function() {
@@ -132,24 +144,50 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 expect(overlays["2222"]).not.toBeDefined();
             });
 
-            it("verify overlay hide with valid id", function() {
+            xit("verify overlay hide with valid id", function() {
+                overlayManager.overlay.createOverlay("fake widget", "1111", "Name 1");
+                overlayManager.overlay.createOverlay("fake widget", "2222", "Name 1", "1111");
+                expect(Object.keys(overlays).length).toBe(0);
+
+                overlayManager.feature.plotFeatureUrl("fake widget", "2222", "3333", "3333", kml, "http://",
+                                                        undefined, false);
+
 
             });
 
             it("verify remove of bad id does not call error", function() {
+                var error = spyOn(adapter.error, 'error').andCallThrough();
 
+                overlayManager.overlay.removeOverlay("fake widget 2", "9876");
+
+                expect(error).not.toHaveBeenCalled();
             });
 
             it("verify update of bad id calls error", function() {
+                var error = spyOn(adapter.error, 'error').andCallThrough();
 
+                overlayManager.overlay.updateOverlay("fake widget 2", "9876");
+
+                var msg = "No overlay exists with the provided id of 9876";
+                expect(error).toHaveBeenCalledWith("fake widget 2", msg, {type: 'map.overlay.update', msg: msg});
             });
 
             it("verify overlay hide with invalid id calls error", function() {
+                var error = spyOn(adapter.error, 'error').andCallThrough();
 
+                overlayManager.overlay.hideOverlay("fake widget", "9876");
+
+                var msg = "Overlay not found with id 9876"
+                expect(error).toHaveBeenCalledWith("fake widget", msg, {type: "map.overlay.hide", msg: msg});
             });
 
             it("verify overlay show with invalid id calls error", function() {
+                var error = spyOn(adapter.error, 'error').andCallThrough();
 
+                overlayManager.overlay.hideOverlay("fake widget", "9876");
+
+                var msg = "Overlay not found with id 9876"
+                expect(error).toHaveBeenCalledWith("fake widget", msg, {type: "map.overlay.hide", msg: msg});
             });
 
 
@@ -177,6 +215,46 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             beforeEach(function() {
                 overlayManager = new OverlayManager({}, {});
             });
+
+            xit("verify send overlay create calls api correctly", function() {
+
+            });
+
+            xit("verify send overlay remove calls api correctly", function() {
+
+            });
+
+            xit("verify send overlay hide calls api correctly", function() {
+
+            });
+
+            xit("verify send overlay show calls api correctly", function() {
+
+            });
+
+            xit("verify send overlay update calls api correctly", function() {
+
+            });
+
+            xit("verify send feature ploturl calls api correctly", function() {
+
+            });
+
+            xit("verify send feature unplot calls api correctly", function() {
+
+            });
+
+            xit("verify send feature update calls api correctly", function() {
+
+            });
+
+            xit("verify send feature hide calls api correctly", function() {
+
+            });
+
+            xit("verify send feature show calls api correctly", function() {
+
+            });
         });
 
         describe("feature handlers", function() {
@@ -186,7 +264,95 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 overlayManager = new OverlayManager({}, {});
             });
 
-            it("check ", function() {
+            xit("verify plot feature with kml string and existing overlay", function() {
+
+            });
+
+            xit("verify plot feature with wms string and existing overlay", function() {
+
+            });
+
+            xit("verify plot feature with kml url and existing overlay", function() {
+
+            });
+
+            xit("verify plot feature with wms url and existing overlay", function() {
+
+            });
+
+            xit("verify plot kml url with duplicate featureId calls delete first", function() {
+
+            });
+
+            xit("verify plot url with bad overlay id calls overlay create", function() {
+
+            });
+
+            xit("verify delete feature with good overlay id and good feature id", function() {
+
+            });
+
+            xit("verify delete feature with bad overlay id calls error", function() {
+
+            });
+
+            xit("verify delete feature with bad feature id calls error", function() {
+
+            });
+
+            xit("verify hide feature with good overlay id and good feature id", function() {
+
+            });
+
+            xit("verify hide feature with bad overlay id calls error", function() {
+
+            });
+
+            xit("verify hide feature with bad feature id calls error", function() {
+
+            });
+
+            xit("verify show feature with good overlay id and good feature id", function() {
+
+            });
+
+            xit("verify show feature with bad overlay id calls error", function() {
+
+            });
+
+            xit("verify show feature with bad feature id calls error", function() {
+
+            });
+
+            xit("verify zoom feature with good overlay id and good feature id", function() {
+
+            });
+
+            xit("verify zoom feature with bad overlay id calls error", function() {
+
+            });
+
+            xit("verify zoom feature with bad feature id calls error", function() {
+
+            });
+
+            xit("verify update feature with good overlay id and good feature id", function() {
+
+            });
+
+            xit("verify update feature with bad overlay id calls error", function() {
+
+            });
+
+            xit("verify update feature with bad feature id calls error", function() {
+
+            });
+
+            xit("verify update feature with bad new overlay id", function() {
+
+            });
+
+            xit("verify update feature with new overlay hidden", function() {
 
             });
         });

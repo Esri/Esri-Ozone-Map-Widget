@@ -129,7 +129,8 @@ define(function() {
         me.hideOverlay = function(caller, overlayId) {
             var overlay = manager.overlays[overlayId];
             if(!overlay) {
-                adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
+                var msg = "Overlay not found with id " + overlayId;
+                adapter.error.error(caller, msg, {type: "map.overlay.hide", msg: msg});
             } else {
                 overlay.isHidden = true;
 
@@ -153,7 +154,8 @@ define(function() {
         me.showOverlay = function(caller, overlayId) {
             var overlay = manager.overlays[overlayId];
             if(!overlay) {
-                adapter.error.error(caller, "Overlay not found with id " + overlayId, {type: "invalid_id"});
+                var msg = "Overlay not found with id " + overlayId;
+                adapter.error.error(caller, msg, {type: "map.overlay.show", msg: msg});
             } else {
                 overlay.isHidden = false;
 
