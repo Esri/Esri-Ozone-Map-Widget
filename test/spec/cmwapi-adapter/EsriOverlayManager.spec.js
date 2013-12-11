@@ -144,15 +144,20 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 expect(overlays["2222"]).not.toBeDefined();
             });
 
-            xit("verify overlay hide with valid id", function() {
+            it("verify overlay hide with valid id", function() {
                 overlayManager.overlay.createOverlay("fake widget", "1111", "Name 1");
                 overlayManager.overlay.createOverlay("fake widget", "2222", "Name 1", "1111");
-                expect(Object.keys(overlays).length).toBe(0);
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(2);
+
+                expect(overlays["2222"].isHidden).toBe(false);
+                expect(overlays["1111"].isHidden).toBe(false);
 
                 overlayManager.overlay.hideOverlay("Fake widget 2", "1111");
 
-                expect(overlayManager.getOverlays["2222"].isHidden).toBe(true);
-                expect(overlayManager.getOverlays["1111"].isHidden).toBe(true);
+                overlays = overlayManager.getOverlays();
+                expect(overlays["2222"].isHidden).toBe(true);
+                expect(overlays["1111"].isHidden).toBe(true);
             });
 
             it("verify remove of bad id does not call error", function() {

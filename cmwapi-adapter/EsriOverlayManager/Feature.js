@@ -297,7 +297,10 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.updateFeature = function(caller, overlayId, featureId, name, newOverlayId) {
-            if(typeof(manager.overlays[overlayId]) !== 'undefined' && typeof(manager.overlays[overlayId].features[featureId]) !== 'undefined') {
+            if(typeof(manager.overlays[overlayId]) === 'undefined' || typeof(manager.overlays[overlayId].features[featureId]) === 'undefined') {
+                var msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
+                adapter.error.error(caller, msg, {type: "map.feature.update", message: msg});
+            } else {
                 var feature = manager.overlays[overlayId].features[featureId];
 
                 if(name !== feature.name) {
@@ -306,19 +309,22 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
 
                 if(newOverlayId && newOverlayId !== overlayId) {
                     if(typeof(manager.overlays[newOverlayId]) === 'undefined') {
-                        //FIXME What should happen here? hide it.
+                        //FIXME What should happen here?.
+                        var msg = "Could not find overlay with id " + newOverlayId;
+                        adapter.error.error(caller, msg, {type: "map.feature.update", message: msg});
                     } else {
-                        var newFeature = new Feature(newOverlayId, featureId, name, feature.format, feature.feature, feature.zoom);
+                        name = (name ? name : feature.name);
+
+                        var newFeature = new Feature(newOverlayId, featureId, name, feature.format, feature.feature, feature.zoom, feature.esriObject);
                         manager.overlays[newOverlayId].features[featureId] = newFeature;
                         delete manager.overlays[overlayId].features[featureId];
 
-                        //FIXME should we do something to handle if the new overlay is hidden
+
+                        console.log(manager.getOverlays());
+                        //FIXME should we do something to handle if the new overlay is hidden; hide it;
                     }
                 }
                 manager.treeChanged();
-            } else {
-                var msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
-                adapter.error.error(caller, msg, {type: "invalid_id", message: msg});
             }
         };
 
