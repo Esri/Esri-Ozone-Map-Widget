@@ -155,11 +155,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
-        me.sendFeatureUpdate = function(overlayId, featureId, newOverlayId) {
+        me.sendFeatureUpdate = function(overlayId, featureId, newName, newOverlayId) {
             cmwapi.feature.update.send({
                 overlayId: overlayId,
                 featureId: featureId,
-                newOverlayId: newOverlayId
+                newOverlayId: newOverlayId,
+                name: newName
             });
         };
 

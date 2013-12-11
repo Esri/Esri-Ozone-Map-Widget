@@ -306,7 +306,7 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
 
                 if(newOverlayId && newOverlayId !== overlayId) {
                     if(typeof(manager.overlays[newOverlayId]) === 'undefined') {
-                        //FIXME What should happen here?
+                        //FIXME What should happen here? hide it.
                     } else {
                         var newFeature = new Feature(newOverlayId, featureId, name, feature.format, feature.feature, feature.zoom);
                         manager.overlays[newOverlayId].features[featureId] = newFeature;
