@@ -305,7 +305,7 @@ html, body, #map {
   bottom: -1px;
   right: 68px;
   position: absolute;
-  background-image: url("../images/icons/Add_Overlay_Default.png");
+  background-image: url("../images/icons/Add_Folder.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -331,20 +331,16 @@ html, body, #map {
   background-repeat: no-repeat;
 }
 #overlay-add-icon:hover {
-  bottom: 0px;
   background-image: url("../images/icons/Add_Overlay_Hover.png");
 }
 #overlay-add-icon:active {
-  bottom: 0px;
   background-image: url("../images/icons/Add_Overlay_Selected.png");
 }
 #add-overlay-icon:hover {
-  bottom: 0px;
-  background-image: url("../images/icons/Add_Overlay_Hover.png");
+  background-image: url("../images/icons/Add_Folder_Hover.png");
 }
 #add-overlay-icon:active {
-  bottom: 0px;
-  background-image: url("../images/icons/Add_Overlay_Selected.png");
+  background-image: url("../images/icons/Add_Folder_Selected.png");
 }
 #overlay-delete-icon:hover {
   background-image: url("../images/icons/Remove_Overlay_Hover.png");

@@ -249,6 +249,7 @@ require([
                 console.log(event);
                 var moveInfo = event.move_info;
                 if(moveInfo.moved_node['node-type'] == 'feature') {
+                    console.log('feature');
                     adapter.overlayManager.sendFeatureUpdate(moveInfo.moved_node.parent.id, moveInfo.moved_node.id,
                         moveInfo.moved_node.name, moveInfo.target_node.id);
                 } else {
@@ -331,11 +332,7 @@ require([
                 $('#popover_overlay_wrapper').css('height', (treeHeight + offset) + 'px');
             }
 
-            /**
-            * This function is called each time the tree needs to be updated, the updating is handled through
-            * jquery tree.
-            **/
-            var updateTreeData = function() {
+            var updateTree = function() {
                 $('#overlay-tree').tree('loadData',adapter.overlayManager.getOverlayTree());
                 resizeOverlayToTree('#overlay-tree', 90);
                 if(!isOverlayTreeEmpty()) {
@@ -345,6 +342,14 @@ require([
                 }
                 updateCheckBoxes();
                 bindSelectionHandlers();
+            };
+
+            /**
+            * This function is called each time the tree needs to be updated, the updating is handled through
+            * jquery tree.
+            **/
+            var updateTreeData = function() {
+                updateTree();
                 setStateInit();
             }
             adapter.overlayManager.bindTreeChangeHandler(updateTreeData);
@@ -386,8 +391,7 @@ require([
                 $('.help-block').hide();
                 $('#feature-add-url').parent().removeClass('has-success');
                 $('#feature-add-url').parent().removeClass('has-error');
-                updateCheckBoxes();
-                bindSelectionHandlers();
+                updateTree();
                 resizeOverlayToTree('#overlay-tree', 90);
             }
             var setStateAdd = function() {
