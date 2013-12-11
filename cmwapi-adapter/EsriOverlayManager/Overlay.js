@@ -188,7 +188,9 @@ define(function() {
                     overlay.name = name;
                 }
                 if(parentId && parentId !== overlay.parentId) {
-                    me.designateParent(overlayId, parentId);
+                    var oldParent = overlay.parentId;
+                    overlay.parentId = parentId;
+                    me.resolveParent(overlay, parentId, oldParent);
                 }
                 manager.treeChanged();
             }
