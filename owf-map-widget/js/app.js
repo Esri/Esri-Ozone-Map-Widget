@@ -197,6 +197,14 @@ require([
                         '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type + '" isHidden="' + node.isHidden + '"/>' +
                         '<img src=' + image + ' alt="Overlay Icon" height="25" width="25">'
                     );
+                },
+                onCanMoveTo: function(moved_node, target_node, position) {
+                    if(target_node['node-type'] == 'feature') {
+                        return (position != 'inside');
+                    } else {
+                        return true;
+                    }
+
                 }
             });
         $tree.bind('tree.dblclick',
@@ -231,6 +239,23 @@ require([
                 };
             }
         );
+
+        $('#overlay-tree').bind('tree.move',
+            function(event) {
+                console.log(event);
+                var moveInfo = event.move_info;
+                if(moveInfo.moved_node['node-type'] == 'feature') {
+                    adapter.overlayManager.sendFeatureUpdate(moveInfo.moved_node.parent.id, moveInfo.moved_node.id,
+                        moveInfo.moved_node.name, moveInfo.target_node.id);
+                } else {
+                    adapter.overlayManager.sendOverlayUpdate(moveInfo.moved_node.id, moveInfo.moved_node.name, moveInfo.target_node.id);
+                }
+
+            }
+        );
+
+
+
             var clearAddInputs = function() {
                 $('#feature-add-name').val('');
                 $('#feature-add-id').val('');
