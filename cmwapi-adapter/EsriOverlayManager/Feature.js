@@ -319,8 +319,6 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
                         manager.overlays[newOverlayId].features[featureId] = newFeature;
                         delete manager.overlays[overlayId].features[featureId];
 
-
-                        console.log(manager.getOverlays());
                         //FIXME should we do something to handle if the new overlay is hidden; hide it;
                     }
                 }
