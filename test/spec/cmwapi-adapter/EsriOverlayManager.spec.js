@@ -144,15 +144,20 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 expect(overlays["2222"]).not.toBeDefined();
             });
 
-            xit("verify overlay hide with valid id", function() {
+            it("verify overlay hide with valid id", function() {
                 overlayManager.overlay.createOverlay("fake widget", "1111", "Name 1");
                 overlayManager.overlay.createOverlay("fake widget", "2222", "Name 1", "1111");
-                expect(Object.keys(overlays).length).toBe(0);
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(2);
 
-                overlayManager.feature.plotFeatureUrl("fake widget", "2222", "3333", "3333", kml, "http://",
-                                                        undefined, false);
+                expect(overlays["2222"].isHidden).toBe(false);
+                expect(overlays["1111"].isHidden).toBe(false);
 
+                overlayManager.overlay.hideOverlay("Fake widget 2", "1111");
 
+                overlays = overlayManager.getOverlays();
+                expect(overlays["2222"].isHidden).toBe(true);
+                expect(overlays["1111"].isHidden).toBe(true);
             });
 
             it("verify remove of bad id does not call error", function() {
@@ -189,8 +194,6 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 var msg = "Overlay not found with id 9876"
                 expect(error).toHaveBeenCalledWith("fake widget", msg, {type: "map.overlay.hide", msg: msg});
             });
-
-
         });
 
         describe("change handler", function() {
@@ -211,29 +214,63 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
 
         describe("ui api relay calls", function() {
             var overlayManager;
+            var adapter;
 
             beforeEach(function() {
-                overlayManager = new OverlayManager({}, {});
+                window.OWF = OWF;
+                window.Ozone = Ozone;
+                window.Map = Map;
+
+                adapter = new Adapter(new Map());
+                overlayManager = new OverlayManager(adapter, new Map());
             });
 
-            xit("verify send overlay create calls api correctly", function() {
-
+            afterEach(function() {
+                // Remove our mock objects from the window so neither they nor
+                // any spies upon them hang around for other test suites.
+                delete window.OWF;
+                delete window.Ozone;
+                delete window.Map;
             });
 
-            xit("verify send overlay remove calls api correctly", function() {
+            it("verify send overlay create calls api correctly", function() {
+                spyOn(CommonMapApi.overlay.create, 'send').andCallThrough();
 
+                overlayManager.sendOverlayCreate("id", "name");
+
+                expect(CommonMapApi.overlay.create.send).toHaveBeenCalledWith({overlayId: "id", name: "name", parentId: null});
             });
 
-            xit("verify send overlay hide calls api correctly", function() {
+            it("verify send overlay remove calls api correctly", function() {
+                spyOn(CommonMapApi.overlay.remove, 'send').andCallThrough();
 
+                overlayManager.sendOverlayRemove("id");
+
+                expect(CommonMapApi.overlay.remove.send).toHaveBeenCalledWith({overlayId: "id"});
             });
 
-            xit("verify send overlay show calls api correctly", function() {
+            it("verify send overlay hide calls api correctly", function() {
+                spyOn(CommonMapApi.overlay.hide, 'send').andCallThrough();
 
+                overlayManager.sendOverlayHide("id");
+
+                expect(CommonMapApi.overlay.hide.send).toHaveBeenCalledWith({overlayId: "id"});
+            });
+
+            it("verify send overlay show calls api correctly", function() {
+                spyOn(CommonMapApi.overlay.show, 'send').andCallThrough();
+
+                overlayManager.sendOverlayShow("id");
+
+                expect(CommonMapApi.overlay.show.send).toHaveBeenCalledWith({overlayId: "id"});
             });
 
             xit("verify send overlay update calls api correctly", function() {
+                spyOn(CommonMapApi.overlay.update, 'send').andCallThrough();
 
+                overlayManager.sendOverlayUpdate("id", "newName", "newParentId");
+
+                expect(CommonMapApi.overlay.update.send).toHaveBeenCalledWith({overlayId: "id", name: "name", parentId: "newParentId"});
             });
 
             xit("verify send feature ploturl calls api correctly", function() {
@@ -301,6 +338,14 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
             xit("verify hide feature with good overlay id and good feature id", function() {
+
+            });
+
+            xit("verify feature is hidden when parent overlay is hidden", function() {
+
+            });
+
+            xit("verify feature is hidden multiple overlays deep", function() {
 
             });
 

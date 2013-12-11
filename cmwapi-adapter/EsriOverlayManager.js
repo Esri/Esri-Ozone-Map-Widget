@@ -129,9 +129,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
-        me.sendOverlayUpdate = function(overlayId, newParentId) {
+        me.sendOverlayUpdate = function(overlayId, name, newParentId) {
             cmwapi.overlay.update.send({
                 overlayId: overlayId,
+                name: name,
                 parentId: newParentId
             });
         }
