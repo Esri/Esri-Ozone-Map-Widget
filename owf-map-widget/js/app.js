@@ -183,7 +183,7 @@ require([
                     if(node.type === 'overlay') {
                         image = 'http://www.graphicsfuel.com/wp-content/uploads/2012/03/folder-icon-512x512.png';
                     } else {
-                        image = 'http://img0056.popscreencdn.com/103222765_watchmen-smiley-1-pin-button-badge-magnet-moore-gibbons-.jpg';
+                        image = './images/icons/kml_icon.gif';
                     }
                     $li.find('.jqtree-title').before(
                         '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type + '" isHidden="' + node.isHidden + '"/>' +

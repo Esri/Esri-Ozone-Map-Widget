@@ -503,6 +503,21 @@ ul.jqtree-tree .jqtree-element{
   margin-bottom: 0px;
 }
 
+.esriPopup .pointer, .esriPopup .outerPointer {
+  position: absolute;
+  background: url("../images/icons/Esri_Detail_Triangles.png") no-repeat;
+}
+.esriPopup .pointer.topLeft {
+  background-position: -75px -525px;
+}
+
+.esriPopup .pointer.topRight {
+  background-position: -75px -706px;
+}
+.esriPopup .pointer.top {
+  background-position: -73px -618px;
+}
+
 @media (max-height: 500px) {
   #popover_content_wrapper {
     width: 616px;
