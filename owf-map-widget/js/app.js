@@ -56,6 +56,10 @@ require([
             $('#overlay-add-icon').on('click', function() {
                 setStateAdd();
             });
+            $('#add-overlay-icon').on('click', function() {
+                setStateAddOverlay();
+            });
+
             $('#overlay-delete-icon').on('click', function() {
                 setStateRemove();
             });
@@ -69,7 +73,9 @@ require([
                 var featureParams = $('#feature-add-params').val();
                 var overlayName = $('#overlay-add-name').val();
                 var overlayId = $('#overlay-add-id').val();
-                if($('#overlay-selection').val() == 'Add New Overlay') {
+                if(!($('#add-feature-div').is(':visible'))) {
+                    adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
+                } else if($('#overlay-selection').val() == 'Add New Overlay') {
                     adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
                     adapter.overlayManager.sendFeaturePlotUrl(overlayId, featureId, featureName,
                         'kml', featureUrl, featureParams);
@@ -77,8 +83,7 @@ require([
                     adapter.overlayManager.sendOverlayCreate('default-overlay-id', 'Default Overlay');
                     adapter.overlayManager.sendFeaturePlotUrl('default-overlay-id',
                         featureId, featureName,'kml', featureUrl, featureParams);
-                }
-                else {
+                } else {
                     adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
                         featureId, featureName,'kml', featureUrl, featureParams);
                 }
@@ -107,7 +112,6 @@ require([
                 checkAddFormCompleted();
             });
             $('.type-radio').on('change', function() {
-                console.log('hi');
                 if($('#wms-radio').is(':checked')) {
                     $('#feature-params-group').show();
                 } else {
@@ -197,6 +201,14 @@ require([
                         '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type + '" isHidden="' + node.isHidden + '"/>' +
                         '<img src=' + image + ' alt="Overlay Icon" height="25" width="25">'
                     );
+                },
+                onCanMoveTo: function(moved_node, target_node, position) {
+                    if(target_node['node-type'] == 'feature') {
+                        return (position != 'inside');
+                    } else {
+                        return true;
+                    }
+
                 }
             });
         $tree.bind('tree.dblclick',
@@ -231,6 +243,23 @@ require([
                 };
             }
         );
+
+        $('#overlay-tree').bind('tree.move',
+            function(event) {
+                console.log(event);
+                var moveInfo = event.move_info;
+                if(moveInfo.moved_node['node-type'] == 'feature') {
+                    adapter.overlayManager.sendFeatureUpdate(moveInfo.moved_node.parent.id, moveInfo.moved_node.id,
+                        moveInfo.moved_node.name, moveInfo.target_node.id);
+                } else {
+                    adapter.overlayManager.sendOverlayUpdate(moveInfo.moved_node.id, moveInfo.moved_node.name, moveInfo.target_node.id);
+                }
+
+            }
+        );
+
+
+
             var clearAddInputs = function() {
                 $('#feature-add-name').val('');
                 $('#feature-add-id').val('');
@@ -348,6 +377,7 @@ require([
                 $('#overlay-manager-delete').hide();
                 $('#overlay-back-icon').hide();
                 $('#overlay-add-icon').show();
+                $('#add-overlay-icon').show();
                 $('#overlay-delete-icon').show();
                 $('#overlay-tree').show();
                 $('#overlay-tree').addClass('default');
@@ -364,11 +394,34 @@ require([
                 $('#no-overlay-tooltip').hide();
                 clearAddInputs();
                 $('#overlay-add-icon').hide();
+                $('#add-overlay-icon').hide();
                 $('#overlay-delete-icon').hide();
                 $('#overlay-manager-delete-button').hide();
                 $('#add-overlay-div').hide();
                 $('#overlay-manager-delete').hide();
                 $('#overlay-tree').hide();
+                $('#overlay-back-icon').show();
+                $('#overlay-manager-add').show();
+                $('#overlay-manager-add-button').show();
+                $('#add-feature-div').show();
+                $('#overlay-manager').show();
+                $('#overlay-manager-subtitle').show();
+                checkAddFormCompleted();
+                updateOverlaySelection();
+                resizeOverlayManager();
+            }
+            var setStateAddOverlay = function() {
+                $('#no-overlay-tooltip').hide();
+                clearAddInputs();
+                $('#overlay-add-icon').hide();
+                $('#add-overlay-icon').hide();
+                $('#overlay-delete-icon').hide();
+                $('#overlay-manager-delete-button').hide();
+                $('#add-overlay-div').show();
+                $('#overlay-manager-delete').hide();
+                $('#overlay-tree').hide();
+                $('#add-feature-div').hide();
+
                 $('#overlay-back-icon').show();
                 $('#overlay-manager-add').show();
                 $('#overlay-manager-add-button').show();
@@ -381,6 +434,7 @@ require([
             var setStateRemove = function() {
                 $('#no-overlay-tooltip').hide();
                 $('#overlay-add-icon').hide();
+                $('#add-overlay-icon').hide();
                 $('#overlay-delete-icon').hide();
                 $('#add-overlay-div').hide();
                 $('#overlay-manager-add-button').hide();
