@@ -136,10 +136,13 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
             var overlay = manager.overlays[overlayId];
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'kml-url', url, zoom, layer);
 
-            if(zoom) {
-                me.zoomFeature(caller, overlayId, featureId);
-            }
-            manager.treeChanged();
+            layer.on("load", function() {
+                if(zoom) {
+                    me.zoomFeature(caller, overlayId, featureId);
+                }
+                manager.treeChanged();
+            });
+            
         };
 
         /**
@@ -249,12 +252,10 @@ define(["esri/layers/KMLLayer"],function(KMLLayer) {
                 return;
             }
 
-            //FIXME zoom to sub feature
-
             var extent = findExtent(feature.esriObject);
 
             console.log(extent);
-            map.setExtent(extent);
+            map.setExtent(extent, true);
         };
 
         var findExtent = function(esriLayer) {
