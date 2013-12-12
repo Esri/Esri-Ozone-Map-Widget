@@ -103,7 +103,6 @@ define(function() {
         findLayerExtent : function(esriLayer) {
             var extent = null;
             var layers = esriLayer.getLayers();
-            console.log(layers);
 
             var layer;
             for(var i = 0; i < layers.length; i++) {
