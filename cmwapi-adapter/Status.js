@@ -30,16 +30,23 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/
          * @memberof! module:EsriAdapter#
          */
         me.handleRequest = function(caller, types) {
-            if(!types || types.indexOf("view") !== -1) {
+            if (!types) {
                 me.sendView(caller);
-            }
-
-            if(!types || types.indexOf("about") !== -1) {
                 me.sendAbout(caller);
-            }
-
-            if(!types || types.indexOf("format") !== -1) {
                 me.sendFormat(caller);
+            }
+            else {
+                for (var i = 0; i < types.length; i++) {
+                    if (types[i] === "view") {
+                        me.sendView(caller);
+                    }
+                    else if (types[i] === "about") {
+                        me.sendAbout(caller);
+                    }
+                    else if (types[i] === "format") {
+                        me.sendFormat(caller);
+                    }
+                }
             }
         };
         CommonMapApi.status.request.addHandler(me.handleRequest);

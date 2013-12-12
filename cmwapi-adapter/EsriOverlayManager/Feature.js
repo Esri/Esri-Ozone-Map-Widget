@@ -223,15 +223,16 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
                 return;
             }
 
+            if (zoom) {
+                me.zoomFeature(caller, overlayId, featureId, null, null, "auto");
+            }
+
             if(feature.isHidden) {
                 feature.isHidden = false;
                 feature.esriObject.show();
                 manager.treeChanged();
             }
-
-            if (zoom) {
-                me.zoomFeature(caller, overlayId, featureId, null, null, "auto");
-            }
+            
         };
 
         /**
