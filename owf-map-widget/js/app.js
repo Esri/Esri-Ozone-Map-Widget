@@ -67,8 +67,11 @@ require([
 
             $('#overlay-tree').bind('tree.dblclick',
             function(event) {
-                var span = $('#' + event.node.id).siblings('span');
-                var text = $(span).text();
+                //console.log(event);
+                var span = $('#' + event.node.id + '[node-type= "' + event.node['node-type'] + '"]').siblings('span');
+                console.log(event.node);
+                console.log('[node-type= "' + event.node['node-type'] + '"]');
+                var text = event.node.name;
                 var html = '<input value ="' + text + '" type="text">';
                 $(span).parent().addClass('form-group');
                 $(span).html(html);
@@ -76,7 +79,7 @@ require([
 
                 $(span).find('input').keypress(function(e) {
                     var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode === '13') {
+                    if(keycode === 13) {
                         doneInput();
                     }
                 });
@@ -88,10 +91,13 @@ require([
                 var doneInput = function() {
                     var inputValue = $(span).find('input').val();
                     $(span).find('input').remove();
-                    if(event.node['node-type'] === 'overlay' || inputValue !== '') {
+                    if(event.node['node-type'] === 'overlay' && inputValue !== '') {
                         $(span).text(inputValue);
                         adapter.overlayManager.sendOverlayCreate(event.node.id, inputValue);
-                    } else if(event.node['node-type'] === 'overlay' || inputValue === '') {
+                    } else if (event.node['node-type'] === 'feature' && inputValue !== '') {
+                        $(span).text(inputValue);
+                        adapter.overlayManager.sendFeatureUpdate(event.node.parent.id, event.node.id, inputValue);
+                    } else {
                         $(span).text(text);
                     }
                 };
