@@ -610,7 +610,12 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
             xit("verify zoom feature with bad overlay id calls error", function() {
+                var err = spyOn(adapter.error, 'error').andCallThrough();
 
+                overlayManager.feature.zoomFeature("fake", "o", "f", null, null, "auto");
+
+                var msg = "Feature could not be found with id f and overlayId o";
+                expect(err).toHaveBeenCalledWith("fake2", msg, {type: 'map.feature.show', msg: msg});
             });
 
             xit("verify zoom feature with bad feature id calls error", function() {
