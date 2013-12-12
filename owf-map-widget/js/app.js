@@ -67,10 +67,7 @@ require([
 
             $('#overlay-tree').bind('tree.dblclick',
             function(event) {
-                //console.log(event);
                 var span = $('#' + event.node.id + '[node-type= "' + event.node['node-type'] + '"]').siblings('span');
-                console.log(event.node);
-                console.log('[node-type= "' + event.node['node-type'] + '"]');
                 var text = event.node.name;
                 var html = '<input value ="' + text + '" type="text">';
                 $(span).parent().addClass('form-group');
