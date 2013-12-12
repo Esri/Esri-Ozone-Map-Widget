@@ -15,20 +15,6 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
     var SUPPORTED_TYPES = [SINGLE, DOUBLE];
 
     /**
-     * Validate the input types against the supported map status request types.
-     * @param types {Array<string>} The types to validate.
-     * @returns {module:cmwapi/Validator~Result}
-     */
-    var  itemIsAllowedValue = function(allowedValues, item) {
-        if (typeof item !== "undefined") {
-            if (Validator.isArray(allowedValues)) {
-                return (allowedValues.indexOf(item.toString().toLowerCase()) > -1);
-            }
-        }
-        return false;
-    };
-
-    /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
      * @license
@@ -132,12 +118,12 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                     validData.msg += "Invalid lon value for payload " + i + ". ";
                 }
                 // Check the button
-                if (!itemIsAllowedValue(SUPPORTED_BUTTONS, payload[i].button)) {
+                if (!Validator.containsValue(SUPPORTED_BUTTONS, payload[i].button)) {
                     validData.result = false;
                     validData.msg += "Invalid button value for payload " + i + ". ";
                 }
                 // Check the click type
-                if (!itemIsAllowedValue(SUPPORTED_TYPES, payload[i].type)) {
+                if (!Validator.containsValue(SUPPORTED_TYPES, payload[i].type)) {
                     validData.result = false;
                     validData.msg += "Invalid mouse click type for payload " + i + ". ";
                 }
@@ -145,7 +131,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 // Check the keys value
                 if (payload[i].keys && Validator.isArray(payload[i].keys)) {
                     for (var j = 0; j < payload[i].keys.length; j++) {
-                        if (!itemIsAllowedValue(SUPPORTED_KEYS, payload[i].keys[j])) {
+                        if (!Validator.containsValue(SUPPORTED_KEYS, payload[i].keys[j])) {
                             validData.result = false;
                             validData.msg += "Invalid key for payload " + i + ". ";
                         }
@@ -199,12 +185,12 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                         validData.msg += "Invalid lon value for payload " + i + ". ";
                     }
                     // Check the button
-                    if (!itemIsAllowedValue(SUPPORTED_BUTTONS, data[i].button)) {
+                    if (!Validator.containsValue(SUPPORTED_BUTTONS, data[i].button)) {
                         validData.result = false;
                         validData.msg += "Invalid button value for payload " + i + ". ";
                     }
                     // Check the click type
-                    if (!itemIsAllowedValue(SUPPORTED_TYPES, data[i].type)) {
+                    if (!Validator.containsValue(SUPPORTED_TYPES, data[i].type)) {
                         validData.result = false;
                         validData.msg += "Invalid mouse click type for payload " + i + ". ";
                     }
@@ -213,7 +199,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                     if (data[i].keys && Validator.isArray(data[i].keys)) {
 
                         for (var j = 0; j < data[i].keys.length; j++) {
-                            if (!itemIsAllowedValue(SUPPORTED_KEYS, data[i].keys[j])) {
+                            if (!Validator.containsValue(SUPPORTED_KEYS, data[i].keys[j])) {
                                 validData.result = false;
                                 validData.msg += "Invalid key for payload " + i + ". ";
                             }

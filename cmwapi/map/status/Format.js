@@ -55,7 +55,6 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
             // error bookkeeping.
             var validData = Validator.validObjectOrArray( data );
             var payload = validData.payload;
-            var msg;
 
             if (!validData.result) {
                 //console.error ("Unable to send on error channel - sent data is not valid: [data: " + data + "].  " + validData.msg);
@@ -70,16 +69,16 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
 
                 if (listedFormats instanceof Array) {
                     for (var j=0; j < listedFormats.length; j++ ) {
-                        if (! formatsSet.indexOf(listedFormats[j]) >= 0) {
+                        if (! Validator.containsValue(formatsSet, listedFormats[j])) {
                             formatsSet.push(listedFormats[j]);
                         }
                     }
                 } 
-            };
+            }
             
             // verify that we're also including REQUIRED_FORMATS
             for (var k=0; k < REQUIRED_FORMATS.length; k++) {
-                if (formatsSet.indexOf(REQUIRED_FORMATS[k]) == -1) {
+                if (! Validator.containsValue(formatsSet, REQUIRED_FORMATS[k])) {
                     formatsSet.push(REQUIRED_FORMATS[k]);
                 }
             }
@@ -101,13 +100,8 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
             var newHandler = function(sender, msg) {
 
                 // Parse the sender and msg to JSON.
-                var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
                 var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
-                var validData = true;
-                var errorMsg = "";
-
-                var validData= true;
 
                 for (var i = 0; i < data.length; i ++) {
                     if (!data[i].formats) { 
@@ -115,7 +109,7 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
                     } else {
                         handler(sender, data[i]);
                     }
-                };
+                }
             };
 
             OWF.Eventing.subscribe(Channels.MAP_STATUS_FORMAT, newHandler);

@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  */
-define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/Constants"], 
-    function(CommonMapApi, EsriNS, Extent, Constants) {
+define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/ViewUtils"], 
+    function(CommonMapApi, EsriNS, Extent, ViewUtils) {
     var Status = function(adapater, map) {
         var me = this;
 
@@ -30,16 +30,23 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/
          * @memberof! module:EsriAdapter#
          */
         me.handleRequest = function(caller, types) {
-            if(!types || types.indexOf("view") !== -1) {
+            if (!types) {
                 me.sendView(caller);
-            }
-
-            if(!types || types.indexOf("about") !== -1) {
                 me.sendAbout(caller);
-            }
-
-            if(!types || types.indexOf("format") !== -1) {
                 me.sendFormat(caller);
+            }
+            else {
+                for (var i = 0; i < types.length; i++) {
+                    if (types[i] === "view") {
+                        me.sendView(caller);
+                    }
+                    else if (types[i] === "about") {
+                        me.sendAbout(caller);
+                    }
+                    else if (types[i] === "format") {
+                        me.sendFormat(caller);
+                    }
+                }
             }
         };
         CommonMapApi.status.request.addHandler(me.handleRequest);
@@ -67,13 +74,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/
                 lon: Extent.prototype._normalizeX(map.geographicExtent.getCenter().x, map.geographicExtent.spatialReference._getInfo()).x
             };
 
-            // Calculate the range from the current scale using law of sines and a triangle from user's
-            // viewpoint to center of extent, to the edge of the map. This assumes a user as a 120 degree field of view.
-            // Triangle widthInMeters = scale * (1m / InchesPerMeter) * (1 / screen DPI) * (map width * 0.5).  We half
-            // the map width in pixels since only half forms one side of our triangle to determine range.   
-            var widthInMeters = (map.getScale() * map.width * (0.5)) / (Constants.INCHES_PER_METER * Constants.HIGH_DPI);
-            // Using law of sines, range = widthInMeters * sine(30 deg) / sine(60 deg). 
-            var range = (widthInMeters * Constants.SINE_30_DEG) / Constants.SINE_60_DEG;
+            var range = ViewUtils.scaleToZoomAltitude(map);
 
             CommonMapApi.status.view.send( {bounds: bounds, center: center, range: range, requester: caller});
         };

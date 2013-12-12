@@ -45,12 +45,21 @@ define('cmwapi/Validator', function() {
          * @returns {module:cmwapi/Validator~Result}
          */
         validMapType: function(type) {
+            var retVal = {
+                result: false,
+                msg: type + ' is not a supported map type'
+            };
+
             if (type) {
-                if (SUPPORTED_MAP_TYPES.indexOf(type) <= -1) {
-                    return {result: false, msg: type + ' is not a supported map type'};
+                for (var i = 0; i < SUPPORTED_MAP_TYPES.length; i++) {
+                    if (SUPPORTED_MAP_TYPES[i] === type) {
+                        retVal.result = true;
+                        retVal.msg = "";
+                    }
                 }
             }
-            return {result: true, msg:""};
+
+            return retVal;
         },
 
         /**
@@ -59,14 +68,26 @@ define('cmwapi/Validator', function() {
          * @returns {module:cmwapi/Validator~Result}
          */
         validRequestTypes: function(types) {
+            var retVal = {
+                result: true,
+                msg: ""
+            };
+
             if (types) {
                 for (var i = 0; i < types.length; i++  ) {
-                    if (SUPPORTED_STATUS_TYPES.indexOf(types[i]) <= -1) {
-                        return {result: false, msg: types[i] + ' is not a supported a map status request type'};
+                    var found = false;
+                    for (var j = 0; j < SUPPORTED_STATUS_TYPES.length; j++ ) {
+                        if (SUPPORTED_STATUS_TYPES[j] === types[i]) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        retVal.result = false;
+                        retVal.msg += types[i] + ' is not a supported map status request type. ';
                     }
                 }
             }
-            return {result: true, msg:""};
+            return retVal;
         },
 
         /**
@@ -214,6 +235,25 @@ define('cmwapi/Validator', function() {
                 return false;
             }
             return true;
+        },
+
+        /**
+         * Validate the input type against the values in the input list.
+         * @param types {Array<string>} The allowed values.
+         * @param item {string} The value to test.
+         * @returns {module:cmwapi/Validator~Result}
+         */
+        containsValue : function(allowedValues, item) {
+            if (typeof item !== "undefined") {
+                if (this.isArray(allowedValues)) {
+                    for (var i = 0; i < allowedValues.length; i++) {
+                        if (allowedValues[i] === item) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         /**
