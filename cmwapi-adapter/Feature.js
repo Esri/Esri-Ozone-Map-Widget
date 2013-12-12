@@ -135,10 +135,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
                 var data_item;
                 for(var i = 0; i < data.length; i++) {
                     data_item = data[i];
-                    overlayManager.feature.showFeature(sender, data_item.overlayId, data_item.featureId);
+                    overlayManager.feature.showFeature(sender, data_item.overlayId, data_item.featureId, data_item.zoom);
                 }
             } else {
-                overlayManager.feature.showFeature(sender, data.overlayId, data.featureId);
+                overlayManager.feature.showFeature(sender, data.overlayId, data.featureId, data.zoom);
             }
         };
         CommonMapApi.feature.show.addHandler(me.handleShow);

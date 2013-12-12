@@ -138,7 +138,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
 
             layer.on("load", function() {
                 if(zoom) {
-                    me.zoomFeature(caller, overlayId, featureId);
+                    me.zoomFeature(caller, overlayId, featureId, null, null, "auto");
                 }
             });
             manager.treeChanged();
@@ -205,9 +205,10 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * @param caller {String} The id of the widget which made the request resulting in this call.
          * @param overlayId {String} The id of the overlay which contains the feature to be shown
          * @param featureId {String} The id of the feature which is to be shown
+         * @param zoom {boolean} When true, the map will automatically zoom to the feature when shown.
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
-        me.showFeature = function(caller, overlayId, featureId) {
+        me.showFeature = function(caller, overlayId, featureId, zoom) {
             var overlay = manager.overlays[overlayId];
             var msg;
             if(typeof(overlay) === 'undefined') {
@@ -226,6 +227,10 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
                 feature.isHidden = false;
                 feature.esriObject.show();
                 manager.treeChanged();
+            }
+
+            if (zoom) {
+                me.zoomFeature(caller, overlayId, featureId, null, null, "auto");
             }
         };
 
@@ -252,7 +257,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
                 return;
             }
 
-            var extent = findExtent(feature.esriObject);
+            var extent = ViewUtils.findLayerExtent(feature.esriObject);
 
             // If auto zoom, reset the entire extent.
             if (range && range.toString().toLowerCase() === "auto") {
@@ -273,37 +278,6 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             }
         };
 
-        var findExtent = function(esriLayer) {
-            var extent = null;
-            var layers = esriLayer.getLayers();
-            console.log(layers);
-
-            var layer;
-            for(var i = 0; i < layers.length; i++) {
-                layer = layers[i];
-
-                if(typeof(layer.getLayers) !== 'undefined') { //kmlLayer
-                    determineMaxExtent(findExtent(layer), extent);
-                } else if(typeof(layer.getImages) !== 'undefined') { //mapImageLayer
-                    var images = layer.getImages();
-                    for(var j = 0; j < images.length; j++) {
-                        extent = determineMaxExtent(images[j].extent, extent);
-                    }
-                } else { //featureLayer
-                    extent = determineMaxExtent(layer.fullExtent, extent);
-                }
-            }
-            return extent;
-        };
-
-        var determineMaxExtent = function(newExtent, currentMax) {
-            if(currentMax === null) {
-                return newExtent;
-            } else {
-                return currentMax.union(newExtent);
-            }
-        };
-
         /**
          * @method updateFeature
          * @param overlayId {String}
@@ -313,8 +287,9 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.updateFeature = function(caller, overlayId, featureId, name, newOverlayId) {
+            var msg = "";
             if(typeof(manager.overlays[overlayId]) === 'undefined' || typeof(manager.overlays[overlayId].features[featureId]) === 'undefined') {
-                var msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
+                msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
                 adapter.error.error(caller, msg, {type: "map.feature.update", message: msg});
             } else {
                 var feature = manager.overlays[overlayId].features[featureId];
@@ -326,7 +301,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
                 if(newOverlayId && newOverlayId !== overlayId) {
                     if(typeof(manager.overlays[newOverlayId]) === 'undefined') {
                         //FIXME What should happen here?.
-                        var msg = "Could not find overlay with id " + newOverlayId;
+                        msg = "Could not find overlay with id " + newOverlayId;
                         adapter.error.error(caller, msg, {type: "map.feature.update", message: msg});
                     } else {
                         name = (name ? name : feature.name);

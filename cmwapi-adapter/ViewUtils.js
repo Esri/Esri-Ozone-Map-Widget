@@ -20,6 +20,15 @@ define(function() {
      * @description Defines the OWF Eventing channels used by the CMW API 1.1.
      * @exports cmwapi/Channels
      */
+
+    var determineMaxExtent = function(newExtent, currentMax) {
+        if(currentMax === null) {
+            return newExtent;
+        } else {
+            return currentMax.union(newExtent);
+        }
+    };
+
     var ViewUtils = {
 
         /**
@@ -89,7 +98,32 @@ define(function() {
             var range = (widthInMeters * this.SINE_30_DEG) / this.SINE_60_DEG;
 
             return range;
-        }
+        },
+
+        findLayerExtent : function(esriLayer) {
+            var extent = null;
+            var layers = esriLayer.getLayers();
+            console.log(layers);
+
+            var layer;
+            for(var i = 0; i < layers.length; i++) {
+                layer = layers[i];
+
+                if(typeof(layer.getLayers) !== 'undefined') { //kmlLayer
+                    determineMaxExtent(findLayerExtent(layer), extent);
+                } else if(typeof(layer.getImages) !== 'undefined') { //mapImageLayer
+                    var images = layer.getImages();
+                    for(var j = 0; j < images.length; j++) {
+                        extent = determineMaxExtent(images[j].extent, extent);
+                    }
+                } else { //featureLayer
+                    extent = determineMaxExtent(layer.fullExtent, extent);
+                }
+            }
+            return extent;
+        },
+
+        
     };
 
     return ViewUtils;
