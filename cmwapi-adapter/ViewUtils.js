@@ -110,7 +110,7 @@ define(function() {
                 layer = layers[i];
 
                 if(typeof(layer.getLayers) !== 'undefined') { //kmlLayer
-                    determineMaxExtent(findLayerExtent(layer), extent);
+                    determineMaxExtent(this.findLayerExtent(layer), extent);
                 } else if(typeof(layer.getImages) !== 'undefined') { //mapImageLayer
                     var images = layer.getImages();
                     for(var j = 0; j < images.length; j++) {
@@ -121,7 +121,7 @@ define(function() {
                 }
             }
             return extent;
-        },
+        }
 
         
     };
