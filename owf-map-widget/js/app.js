@@ -386,7 +386,7 @@ require([
             };
 
             var addButtonHandlers = function() {
-                $('#tooltip-x-button').on('click', $('#no-overlay-tooltip').hide());
+                $('#tooltip-x-button').on('click', function(){$('#no-overlay-tooltip').hide()});
                 $('#overlay').on('click', toggleOverlayManager);
                 $('#basemaps').on('click', toggleBaseMaps);
                 $('#overlay-add-icon').on('click', setStateAdd);
