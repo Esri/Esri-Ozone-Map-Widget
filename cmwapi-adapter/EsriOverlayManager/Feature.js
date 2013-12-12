@@ -140,9 +140,9 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
                 if(zoom) {
                     me.zoomFeature(caller, overlayId, featureId);
                 }
-                manager.treeChanged();
             });
-            
+            manager.treeChanged();
+
         };
 
         /**
