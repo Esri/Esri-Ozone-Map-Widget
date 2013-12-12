@@ -537,6 +537,9 @@ ul.jqtree-tree .jqtree-element{
 #feature-params-group{
   display:none;
 }
+#zoom-checkbox {
+  margin-top: 4px;
+}
 
 @media (max-height: 500px) {
   #popover_content_wrapper {

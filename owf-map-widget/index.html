@@ -25,14 +25,14 @@
             <div id="popover_content_wrapper" class='basemaptip'><div id="basemapGallery"></div></div>
             <div id="popover_overlay_wrapper" class='overlaytip'>
                 <div id="overlay-hr-wrapper">
-                <b><p id="overlay-manager-title">Overlay Manager</p></b>
-                <div id="no-overlay-tooltip" class='no-overlays-tip'>
-                    <button id = "tooltip-x-button"type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <p>Please add an overlay.</p>
-                </div>
-                    <div id="overlay-tree" class='default'></div>
-                    <div id="overlay-manager">
-                        <div id="overlay-manager-add">
+                    <b><p id="overlay-manager-title">Overlay Manager</p></b>
+                    <div id="no-overlay-tooltip" class='no-overlays-tip'>
+                        <button id = "tooltip-x-button"type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <p>Please add an overlay.</p>
+                    </div>
+                    <div class='default init remove remove-tree' id="overlay-tree"></div>
+                    <div class ='add remove' id="overlay-manager">
+                        <div class = "add" id="overlay-manager-add">
                             <div id= "add-feature-div">
                             <b><p id="add-feature-subtitle">Add New Feature</p></b>
                             <form class="form-horizontal" role="form">
@@ -48,36 +48,42 @@
                                   <input type="text" class="form-control default input-sm" id="feature-add-id" placeholder="ID">
                                 </div>
                               </div>
-                                  <div class="form-group">
-                                    <label for="overlay-manager-add-id" class="col-sm-offset-1 col-sm-2 control-label">Type</label>
-                                    <label class="radio-inline">
-                                        <input type="radio" name ="type-radio" class = 'type-radio' id="kml-radio" value="option1" checked> KML
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input type="radio" name= "type-radio" class = 'type-radio' id="wms-radio" value="option2"> WMS
-                                    </label>
-                                    </div>
-                                  <div class="form-group">
-                                    <label for="overlay-manager-add-url" class="col-sm-offset-1 col-sm-2 control-label">URL</label>
-                                    <div class="col-sm-8">
-                                      <input type="text" class="form-control default input-sm" id="feature-add-url" placeholder="URL">
-                                      <span class="help-block">Please enter a valid URL.</span>
-                                    </div>
-                                  </div>
-                                  <div class="form-group" id= 'feature-params-group'>
-                                    <label for="overlay-manager-add-params" class="col-sm-offset-1 col-sm-2 control-label">Params</label>
-                                    <div class="col-sm-8">
-                                      <input type="text" class="form-control input-sm" id="feature-add-params" placeholder="Params">
-                                    </div>
-                                  </div>
-                                  <div class="form-group">
-                                    <label for="overlay-manager-add-overlay" class="col-sm-offset-1 col-sm-2 control-label">Overlay</label>
-                                    <div class="col-sm-8">
-                                      <select id = "overlay-selection" class="form-control input-sm">
-                                    </select>
-                                    </div>
-                                  </div>
-                                </form>
+                              <div class="form-group">
+                                <label for="overlay-manager-add-id" class="col-sm-offset-1 col-sm-2 control-label">Type</label>
+                                <label class="radio-inline">
+                                    <input type="radio" name ="type-radio" class = 'type-radio' id="kml-radio" value="option1" checked> KML
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name= "type-radio" class = 'type-radio' id="wms-radio" value="option2"> WMS
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="zoom-checkbox" class="col-sm-offset-1 col-sm-2 control-label">Zoom</label>
+                                <label class="checkbox-inline">
+                                  <input id='zoom-checkbox' type="checkbox">
+                                <label class="checkbox-inline">
+                            </div>
+                              <div class="form-group">
+                                <label for="overlay-manager-add-url" class="col-sm-offset-1 col-sm-2 control-label">URL</label>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control default input-sm" id="feature-add-url" placeholder="URL">
+                                  <span class="help-block">Please enter a valid URL.</span>
+                                </div>
+                              </div>
+                              <div class="form-group" id= 'feature-params-group'>
+                                <label for="overlay-manager-add-params" class="col-sm-offset-1 col-sm-2 control-label">Params</label>
+                                <div class="col-sm-8">
+                                  <input type="text" class="form-control input-sm" id="feature-add-params" placeholder="Params">
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label for="overlay-manager-add-overlay" class="col-sm-offset-1 col-sm-2 control-label">Overlay</label>
+                                <div class="col-sm-8">
+                                  <select id = "overlay-selection" class="form-control input-sm">
+                                </select>
+                                </div>
+                              </div>
+                            </form>
                             </div>
                             <div id= "add-overlay-div">
                                 <b><p id="add-overlay-subtitle">Add New Overlay</p></b>
@@ -97,18 +103,18 @@
                                 </form>
                             </div>
                           </div>
-                        <div id="overlay-manager-delete">
-                            <b><p id="delete-feature-subtitle">Delete Existing Overlays & Features</p></b>
+                        <div class= 'remove' id="overlay-manager-delete">
+                            <b><p class = 'remove' id="delete-feature-subtitle">Delete Existing Overlays & Features</p></b>
                           </div>
                         </div>
                     </div>
                     <div id="overlay-hr"></div>
-                    <div id="add-overlay-icon"></div>
-                    <div id="overlay-add-icon"></div>
-                    <div class='btn disabled' id="overlay-delete-icon"></div>
-                    <div class="btn" id="overlay-manager-delete-button" class='hidden'></div>
-                    <div class="btn disabled" id="overlay-manager-add-button"></div>
-                    <div id="overlay-back-icon"></div>
+                    <div class="init" id="add-overlay-icon"></div>
+                    <div class="init" id="overlay-add-icon"></div>
+                    <div class='btn disabled init' id="overlay-delete-icon"></div>
+                    <div class="btn remove" id="overlay-manager-delete-button"></div>
+                    <div class="btn disabled add" id="overlay-manager-add-button"></div>
+                    <div class = "add remove" id="overlay-back-icon"></div>
                 </div>
             </div>
         </div>
