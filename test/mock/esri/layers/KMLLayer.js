@@ -1,3 +1,7 @@
 define(function() {
-    return {};
+    return function(){
+        this.hide = function() {};
+        this.show = function() {};
+
+    };
 });
