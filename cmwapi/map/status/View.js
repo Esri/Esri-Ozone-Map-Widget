@@ -119,11 +119,8 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var newHandler = function(sender, msg) {
 
                 // Parse the sender and msg to JSON.
-                var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
                 var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
-                var validData = true;
-                var errorMsg = "";
 
                 var isValidData= true;
 

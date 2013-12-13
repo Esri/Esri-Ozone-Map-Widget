@@ -135,7 +135,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 name: name,
                 parentId: newParentId
             });
-        }
+        };
 
         me.sendFeaturePlotUrl = function(overlayId, featureId, name, format, url, params, zoom) {
             cmwapi.feature.plot.url.send({

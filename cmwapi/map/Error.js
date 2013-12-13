@@ -40,7 +40,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
         sendHelper: function( ) {
             var sendPayload = null;
 
-            if (arguments[0].length == 4) {
+            if (arguments[0].length === 4) {
                 sendPayload = { sender: arguments[0][0],
                     type: arguments[0][1],
                     msg: arguments[0][2],
@@ -61,7 +61,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
         send: function(data) {
 
             // cheat, for folks who are using the previous simple approach of sending across sender, type, msg, error...
-            if (arguments.length == 4) {
+            if (arguments.length === 4) {
                 data = Error.sendHelper(arguments); 
             }
 
@@ -101,11 +101,9 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
             var newHandler = function(sender, msg) {
 
                 // Parse the sender and msg to JSON.
-                var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
                 var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
                 var validData = true;
-                var errorMsg = "";
 
                 if (validData) {
                     handler(sender, (data.length === 1) ? data[0] : data);
