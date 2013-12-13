@@ -35,7 +35,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
         me.overlays = {};
 
-        me.overlay = new OverlayHandler(me,adapter);
+        me.overlay = new OverlayHandler(me, map, adapter);
         me.feature = new FeatureHandler(me, map, adapter);
 
         var treeChangedHandlers = [];

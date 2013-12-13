@@ -1,4 +1,4 @@
-define(function() {
+define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -22,7 +22,7 @@ define(function() {
      * @module cmwapi-adapter/EsriOverlayManager/Overlay
      */
 
-     var handlers = function(manager, adapter) {
+     var handlers = function(manager, map, adapter) {
         var me = this;
 
         /**
@@ -193,6 +193,41 @@ define(function() {
                     resolveParent(overlay, parentId, oldParent);
                 }
                 manager.treeChanged();
+            }
+        };
+
+        /**
+         * @method zoom
+         * @param caller {String}
+         * @param overlayId {String}
+         * @param zoom {number}
+         */
+        me.zoom = function(caller, overlayId, range) {
+            var overlay = manager.overlays[overlayId];
+            var msg;
+            if(typeof(overlay) === 'undefined') {
+                msg = "Overlay could not be found with id " + overlayId;
+                adapter.error.error(caller, msg, {type: "map.feature.zoom", msg: msg});
+                return;
+            }
+
+            var extent = ViewUtils.findOverlayExtent(overlay);
+
+            // If auto zoom, reset the entire extent.
+            if (range && range.toString().toLowerCase() === "auto") {
+                map.setExtent(extent, true);
+            }
+            // If we have a non-auto zoom, recenter the map and zoom.
+            else if (typeof range !== "undefined") {
+                // Set the zoom level.
+                map.setScale(ViewUtils.zoomAltitudeToScale(map, range));
+
+                // Recenter the map.
+                map.centerAt(extent.getCenter());
+            }
+            // Otherwise, use recenter the map.
+            else {
+                map.centerAt(extent.getCenter());
             }
         };
     };
