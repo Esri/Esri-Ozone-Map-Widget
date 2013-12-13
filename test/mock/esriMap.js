@@ -2,6 +2,8 @@ define(function() {
     var Map = function() {
         this.addLayer = function() {};
 
+        this.centerAt = function() {};
+
         this.geographicExtent = {
             xmin: 0,
             ymin: 0,

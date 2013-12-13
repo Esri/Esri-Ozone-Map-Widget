@@ -1,5 +1,13 @@
 define(function() {
     return function(){
+        this.getLayers = function() {
+            return [{
+                fullExtent: {
+                    getCenter: function(){}
+                }
+            }];
+        };
+
         this.hide = function() {};
 
         this.on = function(){};

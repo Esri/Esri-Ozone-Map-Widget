@@ -595,7 +595,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 expect(err).toHaveBeenCalledWith("fake2", msg, {type: 'map.feature.show', msg: msg});
             });
 
-            xit("verify zoom feature with good overlay id and good feature id", function() {
+            it("verify zoom feature with good overlay id and good feature id", function() {
                 var setExtent = spyOn(map, 'setExtent');
 
                 overlayManager.overlay.createOverlay("fake", "o", "on");
@@ -609,37 +609,105 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 expect(setExtent).toHaveBeenCalled();
             });
 
-            xit("verify zoom feature with bad overlay id calls error", function() {
+            it("verify zoom feature with bad overlay id calls error", function() {
                 var err = spyOn(adapter.error, 'error').andCallThrough();
 
                 overlayManager.feature.zoomFeature("fake", "o", "f", null, null, "auto");
 
+                var msg = "Overlay could not be found with id o";
+                expect(err).toHaveBeenCalledWith("fake", msg, {type: 'map.feature.zoom', msg: msg});
+            });
+
+            it("verify zoom feature with bad feature id calls error", function() {
+                var err = spyOn(adapter.error, 'error').andCallThrough();
+
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+
+                overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "kml", "http://url");
+
+                overlayManager.feature.zoomFeature("fake", "o", "notf", null, null, "auto");
+
+                var msg = "Feature could not be found with id notf and overlayId o";
+                expect(err).toHaveBeenCalledWith("fake", msg, {type: 'map.feature.zoom', msg: msg});
+            });
+
+            it("verify update feature with good overlay id and good feature id", function() {
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                overlayManager.overlay.createOverlay("fake", "no", "non");
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(2);
+
+                overlayManager.feature.plotFeatureUrl("fake", "o", "f", "fn", "kml", "http://url");
+
+                overlayManager.feature.updateFeature("fake2", "o", "f", "nn", "no")
+
+                overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays["o"].features).length).toBe(0);
+                expect(Object.keys(overlays["no"].features).length).toBe(1);
+                expect(overlays["no"].features["f"].name).toBe("nn");
+            });
+
+            it("verify update feature with bad overlay id calls error", function() {
+                var err = spyOn(adapter.error, 'error').andCallThrough();
+
+                overlayManager.feature.updateFeature("fake", "o", "f", "nn", "no");
+
                 var msg = "Feature could not be found with id f and overlayId o";
-                expect(err).toHaveBeenCalledWith("fake2", msg, {type: 'map.feature.show', msg: msg});
+                expect(err).toHaveBeenCalledWith("fake", msg, {type: 'map.feature.update', msg: msg});
             });
 
-            xit("verify zoom feature with bad feature id calls error", function() {
+            it("verify update feature with bad feature id calls error", function() {
+                var err = spyOn(adapter.error, 'error').andCallThrough();
 
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+
+                overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "kml", "http://url");
+
+                overlayManager.feature.updateFeature("fake", "o", "notf", "nn", "no");
+
+                var msg = "Feature could not be found with id notf and overlayId o";
+                expect(err).toHaveBeenCalledWith("fake", msg, {type: 'map.feature.update', msg: msg});
             });
 
-            xit("verify update feature with good overlay id and good feature id", function() {
+            it("verify update feature with bad new overlay id", function() {
+                var err = spyOn(adapter.error, 'error').andCallThrough();
 
-            });
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
 
-            xit("verify update feature with bad overlay id calls error", function() {
+                overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "kml", "http://url");
 
-            });
+                overlayManager.feature.updateFeature("fake", "o", "f", "nn", "no");
 
-            xit("verify update feature with bad feature id calls error", function() {
-
-            });
-
-            xit("verify update feature with bad new overlay id", function() {
-
+                var msg = "Could not find overlay with id no";
+                expect(err).toHaveBeenCalledWith("fake", msg, {type: 'map.feature.update', msg: msg});
             });
 
             it("verify update feature with new overlay hidden", function() {
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                overlayManager.overlay.createOverlay("fake", "no", "non");
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(2);
 
+                overlayManager.feature.plotFeatureUrl("fake", "o", "f", "fn", "kml", "http://url");
+                overlayManager.overlay.hideOverlay("fake3", "no");
+
+                overlays = overlayManager.getOverlays();
+                expect(overlays["o"].features["f"].isHidden).toBe(false);
+                expect(overlays["no"].isHidden).toBe(true);
+
+                overlayManager.feature.updateFeature("fake2", "o", "f", "nn", "no")
+
+                overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays["o"].features).length).toBe(0);
+                expect(Object.keys(overlays["no"].features).length).toBe(1);
+                expect(overlays["no"].features["f"].name).toBe("nn");
+                expect(overlays["no"].features["f"].isHidden).toBe(true);
             });
         });
     });
