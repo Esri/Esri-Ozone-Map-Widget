@@ -6,11 +6,12 @@ Integration libraries and sample widgets (light weight web applications) designe
 
 ## Included Widgets
 
-#### [ESRI OWF Map](https://github.com/Esri/Next-Century/tree/master/owf-map-widget)
+#### [Basic Map Widget](https://github.com/Esri/Next-Century/tree/master/basic-map-widget)
 
-A simple Map web application using the ESRI JavaScript API. It has additional features when run within OWF:
+A simple map widget using the ESRI [ArcGIS JavaScript API](https://developers.arcgis.com/en/javascript/). It's purpose is to provide a basic demonstration of using ArcGIS maps within OWF widgets.  
+When run within OWF alongside the Contacts Manager widget described below, it includes the following features:
 
-* Receives [drag and drop](https://github.com/ozoneplatform/owf/wiki/OWF-7-Developer-Widget-Drag-and-Drop-API) data from other OWF widgets
+* Receives [drag and drop](https://github.com/ozoneplatform/owf/wiki/OWF-7-Developer-Widget-Drag-and-Drop-API) data from other OWF widgets.
 
     > When an entry is dragged from the Contacts Manager into the map it will then plot and zoom to the location.
 
@@ -19,6 +20,10 @@ A simple Map web application using the ESRI JavaScript API. It has additional fe
 #### [Contacts Manager](https://github.com/Esri/Next-Century/tree/master/contacts)
 
 A modified version of the [Contacts Manager](https://github.com/ozoneplatform/owf/tree/master/web-app/examples/walkthrough/widgets/contacts) example widget that ships with OWF 7. This version uses Intents to allow the user to select which map widget implementation should receive the address when contact entry is clicked. (The original version was hard coded to send the address to a specific map widget.)
+
+#### [ArcGIS OWF Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-map-widget)
+
+A more complex map widget.  This widget includes a few common ArcGIS JavaScript map controls for map manipulation and allows for the plotting and manipulation of map layers through the [Common Map Widget Application Programming Interface (CMWAPI)](http://www.cmwapi.org).  Additionally, it includes a basic Overlay Manager for displaying and manipulating map Overlays and Features as defined by the CMWAPI.  This widget leverages the CMWAPI 1.1 Specification Implementation and the ArcGIS CMWAPI Adapter modules defined in the cmwapi and cmwapi-adapter folders, respectively.
 
 ## Requirements
 
