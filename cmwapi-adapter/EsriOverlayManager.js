@@ -39,18 +39,35 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
         me.feature = new FeatureHandler(me, map, adapter);
 
         var treeChangedHandlers = [];
+        /**
+         * Adds a handler to be called when the overlay tree structure changes
+         * @method bindTreeChangeHandler
+         * @param handlerFunction {Function} The handler function to be called on change
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.bindTreeChangeHandler = function(handlerFunction) {
             if(typeof(handlerFunction) === 'function') {
                 treeChangedHandlers.push(handlerFunction);
             }
         };
 
+        /**
+         * Call the registered handlers when the overlay tree structure has
+         * changed
+         * @method treeChanged
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.treeChanged = function() {
             for(var i = 0; i < treeChangedHandlers.length; i++) {
                 treeChangedHandlers[i]();
             }
         };
 
+        /**
+         * Return the overlay tree as a flattened object
+         * @method getOverlayTree
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.getOverlayTree = function() {
             var result = [];
             var overlay;
@@ -63,6 +80,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             return result;
         };
 
+        /**
+         *
+         * @private
+         * @method resolveOverlayChildren
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         var resolveOverlayChildren = function(overlayId) {
             var overlay = me.overlays[overlayId];
 
@@ -98,11 +121,26 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             return res;
         };
 
+        /**
+         * Return the overlays list
+         * @method getOverlays
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.getOverlays = function() {
             return me.overlays;
         };
 
+
 //////////////////////////
+
+        /**
+         * Pass through a call to the common map widget api for map.overlay.create
+         * @method sendOverlayCreate
+         * @param id {String} The id to give to the overlay
+         * @param name {String} The name to give to the overlay
+         * @param [parentId] {String} The id of the overlay to set as the parent
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.sendOverlayCreate = function(id, name, parentId) {
             cmwapi.overlay.create.send({
                 name: name,

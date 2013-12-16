@@ -53,7 +53,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
          * @param childId {String} The id of the child for which the parent should be set
          * @param parentId {String} The id of the overlay to be set as parent
          * @param previousParentId {String} optional; The id of the overlay that was previously designated as parent to the childId
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Overlay#
          */
         var resolveParent = function(child, parentId, previousParentId) {
             if(previousParentId) {
@@ -71,7 +71,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
          * @param name {String} optional; The readable name for the overlay; if not specified the id will be used
          * @param overlayId {String} The id of the overlay to create; if it exists nothing will be created
          * @param parentId {String} The id of the overlay to be set as the parent of the overlay being created.
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Overlay#
          */
         me.createOverlay = function(caller, overlayId, name, parentId) {
             if(manager.overlays[overlayId]) {
@@ -86,7 +86,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
          * @method deleteOverlay
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} the id of the overlay to be deleted from the manager
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Overlay#
          */
         me.removeOverlay = function(caller, overlayId) {
             //TODO Error if overlay not found?
@@ -124,7 +124,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
          * @method hideOverlay
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} the id of the overlay to be hidden
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Overlay#
          */
         me.hideOverlay = function(caller, overlayId) {
             var overlay = manager.overlays[overlayId];
@@ -158,7 +158,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
          * @method showOverlay
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} the id of the overlay to be shown
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Overlay#
          */
         me.showOverlay = function(caller, overlayId) {
             var overlay = manager.overlays[overlayId];
@@ -185,7 +185,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
          * @param overlayId {String} the id of the overlay to be updated.
          * @param name {String} The name that should be set; the current or a new name.
          * @param parentId {String} optional; the id of the overlay to be set as the parent.
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Overlay#
          */
         me.updateOverlay = function(caller, overlayId, name, parentId) {
             if(typeof(manager.overlays[overlayId]) === 'undefined') {

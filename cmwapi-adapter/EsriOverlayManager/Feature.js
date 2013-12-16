@@ -37,7 +37,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * @param format {String} The format in which the feature parameter is being specified
          * @param feature The data detailing this feature
          * @param Zoom {boolean} Whether or not the map should zoom to this feature upon being added to the map
-         * @memberof module:cmwapi-adapter/EsriOverlayManager
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature
          */
         var Feature = function(overlayId, featureId, name, format, feature, zoom, esriObject) {
             var resolveFeature = function() {
@@ -65,7 +65,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * @param format {String} The format type of the feature data included
          * @param feature The data in the format specified providing the detail for this feature
          * @param [zoom] {boolean} Whether or not the map should zoom to this feature upon creation
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         me.plotFeature = function(caller, overlayId, featureId, name, format, feature, zoom) {
             /*if(typeof(manager.overlays[overlayId]) === undefined) {
@@ -95,7 +95,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * @param feature The url containing the data for the feature
          * @param params //FIXME only matters for wms?
          * @param [zoom] {boolean} Whether or not the map should zoom to this feature upon creation
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         me.plotFeatureUrl = function(caller, overlayId, featureId, name, format, url, params, zoom) {
             if(typeof(manager.overlays[overlayId]) === 'undefined') {
@@ -110,7 +110,9 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             //if a type we like then handler function
             if(format === 'kml') {
                 plotKmlFeatureUrl(caller, overlayId, featureId, name, url, zoom);
-            } else {
+            } /*else if(format === "wms") {
+                plotWmsFeatureUrl(caller, overlayId, featureId, name, url, params, zoom);
+            } */else {
                 var msg = "Format, " + format + " of data is not accepted";
                 adapter.error.send(caller, msg, {msg: msg, type: 'invalid_data_format'});
             }
@@ -120,13 +122,13 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * Plots a kml layer via url to the map
          * @private
          * @method plotKmlFeatureUrl
-         * @param caller {String}
-         * @param overlayId {String}
-         * @param featureId {String}
-         * @param name {String}
-         * @param url {String}
-         * @param [zoom] {Boolean}
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @param caller {String} The widget making a request that led to this method call
+         * @param overlayId {String} The unique id of the overlay containing the feature to be plotted
+         * @param featureId {String} The id, unique to the overlay, to be given to the plotted feature
+         * @param name {String} The non-unique readable name to give to the feature
+         * @param url {String} The url containing kml data to be plotted
+         * @param [zoom] {Boolean} If the plotted feature should be zoomed to upon being plotted
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         var plotKmlFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
             var layer = new KMLLayer(url);
@@ -146,10 +148,26 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
         };
 
         /**
+         * Plots a kml layer via url to the map
+         * @private
+         * @param caller {String} The widget making a request that led to this method call
+         * @param overlayId {String} The unique id of the overlay containing the feature to be plotted
+         * @param featureId {String} The id, unique to the overlay, to be given to the plotted feature
+         * @param name {String} The non-unique readable name to give to the feature
+         * @param url {String} The url containing kml data to be plotted
+         * @param params {Object} wms params to be used when pulling data from the url
+         * @param [zoom] {Boolean} If the plotted feature should be zoomed to upon being plotted
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
+         */
+        var plotWmsFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
+
+        };
+
+        /**
          * @method deleteFeature
          * @param overlayId {String} The id of the overlay which contains the feature to be removed
          * @param featureId {String} The id of the feature which is to be removed
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         me.deleteFeature = function(caller, overlayId, featureId) {
             var overlay = manager.overlays[overlayId];
@@ -176,7 +194,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * @method hideFeature
          * @param overlayId {String} The id of the overlay which contains the feature to be hidden
          * @param featureId {String} The id of the feature which is to be hidden
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         me.hideFeature = function(caller, overlayId, featureId) {
             var overlay = manager.overlays[overlayId];
@@ -206,7 +224,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * @param overlayId {String} The id of the overlay which contains the feature to be shown
          * @param featureId {String} The id of the feature which is to be shown
          * @param zoom {boolean} When true, the map will automatically zoom to the feature when shown.
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         me.showFeature = function(caller, overlayId, featureId, zoom) {
             var overlay = manager.overlays[overlayId];
@@ -242,6 +260,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * @param featureId {String}
          * @param [selectedId] {String}  Not used at present
          * @param [selectedName] {String} Not used at present
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         me.zoomFeature = function(caller, overlayId, featureId, selectedId, selectedName, range) {
             var overlay = manager.overlays[overlayId];
@@ -284,7 +303,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * @param featureId {String}
          * @param [name] {String}
          * @param [newOverlayId] {String}
-         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         me.updateFeature = function(caller, overlayId, featureId, name, newOverlayId) {
             var msg = "";
