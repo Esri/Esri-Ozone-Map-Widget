@@ -149,24 +149,50 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
+        /**
+         * Pass through a call to the common map widget api for map.overlay.remove
+         * @method sendOverlayRemove
+         * @param overlayId {String} The id of the overlay to remove
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.sendOverlayRemove = function(overlayId) {
             cmwapi.overlay.remove.send({
                 overlayId: overlayId
             });
         };
 
+        /**
+         * Pass through a call to the common map widget api for map.overlay.hide
+         * @method sendOverlayHide
+         * @param overlayId {String} The id to give to the overlay
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.sendOverlayHide = function(overlayId) {
             cmwapi.overlay.hide.send({
                 overlayId: overlayId
             });
         };
 
+        /**
+         * Pass through a call to the common map widget api for map.overlay.show
+         * @method sendOverlayShow
+         * @param overlayId {String} The id to give to the overlay
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.sendOverlayShow = function(overlayId) {
             cmwapi.overlay.show.send({
                 overlayId: overlayId
             });
         };
 
+        /**
+         * Pass through a call to the common map widget api for map.overlay.update
+         * @method sendOverlayCreate
+         * @param overlayId {String} The id to give to the overlay
+         * @param [name] {String} The name to give to the overlay
+         * @param [newParentId] {String} The id of the overlay to set as the parent
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.sendOverlayUpdate = function(overlayId, name, newParentId) {
             cmwapi.overlay.update.send({
                 overlayId: overlayId,
@@ -175,6 +201,17 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
+        /**
+         * Pass through a call to the common map widget api for map.feature.plot.url
+         * @method sendFeaturePlotUrl
+         * @param overlayId {String} The id of the overlay to which this feature should be added
+         * @param featureId {String}
+         * @param name {String} The name to give to the feature
+         * @param format {"kml"|"wms"} The format of the url to plot
+         * @param [params] {Object} params data to use with wms
+         * @param [zoom] {Boolean} Whether or not to zoom to feature when plotted
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.sendFeaturePlotUrl = function(overlayId, featureId, name, format, url, params, zoom) {
             cmwapi.feature.plot.url.send({
                 overlayId: overlayId,
@@ -187,6 +224,13 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
+        /**
+         * Pass through a call to the common map widget api for map.feature.unplot
+         * @method sendFeatureUnplot
+         * @param overlayId {String} The id of the overlay containing the feature
+         * @param featureId {String} The id of the feature to unplot
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.sendFeatureUnplot = function(overlayId, featureId) {
             cmwapi.feature.unplot.send({
                 overlayId: overlayId,
@@ -194,6 +238,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
+
+        /**
+         * Pass through a call to the common map widget api for map.feature.update
+         * @method sendFeatureUpdate
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.sendFeatureUpdate = function(overlayId, featureId, newName, newOverlayId) {
             cmwapi.feature.update.send({
                 overlayId: overlayId,
@@ -203,6 +253,13 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
+        /**
+         * Pass through a call to the common map widget api for map.feature.hide
+         * @method sendFeatureHide
+         * @param overlayId {String} The id of the overlay containing the feature
+         * @param featureId {String} The id of the feature to hide
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.sendFeatureHide = function(overlayId, featureId) {
             cmwapi.feature.hide.send({
                 overlayId: overlayId,
@@ -210,6 +267,13 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
+        /**
+         * Pass through a call to the common map widget api for map.feature.show
+         * @method sendFeatureShow
+         * @param overlayId {String} The id of the overlay containing the feature
+         * @param featureId {String} The id of the feature to show
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.sendFeatureShow = function(overlayId, featureId, zoom) {
             cmwapi.feature.show.send({
                 overlayId: overlayId,
