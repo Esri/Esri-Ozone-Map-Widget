@@ -134,11 +134,10 @@ define(function() {
             } else {
                 overlay.isHidden = true;
 
-                var features = overlay.features;
-                for(var i in features) {
-                    if(features.hasOwnProperty(i)) {
-                        features[i].isHidden = true;
-                        features[i].esriObject.hide();
+                for(var i in overlay.features) {
+                    if(overlay.features.hasOwnProperty(i)) {
+                        overlay.features[i].isHidden = true;
+                        overlay.features[i].esriObject.hide();
                     }
                 }
                 manager.treeChanged();
