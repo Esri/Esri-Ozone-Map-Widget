@@ -153,6 +153,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 expect(overlays["2222"].isHidden).toBe(false);
                 expect(overlays["1111"].isHidden).toBe(false);
 
+                console.log(overlays["1111"]);
+
                 overlayManager.overlay.hideOverlay("Fake widget 2", "1111");
 
                 overlays = overlayManager.getOverlays();
@@ -526,7 +528,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
 
                 var hide = spyOn(overlays["o"].features["f"].esriObject, 'hide');
 
-                overlayManager.overlay.hideOverlay("fake2", "2");
+                overlayManager.overlay.hideOverlay("fake2", "n");
 
                 overlays = overlayManager.getOverlays();
                 expect(overlays["n"].isHidden).toBe(true);

@@ -140,6 +140,16 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
                         overlay.features[i].esriObject.hide();
                     }
                 }
+
+                console.log("about to loop the children");
+
+                for(var o in overlay.children) {
+                    console.log(0);
+                    if(overlay.children.hasOwnProperty(o)) {
+                        me.hideOverlay(caller, o);
+                    }
+                }
+
                 manager.treeChanged();
             }
         };

@@ -311,6 +311,9 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
                         delete manager.overlays[overlayId].features[featureId];
 
                         //FIXME should we do something to handle if the new overlay is hidden; hide it;
+                        if(manager.overlays[newOverlayId].isHidden) {
+                            me.hideFeature(caller, newOverlayId, featureId);
+                        }
                     }
                 }
                 manager.treeChanged();
