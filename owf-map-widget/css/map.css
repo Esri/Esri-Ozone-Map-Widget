@@ -540,6 +540,10 @@ ul.jqtree-tree .jqtree-element{
 #zoom-checkbox {
   margin-top: 4px;
 }
+img {
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
 
 @media (max-height: 500px) {
   #popover_content_wrapper {
@@ -549,7 +553,7 @@ ul.jqtree-tree .jqtree-element{
   .basemaptip:after {
     left: 70%;
   }
-  .basemaptip:before {
+  .basemaptip:before {p
     left: 70%;
   }
 }

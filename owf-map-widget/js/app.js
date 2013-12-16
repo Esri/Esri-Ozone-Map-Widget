@@ -47,13 +47,11 @@ require([
                 autoOpen: 1,
                 onCreateLi: function(node, $li) {
                     node['node-type'] = node.type;
-                    var image = './images/icons/Tree_Folder.png';
-                    if(node.type === 'feature') {
-                        image = './images/icons/kml_icon.gif';
-                    }
+                    var image = node.type === 'feature' ? './images/icons/kml_icon.gif': './images/icons/Tree_Folder.png';
+                    var inputString = '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type;
+                    var checked = node.isHidden === false ? (inputString + '" checked="checked"/>') : (inputString + '"/>');
                     $li.find('.jqtree-title').before(
-                        '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type + '" isHidden="' + node.isHidden + '"/>' +
-                        '<img src=' + image + ' alt="Overlay Icon" height="25" width="25">'
+                        checked + '<img src=' + image + ' alt="Overlay Icon" height="25" width="25">'
                     );
                 },
                 onCanMoveTo: function(moved_node, target_node, position) {
@@ -236,21 +234,19 @@ require([
                 $("#overlay-tree.default input:checkbox").off('change');
                 $("#overlay-tree.default input:checkbox").on('change', function () {
                     var node = $('#overlay-tree').tree('getNodeById', $(this).attr('id'));
-                    $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
                     if($(this).is(':checked') && $(this).attr('node-type') === 'overlay') {
-                        adapter.overlayManager.sendOverlayShow($(this).attr('id'));
+                       adapter.overlayManager.sendOverlayShow($(this).attr('id'));
                     } else if(!($(this).is(':checked')) && $(this).attr('node-type') === 'overlay') {
                         adapter.overlayManager.sendOverlayHide($(this).attr('id'));
                     } else if($(this).is(':checked') && $(this).attr('node-type') === 'feature') {
-                        adapter.overlayManager.sendFeatureShow(node.parent.id, $(this).attr('id'));
-                    } else if(!($(this).is(':checked')) && $(this).attr('node-type') === 'feature') {
+                       adapter.overlayManager.sendFeatureShow(node.parent.id, $(this).attr('id'));
+                    } else if(!$(this).is(':checked') && $(this).attr('node-type') === 'feature') {
                         adapter.overlayManager.sendFeatureHide(node.parent.id, $(this).attr('id'));
                     }
-                    $(this).prop('checked');
                 });
                 $("#overlay-tree.remove-tree input:checkbox").on('change', function () {
-                    $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
                     checkDeleteButtonDisabled();
+                    $(this).parent().next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
                 });
             };
 
@@ -298,8 +294,8 @@ require([
                 } else {
                     $('#no-overlay-tooltip').show();
                 }
-                updateCheckBoxes();
                 bindSelectionHandlers();
+
             };
 
             /**
@@ -311,14 +307,6 @@ require([
                 setStateInit();
             };
             adapter.overlayManager.bindTreeChangeHandler(updateTreeData);
-
-            var updateCheckBoxes = function() {
-                $("#overlay-tree.default input:checkbox").each(function() {
-                    if(!($(this).attr('ishidden'))) {
-                        $(this).attr('checked', 'checked');
-                    }
-                });
-            };
 
             var checkDeleteButtonDisabled = function() {
                 $('#overlay-manager-delete-button').addClass('disabled');
@@ -383,6 +371,12 @@ require([
             };
 
             var addButtonHandlers = function() {
+                $('#map').on('click', function() {
+                    $('#popover_overlay_wrapper').hide();
+                    $('#popover_content_wrapper').hide();
+                    $('#basemaps').removeClass('selected');
+                    $('#overlay').removeClass('selected');
+                });
                 $('#tooltip-x-button').on('click', function(){$('#no-overlay-tooltip').hide()});
                 $('#overlay').on('click', toggleOverlayManager);
                 $('#basemaps').on('click', toggleBaseMaps);
