@@ -109,7 +109,7 @@ define(function() {
                 layer = layers[i];
 
                 if(typeof(layer.getLayers) !== 'undefined') { //kmlLayer
-                    determineMaxExtent(this.findLayerExtent(layer), extent);
+                    extent = determineMaxExtent(this.findLayerExtent(layer), extent);
                 } else if(typeof(layer.getImages) !== 'undefined') { //mapImageLayer
                     var images = layer.getImages();
                     for(var j = 0; j < images.length; j++) {
@@ -117,6 +117,31 @@ define(function() {
                     }
                 } else { //featureLayer
                     extent = determineMaxExtent(layer.fullExtent, extent);
+                }
+            }
+            return extent;
+        },
+
+        findFeatureExtent: function(feature) {
+            return this.findLayerExtent(feature.esriObject);
+        },
+
+        findOverlayExtent : function(overlay) {
+            var extent = null;
+            var idx = null;
+
+            // Get the max extent of the features in this overlay.
+            if (typeof(overlay.features) !== 'undefined') {
+                //for (var i = 0; i < overlay.features.length; i++) {
+                for (idx in overlay.features) {
+                    extent = determineMaxExtent(this.findFeatureExtent(overlay.features[idx]), extent);
+                }
+            }
+
+            // Recursively check any child overlays
+            if (typeof(overlay.children) !== 'undefined') {
+                for (idx in overlay.children) {
+                    extent = determineMaxExtent(this.findOverlayExtent(overlay.children[idx]), extent);
                 }
             }
             return extent;

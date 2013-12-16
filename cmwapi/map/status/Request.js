@@ -52,7 +52,6 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             // error bookkeeping.
             var validData = Validator.validObjectOrArray( data );
             var payload = validData.payload;
-            var msg;
 
             if (!validData.result) {
                 Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, data, 
@@ -60,7 +59,8 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 return;
             }
 
-            var isValidData = true, errorMsg = '';
+            var isValidData = true; 
+            var errorMsg = '';
 
             for (var i=0 ; i < payload.length ; i++ ) {
                 var checkTypes = Validator.validRequestTypes(payload[i].types);

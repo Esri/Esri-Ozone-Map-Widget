@@ -44,8 +44,10 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             if(data.length > 1) {
                 // Only respond to the last position sent.  No need to make the map jump around.
                 var lastPos = data.length - 1;
+                var lastData = data[lastPos];
+                overlayManager.overlay.zoom(sender, lastData.overlayId, lastData.zoom);
             } else {
-
+                overlayManager.overlay.zoom(sender, data.overlayId, data.zoom);
             }
         };
         CommonMapApi.view.center.overlay.addHandler(me.handleCenterOverlay);

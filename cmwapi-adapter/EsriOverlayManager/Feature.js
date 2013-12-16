@@ -263,7 +263,6 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             // If auto zoom, reset the entire extent.
             if (range && range.toString().toLowerCase() === "auto") {
                 map.setExtent(extent, true);
-                map.centerAt(extent.getCenter());
             }
             // If we have a non-auto zoom, recenter the map and zoom.
             else if (typeof range !== "undefined") {

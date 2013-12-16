@@ -35,7 +35,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
         me.overlays = {};
 
-        me.overlay = new OverlayHandler(me,adapter);
+        me.overlay = new OverlayHandler(me, map, adapter);
         me.feature = new FeatureHandler(me, map, adapter);
 
         var treeChangedHandlers = [];
@@ -135,7 +135,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 name: name,
                 parentId: newParentId
             });
-        }
+        };
 
         me.sendFeaturePlotUrl = function(overlayId, featureId, name, format, url, params, zoom) {
             cmwapi.feature.plot.url.send({
