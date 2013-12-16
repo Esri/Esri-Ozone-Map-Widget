@@ -141,10 +141,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
                     }
                 }
 
-                console.log("about to loop the children");
-
                 for(var o in overlay.children) {
-                    console.log(0);
                     if(overlay.children.hasOwnProperty(o)) {
                         me.hideOverlay(caller, o);
                     }

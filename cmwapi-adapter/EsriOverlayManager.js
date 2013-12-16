@@ -1,4 +1,5 @@
-define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayManager/Overlay", "cmwapi-adapter/EsriOverlayManager/Feature"],
+define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayManager/Overlay",
+    "cmwapi-adapter/EsriOverlayManager/Feature"],
     function(cmwapi, KMLLayer, OverlayHandler, FeatureHandler) {
 
     /**
@@ -242,6 +243,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
         /**
          * Pass through a call to the common map widget api for map.feature.update
          * @method sendFeatureUpdate
+         * @param overlayId {String} The id of the overlay containing the feature
+         * @param featureId {String} The id of the feature to unplot
+         * @param [newName] {String}
+         * @param [newOverlayId] {String}
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.sendFeatureUpdate = function(overlayId, featureId, newName, newOverlayId) {
@@ -271,7 +276,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
          * Pass through a call to the common map widget api for map.feature.show
          * @method sendFeatureShow
          * @param overlayId {String} The id of the overlay containing the feature
-         * @param featureId {String} The id of the feature to show
+         * @param featureId {String} The id of the feature to show44
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.sendFeatureShow = function(overlayId, featureId, zoom) {
