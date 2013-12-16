@@ -126,19 +126,16 @@ require([
                 var featureParams = $('#feature-add-params').val();
                 var overlayName = $('#overlay-add-name').val();
                 var overlayId = $('#overlay-add-id').val();
+                var zoom = $('#zoom-checkbox').is(':checked');
                 if(!($('#add-feature-div').is(':visible'))) {
                     adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
                 } else if($('#overlay-selection').val() === 'Add New Overlay') {
                     adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
                     adapter.overlayManager.sendFeaturePlotUrl(overlayId, featureId, featureName,
-                        'kml', featureUrl, featureParams);
-                } else if($('#overlay-selection').val() === 'Default Overlay') {
-                    adapter.overlayManager.sendOverlayCreate('default-overlay-id', 'Default Overlay');
-                    adapter.overlayManager.sendFeaturePlotUrl('default-overlay-id',
-                        featureId, featureName,'kml', featureUrl, featureParams);
+                        'kml', featureUrl, featureParams, zoom);
                 } else {
                     adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
-                        featureId, featureName,'kml', featureUrl, featureParams);
+                        featureId, featureName,'kml', featureUrl, featureParams, zoom);
                 }
                 setStateInit();
             };
