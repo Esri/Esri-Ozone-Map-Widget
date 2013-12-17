@@ -91,7 +91,7 @@ require([
                         adapter.overlayManager.sendOverlayCreate(event.node.id, inputValue);
                     } else if (event.node['node-type'] === 'feature' && inputValue !== '') {
                         $(span).text(inputValue);
-                        adapter.overlayManager.sendFeatureUpdate(event.node.parent.id, event.node.id, inputValue);
+                        adapter.overlayManager.sendFeatureUpdate(event.node.parent.id, event.node.id, inputValue, null);
                     } else {
                         $(span).text(text);
                     }
