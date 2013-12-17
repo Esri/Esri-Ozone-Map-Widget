@@ -148,7 +148,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
         };
 
         /**
-         * Plots a kml layer via url to the map
+         * Plots a wms layer via url to the map
          * @private
          * @param caller {String} The widget making a request that led to this method call
          * @param overlayId {String} The unique id of the overlay containing the feature to be plotted
@@ -160,7 +160,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         var plotWmsFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
-
+            //TODO
         };
 
         /**

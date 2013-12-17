@@ -172,6 +172,12 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
                         features[i].esriObject.show();
                     }
                 }
+
+                for(var o in overlay.children) {
+                    if(overlay.children.hasOwnProperty(o)) {
+                        me.showOverlay(caller, o);
+                    }
+                }
                 manager.treeChanged();
             }
         };
