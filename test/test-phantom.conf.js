@@ -9,7 +9,10 @@ module.exports = function(config) {
 
     // Disable the html2js preprocessor to prevent Karma from adding a js extension to any
     // HTML files that need to be included on the Karma server.
-    preprocessors: {'**/*.html': []},
+    preprocessors: {'**/*.html': [],
+        '*cmwapi-adapter/**/*.js': 'coverage',
+        '*cmwapi/**/*.js': 'coverage',
+        '*owf-map-widget/**/*.js': 'coverage'},
 
     // frameworks to use
     frameworks: ['jasmine', 'requirejs'],
@@ -24,7 +27,7 @@ module.exports = function(config) {
 
         // Source files here; paths are relative to basePath defined above.
         {pattern: '*cmwapi*/**/*.js', included: false},
-        
+
         // All mock files
         {pattern: 'test/mock/**/*.js', included: false},
 
@@ -45,7 +48,12 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress', 'dots'],
+    reporters: ['progress', 'dots', 'coverage'],
+
+    coverageReporter: {
+      type : 'html',
+      dir : 'coverage/'
+    },
 
 
     // web server port

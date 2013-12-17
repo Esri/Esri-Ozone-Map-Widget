@@ -29,6 +29,9 @@ module.exports = function(grunt) {
         karma: {
             unit: {
                 configFile: 'test/test-phantom.conf.js'
+            },
+            chrome: {
+                configFile: 'test/test-chrome.conf.js'
             }
         },
 
@@ -48,7 +51,7 @@ module.exports = function(grunt) {
                   {expand: true, src: ['cmwapi/**'], dest: 'owf-map-widget/js/lib'},
 
                   {expand: true, src: ['cmwapi-adapter/**'], dest: 'owf-map-widget/js/lib'}
-                  
+
                   ]
              },
         }
