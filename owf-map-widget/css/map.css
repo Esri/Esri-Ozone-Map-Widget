@@ -556,4 +556,7 @@ img {
   .basemaptip:before {
     left: 70%;
   }
+  .esriControlsBR{
+    display: none;
+  }
 }
