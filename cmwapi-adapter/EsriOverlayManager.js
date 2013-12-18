@@ -208,7 +208,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
          * @param overlayId {String} The id of the overlay to which this feature should be added
          * @param featureId {String}
          * @param name {String} The name to give to the feature
-         * @param format {"kml"|"wms"} The format of the url to plot
+         * @param format {String} The format of the url to plot.  "kml" and "wms" are allowed values.
          * @param [params] {Object} params data to use with wms
          * @param [zoom] {Boolean} Whether or not to zoom to feature when plotted
          * @memberof module:cmwapi-adapter/EsriOverlayManager#

@@ -91,7 +91,7 @@ require([
                         adapter.overlayManager.sendOverlayCreate(event.node.id, inputValue);
                     } else if (event.node['node-type'] === 'feature' && inputValue !== '') {
                         $(span).text(inputValue);
-                        adapter.overlayManager.sendFeatureUpdate(event.node.parent.id, event.node.id, inputValue);
+                        adapter.overlayManager.sendFeatureUpdate(event.node.parent.id, event.node.id, inputValue, null);
                     } else {
                         $(span).text(text);
                     }
@@ -106,7 +106,6 @@ require([
                     adapter.overlayManager.sendOverlayUpdate(moveInfo.moved_node.id, moveInfo.moved_node.name, moveInfo.target_node.id);
                 }
             });
-
             var overlaySelectonChanged = function() {
                  if($('#overlay-selection').val() === 'Add New Overlay') {
                     $('#add-overlay-div').show();
@@ -377,7 +376,7 @@ require([
                     $('#basemaps').removeClass('selected');
                     $('#overlay').removeClass('selected');
                 });
-                $('#tooltip-x-button').on('click', function(){$('#no-overlay-tooltip').hide()});
+                $('#tooltip-x-button').on('click', function(){$('#no-overlay-tooltip').hide();});
                 $('#overlay').on('click', toggleOverlayManager);
                 $('#basemaps').on('click', toggleBaseMaps);
                 $('#overlay-add-icon').on('click', setStateAdd);
