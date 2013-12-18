@@ -701,13 +701,32 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 expect(overlays["o"].features["f"].isHidden).toBe(false);
                 expect(overlays["no"].isHidden).toBe(true);
 
-                overlayManager.feature.updateFeature("fake2", "o", "f", "nn", "no")
+                overlayManager.feature.updateFeature("fake2", "o", "f", "nn", "no");
 
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays["o"].features).length).toBe(0);
                 expect(Object.keys(overlays["no"].features).length).toBe(1);
                 expect(overlays["no"].features["f"].name).toBe("nn");
                 expect(overlays["no"].features["f"].isHidden).toBe(true);
+            });
+
+            it("verify update feature name", function() {
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                overlayManager.overlay.createOverlay("fake", "no", "non");
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(2);
+
+                overlayManager.feature.plotFeatureUrl("fake", "o", "f", "fn", "kml", "http://url");
+                overlayManager.overlay.hideOverlay("fake3", "no");
+
+                overlays = overlayManager.getOverlays();
+                expect(overlays["o"].features["f"].isHidden).toBe(false);
+                expect(overlays["no"].isHidden).toBe(true);
+
+                overlayManager.feature.updateFeature("fake", "o", "f", "nn");
+
+                overlays = overlayManager.getOverlays();
+                expect(overlays["o"].features["f"].name).toBe("nn");
             });
         });
     });
