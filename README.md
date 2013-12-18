@@ -23,15 +23,15 @@ A modified version of the [Contacts Manager](https://github.com/ozoneplatform/ow
 
 #### [ArcGIS OWF Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-map-widget)
 
-A more complex map widget.  This widget includes a few common ArcGIS JavaScript map controls for map manipulation and allows for the plotting and manipulation of map layers through the CMWAPI.  Additionally, it includes a basic Overlay Manager for displaying and manipulating map Overlays and Features as defined by the CMWAPI.  This widget leverages the CMWAPI 1.1 Specification Implementation and the ArcGIS CMWAPI Adapter modules described below.
+A more complex map widget.  This widget includes a few common ArcGIS JavaScript map controls for map view manipulation and allows the plotting of map layers through the CMWAPI.  Additionally, it includes a basic Overlay Manager for displaying and manipulating map Overlays and Features as defined by the CMWAPI.  This widget leverages the CMWAPI 1.1 Specification Implementation and the ArcGIS CMWAPI Adapter modules described below.
 
 #### [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi)
 
-A set of AMD modules that implement the CMWAPI specification and allow any OWF widget to communicate via CMWAPI channels without having to duplicate standard channel management and verification logic.  These modules attempt to provide all map-agnostic CMWAPI constructs and processing for client code.  They abstract the OWF pub/sub mechanism and include default message validation using specification rules. Where appropriate, missing message elements are replaced with default values (e.g., replacing missing overlayId values with the id of sending widget).  Any errors detected by these modules are published on the map.error channel. 
+A set of AMD modules that implement the CMWAPI specification and allow any OWF widget to communicate via CMWAPI channels without having to duplicate standard channel management and verification logic.  These modules attempt to provide all map-agnostic CMWAPI constructs and processing for client code.  They abstract the OWF pub/sub mechanism and include default message validation using specification rules. Where appropriate, missing message elements are replaced with default values (e.g., replacing missing overlayId values with the id of the sending widget).  Any errors detected by these modules are published on the map.error channel. 
 
 #### [cmwapi-adapter](https://github.com/Esri/Next-Century/tree/master/cmwapi-adapter)
 
-A set of AMD modules that can be used in conjunction with an ArcGIS Map object to interact with OWF widgets via the CMWAPI.  These modules attach a serices of event handlers to the CMWAPI channels that translate CMWAPI messages to appropriate ArcGIS JavaScript calls via the [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi) modules. They represent the ArcGIS specific portion of a full CMWAPI implementation.
+A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https://developers.arcgis.com/en/javascript/jsapi/map-amd.html) object to interact with OWF widgets via the CMWAPI.  These modules attach a serices of event handlers to the CMWAPI channels that translate CMWAPI messages to appropriate ArcGIS JavaScript calls via the [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi) modules. They represent the ArcGIS specific portion of a full CMWAPI implementation.
 
 ## Requirements
 
