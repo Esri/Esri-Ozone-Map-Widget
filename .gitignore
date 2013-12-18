@@ -36,3 +36,4 @@ Thumbs.db
 target/
 node_modules/
 coverage/
+deployment/
