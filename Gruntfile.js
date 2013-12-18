@@ -49,7 +49,7 @@ module.exports = function(grunt) {
               banner: '<%= pkg.license %>'
             },
             cmwapi: {
-                files: [{ 
+                files: [{
                     src: 'cmwapi/**/*.js',  // source files mask
                     dest: 'deployment',    // destination folder
                     expand: true,    // allow dynamic building
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
                 }]
             },
             cmwapi_adapter: {
-                files: [{ 
+                files: [{
                     src: 'cmwapi-adapter/**/*.js',  // source files mask
                     dest: 'deployment',    // destination folder
                     expand: true,    // allow dynamic building
@@ -90,7 +90,8 @@ module.exports = function(grunt) {
 
         clean : {
             deployment : {
-                src : [ "deployment/**" ]
+                src : [ "deployment/**" ],
+                src : [ "coverage/*.json" ]
             }
         }
     });
@@ -129,6 +130,6 @@ module.exports = function(grunt) {
     grunt.registerTask('default', ['usetheforce_on', 'jshint', 'usetheforce_restore', 'karma', 'jsdoc'/**, 'copy'**/]  );
 
     // Deployment task
-    grunt.registerTask('deploy', ['clean:deployment', 'usetheforce_on', 'jshint', 'usetheforce_restore', 
+    grunt.registerTask('deploy', ['clean:deployment', 'usetheforce_on', 'jshint', 'usetheforce_restore',
         'karma:unit', 'jsdoc', 'uglify', 'copy:deployment']);
 };
