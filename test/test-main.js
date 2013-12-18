@@ -1,26 +1,53 @@
-// Entry point for using Require.js to run Karma tests
-var tests = [];
+var allTestFiles = [];
+// var TEST_REGEXP = /test.*\.js$/;
+var TEST_REGEXP = /spec\.js$/;
 
-for (var file in window.__karma__.files) {
-    if (/spec\.js$/.test(file)) {
-        tests.push(file);
+Object.keys(window.__karma__.files).forEach(function(file) {
+    if (TEST_REGEXP.test(file)) {
+        allTestFiles.push(file);
     }
+});
+
+var dojoConfig = {
+    packages: [
+        // hosted packages
+        // {
+        //     name: 'esri',
+        //     location: 'http://js.arcgis.com/3.7/js/esri'
+        // },
+        {
+             name: 'dojo',
+             location: 'http://js.arcgis.com/3.7/js/dojo/dojo'
+         }, {
+             name: 'dojox',
+             location: 'http://js.arcgis.com/3.7/js/dojo/dojox'
+         }, {
+             name: 'dijit',
+             location: 'http://js.arcgis.com/3.7/js/dojo/dijit'
+         },
+        {
+            name: 'cmwapi',
+            location: '/base/cmwapi'
+        }, {
+            name: 'cmwapi-adapter',
+            location: '/base/cmwapi-adapter'
+        }, {
+            name: 'esri',
+            location: '/base/test/mock/esri'
+        }, {
+            name: 'test',
+            location: '/base/test'
+        }
+    ],
+    async: true
+};
+
+
+/**
+ * This function must be defined and is called back by the dojo adapter
+  * @returns {string} a list of dojo spec/test modules to register with your testing framework
+ */
+window.__karma__.dojoStart = function(){
+    return allTestFiles;
 }
 
-requirejs.config({
-    // Karma serves files from '/base'
-    baseUrl: '/base',
-
-    paths: {
-        'cmwapi': 'cmwapi',
-        'cmwapi-adapter': 'cmwapi-adapter',
-        //'cmwapi-overlay-manager': 'cmwapi-adapter/cmwapi-overlay-manager',
-        'esri': 'test/mock/esri'
-    },
-
-    // Ask Require.js to load these files (all our tests)
-    deps: tests,
-
-    // Start test run, once Require.js is ready
-    callback: window.__karma__.start
-});

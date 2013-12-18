@@ -90,8 +90,7 @@ module.exports = function(grunt) {
 
         clean : {
             deployment : {
-                src : [ "deployment/**" ],
-                src : [ "coverage/*.json" ]
+                src : [ "deployment/**" ]
             }
         }
     });
