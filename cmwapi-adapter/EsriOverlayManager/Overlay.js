@@ -47,7 +47,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
             }
         };
 
-        var sendError(caller, msg, error) {
+        var sendError = function(caller, msg, error) {
             var sender = caller;
             var type = err.type;
             var msg = message;

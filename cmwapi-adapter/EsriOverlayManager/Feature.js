@@ -56,7 +56,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
             this.esriObject = esriObject;
         };
 
-        var sendError(caller, msg, error) {
+        var sendError = function(caller, msg, error) {
             var sender = caller;
             var type = err.type;
             var msg = message;
@@ -127,6 +127,20 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
             }
         };
 
+
+        var addFeatureListeners = function(caller, overlayId, featureId, layer) {
+            for(var i = 0; i < layer.getLayers().length; i++) {
+                layer.getLayers()[i].on('click', function(e) {
+                    cmwapi.feature.selected.send({
+                        overlayId:overlayId,
+                        featureId:featureId,
+                        selectedId: e.graphic.attributes.id,
+                        selectedName: e.graphic.attributes.name
+                    });
+                });
+            }
+        };
+
         /**
          * Plots a kml layer via url to the map
          * @private
@@ -150,9 +164,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
             layer.on("load", function() {
                 if(zoom) {
                     me.zoomFeature(caller, overlayId, featureId, null, null, "auto");
+
                 }
+                addFeatureListeners(caller, overlayId, featureId, layer);
             });
             manager.treeChanged();
+
 
         };
 
@@ -219,7 +236,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
                 sendError(caller, msg, {type: "map.feature.hide", msg: msg});
                 return;
             }
-
+            console.log("**************************************");
+            console.log(feature);
+            console.log(dojo);
+            console.log("**************************************");
             if(!feature.isHidden) {
                 feature.isHidden = true;
                 feature.esriObject.hide();
