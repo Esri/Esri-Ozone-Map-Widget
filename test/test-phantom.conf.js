@@ -11,11 +11,10 @@ module.exports = function(config) {
     // HTML files that need to be included on the Karma server.
     preprocessors: {'**/*.html': [],
         '*cmwapi-adapter/**/*.js': 'coverage',
-        '*cmwapi/**/*.js': 'coverage',
-        '*owf-map-widget/**/*.js': 'coverage'},
+        '*cmwapi/**/*.js': 'coverage'},
 
     // frameworks to use
-    frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['jasmine', 'dojo'],
 
 
     // list of files / patterns to load in the browser
@@ -90,6 +89,16 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: true
+    singleRun: true,
+
+    plugins: [
+      'karma-dojo',
+      'karma-coverage',
+      'karma-jasmine',
+      "karma-phantomjs-launcher",
+      "karma-chrome-launcher",
+      "karma-firefox-launcher",
+      "karma-ie-launcher"
+    ]
   });
 };

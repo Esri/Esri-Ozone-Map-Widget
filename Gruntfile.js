@@ -90,7 +90,10 @@ module.exports = function(grunt) {
 
         clean : {
             deployment : {
-                src : [ "deployment/**" ],
+                src : [ "deployment/**" ]
+
+            },
+            coverage: {
                 src : [ "coverage/*.json" ]
             }
         }
@@ -124,7 +127,7 @@ module.exports = function(grunt) {
     );
 
     // Helpful aliases
-    grunt.registerTask('test', ['karma']);
+    grunt.registerTask('test', ['clean:coverage','karma']);
 
     // Default task(s)
     grunt.registerTask('default', ['usetheforce_on', 'jshint', 'usetheforce_restore', 'karma', 'jsdoc'/**, 'copy'**/]  );
