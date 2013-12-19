@@ -21,6 +21,20 @@ define(function() {
             return 2;
         };
 
+        this.setScale = function() {};
+
+        this.getZoom = function() {
+            return this.zoom;
+        };
+
+        this.setZoom = function(zoom) {
+            this.zoom = zoom;
+        };
+
+        this.getMaxZoom = function() {
+            return this.zoom;
+        };
+
         this.on = function() {};
 
         this.removeLayer = function(){};

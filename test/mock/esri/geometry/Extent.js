@@ -1,11 +1,12 @@
 define(function() {
-    return {
-    	prototype: {
-    		_normalizeX: function(x){
-    			return {
-    				x: x
-    			};
-    		}
-    	}
-    };
+	var Extent = function() {
+		this.getCenter = function() {};
+	};
+	Extent.prototype._normalizeX = function(x){
+		return {
+			x: x
+		};
+	};
+
+    return Extent;
 });

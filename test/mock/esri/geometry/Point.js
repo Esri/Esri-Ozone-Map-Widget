@@ -1,3 +1,4 @@
 define(function() {
-    return {};
+	var Point = function() {};
+    return Point;
 });

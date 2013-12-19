@@ -143,7 +143,6 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             // If auto zoom, reset the entire extent.
             if (payload.zoom === "auto") {
                 map.setExtent(extent, true);
-                map.centerAt(extent.getCenter());
             }
             // If we have a non-auto zoom, recenter the map and zoom.
             else if (typeof payload.zoom !== "undefined") {
@@ -153,19 +152,19 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
                 // Recenter the map.
                 map.centerAt(extent.getCenter());
             }
-            // Otherwise, use recenter the map.
+            // Otherwise, recenter the map.
             else {
                 map.centerAt(extent.getCenter());
             }
         };
         CommonMapApi.view.center.bounds.addHandler(me.handleCenterBounds);
 
-        /**
-         * Commented out as we may not need this at present.  We respond to feature selections but not
-         * random clicks in other maps.
-         * Handles click events sent from 
-         * @see module:cmwapi/map/view/Clicked~Handler
-         */
+        //
+        // Commented out as we may not need this at present.  We should respond to feature selections but not
+        // random clicks in other maps.
+        // Handles click events sent from 
+        // @see module:cmwapi/map/view/Clicked~Handler
+        //
         // me.handleClicked = function(sender, data) {
         //     // Nothing to do.
         // };

@@ -123,10 +123,10 @@ module.exports = function(grunt) {
     );
 
     // Helpful aliases
-    grunt.registerTask('test', ['karma']);
+    grunt.registerTask('test', ['karma:unit']);
 
     // Default task(s)
-    grunt.registerTask('default', ['usetheforce_on', 'jshint', 'usetheforce_restore', 'karma', 'jsdoc'/**, 'copy'**/]  );
+    grunt.registerTask('default', ['usetheforce_on', 'jshint', 'usetheforce_restore', 'karma:unit', 'jsdoc'/**, 'copy'**/]  );
 
     // Deployment task
     grunt.registerTask('deploy', ['clean:deployment', 'usetheforce_on', 'jshint', 'usetheforce_restore',
