@@ -1,4 +1,4 @@
-define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
+define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils) {
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -45,6 +45,15 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
             if(parentId) {
                 resolveParent(this, parentId);
             }
+        };
+
+        var sendError = function(caller, msg, error) {
+            var sender = caller;
+            var type = err.type;
+            var msg = message;
+            var error = err;
+
+            cmwapi.error.send(sender, type, msg, error);
         };
 
         /**
@@ -130,7 +139,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
             var overlay = manager.overlays[overlayId];
             if(!overlay) {
                 var msg = "Overlay not found with id " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.overlay.hide", msg: msg});
+                sendError(caller, msg, {type: "map.overlay.hide", msg: msg});
             } else {
                 overlay.isHidden = true;
 
@@ -161,7 +170,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
             var overlay = manager.overlays[overlayId];
             if(!overlay) {
                 var msg = "Overlay not found with id " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.overlay.show", msg: msg});
+                sendError(caller, msg, {type: "map.overlay.show", msg: msg});
             } else {
                 overlay.isHidden = false;
 
@@ -193,7 +202,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
         me.updateOverlay = function(caller, overlayId, name, parentId) {
             if(typeof(manager.overlays[overlayId]) === 'undefined') {
                 var msg = "No overlay exists with the provided id of " + overlayId;
-                adapter.error.error(caller, msg, {type: 'map.overlay.update', msg: msg});
+                sendError(caller, msg, {type: 'map.overlay.update', msg: msg});
             } else {
                 var overlay = manager.overlays[overlayId];
                 if(overlay.name !== name) {
@@ -219,7 +228,7 @@ define(["cmwapi-adapter/ViewUtils"], function(ViewUtils) {
             var msg;
             if(typeof(overlay) === 'undefined') {
                 msg = "Overlay could not be found with id " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.feature.zoom", msg: msg});
+                sendError(caller, msg, {type: "map.feature.zoom", msg: msg});
                 return;
             }
 

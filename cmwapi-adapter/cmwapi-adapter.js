@@ -122,7 +122,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
             me.unloadMapHandler.remove();
         };
 
-        this.overlayManager = new OverlayManager(this, map);
+        this.overlayManager = new OverlayManager(map);
 
         // Attach any exposed instance attributes.
         this.overlay = new Overlay(this, this.overlayManager);

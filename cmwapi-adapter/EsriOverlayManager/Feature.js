@@ -1,4 +1,4 @@
-define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, ViewUtils) {
+define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(cmwapi, KMLLayer, ViewUtils) {
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -22,7 +22,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
      * @module cmwapi-adapter/EsriOverlayManager/Feature
      */
 
-     var handler = function(manager, map, adapter) {
+     var handler = function(manager, map) {
         var me = this;
 
         /**
@@ -56,6 +56,15 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             this.esriObject = esriObject;
         };
 
+        var sendError = function(caller, msg, error) {
+            var sender = caller;
+            var type = err.type;
+            var msg = message;
+            var error = err;
+
+            cmwapi.error.send(sender, type, msg, error);
+        };
+
         /**
          * @method plotFeature
          * @param caller {String} the id of the widget which made the request resulting in this function call.
@@ -82,7 +91,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             //add to map
             //zoom if feature.zoom === true*/
             var msg = "Function not yet implemented";
-            adapter.error.send(caller, msg, {msg: msg, type: "not_yet_implemented"});
+            sendError(caller, msg, {msg: msg, type: "not_yet_implemented"});
         };
 
         /**
@@ -114,7 +123,21 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
                 plotWmsFeatureUrl(caller, overlayId, featureId, name, url, params, zoom);
             } */else {
                 var msg = "Format, " + format + " of data is not accepted";
-                adapter.error.send(caller, msg, {msg: msg, type: 'invalid_data_format'});
+                sendError(caller, msg, {msg: msg, type: 'invalid_data_format'});
+            }
+        };
+
+
+        var addFeatureListeners = function(caller, overlayId, featureId, layer) {
+            for(var i = 0; i < layer.getLayers().length; i++) {
+                layer.getLayers()[i].on('click', function(e) {
+                    cmwapi.feature.selected.send({
+                        overlayId:overlayId,
+                        featureId:featureId,
+                        selectedId: e.graphic.attributes.id,
+                        selectedName: e.graphic.attributes.name
+                    });
+                });
             }
         };
 
@@ -141,9 +164,12 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             layer.on("load", function() {
                 if(zoom) {
                     me.zoomFeature(caller, overlayId, featureId, null, null, "auto");
+
                 }
+                addFeatureListeners(caller, overlayId, featureId, layer);
             });
             manager.treeChanged();
+
 
         };
 
@@ -174,14 +200,14 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             var msg;
             if(typeof(overlay) === 'undefined') {
                 msg = "Overlay could not be found with id " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.feature.unplot", msg: msg});
+                sendError(caller, msg, {type: "map.feature.unplot", msg: msg});
                 return;
             }
 
             var feature = overlay.features[featureId];
             if(typeof(feature) === 'undefined') {
                 msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.feature.unplot", msg: msg});
+                sendError(caller, msg, {type: "map.feature.unplot", msg: msg});
                 return;
             }
 
@@ -201,16 +227,19 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             var msg;
             if(typeof(overlay) === 'undefined') {
                 msg = "Overlay could not be found with id " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.feature.hide", msg: msg});
+                sendError(caller, msg, {type: "map.feature.hide", msg: msg});
                 return;
             }
             var feature = overlay.features[featureId];
             if(typeof(feature) === 'undefined') {
                 msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.feature.hide", msg: msg});
+                sendError(caller, msg, {type: "map.feature.hide", msg: msg});
                 return;
             }
-
+            console.log("**************************************");
+            console.log(feature);
+            console.log(dojo);
+            console.log("**************************************");
             if(!feature.isHidden) {
                 feature.isHidden = true;
                 feature.esriObject.hide();
@@ -231,13 +260,13 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             var msg;
             if(typeof(overlay) === 'undefined') {
                 msg = "Overlay could not be found with id " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.feature.show", msg: msg});
+                sendError(caller, msg, {type: "map.feature.show", msg: msg});
                 return;
             }
             var feature = overlay.features[featureId];
             if(typeof(feature) === 'undefined') {
                 msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.feature.show", msg: msg});
+                sendError(caller, msg, {type: "map.feature.show", msg: msg});
                 return;
             }
 
@@ -267,13 +296,13 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             var msg;
             if(typeof(overlay) === 'undefined') {
                 msg = "Overlay could not be found with id " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.feature.zoom", msg: msg});
+                sendError(caller, msg, {type: "map.feature.zoom", msg: msg});
                 return;
             }
             var feature = overlay.features[featureId];
             if(typeof(feature) === 'undefined') {
                 msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.feature.zoom", msg: msg});
+                sendError(caller, msg, {type: "map.feature.zoom", msg: msg});
                 return;
             }
 
@@ -309,19 +338,19 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
             var msg = "";
             if(typeof(manager.overlays[overlayId]) === 'undefined' || typeof(manager.overlays[overlayId].features[featureId]) === 'undefined') {
                 msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
-                adapter.error.error(caller, msg, {type: "map.feature.update", msg: msg});
+                sendError(caller, msg, {type: "map.feature.update", msg: msg});
             } else {
                 var feature = manager.overlays[overlayId].features[featureId];
 
                 if(name !== feature.name) {
-                    feature.name = name;
+                    manager.overlays[overlayId].features[featureId].name = name;
                 }
 
                 if(newOverlayId && newOverlayId !== overlayId) {
                     if(typeof(manager.overlays[newOverlayId]) === 'undefined') {
                         //FIXME What should happen here?.
                         msg = "Could not find overlay with id " + newOverlayId;
-                        adapter.error.error(caller, msg, {type: "map.feature.update", msg: msg});
+                        sendError(caller, msg, {type: "map.feature.update", msg: msg});
                     } else {
                         name = (name ? name : feature.name);
 
@@ -329,7 +358,7 @@ define(["esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(KMLLayer, V
                         manager.overlays[newOverlayId].features[featureId] = newFeature;
                         delete manager.overlays[overlayId].features[featureId];
 
-                        //FIXME should we do something to handle if the new overlay is hidden; hide it;
+                        //hide it if the new overlay is hidden
                         if(manager.overlays[newOverlayId].isHidden) {
                             me.hideFeature(caller, newOverlayId, featureId);
                         }

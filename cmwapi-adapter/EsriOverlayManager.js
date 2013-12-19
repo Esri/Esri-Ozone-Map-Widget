@@ -31,13 +31,13 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
      * @param adapter {module:EsriAdapter}
      * @param map {object} The ESRI map object which this overlay manager should apply to
      */
-    var EsriOverlayManager = function(adapter, map) {
+    var EsriOverlayManager = function(map) {
         var me = this;
 
         me.overlays = {};
 
-        me.overlay = new OverlayHandler(me, map, adapter);
-        me.feature = new FeatureHandler(me, map, adapter);
+        me.overlay = new OverlayHandler(me, map);
+        me.feature = new FeatureHandler(me, map);
 
         var treeChangedHandlers = [];
         /**
@@ -253,8 +253,8 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             cmwapi.feature.update.send({
                 overlayId: overlayId,
                 featureId: featureId,
-                newOverlayId: newOverlayId,
-                name: newName
+                name: newName,
+                newOverlayId: (newOverlayId ? newOverlayId : null)
             });
         };
 
