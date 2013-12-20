@@ -28,7 +28,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 window.Map = Map;
 
                 adapter = new Adapter(new Map());
-                overlayManager = new OverlayManager(adapter, new Map());
+                overlayManager = adapter.overlayManager;
             });
 
             afterEach(function() {
@@ -369,7 +369,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
 
                 map = new Map();
                 adapter = new Adapter(map);
-                overlayManager = new OverlayManager(adapter, map);
+                overlayManager = adapter.overlayManager;
             });
 
             afterEach(function() {
@@ -480,16 +480,27 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
             it("verify delete feature with bad overlay id calls error", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.feature.deleteFeature("fake", "o", "f");
 
                 var msg = "Overlay could not be found with id o";
-                expect(err).toHaveBeenCalledWith("fake", msg, {type: "map.feature.unplot", msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake",
+                    type: "map.feature.unplot",
+                    msg: msg,
+                    error: {type: "map.feature.unplot", msg: msg}
+                }));
             });
 
             it("verify delete feature with bad feature id calls error", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 var overlays = overlayManager.getOverlays();
                 overlayManager.overlay.createOverlay("fake", "o", "on");
@@ -500,7 +511,12 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 overlayManager.feature.deleteFeature("fake", "o", "f");
 
                 var msg = "Feature could not be found with id f and overlayId o";
-                expect(err).toHaveBeenCalledWith("fake", msg, {type: "map.feature.unplot", msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake",
+                    type: "map.feature.unplot",
+                    msg: msg,
+                    error: {type: "map.feature.unplot", msg: msg}
+                }));
             });
 
             it("verify hide feature with good overlay id and good feature id", function() {
@@ -563,23 +579,39 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
             it("verify hide feature with bad overlay id calls error", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.feature.hideFeature("fake2", "o", "f");
 
                 var msg = "Overlay could not be found with id o";
-                expect(err).toHaveBeenCalledWith("fake2", msg, {type: 'map.feature.hide', msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake2",
+                    type: "map.feature.hide",
+                    msg: msg,
+                    error: {type: "map.feature.hide", msg: msg}
+                }));
             });
 
             it("verify hide feature with bad feature id calls error", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.overlay.createOverlay("fake", "o", "on");
 
                 overlayManager.feature.hideFeature("fake2", "o", "f");
 
                 var msg = "Feature could not be found with id f and overlayId o"
-                expect(err).toHaveBeenCalledWith("fake2", msg, {type: 'map.feature.hide', msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake2",
+                    type: "map.feature.hide",
+                    msg: msg,
+                    error: {type: "map.feature.hide", msg: msg}
+                }));
             });
 
             it("verify show feature with good overlay id and good feature id", function() {
@@ -603,23 +635,39 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
             it("verify show feature with bad overlay id calls error", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.feature.showFeature("fake2", "o", "f");
 
                 var msg = "Overlay could not be found with id o";
-                expect(err).toHaveBeenCalledWith("fake2", msg, {type: 'map.feature.show', msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake2",
+                    type: "map.feature.show",
+                    msg: msg,
+                    error: {type: "map.feature.show", msg: msg}
+                }));
             });
 
             it("verify show feature with bad feature id calls error", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.overlay.createOverlay("fake", "o", "on");
 
                 overlayManager.feature.showFeature("fake2", "o", "f");
 
                 var msg = "Feature could not be found with id f and overlayId o";
-                expect(err).toHaveBeenCalledWith("fake2", msg, {type: 'map.feature.show', msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake2",
+                    type: "map.feature.show",
+                    msg: msg,
+                    error: {type: "map.feature.show", msg: msg}
+                }));
             });
 
             it("verify zoom feature with good overlay id and good feature id", function() {
@@ -637,16 +685,27 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
             it("verify zoom feature with bad overlay id calls error", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.feature.zoomFeature("fake", "o", "f", null, null, "auto");
 
                 var msg = "Overlay could not be found with id o";
-                expect(err).toHaveBeenCalledWith("fake", msg, {type: 'map.feature.zoom', msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake",
+                    type: "map.feature.zoom",
+                    msg: msg,
+                    error: {type: "map.feature.zoom", msg: msg}
+                }));
             });
 
             it("verify zoom feature with bad feature id calls error", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.overlay.createOverlay("fake", "o", "on");
                 var overlays = overlayManager.getOverlays();
@@ -657,7 +716,12 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 overlayManager.feature.zoomFeature("fake", "o", "notf", null, null, "auto");
 
                 var msg = "Feature could not be found with id notf and overlayId o";
-                expect(err).toHaveBeenCalledWith("fake", msg, {type: 'map.feature.zoom', msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake",
+                    type: "map.feature.zoom",
+                    msg: msg,
+                    error: {type: "map.feature.zoom", msg: msg}
+                }));
             });
 
             it("verify update feature with good overlay id and good feature id", function() {
@@ -677,16 +741,27 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
             it("verify update feature with bad overlay id calls error", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.feature.updateFeature("fake", "o", "f", "nn", "no");
 
                 var msg = "Feature could not be found with id f and overlayId o";
-                expect(err).toHaveBeenCalledWith("fake", msg, {type: 'map.feature.update', msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake",
+                    type: "map.feature.update",
+                    msg: msg,
+                    error: {type: "map.feature.update", msg: msg}
+                }));
             });
 
             it("verify update feature with bad feature id calls error", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.overlay.createOverlay("fake", "o", "on");
                 var overlays = overlayManager.getOverlays();
@@ -697,11 +772,19 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 overlayManager.feature.updateFeature("fake", "o", "notf", "nn", "no");
 
                 var msg = "Feature could not be found with id notf and overlayId o";
-                expect(err).toHaveBeenCalledWith("fake", msg, {type: 'map.feature.update', msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake",
+                    type: "map.feature.update",
+                    msg: msg,
+                    error: {type: "map.feature.update", msg: msg}
+                }));
             });
 
             it("verify update feature with bad new overlay id", function() {
-                var err = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.overlay.createOverlay("fake", "o", "on");
                 var overlays = overlayManager.getOverlays();
@@ -712,7 +795,12 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 overlayManager.feature.updateFeature("fake", "o", "f", "nn", "no");
 
                 var msg = "Could not find overlay with id no";
-                expect(err).toHaveBeenCalledWith("fake", msg, {type: 'map.feature.update', msg: msg});
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake",
+                    type: "map.feature.update",
+                    msg: msg,
+                    error: {type: "map.feature.update", msg: msg}
+                }));
             });
 
             it("verify update feature with new overlay hidden", function() {
