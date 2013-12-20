@@ -47,7 +47,7 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
 
 2. Copy the contents of this project to the newly created directory.
 
-> NOTE: To deploy minified versions of the CMWAPI and CMWAPI-ADAPTER modules, build the project using "grunt deploy" and copy the contents of the deployment folder to this location instead.
+     > NOTE: To deploy minified versions of the CMWAPI and CMWAPI-ADAPTER modules, build the project using "grunt deploy" and copy the contents of the deployment folder to this location instead.
 
 3. Login to your running OWF instance as an administrator.
 
@@ -55,7 +55,7 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
     * http(s)://_**yourserver**_:_**port**_/esri/owf-map-widget/descriptor.html
     * http(s)://_**yourserver**_:_**port**_/esri/basic-map-widget/descriptor.html
     * http(s)://_**yourserver**_:_**port**_/esri/contacts/descriptor/descriptor.html
-    * 
+
 5. Assign the widgets to the [OWF Users Group](https://github.com/ozoneplatform/owf/wiki/OWF-7-Administrator-Default-Content) or to specific users so they can be opened.
 
 ## Development Environment Setup
