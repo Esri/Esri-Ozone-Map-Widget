@@ -28,7 +28,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
     /**
      * @constructor
      * @alias module:cmwapi-adapter/EsriOverlayManager
-     * @param adapter {module:EsriAdapter}
      * @param map {object} The ESRI map object which this overlay manager should apply to
      */
     var EsriOverlayManager = function(map) {
