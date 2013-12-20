@@ -24,8 +24,11 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         var me = this;
 
         /**
-         * A function for a zooming a map to a particular range.
+         * Zooms a map to a particular range.  If given an array of zoom ranges,
+         * only the last one is used for the attached Map.
+         * @method view.handleZoom
          * @see module:cmwapi/map/view/Zoom~Handler
+         * @memberof! module:EsriAdapter#
          */
         me.handleZoom = function(sender, data) {
             if(data.length > 1) {
@@ -40,6 +43,14 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         };
         CommonMapApi.view.zoom.addHandler(me.handleZoom);
 
+        /**
+         * Centers/zooms a map to a particular overlay.  If given an overlay and zoom level, it will attempt to center
+         * on the union of all Features under that overlay.  If given an array of overlays and zoom ranges are provided,
+         * only the last one is used to center the map.
+         * @method view.handleCenterOverlay
+         * @see module:cmwapi/map/view/CenterOverlay~Handler
+         * @memberof! module:EsriAdapter#
+         */
         me.handleCenterOverlay = function(sender, data) {
             if(data.length > 1) {
                 // Only respond to the last position sent.  No need to make the map jump around.
@@ -52,6 +63,13 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         };
         CommonMapApi.view.center.overlay.addHandler(me.handleCenterOverlay);
 
+        /**
+         * Centers/zooms a map to a particular CMWAPI feature.  If given an array of features and zoom ranges,
+         * only the last one is used to center the map.
+         * @method view.handleCenterFeature
+         * @see module:cmwapi/map/view/CenterFeaure~Handler
+         * @memberof! module:EsriAdapter#
+         */
         me.handleCenterFeature = function(sender, data) {
             if(data.length > 1) {
                 // Only respond to the last position sent.  No need to make the map jump around.
@@ -67,9 +85,9 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         CommonMapApi.view.center.feature.addHandler(me.handleCenterFeature);
 
         /**
-         * A function for a request to center a map on a location.
-         * @todo Correct the zoom implementation.  At present, we're just setting the scale.  This needs to 
-         * be calculated from a range value instead
+         * Centers/zooms a map to a particular location as specified by latitude/longitude.  If given an array of 
+         * locations, only the last one is used.
+         * @method view.handleCenterLocation
          * @see module:cmwapi/map/view/CenterLocation~Handler
          * @memberof! module:EsriAdapter#
          */
@@ -112,9 +130,9 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         CommonMapApi.view.center.location.addHandler(me.handleCenterLocation);
 
         /**
-         * A function for a request to center a map on a bounding box with.
-         * @todo Correct the zoom implementation.  At present, we're just setting the scale.  This needs to 
-         * be calculated from a range value instead
+         * Centers/zooms a map to a particular CMWAPI bounds.  If given an array of bounds and zoom ranges,
+         * only the last one is used to adjust the map.
+         * @method view.handleCenterBounds
          * @see module:cmwapi/map/view/CenterBounds~Handler
          * @memberof! module:EsriAdapter#
          */
@@ -158,18 +176,6 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             }
         };
         CommonMapApi.view.center.bounds.addHandler(me.handleCenterBounds);
-
-        //
-        // Commented out as we may not need this at present.  We should respond to feature selections but not
-        // random clicks in other maps.
-        // Handles click events sent from 
-        // @see module:cmwapi/map/view/Clicked~Handler
-        //
-        // me.handleClicked = function(sender, data) {
-        //     // Nothing to do.
-        // };
-        // CommonMapApi.view.clicked.addHandler(me.handleClicked);
-
         
     };
 

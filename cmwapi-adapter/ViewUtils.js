@@ -1,5 +1,13 @@
 define(function() {
 
+    var determineMaxExtent = function(newExtent, currentMax) {
+        if(currentMax === null) {
+            return newExtent;
+        } else {
+            return currentMax.union(newExtent);
+        }
+    };
+
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -17,18 +25,13 @@ define(function() {
      * See the License for the specific language governing permissions and
      * limitations under the License.
      *
-     * @description Defines the OWF Eventing channels used by the CMW API 1.1.
-     * @exports cmwapi/Channels
+     * @description A set of utility constants and functions for finding and manipulating
+     * ArcGIS JavaScript Map, Extents, and Layers.
+     * @see {@link https://developers.arcgis.com/en/javascript/jsapi/extent-amd.html|Extent}
+     * @see {@link https://developers.arcgis.com/en/javascript/jsapi/map-amd.html|Map}
+     * @see {@link https://developers.arcgis.com/en/javascript/jsapi/layer-amd.html|Layer}
+     * @exports cmwapi-adapter/ViewUtils
      */
-
-    var determineMaxExtent = function(newExtent, currentMax) {
-        if(currentMax === null) {
-            return newExtent;
-        } else {
-            return currentMax.union(newExtent);
-        }
-    };
-
     var ViewUtils = {
 
         /**
@@ -70,12 +73,10 @@ define(function() {
          * functions on a mercator projection and is not likely to be exact.  However, given that most basemaps
          * use discrete scales and zoom levels, this value will map to the nearest scale anyway and may
          * suffice for this application.
-         * @private
+         * @todo Verify this approach;  it appears to work for now, but a more accurate or dpi-agnostic method may be preferred.
          * @param {Map} map An ArcGIS JavaScript map
          * @param {number} alt An viewing altitude in meters for which we need to find an equivalent scale.
          * @returns {number} A scale value appropriate to the input map.
-         * @todo In testing against other maps, this appears to be correct assuming the units 
-         * in ArcGIS map.getScale().
          * @see http://resources.esri.com/help/9.3/arcgisserver/apis/silverlight/apiref/topic380.html  
          */
         zoomAltitudeToScale : function(map, alt) {
@@ -88,6 +89,14 @@ define(function() {
             return scale;
         },
 
+        /**
+         * Calculates the approximate zoom range in meters at which a map's current view/scale is set.  This makes the same 
+         * assumptions as the zoomAltitudeToScale function and simply reverses its mathematical process.
+         * @todo Verify this approach;  it appears to work for now, but a more accurate or dpi-agnostic method may be preferred.
+         * @param {Map} map An ArcGIS JavaScript map
+         * @returns {number} A zoom range in meters.
+         * @see http://resources.esri.com/help/9.3/arcgisserver/apis/silverlight/apiref/topic380.html 
+         */ 
         scaleToZoomAltitude : function(map) {
             // Calculate the range from the current scale using law of sines and a triangle from user's
             // viewpoint to center of extent, to the edge of the map. This assumes a user as a 120 degree field of view.
@@ -100,6 +109,13 @@ define(function() {
             return range;
         },
 
+        /**
+         * Finds the outermost extent of an ArcGIS Layer.  This function is used to examine ArcGIS JavaScript Layers that have a 
+         * nested Layer structure and attempts to find the outmost layer that encompasses all contained data by performing a union
+         * of all their extents.
+         * @param {Layer} esriLayer An ArcGIS JavaScript Layer
+         * @return {Extent}  The outermost extent
+         */
         findLayerExtent : function(esriLayer) {
             var extent = null;
             var layers = esriLayer.getLayers();
@@ -122,10 +138,22 @@ define(function() {
             return extent;
         },
 
+        /**
+         * Convenience function for finding the outermost extent of a CMWAPI feature.  This function pulls the equivalent 
+         * ArcGIS layer from the feature object and defers to findLayerExtent for the bulk of the work.
+         * @param {cmwapi-adapter/EsriOverlayManager/Feature} feature A CMWAPI feature.
+         * @return {Extent}  The outermost extent
+         */
         findFeatureExtent: function(feature) {
             return this.findLayerExtent(feature.esriObject);
         },
 
+        /**
+         * Finds the outermost Extent of a CMWAPI Overlay.  This function traverses the overlay's child overlays and feature
+         * and unions the extents of all ArcGIS Layers contained therein.  The composite Extent is returned.
+         * @param {cmwapi-adapter/EsriOverlayManager/Overlay} overlay A CMWAPI overlay.
+         * @return {Extent} The outermost extent.
+         */
         findOverlayExtent : function(overlay) {
             var extent = null;
             var idx = null;
