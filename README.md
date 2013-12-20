@@ -89,7 +89,7 @@ Once the development environment has been setup, grunt can be used to run JSHint
 
         grunt
 
-Specific build targets are defined in the top level file, Gruntfile.js.  At present, there are a few primary targets:  jshint, test, and jsdoc.  Provide those targets on the command line to execute only those grunt tasks.
+Specific build targets are defined in the top level file, Gruntfile.js.  At present, there are a few primary targets:  jshint, test, jsdoc, and deploy.  Provide those targets on the command line to execute only those grunt tasks.
 
         grunt jsdoc
 
