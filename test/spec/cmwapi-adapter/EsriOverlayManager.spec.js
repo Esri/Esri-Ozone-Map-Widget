@@ -161,7 +161,10 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
             it("verify remove of bad id does not call error", function() {
-                var error = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var error = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.overlay.removeOverlay("fake widget 2", "9876");
 
@@ -169,30 +172,54 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
             it("verify update of bad id calls error", function() {
-                var error = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var error = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.overlay.updateOverlay("fake widget 2", "9876");
 
                 var msg = "No overlay exists with the provided id of 9876";
-                expect(error).toHaveBeenCalledWith("fake widget 2", msg, {type: 'map.overlay.update', msg: msg});
+                expect(error).toHaveBeenCalledWith('map.error', JSON.stringify({
+                    sender: "fake widget 2",
+                    type: "map.overlay.update",
+                    msg: msg,
+                    error: {type: 'map.overlay.update', msg: msg}
+                }));
             });
 
             it("verify overlay hide with invalid id calls error", function() {
-                var error = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var error = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.overlay.hideOverlay("fake widget", "9876");
 
                 var msg = "Overlay not found with id 9876"
-                expect(error).toHaveBeenCalledWith("fake widget", msg, {type: "map.overlay.hide", msg: msg});
+                expect(error).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake widget",
+                    type: "map.overlay.hide",
+                    msg: msg,
+                    error: {type: "map.overlay.hide", msg: msg}
+                }));
             });
 
             it("verify overlay show with invalid id calls error", function() {
-                var error = spyOn(adapter.error, 'error').andCallThrough();
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var error = spyOn(eventing, 'publish').andCallThrough();
 
                 overlayManager.overlay.hideOverlay("fake widget", "9876");
 
                 var msg = "Overlay not found with id 9876"
-                expect(error).toHaveBeenCalledWith("fake widget", msg, {type: "map.overlay.hide", msg: msg});
+                expect(error).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake widget",
+                    type: "map.overlay.hide",
+                    msg: msg,
+                    error: {type: "map.overlay.hide", msg: msg}
+                }));
             });
         });
 

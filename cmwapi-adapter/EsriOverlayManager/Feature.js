@@ -58,9 +58,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
 
         var sendError = function(caller, msg, error) {
             var sender = caller;
-            var type = err.type;
-            var msg = message;
-            var error = err;
+            var type = error.type;
+            var msg = msg;
+            var error = error;
 
             cmwapi.error.send(sender, type, msg, error);
         };
