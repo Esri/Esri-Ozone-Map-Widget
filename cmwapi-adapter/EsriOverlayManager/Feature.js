@@ -236,10 +236,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
                 sendError(caller, msg, {type: "map.feature.hide", msg: msg});
                 return;
             }
-            console.log("**************************************");
-            console.log(feature);
-            console.log(dojo);
-            console.log("**************************************");
             if(!feature.isHidden) {
                 feature.isHidden = true;
                 feature.esriObject.hide();
@@ -323,6 +319,40 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
             // Otherwise, use recenter the map.
             else {
                 map.centerAt(extent.getCenter());
+            }
+        };
+
+        /**
+         * @method centerFeature
+         * @param caller {String}
+         * @param overlayId {String}
+         * @param featureId {String}
+         * @param [selectedId] {String}
+         * @param [selectedName] {String}
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
+         */
+        me.centerFeatureGraphic = function(caller, overlayId, featureId, selectedId, selectedName) {
+            var overlay = manager.overlays[overlayId];
+            var msg;
+            if(typeof(overlay) === 'undefined') {
+                msg = "Overlay could not be found with id " + overlayId;
+                sendError(caller, msg, {type: "map.feature.zoom", msg: msg});
+                return;
+            }
+            var feature = overlay.features[featureId];
+            if(typeof(feature) === 'undefined') {
+                msg = "Feature could not be found with id " + featureId + " and overlayId " + overlayId;
+                sendError(caller, msg, {type: "map.feature.zoom", msg: msg});
+                return;
+            }
+            var layers = feature.esriObject.getLayers();
+            for(var i =0; i < layers.length; i++) {
+                var graphics = layers[i].graphics;
+                for(var j =0; j < graphics.length; j++) {
+                    if(graphics[j].attributes.id == selectedId || graphics[j].attributes.name == selectedName) {
+                        map.centerAt(graphics[j].geometry);
+                    }
+                }
             }
         };
 

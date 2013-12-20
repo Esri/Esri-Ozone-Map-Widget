@@ -154,14 +154,17 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          * @param {string} [data.selectedName] The name of the selected object.
          */
         me.handleSelected = function(sender, data) {
-            if(data.length > 1) {
-                var data_item;
-                for(var i = 0; i < data.length; i++) {
-                    data_item = data[i];
-                    overlayManager.feature.zoomFeature(sender, data_item.overlayId, data_item.featureId, data_item.selectedId, data_item.selectedName);
+            var senderObj = OWF.Util.parseJson(sender);
+            if(OWF.getInstanceId() !== senderObj.id) {
+                if(data.length > 1) {
+                    var data_item;
+                    for(var i = 0; i < data.length; i++) {
+                        data_item = data[i];
+                        overlayManager.feature.centerFeatureGraphic(sender, data_item.overlayId, data_item.featureId, data_item.selectedId, data_item.selectedName);
+                    }
+                } else {
+                    overlayManager.feature.centerFeatureGraphic(sender, data.overlayId, data.featureId, data.selectedId, data.selectedName);
                 }
-            } else {
-                overlayManager.feature.zoomFeature(sender, data.overlayId, data.featureId, data.selectedId, data.selectedName);
             }
         };
         CommonMapApi.feature.selected.addHandler(me.handleSelected);
