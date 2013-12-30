@@ -75,10 +75,10 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
                 // Only respond to the last position sent.  No need to make the map jump around.
                 var lastPos = data.length - 1;
                 var lastData = data[lastPos];
-                overlayManager.feature.zoomFeature(sender, lastData.overlayId, lastData.featureId,
+                overlayManager.feature.zoom(sender, lastData.overlayId, lastData.featureId,
                     null, null, lastData.zoom);
             } else {
-                overlayManager.feature.zoomFeature(sender, data.overlayId, data.featureId,
+                overlayManager.feature.zoom(sender, data.overlayId, data.featureId,
                     null, null, data.zoom);
             }
         };
@@ -100,7 +100,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
                     data[lastPos].location.lat,
                     map.geographicExtent.spatialReference);
 
-                // TODO: set the zoom level.
+                // Set the zoom level or just the center, depending upon zoom param.
                 if (data[lastPos].zoom && data[lastPos].zoom.toString().toLowerCase() === "auto") {
                     map.setZoom(map.getMaxZoom());
                 }
@@ -115,7 +115,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
                 point = new Point(data.location.lon,
                     data.location.lat,
                     map.geographicExtent.spatialReference);
-                // TODO: set the zoom level.
+                // Set the zoom level or just the center, depending upon zoom param.
                 if (data.zoom && data.zoom.toString().toLowerCase() === "auto") {
                     map.setZoom(map.getMaxZoom());
                 }

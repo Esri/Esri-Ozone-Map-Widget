@@ -163,7 +163,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
 
             layer.on("load", function() {
                 if(zoom) {
-                    me.zoomFeature(caller, overlayId, featureId, null, null, "auto");
+                    me.zoom(caller, overlayId, featureId, null, null, "auto");
 
                 }
                 addFeatureListeners(caller, overlayId, featureId, layer);
@@ -267,7 +267,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
             }
 
             if (zoom) {
-                me.zoomFeature(caller, overlayId, featureId, null, null, "auto");
+                me.zoom(caller, overlayId, featureId, null, null, "auto");
             }
 
             if(feature.isHidden) {
@@ -279,7 +279,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
         };
 
         /**
-         * @method zoomFeature
+         * @method zoom
          * @param caller {String}
          * @param overlayId {String}
          * @param featureId {String}
@@ -287,7 +287,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
          * @param [selectedName] {String} Not used at present
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
-        me.zoomFeature = function(caller, overlayId, featureId, selectedId, selectedName, range) {
+        me.zoom = function(caller, overlayId, featureId, selectedId, selectedName, range) {
             var overlay = manager.overlays[overlayId];
             var msg;
             if(typeof(overlay) === 'undefined') {

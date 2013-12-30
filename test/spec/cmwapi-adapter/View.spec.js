@@ -117,17 +117,17 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/EsriOverlayManager", "cmwapi-adapter/Vi
             var overlayMgr = new OverlayManager();
             var view = new View(map, overlayMgr);
 
-            spyOn(overlayMgr.feature, 'zoomFeature');
+            spyOn(overlayMgr.feature, 'zoom');
             view.handleCenterFeature("FakeWidget", { 
                 overlayId: "one", 
                 featureId: "f1",
                 zoom: "auto" 
             });
-            expect(overlayMgr.feature.zoomFeature).toHaveBeenCalled();
-            expect(overlayMgr.feature.zoomFeature.mostRecentCall.args[0]).toEqual("FakeWidget");
-            expect(overlayMgr.feature.zoomFeature.mostRecentCall.args[1]).toEqual("one");
-            expect(overlayMgr.feature.zoomFeature.mostRecentCall.args[2]).toEqual("f1");
-            expect(overlayMgr.feature.zoomFeature.mostRecentCall.args[5]).toEqual("auto");
+            expect(overlayMgr.feature.zoom).toHaveBeenCalled();
+            expect(overlayMgr.feature.zoom.mostRecentCall.args[0]).toEqual("FakeWidget");
+            expect(overlayMgr.feature.zoom.mostRecentCall.args[1]).toEqual("one");
+            expect(overlayMgr.feature.zoom.mostRecentCall.args[2]).toEqual("f1");
+            expect(overlayMgr.feature.zoom.mostRecentCall.args[5]).toEqual("auto");
         });
 
         it("passes feature centering info to the overlay manager and centers on the last payload object", function() {
@@ -135,7 +135,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/EsriOverlayManager", "cmwapi-adapter/Vi
             var overlayMgr = new OverlayManager();
             var view = new View(map, overlayMgr);
 
-            spyOn(overlayMgr.feature, 'zoomFeature');
+            spyOn(overlayMgr.feature, 'zoom');
             view.handleCenterFeature("FakeWidget", [{ 
                 overlayId: "one", 
                 featureId: "f1",
@@ -145,11 +145,11 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/EsriOverlayManager", "cmwapi-adapter/Vi
                 featureId: "f2",
                 zoom: 1000
             }]);
-            expect(overlayMgr.feature.zoomFeature).toHaveBeenCalled();
-            expect(overlayMgr.feature.zoomFeature.mostRecentCall.args[0]).toEqual("FakeWidget");
-            expect(overlayMgr.feature.zoomFeature.mostRecentCall.args[1]).toEqual("two");
-            expect(overlayMgr.feature.zoomFeature.mostRecentCall.args[2]).toEqual("f2");
-            expect(overlayMgr.feature.zoomFeature.mostRecentCall.args[5]).toEqual(1000);
+            expect(overlayMgr.feature.zoom).toHaveBeenCalled();
+            expect(overlayMgr.feature.zoom.mostRecentCall.args[0]).toEqual("FakeWidget");
+            expect(overlayMgr.feature.zoom.mostRecentCall.args[1]).toEqual("two");
+            expect(overlayMgr.feature.zoom.mostRecentCall.args[2]).toEqual("f2");
+            expect(overlayMgr.feature.zoom.mostRecentCall.args[5]).toEqual(1000);
         });
 
         it("modifies the map center and scale appropriately when centering on a location.", function() {

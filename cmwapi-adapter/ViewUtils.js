@@ -1,6 +1,6 @@
 define(function() {
 
-    var determineMaxExtent = function(newExtent, currentMax) {
+    var unionExtents = function(newExtent, currentMax) {
         if(currentMax === null) {
             return newExtent;
         } else {
@@ -125,14 +125,14 @@ define(function() {
                 layer = layers[i];
 
                 if(typeof(layer.getLayers) !== 'undefined') { //kmlLayer
-                    extent = determineMaxExtent(this.findLayerExtent(layer), extent);
+                    extent = unionExtents(this.findLayerExtent(layer), extent);
                 } else if(typeof(layer.getImages) !== 'undefined') { //mapImageLayer
                     var images = layer.getImages();
                     for(var j = 0; j < images.length; j++) {
-                        extent = determineMaxExtent(images[j].extent, extent);
+                        extent = unionExtents(images[j].extent, extent);
                     }
                 } else { //featureLayer
-                    extent = determineMaxExtent(layer.fullExtent, extent);
+                    extent = unionExtents(layer.fullExtent, extent);
                 }
             }
             return extent;
@@ -162,14 +162,14 @@ define(function() {
             if (typeof(overlay.features) !== 'undefined') {
                 //for (var i = 0; i < overlay.features.length; i++) {
                 for (idx in overlay.features) {
-                    extent = determineMaxExtent(this.findFeatureExtent(overlay.features[idx]), extent);
+                    extent = unionExtents(this.findFeatureExtent(overlay.features[idx]), extent);
                 }
             }
 
             // Recursively check any child overlays
             if (typeof(overlay.children) !== 'undefined') {
                 for (idx in overlay.children) {
-                    extent = determineMaxExtent(this.findOverlayExtent(overlay.children[idx]), extent);
+                    extent = unionExtents(this.findOverlayExtent(overlay.children[idx]), extent);
                 }
             }
             return extent;
