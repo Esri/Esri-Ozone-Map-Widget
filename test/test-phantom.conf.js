@@ -11,7 +11,9 @@ module.exports = function(config) {
     // HTML files that need to be included on the Karma server.
     preprocessors: {'**/*.html': [],
         '*cmwapi-adapter/**/*.js': 'coverage',
-        '*cmwapi/**/*.js': 'coverage'},
+        '*cmwapi/**/*.js': 'coverage',
+        'owf-map-widget/js/owf-widget-extended.js': 'coverage'
+    },
 
     // frameworks to use
     frameworks: ['jasmine', 'dojo'],
@@ -26,9 +28,10 @@ module.exports = function(config) {
 
         // Source files here; paths are relative to basePath defined above.
         {pattern: '*cmwapi*/**/*.js', included: false},
+        {pattern: 'owf-map-widget/js/owf-widget-extended.js', included: false},
 
-        // All mock files
         {pattern: 'test/mock/**/*.js', included: false},
+        // All mock files
 
         // All spec files
         {pattern: 'test/spec/**/*.spec.js', included: false},
