@@ -129,16 +129,25 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
 
 
         var addFeatureListeners = function(caller, overlayId, featureId, layer) {
-            for(var i = 0; i < layer.getLayers().length; i++) {
-                layer.getLayers()[i].on('click', function(e) {
-                    cmwapi.feature.selected.send({
-                        overlayId:overlayId,
-                        featureId:featureId,
-                        selectedId: e.graphic.attributes.id,
-                        selectedName: e.graphic.attributes.name
-                    });
-                });
-            }
+            (function onLoadListenRecurs(currLayer) {
+                var curr = currLayer.getLayers();
+                for(var i =0; i < curr.length; i++) {
+                    if(curr[i].loaded) {
+                        curr[i].on('click', function(e) {
+                            cmwapi.feature.selected.send({
+                                overlayId:overlayId,
+                                featureId:featureId,
+                                selectedId: e.graphic.attributes.id,
+                                selectedName: e.graphic.attributes.name
+                            });
+                        });
+                    } else {
+                        curr[i].on('load', function(loaded) {
+                            onLoadListenRecurs(loaded.layer);
+                        });
+                    }
+                }
+            })(layer);
         };
 
         /**
@@ -241,6 +250,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
                 feature.esriObject.hide();
                 manager.treeChanged();
             }
+            //console.log(manager.overlays['o'].features['f'].esriObject);
         };
 
         /**
