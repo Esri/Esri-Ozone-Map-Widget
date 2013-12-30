@@ -35,7 +35,7 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
 
 ## Requirements
 
-1. OWF 7.0 GA
+1. OWF 7.0 GA.  See the OWF [Get Started](http://www.owfgoss.org/getstarted.html) page, if you are not familiar with the framework.
 
 2. Web server to host the widgets
 
