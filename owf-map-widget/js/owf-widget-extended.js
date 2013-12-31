@@ -1,3 +1,7 @@
+define(
+     "OWFWidgetExtended",
+     [],       // no dependencies...  since OWF isn't wrapped as a Require module, pulling from window
+
 /**
  * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
  *
@@ -23,6 +27,8 @@
  *
 */
 
+function() {
+
 OWF = window.OWF ? window.OWF : {};
 
 OWF.Preferences = OWF.Preferences ? OWF.Preferences : {};
@@ -43,6 +49,18 @@ OWF.Preferences = OWF.Preferences ? OWF.Preferences : {};
  *    too sensitive to store in other than specially protected databases.  
 */
 
+/**
+ @description Retrieves the user preference for the provided name and namespace, for the calling widget instance
+ @name getWidgetInstancePreference
+ @methodOf OWF.Preferences
+
+ @param {Object} cfg config object see below for properties
+ @param {String} cfg.namespace The namespace of the requested user preference
+ @param {String} cfg.name The name of the requested user preference
+ @param {Function} cfg.onSuccess The function to be called if the user preference is successfully retrieved from
+   the database.  This function takes a single argument, which is a JSON object.  See getUserPreference for its format.
+ @param {Function} [cfg.onFailure] Optional function parameter, again aligned with getUserPreference.
+*/     
 OWF.Preferences.getWidgetInstancePreference = function() {
 
 };
@@ -54,3 +72,29 @@ OWF.Preferences.setWidgetInstancePreference = function() {
 OWF.Preferences.deleteWidgetInstancePreference = function() {
 
 };
+
+
+/**
+ @description Retrieves the user preference for the provided name and namespace, for the calling widget instance
+ @name getWidgetInstancePreference
+ @methodOf OWF.Preferences
+ @access private
+
+ @param {Object} cfg config object see below for properties
+ @param {String} cfg.namespace The namespace of the requested user preference
+ @param {String} cfg.name The name of the requested user preference
+ */
+OWF.Preferences._generateInstancePreferenceName = function(cfg) {
+     var widgetId = OWF.getInstanceId();
+
+     if ((!cfg.namespace) || (!cfg.name)) {
+          // throw error - let outer worry about dealing with onSuccess, etc...
+          throw {
+               name: "InvalidInputError",
+               message: "Need namespace and name to generate instance preference id"
+          }
+     }
+
+};
+}
+);

@@ -32,6 +32,9 @@ var dojoConfig = {
             name: 'cmwapi-adapter',
             location: '/base/cmwapi-adapter'
         }, {
+            name: 'owf-map-widget',
+            location: '/base/owf-map-widget'
+        }, {
             name: 'esri',
             location: '/base/test/mock/esri'
         }, {

@@ -30,6 +30,18 @@ define(function() {
             }
         },
 
+        Preferences: {
+            getUserPreference: function() {
+
+            },
+            setUserPreference: function() {
+
+            },
+            deleteUserPreference: function() {
+                
+            }
+        },
+
         getInstanceId : function() {
             return this.INSTANCE_ID;
         }

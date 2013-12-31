@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- define([],
-        function() {
+ define(["test/mock/OWF", "test/mock/Ozone", "owf-map-widget/js/owf-widget-extended"],
+        function(OWF, Ozone, OWFExtended) {
 
  xdescribe("Testing widget instance preferences", function() {
 
@@ -29,6 +29,46 @@
  	it("Verify delete of widget instance preference...", function() {
  		this.fail(Error());
  	});
+
+ });
+
+ describe("Testing generation of preference ids", function() {
+
+   beforeEach(function() {
+        // Mock the necessary OWF methods and attach them to the window.
+        // OWF should be in global scope when other libraries attempt to
+        // access it.
+        window.OWF = OWF;
+        window.Ozone = Ozone;
+    });
+
+    it("Testing interaction with Preferences, period", function() {
+    	OWF.Preferences.setUserPreference();
+    });
+
+ 	it("Good preference inputs", function() {
+
+ 		// no error
+ 		OWFExtended.Preferences._generateInstancePreferenceName({namespace: 'foo.bar.com', name: 'bar123'});
+
+ 	});
+
+ 	it("No namespace given", function() {
+ 		OWFExtended.Preferences._generateInstancePreferenceName({ name: 'foo'});
+ 	});
+
+ 	it("No name given", function() {
+		OWFExtended.Preferences._generateInstancePreferenceName({ namespace: 'foo.bar.com.xxxx.yyyyyyy'});
+
+ 	});
+
+ 	it("Neither namespace nor name given", function() {
+
+ 		OWF.Preferences._generateInstancePreferenceName({ });
+
+ 		OWF.Preferences._generateInstancePreferenceName();
+ 	});
+
 
  });
 
