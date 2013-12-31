@@ -5,9 +5,9 @@
 require([
     "models/map", "models/legend", "dojo/mouse", "dojo/on", "dojo/dom", "esri/dijit/Scalebar",
     "dojo/json", "esri/dijit/Geocoder", "esri/layers/KMLLayer","esri/dijit/BasemapGallery",
-    "esri/arcgis/utils","dojo/parser","dojo/dom-style", "cmwapi-adapter/cmwapi-adapter",
+    "esri/arcgis/utils","dojo/parser","dojo/dom-style", "cmwapi-adapter/cmwapi-adapter", /*"OWFWidgetExtensions/owf-widget-extended",*/
     "dojo/domReady!"],
-    function(Map, Legend, Mouse, On, Dom, Scalebar, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter) {
+    function(Map, Legend, Mouse, On, Dom, Scalebar, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter, WidgetExtensions) {
         var map = new Map("map", {
             center: [-76.809469, 39.168101],
             zoom: 7,
