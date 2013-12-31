@@ -157,6 +157,79 @@ define('cmwapi/Validator', function() {
         },
 
         /**
+         * Validates the structure of a Drag and Drop data payload.  The CMWAPI specificies a particular
+         * format for drag and drop data.  This method will check the structure and return a description
+         * of any errors found.  Note that this method will not alter the structure of the payload. Payloads must
+         * include at least one of a marker, feature, or featureUrl attribute.
+         * @param {object} payload A point on which to center a map.
+         * @param {string} [payload.overlayId] The ID of the overlay.  This is optional.  If missing, client code is expected to use the sending widget's ID.
+         * @param {string} payload.featureId The ID of the feature.  If an ID is not specified, an error is generated.
+         * @param {string} [payload.name] The name of the feature.  Names are optional, not unique and are meant purely for display purposes.
+         * @param {boolean} [payload.zoom] Boolean denoting whether or not to zoom to the feature.  This is optional and not validated at present.
+         * @param {object} [payload.marker]
+         * @param {string} [payload.marker.details] An optional marker description. No validation is performed on this.
+         * @param {string} [payload.marker.iconUrl] An optional marker icon URL.  No validation is performed on this at present.
+         * @param {object} [payload.feature]
+         * @param {string} payload.feature.format The format of the feature.  Valid values depend on CMWAPI implementations.  This is
+         *     merely checked for existence.
+         * @param {string} payload.feature.featureData The data of the feature.  This should be a non-empty string.
+         * @param {object} [payload.featureUrl]
+         * @param {string} payload.featureUrl.format The format of the feature.  Valid values depend on CMWAPI implementations.  This is
+         *     merely checked for existence.
+         * @param {string} payload.featureUrl.url The URL of the feature data.
+         * @param {Object} [payload.featureUrl.params] A JSON object of parameters to be added to the URL during a feature request from a server.
+         *     According to the [CMWAPI 1.1 Specification](http://www.cmwapi.org), params may be ignored unless the format is
+         *     set to "wms".  Also, request, exceptions, SRS/CRS, widgeth, height, and bbox params should not be passed in
+         *     as they are determined by the map as needed.  Finally, all parameters should <em>not</em> be URL encoded.
+         */
+        validDragAndDropPayload: function(payload) {
+            var retVal = {result: true, msg: ''};
+
+           if (!payload) {
+               return {result: false, msg: 'A drag and drop payload is required for validation.'};
+           }
+
+           // Check that we have at least one of a marker, feature, or feature URL.
+           if ((typeof payload.marker === 'undefined') && (typeof payload.feature === 'undefined') && 
+               (typeof payload.featureUrl === 'undefined')) {
+                retVal.result = false;
+                retVal.msg += 'At least one of a marker, feature, or featureUrl are required. ';
+           }
+
+           // check that range is a number, and greater than 0
+           if (!payload.featureId) {
+               retVal.result = false;
+               retVal.msg += 'Need a featureId for this drap and drop request. ';
+           }
+
+           // Check any features for required fields.
+           if (payload.feature) {
+                if (typeof payload.feature.format === 'undefined') {
+                    retVal.result = false;
+                    retVal.msg += 'format is a required parameter in drag and drop payloads for features via string data. ';
+                }
+                if (typeof payload.feature.featureData === 'undefined') {
+                    retVal.result = false;
+                    retVal.msg += 'featureData is a required parameter in drag and drop payloads for features via string data. ';
+                }
+           }
+
+           // Check any featureUrls for required fields.
+           if (payload.featureUrl) {
+                if (typeof payload.feature.format === 'undefined') {
+                    retVal.result = false;
+                    retVal.msg += 'format is a required parameter in drag and drop payloads for features via URL. ';
+                }
+                if (typeof payload.feature.url === 'undefined') {
+                    retVal.result = false;
+                    retVal.msg += 'featureData is a required parameter in drag and drop payloads for features via URL. ';
+                }
+           }
+
+           return retVal;
+        },
+
+        /**
          * Validates a basic payload structure.  Payloads handed to channels are expected to be Objects or Arrays of 
          * Objects.  This function will check the type of the input to see if it is an object or object
          * array.  Undefined inputs are considered valid and returned as an array containing
