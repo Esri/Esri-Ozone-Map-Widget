@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  define(["test/mock/OWF", "test/mock/Ozone", "owf-map-widget/js/owf-widget-extended"],
-        function(OWF, Ozone, OWFExtended) {
+        function(OWF, Ozone, OWFWidgetExtended) {
 
  xdescribe("Testing widget instance preferences", function() {
 
@@ -49,24 +49,24 @@
  	it("Good preference inputs", function() {
 
  		// no error
- 		OWFExtended.Preferences._generateInstancePreferenceName({namespace: 'foo.bar.com', name: 'bar123'});
+ 		OWFWidgetExtended.Preferences._generateInstancePreferenceName({namespace: 'foo.bar.com', name: 'bar123'});
 
  	});
 
  	it("No namespace given", function() {
- 		OWFExtended.Preferences._generateInstancePreferenceName({ name: 'foo'});
+ 		OWFWidgetExtended.Preferences._generateInstancePreferenceName({ name: 'foo'});
  	});
 
  	it("No name given", function() {
-		OWFExtended.Preferences._generateInstancePreferenceName({ namespace: 'foo.bar.com.xxxx.yyyyyyy'});
+		OWFWidgetExtended.Preferences._generateInstancePreferenceName({ namespace: 'foo.bar.com.xxxx.yyyyyyy'});
 
  	});
 
  	it("Neither namespace nor name given", function() {
 
- 		OWF.Preferences._generateInstancePreferenceName({ });
+ 		OWFWidgetExtended.Preferences._generateInstancePreferenceName({ });
 
- 		OWF.Preferences._generateInstancePreferenceName();
+ 		OWFWidgetExtended.Preferences._generateInstancePreferenceName();
  	});
 
 
