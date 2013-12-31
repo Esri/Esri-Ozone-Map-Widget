@@ -173,38 +173,21 @@ html, body, #map {
 
 .no-overlays-tip {
   position: relative;
-  background: #666666;
-  border: 2px solid #999999;
-  width: 176px;
-  top: 11px;
-  left: 141px;
-  border-radius: 8px;
-  color: white;
-  padding-left: 10px;
-  padding-top: 10px;
-}
-.no-overlays-tip:after, .no-overlays-tip:before {
-  top: 100%;
-  left: 88%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
+  background-image: url("../images/icons/Arrow.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  height:inherit;
+  bottom: 40px;
+  left: 70px;
 }
 
-.no-overlays-tip:after {
- border-color: rgba(102, 102, 102, 0);
-  border-top-color: #666666;
-  border-width: 12px;
-  margin-left: -30px;
+#no-overlay-tooltip {
+  height: inherit;
 }
-.no-overlays-tip:before {
-  border-color: rgba(153, 153, 153, 0);
-  border-top-color: #999999;
-  border-width: 15px;
-  margin-left: -33px;
+
+#no-overlay-tooltip-text {
+  margin-top: -140px;
+  margin-left: 45px;
 }
 
 .esriBasemapGalleryNode {
@@ -539,6 +522,10 @@ ul.jqtree-tree .jqtree-element{
 }
 #zoom-checkbox {
   margin-top: 4px;
+}
+#overlay-manager-add {
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 img {
   margin-bottom: 5px;

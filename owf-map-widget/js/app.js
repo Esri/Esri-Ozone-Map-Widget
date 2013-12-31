@@ -3,11 +3,11 @@
 // NOTE: Modules that are not compatible with asynchronous module loading
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
-    "models/map", "models/legend", "dojo/mouse", "dojo/on", "dojo/dom", "esri/dijit/Scalebar",
+    "models/map", "dojo/mouse", "dojo/on", "dojo/dom", "esri/dijit/Scalebar",
     "dojo/json", "esri/dijit/Geocoder", "esri/layers/KMLLayer","esri/dijit/BasemapGallery",
     "esri/arcgis/utils","dojo/parser","dojo/dom-style", "cmwapi-adapter/cmwapi-adapter", /*"OWFWidgetExtensions/owf-widget-extended",*/
     "dojo/domReady!"],
-    function(Map, Legend, Mouse, On, Dom, Scalebar, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter, WidgetExtensions) {
+    function(Map, Mouse, On, Dom, Scalebar, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter/*, OWFWidgetExtensions */) {
         var map = new Map("map", {
             center: [-76.809469, 39.168101],
             zoom: 7,
@@ -39,6 +39,26 @@ require([
                 map:map,
                 attachTo:"bottom-left",
                 scalebarUnit: "dual"
+            });
+
+            var changeAddScrollState = function() {
+                if($('#add-overlay-div').is(':visible') || $('#add-feature-div').is(':visible')) {
+                    var diff = $(window).height() - $("#overlay-manager-add")[0].scrollHeight;
+                    if(!$('#add-overlay-div').is(':visible') && $('#add-feature-div').is(':visible')) {
+                         $("#overlay-manager-add").css("height", $('#add-feature-div').height() + 15);
+                    }
+                    if(diff < 210 || $("#overlay-manager-add")[0].scrollHeight != $("#overlay-manager-add").height()) {
+                         $("#overlay-manager-add").css("height", $(window).height() - 220);
+                    }
+                    if($('#add-overlay-div').is(':visible') && !$('#add-feature-div').is(':visible')) {
+                        $("#overlay-manager-add").css("height", $('#add-overlay-div').height() + 15);
+                    }
+                    resizeOverlayManager();
+                }
+            };
+
+            $(window).bind("resize",function() {
+                changeAddScrollState();
             });
 
             $('#overlay-tree').tree({
@@ -339,6 +359,7 @@ require([
                 $('.init').hide();
                 $('.add').show();
                 resizeOverlayManager();
+                changeAddScrollState();
             };
 
             var setStateAdd = function() {
@@ -391,6 +412,36 @@ require([
                 $('#feature-add-url').keyup(validateURLInput);
                 $("[rel=tooltip]").tooltip({ placement: 'bottom'});
             }();
+            var dropZone = Dom.byId("map");
+
+            OWF.DragAndDrop.onDragStart(function (e) {
+                console.log(e);
+                console.log("drag start");
+            });
+
+            OWF.DragAndDrop.onDragStop(function (e) {
+                console.log(e);
+                console.log("drag stop");
+            });
+
+            On(dropZone, Mouse.enter, function(evt) {
+                    OWF.DragAndDrop.setDropEnabled(true);
+            });
+
+            On(dropZone, Mouse.leave, function(evt) {
+                OWF.DragAndDrop.setDropEnabled(false);
+            });
+
+            OWF.DragAndDrop.addDropZoneHandler({
+                dropZone: dropZone,
+                handler: function (msg) {
+                    console.log(msg);
+                    map.placeMarker(msg.dragDropData);
+                    map.graphics
+                    //console.log('Got address "' + msg.dragDropData.address);
+                }
+            });
+
        });
     }
     });
