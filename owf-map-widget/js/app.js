@@ -412,6 +412,36 @@ require([
                 $('#feature-add-url').keyup(validateURLInput);
                 $("[rel=tooltip]").tooltip({ placement: 'bottom'});
             }();
+            var dropZone = Dom.byId("map");
+
+            OWF.DragAndDrop.onDragStart(function (e) {
+                console.log(e);
+                console.log("drag start");
+            });
+
+            OWF.DragAndDrop.onDragStop(function (e) {
+                console.log(e);
+                console.log("drag stop");
+            });
+
+            On(dropZone, Mouse.enter, function(evt) {
+                    OWF.DragAndDrop.setDropEnabled(true);
+            });
+
+            On(dropZone, Mouse.leave, function(evt) {
+                OWF.DragAndDrop.setDropEnabled(false);
+            });
+
+            OWF.DragAndDrop.addDropZoneHandler({
+                dropZone: dropZone,
+                handler: function (msg) {
+                    console.log(msg);
+                    map.placeMarker(msg.dragDropData);
+                    map.graphics
+                    //console.log('Got address "' + msg.dragDropData.address);
+                }
+            });
+
        });
     }
     });
