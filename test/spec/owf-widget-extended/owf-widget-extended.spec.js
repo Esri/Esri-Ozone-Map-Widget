@@ -16,18 +16,74 @@
  define(["test/mock/OWF", "test/mock/Ozone", "owf-map-widget/js/owf-widget-extended"],
         function(OWF, Ozone, OWFWidgetExtended) {
 
- xdescribe("Testing widget instance preferences", function() {
+ describe("Testing widget instance preferences", function() {
+
+   beforeEach(function() {
+        // Mock the necessary OWF methods and attach them to the window.
+        // OWF should be in global scope when other libraries attempt to
+        // access it.
+        window.OWF = OWF;
+        window.Ozone = Ozone;
+    });
 
  	it("Verify save of widget instance preference...", function() {
- 		this.fail(Error());
+ 		spyOn(OWF.Preferences, 'setUserPreference');
+
+ 		
+		OWFWidgetExtended.Preferences.setWidgetInstancePreference(); 		
+		expect(OWF.Preferences.setUserPreference).not.toHaveBeenCalled();
+ 		
+
+ 		OWFWidgetExtended.Preferences.setWidgetInstancePreference({name: 'foo', namespace: 'bar' });
+
+ 		var expectedId = "foo" + ":" + OWF.getInstanceId();
+ 		expect(OWF.Preferences.setUserPreference).toHaveBeenCalled();
+ 		expect(OWF.Preferences.setUserPreference).toHaveBeenCalledWith({name: expectedId, namespace: 'bar'});
+
+ 		OWFWidgetExtended.Preferences.setWidgetInstancePreference({}); 		
+ 		expectedId = ":" + OWF.getInstanceId();
+		expect(OWF.Preferences.setUserPreference).toHaveBeenCalledWith({name: expectedId});
+
  	});
 
  	it("Verify get of widget instance preference...", function() {
- 		this.fail(Error());
+ 		spyOn(OWF.Preferences, 'getUserPreference');
+
+ 		
+		OWFWidgetExtended.Preferences.getWidgetInstancePreference(); 		
+		expect(OWF.Preferences.getUserPreference).not.toHaveBeenCalled();
+ 		
+
+ 		OWFWidgetExtended.Preferences.getWidgetInstancePreference({name: 'foo', namespace: 'bar' });
+
+ 		var expectedId = "foo" + ":" + OWF.getInstanceId();
+ 		expect(OWF.Preferences.getUserPreference).toHaveBeenCalled();
+ 		expect(OWF.Preferences.getUserPreference).toHaveBeenCalledWith({name: expectedId, namespace: 'bar'});
+
+ 		OWFWidgetExtended.Preferences.getWidgetInstancePreference({}); 		
+ 		expectedId = ":" + OWF.getInstanceId();
+		expect(OWF.Preferences.getUserPreference).toHaveBeenCalledWith({name: expectedId});
  	});
 
  	it("Verify delete of widget instance preference...", function() {
- 		this.fail(Error());
+ 		spyOn(OWF.Preferences, 'deleteUserPreference');
+
+ 		
+		OWFWidgetExtended.Preferences.deleteWidgetInstancePreference(); 		
+		expect(OWF.Preferences.deleteUserPreference).not.toHaveBeenCalled();
+ 		
+
+ 		OWFWidgetExtended.Preferences.deleteWidgetInstancePreference({name: 'foo', namespace: 'bar' });
+
+ 		var expectedId = "foo" + ":" + OWF.getInstanceId();
+ 		expect(OWF.Preferences.deleteUserPreference).toHaveBeenCalled();
+ 		expect(OWF.Preferences.deleteUserPreference).toHaveBeenCalledWith({name: expectedId, namespace: 'bar'});
+
+ 		OWFWidgetExtended.Preferences.deleteWidgetInstancePreference({}); 		
+ 		expectedId = ":" + OWF.getInstanceId();
+		expect(OWF.Preferences.deleteUserPreference).toHaveBeenCalledWith({name: expectedId});
+
+
  	});
 
  });
@@ -48,25 +104,22 @@
 
  	it("Good preference inputs", function() {
 
+ 		var expectedId = "bar123:" + OWF.getInstanceId();
+
  		// no error
- 		OWFWidgetExtended.Preferences._generateInstancePreferenceName({namespace: 'foo.bar.com', name: 'bar123'});
-
+ 		var preferenceId = OWFWidgetExtended.Preferences._generateInstancePreferenceName({namespace: 'foo.bar.com', name: 'bar123'});
+ 		expect(preferenceId).toMatch(expectedId + '$');
  	});
 
- 	it("No namespace given", function() {
- 		OWFWidgetExtended.Preferences._generateInstancePreferenceName({ name: 'foo'});
- 	});
+ 	it("No name given", function() { 		
 
- 	it("No name given", function() {
-		OWFWidgetExtended.Preferences._generateInstancePreferenceName({ namespace: 'foo.bar.com.xxxx.yyyyyyy'});
+ 		var expectedId = ":" + OWF.getInstanceId();
+ 		var preferenceId = OWFWidgetExtended.Preferences._generateInstancePreferenceName({});
+ 		expect(preferenceId).toMatch(expectedId + '$');
 
- 	});
-
- 	it("Neither namespace nor name given", function() {
-
- 		OWFWidgetExtended.Preferences._generateInstancePreferenceName({ });
-
- 		OWFWidgetExtended.Preferences._generateInstancePreferenceName();
+ 		var preferenceId = OWFWidgetExtended.Preferences._generateInstancePreferenceName();
+ 		expect(preferenceId).toMatch(expectedId + '$');
+		
  	});
 
 

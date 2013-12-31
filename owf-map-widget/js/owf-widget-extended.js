@@ -39,8 +39,8 @@ function() {
       *    on a dashboard, saving the instance preferences for one will keep its data unique 
       *    from the data stored for another.
       *
-      * Because the original use case intended may include semi-sizable configuration data which 
-      *    may be longer than the preferences API, this API also handles segmenting preference data
+      * TODO: Because the original use case intended may include semi-sizable configuration data which 
+      *    may be longer than the preferences API, this API should also handle segmenting preference data
       *    and then recombining it upon retrieval.
       *
       * Caution: as with all preferences data, be wary of storing preference data that (1) should only be 
@@ -60,41 +60,48 @@ function() {
         the database.  This function takes a single argument, which is a JSON object.  See getUserPreference for its format.
       @param {Function} [cfg.onFailure] Optional function parameter, again aligned with getUserPreference.
      */     
-     OWF.Preferences.getWidgetInstancePreference = function() {
-
+     OWF.Preferences.getWidgetInstancePreference = function(cfg) {
+          if (cfg) {
+               cfg.name = genInstanceName(cfg);
+               OWF.Preferences.getUserPreference(cfg);
+          }          
      };
 
-     OWF.Preferences.setWidgetInstancePreference = function() {
-
+     OWF.Preferences.setWidgetInstancePreference = function(cfg) {
+          if (cfg) {
+               cfg.name = genInstanceName(cfg);
+               OWF.Preferences.setUserPreference(cfg);
+          }
      };
 
-     OWF.Preferences.deleteWidgetInstancePreference = function() {
-
+     OWF.Preferences.deleteWidgetInstancePreference = function(cfg) {
+          if (cfg) {
+               cfg.name = genInstanceName(cfg);
+               OWF.Preferences.deleteUserPreference(cfg);
+          }
      };
 
 
      /**
-      @description Retrieves the user preference for the provided name and namespace, for the calling widget instance
-      @name getWidgetInstancePreference
+      @description Generates a name for this user preference that's unique to the widget instance
+      @name _generateInstancePreferenceName
       @methodOf OWF.Preferences
       @access private
 
-      @param {Object} cfg config object see below for properties
-      @param {String} cfg.namespace The namespace of the requested user preference
-      @param {String} cfg.name The name of the requested user preference
+      @param {Object} [cfg] config object see below for properties
+      @param {String} [cfg.name] The name of the requested user preference
       */
-     OWF.Preferences._generateInstancePreferenceName = function(cfg) {
+     var genInstanceName = function(cfg) {
           var widgetId = OWF.getInstanceId();
 
-          if ((!cfg.namespace) || (!cfg.name)) {
-               // throw error - let outer worry about dealing with onSuccess, etc...
-               throw {
-                    name: "InvalidInputError",
-                    message: "Need namespace and name to generate instance preference id"
-               }
-          }
+          var name = (cfg && cfg.name) ? cfg.name + ":" + widgetId : ":" + widgetId;
+
+          return name;
 
      };
+
+     // exposed for testing purposes... 
+     OWF.Preferences._generateInstancePreferenceName = genInstanceName;
 
      return OWF;
 }
