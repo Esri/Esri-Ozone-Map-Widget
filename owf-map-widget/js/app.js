@@ -42,17 +42,19 @@ require([
             });
 
             var changeAddScrollState = function() {
-                var diff = $(window).height() - $("#overlay-manager-add")[0].scrollHeight;
-                if(!$('#add-overlay-div').is(':visible') && $('#add-feature-div').is(':visible')) {
-                     $("#overlay-manager-add").css("height", $('#add-feature-div').height() + 15);
+                if($('#add-overlay-div').is(':visible') || $('#add-feature-div').is(':visible')) {
+                    var diff = $(window).height() - $("#overlay-manager-add")[0].scrollHeight;
+                    if(!$('#add-overlay-div').is(':visible') && $('#add-feature-div').is(':visible')) {
+                         $("#overlay-manager-add").css("height", $('#add-feature-div').height() + 15);
+                    }
+                    if(diff < 210 || $("#overlay-manager-add")[0].scrollHeight != $("#overlay-manager-add").height()) {
+                         $("#overlay-manager-add").css("height", $(window).height() - 220);
+                    }
+                    if($('#add-overlay-div').is(':visible') && !$('#add-feature-div').is(':visible')) {
+                        $("#overlay-manager-add").css("height", $('#add-overlay-div').height() + 15);
+                    }
+                    resizeOverlayManager();
                 }
-                if(diff < 210 || $("#overlay-manager-add")[0].scrollHeight != $("#overlay-manager-add").height()) {
-                     $("#overlay-manager-add").css("height", $(window).height() - 220);
-                }
-                if($('#add-overlay-div').is(':visible') && !$('#add-feature-div').is(':visible')) {
-                    $("#overlay-manager-add").css("height", $('#add-overlay-div').height() + 15);
-                }
-                resizeOverlayManager();
             };
 
             $(window).bind("resize",function() {
