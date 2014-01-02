@@ -205,7 +205,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
                 sendError(caller, msg, {type: 'map.overlay.update', msg: msg});
             } else {
                 var overlay = manager.overlays[overlayId];
-                if(overlay.name !== name) {
+                if(name && overlay.name !== name) {
                     overlay.name = name;
                 }
                 if(parentId && parentId !== overlay.parentId) {

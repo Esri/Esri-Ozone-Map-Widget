@@ -77,7 +77,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
 
-            it("verify overlay create with duplicate id", function() {
+            it("verify overlay create with duplicate id calls update", function() {
                 var update = spyOn(overlayManager.overlay, 'updateOverlay').andCallThrough();
 
                 expect(Object.keys(overlayManager.getOverlays()).length).toBe(0);
@@ -221,6 +221,77 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                     error: {type: "map.overlay.hide", msg: msg}
                 }));
             });
+
+            it("verify update of overlay with new parent", function() {
+                var update = spyOn(overlayManager.overlay, 'updateOverlay').andCallThrough();
+
+                expect(Object.keys(overlayManager.getOverlays()).length).toBe(0);
+
+                //create the overlay
+                overlayManager.overlay.createOverlay("FakeWidget", "o1", "on1");
+                overlayManager.overlay.createOverlay("FakeWidget", "o2", "on2");
+                overlayManager.overlay.createOverlay("FakeWidget", "o3", "on3", "o1");
+
+                expect(update).not.toHaveBeenCalled();
+
+                overlayManager.overlay.updateOverlay("fake", "o3", null, "o2");
+
+                expect(update).toHaveBeenCalledWith("fake", "o3", null, "o2");
+
+                var overlays = overlayManager.getOverlays();
+                expect(overlays["o3"].parentId).toBe("o2");
+                expect(overlays["o3"].name).toBe("on3");
+            });
+
+            it("verify showOverlay calls error for bad id", function() {
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var error = spyOn(eventing, 'publish').andCallThrough();
+
+                overlayManager.overlay.showOverlay("fake widget", "9876");
+
+                var msg = "Overlay not found with id 9876"
+                expect(error).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake widget",
+                    type: "map.overlay.show",
+                    msg: msg,
+                    error: {type: "map.overlay.show", msg: msg}
+                }));
+            });
+
+            it("verify showOverlay recurses properly", function() {
+                var show = spyOn(overlayManager.overlay, 'showOverlay').andCallThrough();
+
+                overlayManager.overlay.createOverlay("FakeWidget", "o1", "on1");
+                overlayManager.overlay.createOverlay("FakeWidget", "o2", "on2", "o1");
+                overlayManager.feature.plotFeatureUrl("fake2", "o2", "f1", "fn1", "kml", "http://url");
+                var overlays = overlayManager.getOverlays();
+                overlays['o2'].features['f1'].isHidden = true;
+
+                overlayManager.overlay.showOverlay("fake", 'o1');
+
+                expect(show).toHaveBeenCalledWith("fake", "o1");
+                expect(show).toHaveBeenCalledWith("fake", "o2");
+                overlays = overlayManager.getOverlays();
+                expect(overlays['o2'].features['f1'].isHidden).toBe(false);
+            });
+
+            it("verify removeOverlay recurses properly", function() {
+                var remove = spyOn(overlayManager.overlay, 'removeOverlay').andCallThrough();
+                var fremove = spyOn(overlayManager.feature, 'deleteFeature').andCallThrough();
+
+                overlayManager.overlay.createOverlay("FakeWidget", "o1", "on1");
+                overlayManager.overlay.createOverlay("FakeWidget", "o2", "on2", "o1");
+                overlayManager.feature.plotFeatureUrl("fake2", "o2", "f1", "fn1", "kml", "http://url");
+
+                overlayManager.overlay.removeOverlay("fake", 'o1');
+
+                expect(remove).toHaveBeenCalledWith("fake", "o1");
+                expect(remove).toHaveBeenCalledWith("fake", "o2");
+                expect(fremove).toHaveBeenCalledWith("fake", "o2", "f1");
+            });
+
         });
 
         describe("change handler", function() {
@@ -237,6 +308,44 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
 
                 expect(handler).toHaveBeenCalled();
             });
+
+            it("verify skipped if not a function", function() {
+                var overlayManager = new OverlayManager({}, {});
+
+                var handler = {please: "dont run"};
+
+                overlayManager.bindTreeChangeHandler(handler);
+            });
+        });
+
+        describe("overlayManager ui functions", function() {
+            var overlayManager;
+            var adapter;
+
+            beforeEach(function() {
+                window.OWF = OWF;
+                window.Ozone = Ozone;
+                window.Map = Map;
+
+                adapter = new Adapter(new Map());
+                overlayManager = adapter.overlayManager;
+            });
+
+            afterEach(function() {
+                // Remove our mock objects from the window so neither they nor
+                // any spies upon them hang around for other test suites.
+                delete window.OWF;
+                delete window.Ozone;
+                delete window.Map;
+            });
+
+            it("verify getOverlayTree call returns the expected tree json", function() {
+                overlayManager.overlay.createOverlay("FakeWidget", "o1", "on1");
+                overlayManager.overlay.createOverlay("FakeWidget", "o2", "on2", "o1");
+                overlayManager.feature.plotFeatureUrl("fake2", "o2", "f1", "fn1", "kml", "http://url");
+
+                var tree = overlayManager.getOverlayTree();
+            });
         });
 
         describe("ui api relay calls", function() {
@@ -249,7 +358,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 window.Map = Map;
 
                 adapter = new Adapter(new Map());
-                overlayManager = new OverlayManager(adapter, new Map());
+                overlayManager = adapter.overlayManager;
             });
 
             afterEach(function() {
@@ -340,6 +449,19 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 });
             });
 
+            it("verify send feature update calls api correctly without newOverlayId", function() {
+                spyOn(CommonMapApi.feature.update, 'send').andCallThrough();
+
+                overlayManager.sendFeatureUpdate("o", "f", "nn");
+
+                expect(CommonMapApi.feature.update.send).toHaveBeenCalledWith({
+                    overlayId: "o",
+                    featureId: "f",
+                    name: "nn",
+                    newOverlayId: null
+                });
+            });
+
             it("verify send feature hide calls api correctly", function() {
                 spyOn(CommonMapApi.feature.hide, 'send').andCallThrough();
 
@@ -354,6 +476,14 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 overlayManager.sendFeatureShow("O", "F");
 
                 expect(CommonMapApi.feature.show.send).toHaveBeenCalledWith({overlayId: "O", featureId: "F", zoom: false});
+            });
+
+            it("verify send feature show calls api correctly with zoom", function() {
+                spyOn(CommonMapApi.feature.show, 'send').andCallThrough();
+
+                overlayManager.sendFeatureShow("O", "F", true);
+
+                expect(CommonMapApi.feature.show.send).toHaveBeenCalledWith({overlayId: "O", featureId: "F", zoom: true});
             });
         });
 
