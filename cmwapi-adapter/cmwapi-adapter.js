@@ -163,13 +163,13 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
                     var overlayId = evt.dragDropData.overlayId || OWF.getInstanceId();
                     var featureId = evt.dragDropData.featureId;
                     var name = evt.dragDropData.name;
-                    var zoom = evt.dragDropData.zoom;
+                    var zoom = evt.dragDropData.zoom ? true : false;
                     var payload = {};
                     payload.featureId = featureId
                     if(evt.dragDropData.marker) {
                         payload.marker = {
                             details: evt.dragDropData.marker.details,
-                            iconUrl:  evt.dragDropData.marker.iconUrl ? evt.dragDropData.marker.iconUrl : 'http://www.google.com/earth/outreach/images/icon-streetview-pegman.png',
+                            iconUrl:  evt.dragDropData.marker.iconUrl,
                             latlong: {
                                 long : mouseLocation.mapPoint.getLongitude(),
                                 lat: mouseLocation.mapPoint.getLatitude()
