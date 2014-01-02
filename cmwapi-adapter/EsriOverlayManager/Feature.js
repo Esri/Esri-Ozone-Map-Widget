@@ -129,16 +129,25 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
 
 
         var addFeatureListeners = function(caller, overlayId, featureId, layer) {
-            for(var i = 0; i < layer.getLayers().length; i++) {
-                layer.getLayers()[i].on('click', function(e) {
-                    cmwapi.feature.selected.send({
-                        overlayId:overlayId,
-                        featureId:featureId,
-                        selectedId: e.graphic.attributes.id,
-                        selectedName: e.graphic.attributes.name
-                    });
-                });
-            }
+            (function onLoadListenRecurs(currLayer) {
+                var curr = currLayer.getLayers();
+                for(var i =0; i < curr.length; i++) {
+                    if(curr[i].loaded) {
+                        curr[i].on('click', function(e) {
+                            cmwapi.feature.selected.send({
+                                overlayId:overlayId,
+                                featureId:featureId,
+                                selectedId: e.graphic.attributes.id,
+                                selectedName: e.graphic.attributes.name
+                            });
+                        });
+                    } else {
+                        curr[i].on('load', function(loaded) {
+                            onLoadListenRecurs(loaded.layer);
+                        });
+                    }
+                }
+            })(layer);
         };
 
         /**
@@ -163,7 +172,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
 
             layer.on("load", function() {
                 if(zoom) {
-                    me.zoomFeature(caller, overlayId, featureId, null, null, "auto");
+                    me.zoom(caller, overlayId, featureId, null, null, "auto");
 
                 }
                 addFeatureListeners(caller, overlayId, featureId, layer);
@@ -241,6 +250,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
                 feature.esriObject.hide();
                 manager.treeChanged();
             }
+            //console.log(manager.overlays['o'].features['f'].esriObject);
         };
 
         /**
@@ -267,7 +277,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
             }
 
             if (zoom) {
-                me.zoomFeature(caller, overlayId, featureId, null, null, "auto");
+                me.zoom(caller, overlayId, featureId, null, null, "auto");
             }
 
             if(feature.isHidden) {
@@ -279,7 +289,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
         };
 
         /**
-         * @method zoomFeature
+         * @method zoom
          * @param caller {String}
          * @param overlayId {String}
          * @param featureId {String}
@@ -287,7 +297,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
          * @param [selectedName] {String} Not used at present
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
-        me.zoomFeature = function(caller, overlayId, featureId, selectedId, selectedName, range) {
+        me.zoom = function(caller, overlayId, featureId, selectedId, selectedName, range) {
             var overlay = manager.overlays[overlayId];
             var msg;
             if(typeof(overlay) === 'undefined') {

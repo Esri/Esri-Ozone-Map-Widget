@@ -3,6 +3,7 @@ define(function() {
         this.getLayers = function() {
             return [{
                 fullExtent: {
+                    name: "mockExtent",
                     getCenter: function(){}
                 }
             }];

@@ -139,5 +139,6 @@ dojoConfig.packages = [
     { location: window.contextPath + "js/models", name: "models" },
     { location: window.contextPath + "js/lib", name: "lib" },
     { location: window.contextPath + "../cmwapi", name: "cmwapi" },
-    { location: window.contextPath + "../cmwapi-adapter", name: "cmwapi-adapter" }
+    { location: window.contextPath + "../cmwapi-adapter", name: "cmwapi-adapter" }/*,
+    { location: window.contextPath + "js", name:"OWFWidgetExtensions"}*/
 ];

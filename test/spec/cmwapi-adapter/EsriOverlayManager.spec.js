@@ -809,7 +809,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
 
                 overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "kml", "http://url");
 
-                overlayManager.feature.zoomFeature("fake", "o", "f", null, null, "auto");
+                overlayManager.feature.zoom("fake", "o", "f", null, null, "auto");
 
                 expect(setExtent).toHaveBeenCalled();
             });
@@ -820,7 +820,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
 
                 var err = spyOn(eventing, 'publish').andCallThrough();
 
-                overlayManager.feature.zoomFeature("fake", "o", "f", null, null, "auto");
+                overlayManager.feature.zoom("fake", "o", "f", null, null, "auto");
 
                 var msg = "Overlay could not be found with id o";
                 expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
@@ -843,7 +843,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
 
                 overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "kml", "http://url");
 
-                overlayManager.feature.zoomFeature("fake", "o", "notf", null, null, "auto");
+                overlayManager.feature.zoom("fake", "o", "notf", null, null, "auto");
 
                 var msg = "Feature could not be found with id notf and overlayId o";
                 expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({

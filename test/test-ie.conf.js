@@ -9,14 +9,10 @@ module.exports = function(config) {
 
     // Disable the html2js preprocessor to prevent Karma from adding a js extension to any
     // HTML files that need to be included on the Karma server.
-    preprocessors: {'**/*.html': [],
-        '*cmwapi-adapter/**/*.js': 'coverage',
-        '*cmwapi/**/*.js': 'coverage',
-        'owf-map-widget/js/owf-widget-extended.js': 'coverage'
-    },
+    preprocessors: {'**/*.html': []},
 
     // frameworks to use
-    frameworks: ['jasmine', 'dojo'],
+    frameworks: ['jasmine', 'requirejs'],
 
 
     // list of files / patterns to load in the browser
@@ -28,17 +24,19 @@ module.exports = function(config) {
 
         // Source files here; paths are relative to basePath defined above.
         {pattern: '*cmwapi*/**/*.js', included: false},
-        {pattern: 'owf-map-widget/js/owf-widget-extended.js', included: false},
-
-        {pattern: 'test/mock/**/*.js', included: false},
+        
         // All mock files
+        {pattern: 'test/mock/**/*.js', included: false},
 
         // All spec files
-        {pattern: 'test/spec/**/*.spec.js', included: false},
+        //{pattern: 'test/spec/**/*.spec.js', included: false},
+        //{pattern: 'test/spec/cmwapi/**/*.spec.js', included: false},
+        {pattern: 'test/spec/cmwapi/map/status/*.spec.js', included: false},
+        //{pattern: 'test/spec/cmwapi-adapter/**/*.spec.js', included: false},
 
         // Make any necessary descriptions, relay files available on the Karma server for tests
-        // The relay file under the owf-map-widget is provided as an example.
-        // {pattern: 'owf-map-widget/js/eventing/*.html', included: false}
+        // The relay file under the api-test-widget is provided as an example.
+        {pattern: 'api-test-widget/js/eventing/*.html', included: false}
     ],
 
 
@@ -50,12 +48,7 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress', 'dots', 'coverage'],
-
-    coverageReporter: {
-      type : 'html',
-      dir : 'coverage/'
-    },
+    reporters: ['progress', 'dots'],
 
 
     // web server port
@@ -83,7 +76,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
+    browsers: ['IE'],
 
 
     // If browser does not capture in given timeout [ms], kill it
@@ -92,16 +85,6 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: true,
-
-    plugins: [
-      'karma-dojo',
-      'karma-coverage',
-      'karma-jasmine',
-      "karma-phantomjs-launcher",
-      "karma-chrome-launcher",
-      "karma-firefox-launcher",
-      "karma-ie-launcher"
-    ]
+    singleRun: true
   });
 };

@@ -35,7 +35,7 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
 
 ## Requirements
 
-1. OWF 7.0 GA
+1. OWF 7.0 GA.  See the OWF [Get Started](http://www.owfgoss.org/getstarted.html) page, if you are not familiar with the framework.
 
 2. Web server to host the widgets
 
@@ -47,11 +47,16 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
 
 2. Copy the contents of this project to the newly created directory.
 
+     > NOTE: To deploy minified versions of the CMWAPI and CMWAPI-ADAPTER modules, build the project using "grunt deploy" and copy the contents of the deployment folder to this location instead.
+
 3. Login to your running OWF instance as an administrator.
 
 4. [Create](https://github.com/ozoneplatform/owf/wiki/OWF-7-Administrator-Creating-and-Editing-Widgets) entries for the widgets in OWF by importing the following descriptor files from your server:
     * http(s)://_**yourserver**_:_**port**_/esri/owf-map-widget/descriptor.html
+    * http(s)://_**yourserver**_:_**port**_/esri/basic-map-widget/descriptor.html
     * http(s)://_**yourserver**_:_**port**_/esri/contacts/descriptor/descriptor.html
+
+5. Assign the widgets to the [OWF Users Group](https://github.com/ozoneplatform/owf/wiki/OWF-7-Administrator-Default-Content) or to specific users so they can be opened.
 
 ## Development Environment Setup
 
@@ -84,7 +89,7 @@ Once the development environment has been setup, grunt can be used to run JSHint
 
         grunt
 
-Specific build targets are defined in the top level file, Gruntfile.js.  At present, there are a few primary targets:  jshint, test, and jsdoc.  Provide those targets on the command line to execute only those grunt tasks.
+Specific build targets are defined in the top level file, Gruntfile.js.  At present, there are a few primary targets:  jshint, test, jsdoc, and deploy.  Provide those targets on the command line to execute only those grunt tasks.
 
         grunt jsdoc
 

@@ -34,8 +34,8 @@ module.exports = function(config) {
         {pattern: 'test/spec/**/*.spec.js', included: false},
 
         // Make any necessary descriptions, relay files available on the Karma server for tests
-        // The relay file under the api-test-widget is provided as an example.
-        {pattern: 'api-test-widget/js/eventing/*.html', included: false}
+        // The relay file under the owf-map-widget is provided as an example.
+        // {pattern: 'owf-map-widget/js/eventing/*.html', included: false}
     ],
 
 
