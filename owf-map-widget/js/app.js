@@ -7,7 +7,8 @@ require([
     "dojo/json", "esri/dijit/Geocoder", "esri/layers/KMLLayer","esri/dijit/BasemapGallery",
     "esri/arcgis/utils","dojo/parser","dojo/dom-style", "cmwapi-adapter/cmwapi-adapter", /*"OWFWidgetExtensions/owf-widget-extended",*/
     "dojo/domReady!"],
-    function(Map, Mouse, On, Dom, Scalebar, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser, domStyle, cmwapiAdapter/*, OWFWidgetExtensions */) {
+    function(Map, Mouse, On, Dom, Scalebar, JSON, Geocoder, KMLLayer, BasemapGallery, arcgisUtils, parser,
+        domStyle, cmwapiAdapter, Graphic, PictureMarkerSymbol, Point) {
         var map = new Map("map", {
             center: [-76.809469, 39.168101],
             zoom: 7,
@@ -412,36 +413,6 @@ require([
                 $('#feature-add-url').keyup(validateURLInput);
                 $("[rel=tooltip]").tooltip({ placement: 'bottom'});
             }();
-            var dropZone = Dom.byId("map");
-
-            OWF.DragAndDrop.onDragStart(function (e) {
-                console.log(e);
-                console.log("drag start");
-            });
-
-            OWF.DragAndDrop.onDragStop(function (e) {
-                console.log(e);
-                console.log("drag stop");
-            });
-
-            On(dropZone, Mouse.enter, function(evt) {
-                    OWF.DragAndDrop.setDropEnabled(true);
-            });
-
-            On(dropZone, Mouse.leave, function(evt) {
-                OWF.DragAndDrop.setDropEnabled(false);
-            });
-
-            OWF.DragAndDrop.addDropZoneHandler({
-                dropZone: dropZone,
-                handler: function (msg) {
-                    console.log(msg);
-                    map.placeMarker(msg.dragDropData);
-                    map.graphics
-                    //console.log('Got address "' + msg.dragDropData.address);
-                }
-            });
-
        });
     }
     });

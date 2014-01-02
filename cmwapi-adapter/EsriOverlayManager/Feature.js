@@ -1,4 +1,6 @@
-define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(cmwapi, KMLLayer, ViewUtils) {
+define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils",
+    "esri/layers/GraphicsLayer", "esri/graphic","esri/symbols/PictureMarkerSymbol", "esri/geometry/Point"],
+    function(cmwapi, KMLLayer, ViewUtils, GraphicsLayer, Graphic, PictureMarkerSymbol, Point) {
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -127,24 +129,70 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
             }
         };
 
+        /**
+         * @method plotMarker
+         * @param caller {String} the id of the widget which made the request resulting in this function call.
+         * @param overlayId {String} The id of the overlay on which this marker should be displayed
+         * @param featureId {String} The id to be given for the feature, unique to the provided overlayId
+         * @param name {String} The readable name for which this feature should be labeled
+         * @param marker {String} The icon and location information of the marker to be placed.
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
+         */
+        me.plotMarker = function(caller, overlayId, featureId, name, marker) {
+            if(typeof(manager.overlays[overlayId]) === 'undefined') {
+                manager.overlay.createOverlay(caller, overlayId, overlayId);
+            }
+            var overlay = manager.overlays[overlayId];
+            if(typeof(overlay.features[featureId]) !== 'undefined') {
+                me.deleteFeature(overlayId, featureId);
+            }
+            var layer = new GraphicsLayer();
+            var symbol = new PictureMarkerSymbol(marker.iconUrl, 25, 25);
+            var point = new Point(marker.latlong.long, marker.latlong.lat);
+            var graphic = new Graphic(point, symbol);
+            graphic.setAttributes({id: featureId, name: name});
+            layer.add(graphic);
+            map.addLayer(layer);
+            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'marker', null, null, layer);
+            // layer.on("load", function() {
+            //     if(zoom) {
+            //         me.zoom(caller, overlayId, featureId, null, null, "auto");
 
+            //     }
+                addFeatureListeners(caller, overlayId, featureId, layer);
+            //});
+            manager.treeChanged();
+        };
+
+        /**
+         * Rercusively adds listeners to kml layer data in order to bind to kml select events
+         * @private
+         * @param caller {String} The widget making a request that led to this method call
+         * @param overlayId {String} The unique id of the overlay containing the feature to be selected
+         * @param featureId {String} The id, unique to the overlay, to be given to the selected feature
+         * @param layer {String} Top KML layer that will be recursed down.
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
+         */
         var addFeatureListeners = function(caller, overlayId, featureId, layer) {
+            console.log(layer);
+            var sendSelected = function(e) {
+                cmwapi.feature.selected.send({
+                    overlayId:overlayId,
+                    featureId:featureId,
+                    selectedId: e.graphic.attributes.id,
+                    selectedName: e.graphic.attributes.name
+                });
+            };
             (function onLoadListenRecurs(currLayer) {
-                var curr = currLayer.getLayers();
+                currLayer = currLayer.layer ? currLayer.layer : currLayer;
+                var curr = currLayer.graphics || currLayer.getLayers();
+                console.log(curr);
                 for(var i =0; i < curr.length; i++) {
-                    if(curr[i].loaded) {
-                        curr[i].on('click', function(e) {
-                            cmwapi.feature.selected.send({
-                                overlayId:overlayId,
-                                featureId:featureId,
-                                selectedId: e.graphic.attributes.id,
-                                selectedName: e.graphic.attributes.name
-                            });
-                        });
+                    console.log(curr[i])
+                    if(curr[i].loaded || curr[i].graphics) {
+                        curr[i].on('click', sendSelected);
                     } else {
-                        curr[i].on('load', function(loaded) {
-                            onLoadListenRecurs(loaded.layer);
-                        });
+                        curr[i].on('load', onLoadListenRecurs);
                     }
                 }
             })(layer);

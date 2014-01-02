@@ -18,8 +18,9 @@
  * @module EsriAdapter
  */
 define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cmwapi-adapter/Status",
-        "cmwapi-adapter/View", "cmwapi-adapter/Error", "cmwapi-adapter/EsriOverlayManager"],
-        function(CommonMapApi, Overlay, Feature, Status, View, Error, OverlayManager) {
+        "cmwapi-adapter/View", "cmwapi-adapter/Error", "cmwapi-adapter/EsriOverlayManager", "dojo/dom",
+        "dojo/mouse", "dojo/on"],
+        function(CommonMapApi, Overlay, Feature, Status, View, Error, OverlayManager, Dom, Mouse, On) {
 
     /**
      * @classdesc Adapter layer between Common Map Widget API v. 1.1 javascript
@@ -122,6 +123,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
             me.unloadMapHandler.remove();
         };
 
+
+
         this.overlayManager = new OverlayManager(map);
 
         // Attach any exposed instance attributes.
@@ -138,6 +141,83 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
 
         this.unloadMapHandler = map.on("unload", unloadHandlers);
 
+
+        var handleDragAndDrop = function(overlayManager) {
+            var dropZone = Dom.byId("map");
+            var mouseLocation;
+            map.on('mouse-up', function(e) {
+                mouseLocation = e;
+            });
+            On(dropZone, Mouse.enter, function() {
+                    OWF.DragAndDrop.setDropEnabled(true);
+            });
+
+            On(dropZone, Mouse.leave, function() {
+                OWF.DragAndDrop.setDropEnabled(false);
+            });
+
+            OWF.DragAndDrop.addDropZoneHandler({
+                dropZone: dropZone,
+                handler: function (evt) {
+                    var callerId = OWF.Util.parseJson(evt.dragSourceId).id;
+                    var overlayId = evt.dragDropData.overlayId || OWF.getInstanceId();
+                    var featureId = evt.dragDropData.featureId;
+                    var name = evt.dragDropData.name;
+                    var zoom = evt.dragDropData.zoom;
+                    var payload = {};
+                    payload.featureId = featureId
+                    if(evt.dragDropData.marker) {
+                        payload.marker = {
+                            details: evt.dragDropData.marker.details,
+                            iconUrl:  evt.dragDropData.marker.iconUrl ? evt.dragDropData.marker.iconUrl : 'http://www.google.com/earth/outreach/images/icon-streetview-pegman.png',
+                            latlong: {
+                                long : mouseLocation.mapPoint.getLongitude(),
+                                lat: mouseLocation.mapPoint.getLatitude()
+                            }
+                        };
+                    }
+                    if(evt.dragDropData.feature) {
+                        payload.feature = {
+                            format: evt.dragDropData.feature.format,
+                            featureData: evt.dragDropData.feature.featureData
+                        }
+                    }
+                    if(evt.dragDropData.featureUrl) {
+                        payload.featureUrl = {
+                            format: evt.dragDropData.featureUrl.format,
+                            url: evt.dragDropData.featureUrl.url,
+                            params: evt.dragDropData.featureUrl.params
+                        }
+                    }
+                    if(CommonMapApi.validator.validDragAndDropPayload(payload).result === true && mouseLocation) {
+                        if(payload.marker) { //payload contains a marker.
+                            overlayManager.feature.plotMarker(callerId, overlayId, featureId, name, payload.marker);
+                        }
+                        if(payload.feature) { //payload contains a feature string.
+                            overlayManager.feature.plotFeature(
+                                callerId,
+                                overlayId,
+                                featureId,
+                                name,
+                                payload.feature.format,
+                                payload.feature.featureData);
+                        }
+                        if(payload.featureUrl) { // payload contains a feature url.
+                             overlayManager.feature.plotFeatureUrl(
+                                callerId,
+                                overlayId,
+                                featureId,
+                                name,
+                                payload.featureUrl.format,
+                                payload.featureUrl.url,
+                                payload.featureUrl.params,
+                                zoom);
+                        }
+                        mouseLocation = null;
+                    }
+                }
+            });
+        }(this.overlayManager);
     };
 
     return EsriAdapter;
