@@ -84,7 +84,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
             var overlay = manager.overlays[overlayId];
 
             if(typeof(overlay.features[featureId] !== 'undefined')) {
-                me.deleteFeature(overlayId, featureId);
+                me.deleteFeature(caller, overlayId, featureId);
             }
             //create
             //overlay.features[featureId] = new Feature(ovelayId, featureId, name, format, feature, zoom);
@@ -113,7 +113,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
 
             var overlay = manager.overlays[overlayId];
             if(typeof(overlay.features[featureId]) !== 'undefined') {
-                me.deleteFeature(overlayId, featureId);
+                me.deleteFeature(caller, overlayId, featureId);
             }
 
             //if a type we like then handler function
@@ -250,7 +250,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
                 feature.esriObject.hide();
                 manager.treeChanged();
             }
-            //console.log(manager.overlays['o'].features['f'].esriObject);
         };
 
         /**

@@ -559,7 +559,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
 
                 overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn2", "kml", "http://url2");
 
-                expect(del).toHaveBeenCalledWith("o", "f");
+                expect(del).toHaveBeenCalledWith("fake2", "o", "f");
 
                 overlays = overlayManager.getOverlays();
                 expect(Object.keys(overlays).length).toBe(1);
