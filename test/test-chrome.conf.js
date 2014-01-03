@@ -91,6 +91,7 @@ module.exports = function(config) {
     singleRun: true,
 
     plugins: [
+      'karma-requirejs',
       'karma-dojo',
       'karma-coverage',
       'karma-jasmine',
