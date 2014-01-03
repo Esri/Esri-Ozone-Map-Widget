@@ -157,16 +157,18 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils",
             var point = new Point(marker.latlong.long, marker.latlong.lat);
             var graphic = new Graphic(point, symbol);
             var infoTemplate = new InfoTemplate();
+
             infoTemplate.setTitle(name);
             infoTemplate.setContent(marker.details);
+
             graphic.setAttributes({id: featureId, name: name});
             graphic.setInfoTemplate(infoTemplate);
             layer.add(graphic);
             map.addLayer(layer);
-            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'marker', null, null, layer);
-            //zoom = zoom ? zoom: map.getMaxZoom();
             map.setZoom(zoom);
             map.centerAt(point);
+            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'marker', null, null, layer);
+
             layer.on('click', function(e) {
                 cmwapi.feature.selected.send({
                     overlayId:overlayId,
@@ -187,7 +189,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils",
          * @param layer {String} Top KML layer that will be recursed down.
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
-        var addFeatureListeners = function(caller, overlayId, featureId, layer) {
+        var addKmlFeatureListeners = function(caller, overlayId, featureId, layer) {
             var sendSelected = function(e) {
                 cmwapi.feature.selected.send({
                     overlayId:overlayId,
@@ -198,7 +200,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils",
             };
             (function onLoadListenRecurse(currLayer) {
                 currLayer = currLayer.layer ? currLayer.layer : currLayer;
-                var curr = currLayer.graphics || currLayer.getLayers();
+                var curr = currLayer.getLayers();
                 for(var i =0; i < curr.length; i++) {
                     if(curr[i].loaded) {
                         curr[i].on('click', sendSelected);
@@ -234,7 +236,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils",
                     me.zoom(caller, overlayId, featureId, null, null, "auto");
 
                 }
-                addFeatureListeners(caller, overlayId, featureId, layer);
+                addKmlFeatureListeners(caller, overlayId, featureId, layer);
             });
             manager.treeChanged();
 
