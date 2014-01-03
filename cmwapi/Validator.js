@@ -199,7 +199,7 @@ define('cmwapi/Validator', function() {
            // check that range is a number, and greater than 0
            if (!payload.featureId) {
                retVal.result = false;
-               retVal.msg += 'Need a featureId for this drap and drop request. ';
+               retVal.msg += 'Need a featureId for this drag and drop request. ';
            }
 
            // Check any features for required fields.
@@ -216,13 +216,13 @@ define('cmwapi/Validator', function() {
 
            // Check any featureUrls for required fields.
            if (payload.featureUrl) {
-                if (typeof payload.feature.format === 'undefined') {
+                if (typeof payload.featureUrl.format === 'undefined') {
                     retVal.result = false;
                     retVal.msg += 'format is a required parameter in drag and drop payloads for features via URL. ';
                 }
-                if (typeof payload.feature.url === 'undefined') {
+                if (typeof payload.featureUrl.url === 'undefined') {
                     retVal.result = false;
-                    retVal.msg += 'featureData is a required parameter in drag and drop payloads for features via URL. ';
+                    retVal.msg += 'url is a required parameter in drag and drop payloads for features via URL. ';
                 }
            }
 
