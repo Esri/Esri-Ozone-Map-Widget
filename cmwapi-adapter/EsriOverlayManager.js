@@ -1,6 +1,6 @@
 define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayManager/Overlay",
-    "cmwapi-adapter/EsriOverlayManager/Feature"],
-    function(cmwapi, KMLLayer, OverlayHandler, FeatureHandler) {
+    "cmwapi-adapter/EsriOverlayManager/Feature", "OWFWidgetExtensions/owf-widget-extended" ],
+    function(cmwapi, KMLLayer, OverlayHandler, FeatureHandler, OWFWidgetExtensions) {
 
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
@@ -39,6 +39,11 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
         me.feature = new FeatureHandler(me, map);
 
         var treeChangedHandlers = [];
+
+        var OVERLAY_PREF_NAMESPACE = 'com.esri', 
+            OVERLAY_PREF_NAME = 'overlayState';
+
+
         /**
          * Adds a handler to be called when the overlay tree structure changes
          * @method bindTreeChangeHandler
@@ -284,6 +289,64 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 featureId: featureId,
                 zoom: (zoom ? zoom : false)
             });
+        };
+
+        /**
+         * Destructive archival!  Will remove esriObjects, prior to sending through to stringify, as the esri data apparently has a recursive structure
+        */
+        me.archiveState = function() {
+            console.log("archive state for widget");
+            var overlayData = me.getOverlays();
+
+            for(var overlayId in overlayData) {
+                overlay = overlayData[overlayId];
+                if (overlay.features) {
+                    for (var featureId in overlayData[overlayId].features) {
+                        feature = overlayData[overlayId].features[featureId];
+                        if (feature.esriObject) {
+                            feature.esriObject = null;
+                        }
+                    }    
+                }
+            }
+
+            var successHandler = function() {
+                console.log("Saved preference...");
+                //console.log("Saved preference handler: " + dataValue);
+            }
+            var failureHandler = function(e) { console.log ("Unable to archive state."); };
+
+            var dataValue = OWFWidgetExtensions.Util.toString(overlayData); 
+            OWFWidgetExtensions.Preferences.setWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME, 
+                value: OWFWidgetExtensions.Util.toString(overlayData), onSuccess: successHandler, onFailure: failureHandler  });
+        };
+
+        me.retrieveState = function() {
+            console.log("retrieve state for widget");
+            
+            var successHandler = function(retValue) {
+                if (retValue) {
+                    //if (retValue.preference) {
+                        console.log("Retrieved: " + retValue.value);
+                        me.overlays = OWFWidgetExtensions.Util.parseJson(retValue.value);
+                    } else {
+                        console.log("No value retrieved");
+                    //}
+                }
+            };
+
+            var failureHandler = function(e) {
+                console.log("Error in getting preference");
+            }
+
+            OWFWidgetExtensions.Preferences.getWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME, 
+                onSuccess: successHandler, onFailure: failureHandler });
+
+        };
+
+        me.deleteState = function() {
+            // TODO: not yet implemented - need to determine when a widget is removed, rather than just closed - want to hold onto
+            //   widget instance preferences in between....
         };
     };
 

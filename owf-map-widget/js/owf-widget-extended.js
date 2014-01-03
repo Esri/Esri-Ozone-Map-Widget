@@ -62,21 +62,22 @@ function() {
      */     
      OWF.Preferences.getWidgetInstancePreference = function(cfg) {
           if (cfg) {
-               cfg.name = genInstanceName(cfg);
+               cfg.namespace = genInstanceName(cfg);
                OWF.Preferences.getUserPreference(cfg);
           }          
      };
 
      OWF.Preferences.setWidgetInstancePreference = function(cfg) {
           if (cfg) {
-               cfg.name = genInstanceName(cfg);
+               //cfg.name = genInstanceName(cfg);
+               cfg.namespace = genInstanceName(cfg);
                OWF.Preferences.setUserPreference(cfg);
           }
      };
 
      OWF.Preferences.deleteWidgetInstancePreference = function(cfg) {
           if (cfg) {
-               cfg.name = genInstanceName(cfg);
+               cfg.namespace = genInstanceName(cfg);
                OWF.Preferences.deleteUserPreference(cfg);
           }
      };
@@ -94,7 +95,9 @@ function() {
      var genInstanceName = function(cfg) {
           var widgetId = OWF.getInstanceId();
 
-          var name = (cfg && cfg.name) ? cfg.name + ":" + widgetId : ":" + widgetId;
+          //var name = (cfg && cfg.name) ? cfg.name + ":" + widgetId : ":" + widgetId;
+          //var name = (cfg && cfg.name) ? cfg.name + "." + widgetId : "." + widgetId;
+          var name = (cfg && cfg.namespace) ? cfg.namespace + "." + widgetId : "." + widgetId;
 
           return name;
 

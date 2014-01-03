@@ -45,6 +45,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
                 overlayManager.feature.plotFeature(sender, data.overlayId, data.featureId, data.name,
                         data.format, data.feature, data.zoom);
             }
+            overlayManager.archiveState();
         };
         CommonMapApi.feature.plot.addHandler(me.handlePlot);
 
@@ -73,6 +74,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
                 overlayManager.feature.plotFeatureUrl(sender, data.overlayId, data.featureId, data.name, data.format, data.url,
                     data.params, data.zoom);
             }
+            overlayManager.archiveState();
         };
         CommonMapApi.feature.plot.url.addHandler(me.handlePlotUrl);
 
@@ -96,6 +98,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             } else {
                 overlayManager.feature.deleteFeature(sender, data.overlayId, data.featureId);
             }
+            overlayManager.archiveState();
         };
         CommonMapApi.feature.unplot.addHandler(me.handleUnplot);
 
@@ -119,7 +122,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             } else {
                 overlayManager.feature.hideFeature(sender, data.overlayId, data.featureId);
             }
-
+            overlayManager.archiveState();
         };
         CommonMapApi.feature.hide.addHandler(me.handleHide);
 
@@ -140,6 +143,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             } else {
                 overlayManager.feature.showFeature(sender, data.overlayId, data.featureId, data.zoom);
             }
+            overlayManager.archiveState();
         };
         CommonMapApi.feature.show.addHandler(me.handleShow);
 
@@ -166,6 +170,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
                     overlayManager.feature.centerFeatureGraphic(sender, data.overlayId, data.featureId, data.selectedId, data.selectedName);
                 }
             }
+            overlayManager.archiveState();
         };
         CommonMapApi.feature.selected.addHandler(me.handleSelected);
 
@@ -189,6 +194,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             } else {
                 overlayManager.feature.updateFeature(sender, data.overlayId, data.featureId, data.name, data.newOverlayId);
             }
+            overlayManager.archiveState();
         };
         CommonMapApi.feature.update.addHandler(me.handleUpdate);
     };

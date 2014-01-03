@@ -120,9 +120,13 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
             me.clickHandler.remove();
             me.dblClickHandler.remove();
             me.unloadMapHandler.remove();
+
+            // archive off preferences
+            me.overlayManager.archiveState();
         };
 
         this.overlayManager = new OverlayManager(map);
+        this.overlayManager.retrieveState();
 
         // Attach any exposed instance attributes.
         this.overlay = new Overlay(this, this.overlayManager);
