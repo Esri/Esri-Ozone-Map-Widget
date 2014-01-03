@@ -18,9 +18,8 @@
  * @module EsriAdapter
  */
 define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cmwapi-adapter/Status",
-        "cmwapi-adapter/View", "cmwapi-adapter/Error", "cmwapi-adapter/EsriOverlayManager", "dojo/dom",
-        "dojo/mouse", "dojo/on"],
-        function(CommonMapApi, Overlay, Feature, Status, View, Error, OverlayManager, Dom, Mouse, On) {
+        "cmwapi-adapter/View", "cmwapi-adapter/Error", "cmwapi-adapter/EsriOverlayManager"],
+        function(CommonMapApi, Overlay, Feature, Status, View, Error, OverlayManager, Mouse, On) {
 
     /**
      * @classdesc Adapter layer between Common Map Widget API v. 1.1 javascript
@@ -143,19 +142,17 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
 
 
         var handleDragAndDrop = function(overlayManager) {
-            var dropZone = Dom.byId("map");
+            var dropZone = map.root
             var mouseLocation;
             map.on('mouse-up', function(e) {
                 mouseLocation = e;
             });
-            On(dropZone, Mouse.enter, function() {
-                    OWF.DragAndDrop.setDropEnabled(true);
+            map.on('mouse-over', function() {
+                OWF.DragAndDrop.setDropEnabled(true);
             });
-
-            On(dropZone, Mouse.leave, function() {
+            map.on('mouse-out', function() {
                 OWF.DragAndDrop.setDropEnabled(false);
             });
-
             OWF.DragAndDrop.addDropZoneHandler({
                 dropZone: dropZone,
                 handler: function (evt) {
