@@ -108,11 +108,9 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
          * @private
          * @param {MouseEvent} evt A MouseEvent fired by an ArcGIS map.  This is essentially a DOM MouseEvent
          *     with added, ArcGIS-specific attributes.
-         * @param {string} overlayManager overlay manager handles firing different CMSAPI events,  a drag and drop
-         *     event is just a different mechanism for plotting through the dragAndDrop API.
          * @memberof! module:EsriAdapter#
          */
-        var sendDragAndDrop = function(evt, overlayManager) {
+        var sendDragAndDrop = function(evt) {
             var callerId = OWF.Util.parseJson(evt.dragSourceId).id;
             var overlayId = evt.dragDropData.overlayId || OWF.getInstanceId();
             var featureId = evt.dragDropData.featureId;
@@ -144,14 +142,15 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
                 };
             }
             //Perform validation of the payload and verify that it contains the required fields
-            if(CommonMapApi.validator.validDragAndDropPayload(payload).result === true && mouseLocation) {
+            var payloadValidation = CommonMapApi.validator.validDragAndDropPayload(payload);
+            if(payloadValidation.result === true && mouseLocation) {
                 //payload contains a marker.
                 if(payload.marker) {
-                    overlayManager.feature.plotMarker(callerId, overlayId, featureId, name, payload.marker, zoom);
+                    me.overlayManager.feature.plotMarker(callerId, overlayId, featureId, name, payload.marker, zoom);
                 }
                 //payload contains a feature string.
                 if(payload.feature) {
-                    overlayManager.feature.plotFeature(
+                    me.overlayManager.feature.plotFeature(
                         callerId,
                         overlayId,
                         featureId,
@@ -162,7 +161,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
                 }
                 // payload contains a feature url.
                 if(payload.featureUrl) {
-                     overlayManager.feature.plotFeatureUrl(
+                     me.overlayManager.feature.plotFeatureUrl(
                         callerId,
                         overlayId,
                         featureId,
@@ -173,6 +172,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
                         zoom);
                 }
                 mouseLocation = null;
+            } else {
+                me.error.error(callerId, payloadValidation.msg, {type: "map.feature.dragAndDrop", msg: payloadValidation.msg});
             }
         };
 
@@ -250,12 +251,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         this.unloadMapHandler = map.on("unload", unloadHandlers);
 
         //Attach drop zone handler to OWF.
-        OWF.DragAndDrop.addDropZoneHandler({
-            dropZone: map.root,
-            handler: function(e) {
-                sendDragAndDrop(e, me.overlayManager);
-            }
-        });
+        OWF.DragAndDrop.addDropZoneHandler({ dropZone: map.root, handler: sendDragAndDrop });
     };
 
     return EsriAdapter;
