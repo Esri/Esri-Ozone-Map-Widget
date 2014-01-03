@@ -232,11 +232,11 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils",
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'kml-url', url, zoom, layer);
 
             layer.on("load", function() {
+                addKmlFeatureListeners(caller, overlayId, featureId, layer);
                 if(zoom) {
                     me.zoom(caller, overlayId, featureId, null, null, "auto");
 
                 }
-                addKmlFeatureListeners(caller, overlayId, featureId, layer);
             });
             manager.treeChanged();
 
