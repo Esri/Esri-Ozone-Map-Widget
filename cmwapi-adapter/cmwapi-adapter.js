@@ -165,7 +165,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
                     var name = evt.dragDropData.name;
                     var zoom = evt.dragDropData.zoom ? true : false;
                     var payload = {};
-                    payload.featureId = featureId
+                    payload.featureId = featureId;
                     if(evt.dragDropData.marker) {
                         payload.marker = {
                             details: evt.dragDropData.marker.details,
@@ -180,14 +180,14 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
                         payload.feature = {
                             format: evt.dragDropData.feature.format,
                             featureData: evt.dragDropData.feature.featureData
-                        }
+                        };
                     }
                     if(evt.dragDropData.featureUrl) {
                         payload.featureUrl = {
                             format: evt.dragDropData.featureUrl.format,
                             url: evt.dragDropData.featureUrl.url,
                             params: evt.dragDropData.featureUrl.params
-                        }
+                        };
                     }
                     if(CommonMapApi.validator.validDragAndDropPayload(payload).result === true && mouseLocation) {
                         if(payload.marker) { //payload contains a marker.
