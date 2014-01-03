@@ -165,6 +165,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils",
             graphic.setInfoTemplate(infoTemplate);
             layer.add(graphic);
             map.addLayer(layer);
+            zoom = zoom ? map.getMaxZoom() : undefined;
             map.setZoom(zoom);
             map.centerAt(point);
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'marker', null, null, layer);
