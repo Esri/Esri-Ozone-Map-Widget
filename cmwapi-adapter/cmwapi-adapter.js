@@ -19,7 +19,7 @@
  */
 define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cmwapi-adapter/Status",
         "cmwapi-adapter/View", "cmwapi-adapter/Error", "cmwapi-adapter/EsriOverlayManager"],
-        function(CommonMapApi, Overlay, Feature, Status, View, Error, OverlayManager, Mouse, On) {
+        function(CommonMapApi, Overlay, Feature, Status, View, Error, OverlayManager) {
 
     /**
      * @classdesc Adapter layer between Common Map Widget API v. 1.1 javascript
@@ -142,7 +142,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
 
 
         var handleDragAndDrop = function(overlayManager) {
-            var dropZone = map.root
+            var dropZone = map.root;
             var mouseLocation;
             map.on('mouse-up', function(e) {
                 mouseLocation = e;
