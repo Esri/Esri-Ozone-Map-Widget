@@ -188,7 +188,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
                     }
                     if(CommonMapApi.validator.validDragAndDropPayload(payload).result === true && mouseLocation) {
                         if(payload.marker) { //payload contains a marker.
-                            overlayManager.feature.plotMarker(callerId, overlayId, featureId, name, payload.marker);
+                            overlayManager.feature.plotMarker(callerId, overlayId, featureId, name, payload.marker, zoom);
                         }
                         if(payload.feature) { //payload contains a feature string.
                             overlayManager.feature.plotFeature(
@@ -197,7 +197,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
                                 featureId,
                                 name,
                                 payload.feature.format,
-                                payload.feature.featureData);
+                                payload.feature.featureData,
+                                zoom);
                         }
                         if(payload.featureUrl) { // payload contains a feature url.
                              overlayManager.feature.plotFeatureUrl(
