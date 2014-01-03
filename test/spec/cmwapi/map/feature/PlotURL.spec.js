@@ -65,6 +65,78 @@ define(["cmwapi/Channels", "cmwapi/map/feature/PlotURL", "cmwapi/map/Error", "cm
             expect(Error.send.calls.length).toEqual(0);
         });
 
+        it("copies featureName into name for backwards compatibility with CMWAPI 1.0 plot messages on send.", function() {
+            var eventing = OWF.Eventing;
+            expect(eventing).not.toBe(null);
+
+            spyOn(PlotURL, 'send').andCallThrough();
+            spyOn(eventing, 'publish').andCallThrough();
+            spyOn(Error, 'send');
+
+            PlotURL.send({
+                featureId:"myFeatureId", 
+                featureName: "myFeatureName",
+                url: "http://www.test.url"
+            });
+            expect(PlotURL.send).toHaveBeenCalled();
+
+            // expect publish to be called
+            expect(eventing.publish).toHaveBeenCalled();
+
+            var payload = Ozone.util.parseJson(eventing.publish.mostRecentCall.args[1]);
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_FEATURE_PLOT_URL);
+            expect(payload.overlayId).toEqual(INSTANCE_ID);
+            expect(payload.featureId).toEqual("myFeatureId");
+            expect(payload.url).toEqual("http://www.test.url");
+            expect(payload.name).toBe("myFeatureName");
+            expect(payload.format).toEqual("kml");
+            expect(payload.params).toBe(undefined);
+            expect(payload.zoom).toBe(false);
+            
+            // don't expect error to be called
+            expect(Error.send.calls.length).toEqual(0);
+        });
+
+        it("copies featureName into name for backwards compatibility with CMWAPI 1.0 plot messages prior to invoking added handlers.", function() {
+            var eventing = OWF.Eventing;
+            spyOn(eventing, 'subscribe');
+
+            var testHandler = jasmine.createSpy('testHandler');
+            var newHandler = PlotURL.addHandler(testHandler);
+            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_FEATURE_PLOT_URL);
+
+            // Test the behavior for newHandler  PlotURL a sender an empty payload to pass along
+            // Our code should fill in the payload and pass it along to the testHandler.
+            var jsonVal = {
+                featureId: "myFeatureId",
+                url: "http://www.test.url",
+                featureName: "myName",
+                params: "myParams"
+            };
+            var sender = {
+                id: INSTANCE_ID
+            };
+
+            // Spy on Error and call our wrapper handler.
+            spyOn(Error, 'send');
+            newHandler(Ozone.util.toString(sender), jsonVal); 
+
+            // We don't expect error to be called
+            expect(Error.send.calls.length).toEqual(0);
+
+            // We DO expect testHandler to have been called and the missing jsonVal items to have been
+            // filled in.
+            expect(testHandler.calls.length).toEqual(1);
+            expect(testHandler.mostRecentCall.args[1].overlayId).toEqual(INSTANCE_ID);
+            expect(testHandler.mostRecentCall.args[1].featureId).toEqual("myFeatureId");
+            expect(testHandler.mostRecentCall.args[1].url).toEqual("http://www.test.url");
+            expect(testHandler.mostRecentCall.args[1].name).toEqual("myName");
+            expect(testHandler.mostRecentCall.args[1].format).toEqual("kml");
+            expect(testHandler.mostRecentCall.args[1].params).toEqual("myParams");
+            expect(testHandler.mostRecentCall.args[1].zoom).toBe(false);
+            
+        });
+
         it("fails data missing a feature id", function() {
             var eventing = OWF.Eventing;
             expect(eventing).not.toBe(null);
