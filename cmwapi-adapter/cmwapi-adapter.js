@@ -106,8 +106,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         /**
          * Handles drag and drop events over the OWF DragAndDrop API.
          * @private
-         * @param {MouseEvent} evt A MouseEvent fired by an ArcGIS map.  This is essentially a DOM MouseEvent
-         *     with added, ArcGIS-specific attributes.
+         * @param {MouseEvent} evt A MouseEvent fired by OWF.  This is essentially a DOM MouseEvent
+         *     with added, OWF-specific attributes.
          * @memberof! module:EsriAdapter#
          */
         var sendDragAndDrop = function(evt) {
