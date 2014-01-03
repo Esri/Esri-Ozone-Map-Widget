@@ -973,6 +973,106 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 overlays = overlayManager.getOverlays();
                 expect(overlays["o"].features["f"].name).toBe("nn");
             });
+
+            it('verify plot marker and zoom', function() {
+                var marker = {
+                    iconUrl: 'http://icon',
+                    details: 'this is a test marker',
+                    latlong: {
+                        lat: 39.575759137747426,
+                        long: -79.1550500546856
+                    }
+                }
+                overlayManager.feature.plotMarker('fake', 'o', 'f', 'fn', marker, true);
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(overlays["o"].features["f"].name).toBe("fn");
+
+            });
+
+             it('verify plot marker  then verify marker is updated', function() {
+                var marker = {
+                    iconUrl: 'http://icon',
+                    details: 'this is a test marker',
+                    latlong: {
+                        lat: 39.575759137747426,
+                        long: -79.1550500546856
+                    }
+                }
+                overlayManager.feature.plotMarker('fake', 'o', 'f', 'fn', marker);
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(overlays["o"].features["f"].name).toBe("fn");
+                overlayManager.feature.plotMarker('fake', 'o', 'f', 'updatedName', marker);
+                expect(overlays["o"].features["f"].name).toBe("updatedName");
+                expect(Object.keys(overlays).length).toBe(1);
+            });
+
+             it('verify default icon is used when no icon is specified in the marker', function() {
+                var marker = {
+                    details: 'this is a test marker',
+                    latlong: {
+                        lat: 39.575759137747426,
+                        long: -79.1550500546856
+                    }
+                }
+                overlayManager.feature.plotMarker('fake', 'o', 'f', 'fn', marker);
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(overlays["o"].features["f"].name).toBe("fn");
+            });
+
+             it('verify add multiple markers to one overlay', function() {
+                var marker = {
+                    details: 'this is a test marker',
+                    latlong: {
+                        lat: 39.575759137747426,
+                        long: -79.1550500546856
+                    }
+                }
+
+                var marker2 = {
+                    details: 'this is a test marker2',
+                    latlong: {
+                        lat: 38.575759137747426,
+                        long: -79.1550500546856
+                    }
+                }
+                overlayManager.feature.plotMarker('fake', 'o', 'f', 'fn', marker);
+                overlayManager.feature.plotMarker('fake', 'o', 'f2', 'marker 2', marker2);
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                 expect(Object.keys(overlays["o"].features).length).toBe(2);
+                expect(overlays["o"].features["f"].name).toBe("fn");
+                expect(overlays["o"].features["f2"].name).toBe("marker 2");
+            });
+
+             it('verify add multiple markers and create mutiple overlays', function() {
+                var marker = {
+                    details: 'this is a test marker',
+                    latlong: {
+                        lat: 39.575759137747426,
+                        long: -79.1550500546856
+                    }
+                }
+
+                var marker2 = {
+                    details: 'this is a test marker2',
+                    latlong: {
+                        lat: 38.575759137747426,
+                        long: -79.1550500546856
+                    }
+                }
+                overlayManager.feature.plotMarker('fake', 'o', 'f', 'fn', marker);
+                overlayManager.feature.plotMarker('fake', 'o1', 'f2', 'marker 2', marker2);
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(2);
+                expect(Object.keys(overlays["o"].features).length).toBe(1);
+                expect(Object.keys(overlays["o1"].features).length).toBe(1);
+                expect(overlays["o"].features["f"].name).toBe("fn");
+                expect(overlays["o1"].features["f2"].name).toBe("marker 2");
+            });
+
         });
     });
 });
