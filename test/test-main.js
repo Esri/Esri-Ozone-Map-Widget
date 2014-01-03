@@ -35,6 +35,9 @@ var dojoConfig = {
             name: 'owf-map-widget',
             location: '/base/owf-map-widget'
         }, {
+            name: 'owf-widget-extended',
+            location: '/base/owf-widget-extended'
+        },{
             name: 'esri',
             location: '/base/test/mock/esri'
         }, {

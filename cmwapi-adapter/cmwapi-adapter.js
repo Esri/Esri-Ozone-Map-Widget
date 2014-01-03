@@ -33,6 +33,9 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         // Capture 'this' for use in custom event handlers.
         var me = this;
 
+        //Keep track of the mouse location on mouse up events to handle drag and drop.
+        var mouseLocation;
+
         /**
          * Handles click events on an ArcGIS map and reports the event over a CMWAPI channel.
          * @private
@@ -101,6 +104,80 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         };
 
         /**
+         * Handles drag and drop events over the OWF DragAndDrop API.
+         * @private
+         * @param {MouseEvent} evt A MouseEvent fired by OWF.  This is essentially a DOM MouseEvent
+         *     with added, OWF-specific attributes.
+         * @memberof! module:EsriAdapter#
+         */
+        var sendDragAndDrop = function(evt) {
+            var callerId = OWF.Util.parseJson(evt.dragSourceId).id;
+            var overlayId = evt.dragDropData.overlayId || OWF.getInstanceId();
+            var featureId = evt.dragDropData.featureId;
+            var name = evt.dragDropData.name;
+            var zoom = evt.dragDropData.zoom ? true : false;
+            var payload = {};
+            payload.featureId = featureId;
+            if(evt.dragDropData.marker) {
+                payload.marker = {
+                    details: evt.dragDropData.marker.details,
+                    iconUrl:  evt.dragDropData.marker.iconUrl,
+                    latlong: {
+                        long : mouseLocation.mapPoint.getLongitude(),
+                        lat: mouseLocation.mapPoint.getLatitude()
+                    }
+                };
+            }
+            if(evt.dragDropData.feature) {
+                payload.feature = {
+                    format: evt.dragDropData.feature.format,
+                    featureData: evt.dragDropData.feature.featureData
+                };
+            }
+            if(evt.dragDropData.featureUrl) {
+                payload.featureUrl = {
+                    format: evt.dragDropData.featureUrl.format,
+                    url: evt.dragDropData.featureUrl.url,
+                    params: evt.dragDropData.featureUrl.params
+                };
+            }
+            //Perform validation of the payload and verify that it contains the required fields
+            var payloadValidation = CommonMapApi.validator.validDragAndDropPayload(payload);
+            if(payloadValidation.result === true && mouseLocation) {
+                //payload contains a marker.
+                if(payload.marker) {
+                    me.overlayManager.feature.plotMarker(callerId, overlayId, featureId, name, payload.marker, zoom);
+                }
+                //payload contains a feature string.
+                if(payload.feature) {
+                    me.overlayManager.feature.plotFeature(
+                        callerId,
+                        overlayId,
+                        featureId,
+                        name,
+                        payload.feature.format,
+                        payload.feature.featureData,
+                        zoom);
+                }
+                // payload contains a feature url.
+                if(payload.featureUrl) {
+                     me.overlayManager.feature.plotFeatureUrl(
+                        callerId,
+                        overlayId,
+                        featureId,
+                        name,
+                        payload.featureUrl.format,
+                        payload.featureUrl.url,
+                        payload.featureUrl.params,
+                        zoom);
+                }
+                mouseLocation = null;
+            } else {
+                me.error.error(callerId, payloadValidation.msg, {type: "map.feature.dragAndDrop", msg: payloadValidation.msg});
+            }
+        };
+
+        /**
          * Reports out changes in an ArcGIS map extent according to the CMWAPI
          * map.status.view channel definition.
          * @private
@@ -108,6 +185,33 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
          */
         var sendStatusViewUpdate = function() {
             me.status.sendView(OWF.getInstanceId());
+        };
+
+        /**
+         * Updates the mouse location on mouse up events, to get to location for drag and drop
+         * @private
+         * @memberof! module:EsriAdapter#
+         */
+        var updateMouseLocation = function(location) {
+            mouseLocation = location;
+        };
+
+        /**
+         * Notifies OWF that the map is compatible with the drag and drop api when a drag event is brought onto the map.
+         * @private
+         * @memberof! module:EsriAdapter#
+         */
+        var setDropEnabled = function() {
+            OWF.DragAndDrop.setDropEnabled(true);
+        };
+
+        /**
+         * Notifies OWF that the map is no longer compatible with the drag and drop api when it is dragged outside of the map.
+         * @private
+         * @memberof! module:EsriAdapter#
+         */
+        var setDropDisabled = function() {
+            OWF.DragAndDrop.setDropEnabled(false);
         };
 
         /**
@@ -119,11 +223,14 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
             console.log("UNLOADING OUR CUSTOM MAP EVENT HANDLERS!");
             me.clickHandler.remove();
             me.dblClickHandler.remove();
+            me.upClickHandler.remove();
+            me.dropEnabledHandler.remove();
+            me.dropDisabledHandler.remove();
             me.unloadMapHandler.remove();
 
-            // archive off preferences
-            me.overlayManager.archiveState();
         };
+
+
 
         this.overlayManager = new OverlayManager(map);
         this.overlayManager.retrieveState();
@@ -139,9 +246,13 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         this.clickHandler = map.on("click", sendClick);
         this.dblClickHandler = map.on("dbl-click", sendDoubleClick);
         this.extentChangeHandler = map.on("extent-change", sendStatusViewUpdate);
-
+        this.upClickHandler = map.on('mouse-up', updateMouseLocation);
+        this.dropEnabledHandler = map.on('mouse-over', setDropEnabled);
+        this.dropDisabledHandler = map.on('mouse-out', setDropDisabled);
         this.unloadMapHandler = map.on("unload", unloadHandlers);
 
+        //Attach drop zone handler to OWF.
+        OWF.DragAndDrop.addDropZoneHandler({ dropZone: map.root, handler: sendDragAndDrop });
     };
 
     return EsriAdapter;
