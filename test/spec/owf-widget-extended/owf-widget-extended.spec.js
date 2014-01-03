@@ -36,13 +36,13 @@
 
  		OWFWidgetExtended.Preferences.setWidgetInstancePreference({name: 'foo', namespace: 'bar' });
 
- 		var expectedId = "foo" + ":" + OWF.getInstanceId();
+ 		var expectedId = "bar" + "." + OWF.getInstanceId();
  		expect(OWF.Preferences.setUserPreference).toHaveBeenCalled();
- 		expect(OWF.Preferences.setUserPreference).toHaveBeenCalledWith({name: expectedId, namespace: 'bar'});
+ 		expect(OWF.Preferences.setUserPreference).toHaveBeenCalledWith({namespace: expectedId, name: 'foo'});
 
  		OWFWidgetExtended.Preferences.setWidgetInstancePreference({}); 		
- 		expectedId = ":" + OWF.getInstanceId();
-		expect(OWF.Preferences.setUserPreference).toHaveBeenCalledWith({name: expectedId});
+ 		expectedId = "." + OWF.getInstanceId();
+		expect(OWF.Preferences.setUserPreference).toHaveBeenCalledWith({namespace: expectedId});
 
  	});
 
@@ -56,13 +56,13 @@
 
  		OWFWidgetExtended.Preferences.getWidgetInstancePreference({name: 'foo', namespace: 'bar' });
 
- 		var expectedId = "foo" + ":" + OWF.getInstanceId();
+ 		var expectedId = "bar" + "." + OWF.getInstanceId();
  		expect(OWF.Preferences.getUserPreference).toHaveBeenCalled();
- 		expect(OWF.Preferences.getUserPreference).toHaveBeenCalledWith({name: expectedId, namespace: 'bar'});
+ 		expect(OWF.Preferences.getUserPreference).toHaveBeenCalledWith({name: 'foo', namespace: expectedId});
 
  		OWFWidgetExtended.Preferences.getWidgetInstancePreference({}); 		
- 		expectedId = ":" + OWF.getInstanceId();
-		expect(OWF.Preferences.getUserPreference).toHaveBeenCalledWith({name: expectedId});
+ 		expectedId = "." + OWF.getInstanceId();
+		expect(OWF.Preferences.getUserPreference).toHaveBeenCalledWith({namespace: expectedId});
  	});
 
  	it("Verify delete of widget instance preference...", function() {
@@ -75,13 +75,13 @@
 
  		OWFWidgetExtended.Preferences.deleteWidgetInstancePreference({name: 'foo', namespace: 'bar' });
 
- 		var expectedId = "foo" + ":" + OWF.getInstanceId();
+ 		var expectedId = "bar" + "." + OWF.getInstanceId();
  		expect(OWF.Preferences.deleteUserPreference).toHaveBeenCalled();
- 		expect(OWF.Preferences.deleteUserPreference).toHaveBeenCalledWith({name: expectedId, namespace: 'bar'});
+ 		expect(OWF.Preferences.deleteUserPreference).toHaveBeenCalledWith({name: 'foo', namespace: expectedId});
 
  		OWFWidgetExtended.Preferences.deleteWidgetInstancePreference({}); 		
- 		expectedId = ":" + OWF.getInstanceId();
-		expect(OWF.Preferences.deleteUserPreference).toHaveBeenCalledWith({name: expectedId});
+ 		expectedId = "." + OWF.getInstanceId();
+		expect(OWF.Preferences.deleteUserPreference).toHaveBeenCalledWith({namespace: expectedId});
 
 
  	});
@@ -104,7 +104,7 @@
 
  	it("Good preference inputs", function() {
 
- 		var expectedId = "bar123:" + OWF.getInstanceId();
+ 		var expectedId = "foo.bar.com." + OWF.getInstanceId();
 
  		// no error
  		var preferenceId = OWFWidgetExtended.Preferences._generateInstancePreferenceName({namespace: 'foo.bar.com', name: 'bar123'});
@@ -113,7 +113,7 @@
 
  	it("No name given", function() { 		
 
- 		var expectedId = ":" + OWF.getInstanceId();
+ 		var expectedId = "." + OWF.getInstanceId();
  		var preferenceId = OWFWidgetExtended.Preferences._generateInstancePreferenceName({});
  		expect(preferenceId).toMatch(expectedId + '$');
 

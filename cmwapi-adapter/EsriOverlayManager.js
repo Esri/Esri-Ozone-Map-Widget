@@ -298,6 +298,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             console.log("archive state for widget");
             var overlayData = me.getOverlays();
 
+            var overlay, feature;
             for(var overlayId in overlayData) {
                 overlay = overlayData[overlayId];
                 if (overlay.features) {
@@ -313,12 +314,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             var successHandler = function() {
                 console.log("Saved preference...");
                 //console.log("Saved preference handler: " + dataValue);
-            }
-            var failureHandler = function(e) { console.log ("Unable to archive state."); };
+            };
+            var failureHandler = function() { console.log ("Unable to archive state."); };
 
             var dataValue = OWFWidgetExtensions.Util.toString(overlayData); 
             OWFWidgetExtensions.Preferences.setWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME, 
-                value: OWFWidgetExtensions.Util.toString(overlayData), onSuccess: successHandler, onFailure: failureHandler  });
+                value: dataValue, onSuccess: successHandler, onFailure: failureHandler  });
         };
 
         me.retrieveState = function() {
@@ -335,9 +336,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 }
             };
 
-            var failureHandler = function(e) {
+            var failureHandler = function() {
                 console.log("Error in getting preference");
-            }
+            };
 
             OWFWidgetExtensions.Preferences.getWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME, 
                 onSuccess: successHandler, onFailure: failureHandler });
