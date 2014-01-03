@@ -12,7 +12,7 @@ module.exports = function(config) {
     preprocessors: {'**/*.html': []},
 
     // frameworks to use
-    frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['jasmine', 'dojo'],
 
 
     // list of files / patterns to load in the browser
@@ -24,19 +24,17 @@ module.exports = function(config) {
 
         // Source files here; paths are relative to basePath defined above.
         {pattern: '*cmwapi*/**/*.js', included: false},
+        {pattern: 'owf-map-widget/js/owf-widget-extended.js', included: false},
         
         // All mock files
         {pattern: 'test/mock/**/*.js', included: false},
 
         // All spec files
-        //{pattern: 'test/spec/**/*.spec.js', included: false},
-        //{pattern: 'test/spec/cmwapi/**/*.spec.js', included: false},
-        {pattern: 'test/spec/cmwapi/map/status/*.spec.js', included: false},
-        //{pattern: 'test/spec/cmwapi-adapter/**/*.spec.js', included: false},
+        {pattern: 'test/spec/**/*.spec.js', included: false},
 
         // Make any necessary descriptions, relay files available on the Karma server for tests
-        // The relay file under the api-test-widget is provided as an example.
-        {pattern: 'api-test-widget/js/eventing/*.html', included: false}
+        // The relay file under the owf-map-widget is provided as an example.
+        // {pattern: 'owf-map-widget/js/eventing/*.html', included: false}
     ],
 
 
