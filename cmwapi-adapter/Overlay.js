@@ -38,6 +38,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             } else {
                 overlayManager.overlay.createOverlay(sender, data.overlayId, data.name, data.parentId);
             }
+            overlayManager.archiveState();
         };
         CommonMapApi.overlay.create.addHandler(me.handleCreate);
 
@@ -58,6 +59,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             } else {
                 overlayManager.overlay.removeOverlay(sender, data.overlayId);
             }
+            overlayManager.archiveState();
 
         };
         CommonMapApi.overlay.remove.addHandler(me.handleRemove);
@@ -79,6 +81,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             } else {
                 overlayManager.overlay.hideOverlay(sender, data.overlayId);
             }
+            overlayManager.archiveState();
         };
         CommonMapApi.overlay.hide.addHandler(me.handleHide);
 
@@ -99,6 +102,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             } else {
                 overlayManager.overlay.showOverlay(sender, data.overlayId);
             }
+            overlayManager.archiveState();
         };
         CommonMapApi.overlay.show.addHandler(me.handleShow);
 
@@ -123,6 +127,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
             } else {
                 overlayManager.overlay.updateOverlay(sender, data.overlayId, data.name, data.parentId);
             }
+            overlayManager.archiveState();
         };
         CommonMapApi.overlay.update.addHandler(me.handleUpdate);
     };

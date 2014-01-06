@@ -190,7 +190,7 @@ define('cmwapi/Validator', function() {
            }
 
            // Check that we have at least one of a marker, feature, or feature URL.
-           if ((typeof payload.marker === 'undefined') && (typeof payload.feature === 'undefined') && 
+           if ((typeof payload.marker === 'undefined') && (typeof payload.feature === 'undefined') &&
                (typeof payload.featureUrl === 'undefined')) {
                 retVal.result = false;
                 retVal.msg += 'At least one of a marker, feature, or featureUrl are required. ';
@@ -199,7 +199,7 @@ define('cmwapi/Validator', function() {
            // check that range is a number, and greater than 0
            if (!payload.featureId) {
                retVal.result = false;
-               retVal.msg += 'Need a featureId for this drap and drop request. ';
+               retVal.msg += 'Need a featureId for this drag and drop request. ';
            }
 
            // Check any features for required fields.
@@ -216,13 +216,13 @@ define('cmwapi/Validator', function() {
 
            // Check any featureUrls for required fields.
            if (payload.featureUrl) {
-                if (typeof payload.feature.format === 'undefined') {
+                if (typeof payload.featureUrl.format === 'undefined') {
                     retVal.result = false;
                     retVal.msg += 'format is a required parameter in drag and drop payloads for features via URL. ';
                 }
-                if (typeof payload.feature.url === 'undefined') {
+                if (typeof payload.featureUrl.url === 'undefined') {
                     retVal.result = false;
-                    retVal.msg += 'featureData is a required parameter in drag and drop payloads for features via URL. ';
+                    retVal.msg += 'url is a required parameter in drag and drop payloads for features via URL. ';
                 }
            }
 
@@ -230,11 +230,11 @@ define('cmwapi/Validator', function() {
         },
 
         /**
-         * Validates a basic payload structure.  Payloads handed to channels are expected to be Objects or Arrays of 
+         * Validates a basic payload structure.  Payloads handed to channels are expected to be Objects or Arrays of
          * Objects.  This function will check the type of the input to see if it is an object or object
          * array.  Undefined inputs are considered valid and returned as an array containing
          * a single empty object. Note that this function does not evaluate individual payload attributes.
-         * @returns {module:cmwapi/Validator~PayloadResult} 
+         * @returns {module:cmwapi/Validator~PayloadResult}
          */
         validObjectOrArray: function(data) {
             var retVal = {
@@ -245,7 +245,7 @@ define('cmwapi/Validator', function() {
 
             if ( typeof data === 'undefined' ) {
                 retVal.payload = [{}];
-            } 
+            }
             else if( Object.prototype.toString.call( data ) === '[object Array]' ) {
                 retVal.payload = data;
             }
@@ -340,7 +340,7 @@ define('cmwapi/Validator', function() {
          /**
          * A validation results object that includes the boolean result and an error message if
          * validation fails.  The payload array will contain an empty object if no input was given
-         * or an array of objects that were passed in.  
+         * or an array of objects that were passed in.
          * @typedef {Object} module:cmwapi/Validator~PayloadResult
          * @property {boolean} result True, if validation passes; false, otherwise
          * @property {Array.Object} payload An array of payload objects

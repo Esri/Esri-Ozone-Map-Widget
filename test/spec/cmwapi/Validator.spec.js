@@ -90,6 +90,130 @@ define(["cmwapi/Validator"], function(Validator) {
                 expect(Validator.isString(jsonString)).toBe(true);
             });
 
+            it("validates correct, basic drag and drop payloads.", function() {
+                var payload = {
+                    overlayId: "overlay1",
+                    featureId: "feature1",
+                    name: "sample",
+                    zoom: true,
+                    marker: {
+                        details: "foo",
+                        iconUrl: "/sampleurl"
+                    }
+                };
+
+                var validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(true);
+            });
+
+
+            it("validates drag and drop payloads that are missing overlayId, name, and zoom as they are optional.", function() {
+                var payload = {
+                    featureId: "feature1",
+                    marker: {
+                        details: "foo",
+                        iconUrl: "/sampleurl"
+                    }
+                };
+
+                var validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(true);
+            });
+
+            it("validates drag and drop payloads with empty markers.", function() {
+                var payload = {
+                    featureId: "feature1",
+                    marker: {
+                    }
+                };
+
+                var validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(true);
+            });
+
+            it("does not validate drag and drop payloads missing a marker, feature, and featureUrl.", function() {
+                var payload = {
+                    overlayId: "overlay1",
+                    featureId: "feature1",
+                    name: "sample",
+                    zoom: true
+                };
+
+                var validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(false);
+            });
+
+            it("does not validate drag and drop payloads missing a featureId.", function() {
+                var payload = {
+                    overlayId: "overlay1",
+                    name: "sample",
+                    zoom: true,
+                    marker: {
+                        details: "foo",
+                        iconUrl: "/sampleurl"
+                    }
+                };
+
+                var validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(false);
+            });
+
+            it("does not validate drag and drop payloads with incomplete featureUrls.", function() {
+                var payload = {
+                    overlayId: "overlay1",
+                    featureId: "feature1",
+                    name: "sample",
+                    zoom: true,
+                    featureUrl: {
+                        format: "kml"
+                    }
+                };
+
+                var validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(false);
+
+                // Revalidate with a missing format but valid url
+                payload.featureUrl.url = "/sampleurl";
+                delete payload.featureUrl.format;
+
+                validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(false);
+
+                // Add the format back and it should pass.
+                payload.featureUrl.format = "kml";
+
+                validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(true);
+
+            });
+
+            it("does not validate drag and drop payloads with incomplete features.", function() {
+                var payload = {
+                    overlayId: "overlay1",
+                    featureId: "feature1",
+                    name: "sample",
+                    zoom: true,
+                    feature: {
+                        format: "kml"
+                    }
+                };
+
+                var validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(false);
+
+                // Revalidate with a missing format but valid url
+                payload.feature.featureData = "some string data";
+                delete payload.feature.format;
+
+                validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(false);
+
+                // Add the feature format back and it should pass.
+                payload.feature.format = "kml";
+
+                validation = Validator.validDragAndDropPayload(payload);
+                expect(validation.result).toBe(true);
+            });
         });
     });
 });

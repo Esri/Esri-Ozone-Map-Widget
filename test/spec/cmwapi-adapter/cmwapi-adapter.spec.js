@@ -89,5 +89,13 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "test/mock/esriMap", "
             expect(adapter.error.error).toBeDefined();
             expect(adapter.error.handleError).toBeDefined();
         });
+
+        it("test that OWF  dependency is brought in", function() {
+            var map = new Map();
+            var adapter = new Adapter(map);
+            expect(OWF).toBeDefined();
+            expect(OWF.DragAndDrop).toBeDefined();
+            expect(OWF.DragAndDrop.addDropZoneHandler).toBeDefined();
+        });
     });
 });
