@@ -16,6 +16,8 @@ require([
     if (OWF.Util.isRunningInOWF()) {
 
         OWF.ready(function () {
+            esri.config.defaults.io.proxyUrl = "/owf/proxy.jsp";
+
             OWF.notifyWidgetReady();
 
             var geocoder = new Geocoder({

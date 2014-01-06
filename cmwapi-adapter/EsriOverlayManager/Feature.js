@@ -1,4 +1,6 @@
-define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],function(cmwapi, KMLLayer, ViewUtils) {
+define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/layers/WMSLayerInfo", "cmwapi-adapter/ViewUtils"],
+    function(cmwapi, KMLLayer, WMSLayer, WMSLayerInfo, ViewUtils) {
+
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -119,36 +121,14 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
             //if a type we like then handler function
             if(format === 'kml') {
                 plotKmlFeatureUrl(caller, overlayId, featureId, name, url, zoom);
-            } /*else if(format === "wms") {
+            } else if(format === "wms") {
                 plotWmsFeatureUrl(caller, overlayId, featureId, name, url, params, zoom);
-            } */else {
+            } else {
                 var msg = "Format, " + format + " of data is not accepted";
                 sendError(caller, msg, {msg: msg, type: 'invalid_data_format'});
             }
         };
 
-
-        var addFeatureListeners = function(caller, overlayId, featureId, layer) {
-            (function onLoadListenRecurs(currLayer) {
-                var curr = currLayer.getLayers();
-                for(var i =0; i < curr.length; i++) {
-                    if(curr[i].loaded) {
-                        curr[i].on('click', function(e) {
-                            cmwapi.feature.selected.send({
-                                overlayId:overlayId,
-                                featureId:featureId,
-                                selectedId: e.graphic.attributes.id,
-                                selectedName: e.graphic.attributes.name
-                            });
-                        });
-                    } else {
-                        curr[i].on('load', function(loaded) {
-                            onLoadListenRecurs(loaded.layer);
-                        });
-                    }
-                }
-            })(layer);
-        };
 
         /**
          * Plots a kml layer via url to the map
@@ -173,7 +153,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
             layer.on("load", function() {
                 if(zoom) {
                     me.zoom(caller, overlayId, featureId, null, null, "auto");
-
                 }
                 addFeatureListeners(caller, overlayId, featureId, layer);
             });
@@ -194,8 +173,62 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/ViewUtils"],fun
          * @param [zoom] {Boolean} If the plotted feature should be zoomed to upon being plotted
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
-        var plotWmsFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
-            //TODO
+        var plotWmsFeatureUrl = function(caller, overlayId, featureId, name, url, params, zoom) {
+            console.log("Hit");
+            console.log(params);
+
+            var layer = new WMSLayer(url, {extent: map.geographicExtent, layerInfos: [new WMSLayerInfo({name: params.layers, title: params.layers})]});
+            map.addLayer(layer);
+
+            var overlay = manager.overlays[overlayId];
+
+            //get map extent
+
+            //get layers from params
+
+            //copyright
+            //extent
+            //description
+            //layerInfos
+            //getMapUrl
+            //minScale
+            //maxScale
+            //MaxHeight
+            //maxWidth
+            //title
+            //version
+
+            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'wms-url', url, zoom, layer);
+
+            layer.on("load", function() {
+                if(zoom) {
+                    me.zoom(caller, overlayId, featureId, null, null, "auto");
+                }
+
+            });
+            manager.treeChanged();
+        };
+
+        var addFeatureListeners = function(caller, overlayId, featureId, layer) {
+            (function onLoadListenRecurs(currLayer) {
+                var curr = currLayer.getLayers();
+                for(var i =0; i < curr.length; i++) {
+                    if(curr[i].loaded) {
+                        curr[i].on('click', function(e) {
+                            cmwapi.feature.selected.send({
+                                overlayId:overlayId,
+                                featureId:featureId,
+                                selectedId: e.graphic.attributes.id,
+                                selectedName: e.graphic.attributes.name
+                            });
+                        });
+                    } else {
+                        curr[i].on('load', function(loaded) {
+                            onLoadListenRecurs(loaded.layer);
+                        });
+                    }
+                }
+            })(layer);
         };
 
         /**
