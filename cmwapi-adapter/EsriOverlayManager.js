@@ -147,11 +147,18 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.sendOverlayCreate = function(id, name, parentId) {
-            cmwapi.overlay.create.send({
-                name: name,
-                overlayId: id,
-                parentId: parentId
-            });
+            var payload = {};
+            if (typeof(id) !== 'undefined') {
+                payload.overlayId = id;
+            }
+            if (typeof(name) !== 'undefined') {
+                payload.name = name;
+            }
+            if (typeof(parentId) !== 'undefined') {
+                payload.parentId = parentId;
+            }
+
+            cmwapi.overlay.create.send(payload);
         };
 
         /**

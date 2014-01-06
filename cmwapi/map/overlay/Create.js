@@ -65,8 +65,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
                 // The name is optional; defaults to overlay id if not specified.
                 payload[i].name = (Validator.isString(payload[i].name)) ? payload[i].name : payload[i].overlayId;
 
-                // The parentId is optional
-                payload[i].parentId = (Validator.isString(payload[i].parentId)) ? payload[i].parentId : null;
+                // The parentId is optional.
             }
 
             // Since everything is optional, no major data validation is performed here.  Send
@@ -105,7 +104,6 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
                     data[i].name = (data[i].name) ? data[i].name : data[i].overlayId;
 
                     // The parentId is optional
-                    data[i].parentId = (data[i].parentId) ? data[i].parentId : null;
                 }
 
                 handler(sender, (data.length === 1) ? data[0] : data);

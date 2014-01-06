@@ -374,7 +374,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
 
                 overlayManager.sendOverlayCreate("id", "name");
 
-                expect(CommonMapApi.overlay.create.send).toHaveBeenCalledWith({overlayId: "id", name: "name", parentId: null});
+                expect(CommonMapApi.overlay.create.send).toHaveBeenCalledWith({overlayId: "id", name: "name"});
             });
 
             it("verify send overlay remove calls api correctly", function() {
