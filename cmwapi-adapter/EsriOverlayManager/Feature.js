@@ -259,7 +259,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             console.log("Hit");
             console.log(params);
 
-            var layer = new WMSLayer(url, {extent: map.geographicExtent, layerInfos: [new WMSLayerInfo({name: params.layers, title: params.layers})]});
+            var details = {extent: map.geographicExtent, layerInfos: [new WMSLayerInfo({name: params.layers, title: params.layers})]};
+            //console.log(details);
+            var layer = new WMSLayer(url, details);
+            layer.setVisibleLayers([params.layers]);
             map.addLayer(layer);
 
             var overlay = manager.overlays[overlayId];
