@@ -4,7 +4,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         var adapter;
     var OverlayManager =  function(map) {
         this.adapter = adapter = new cmwapiAdapter(map);
-        $('#popover_overlay_wrapper').load('overlayTemplate.html', function() {
+        $('#popover_overlay_wrapper').load('./templates/overlayTemplate.html', function() {
             $(window).bind("resize",function() {
                 changeAddScrollState();
             });
@@ -97,23 +97,15 @@ define(["cmwapi-adapter/cmwapi-adapter",],
 
     var changeAddScrollState = function() {
         if($('#add-overlay-div').is(':visible') || $('#add-feature-div').is(':visible')) {
-            var diff = $(window).height() - $("#overlay-manager-add")[0].scrollHeight;
-            console.log("**************************************");
-            console.log($('#add-feature-div').height());
-            console.log($('#overlay-manager-add').height());
-            console.log($('#overlay-manager-add').height() + $('#add-feature-div').height())
-            console.log("**************************************");
-
-
-            if(!$('#add-overlay-div').is(':visible') && $('#add-feature-div').is(':visible')) {
-                 $("#overlay-manager-add").css("height", $('#add-feature-div').height() + 15);
+             var scrollHeight = parseInt($("#overlay-manager-add")[0].scrollHeight);
+            if(($(window).height() - scrollHeight) <= 200) {
+                $("#overlay-manager-add").css("height", $(window).height() - 200);
+            } else {
+                var featureHeight = $('#add-feature-div').is(':visible') ? ($('#add-feature-div').height()) : -15;
+                var overlayHeight = $('#add-overlay-div').is(':visible') ? $('#add-overlay-div').height() : -15;
+                var height = (featureHeight + overlayHeight + 32);
+                $("#overlay-manager-add").css("height", height);
             }
-            if(diff < 210 || $("#overlay-manager-add")[0].scrollHeight != $("#overlay-manager-add").height()) {
-                 $("#overlay-manager-add").css("height", $(window).height() - 220);
-            }
-            // if($('#add-overlay-div').is(':visible') && !$('#add-feature-div').is(':visible')) {
-            //     $("#overlay-manager-add").css("height", $('#add-overlay-div').height() + 15);
-            // }
             resizeOverlayManager();
         }
     };
@@ -124,7 +116,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         } else {
             $('#add-overlay-div').hide();
         }
-        resizeOverlayManager();
+        changeAddScrollState();
         checkAddFormCompleted();
     };
 
@@ -167,7 +159,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         } else {
             $('#feature-params-group').hide();
         }
-        resizeOverlayManager();
+        changeAddScrollState();
         checkAddFormCompleted();
     };
 
@@ -311,8 +303,6 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         clearAddInputs();
         $('.init').hide();
         $('.add').show();
-        resizeOverlayManager();
-        changeAddScrollState();
     };
 
     var setStateAdd = function() {
@@ -321,12 +311,14 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         addState();
         checkAddFormCompleted();
         updateOverlaySelection();
+        changeAddScrollState();
     };
 
     var setStateAddOverlay = function() {
         $('#add-overlay-div').show();
         $('#add-feature-div').hide();
         addState();
+        changeAddScrollState();
     };
 
    var setStateRemove = function() {
