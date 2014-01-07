@@ -70,7 +70,7 @@ if (!window.owfJsPath) {
      * @global
      */
     window.owfJsPath = (function() {
-        var path = window.contextPath + "js/lib/";
+        var path = window.contextPath + "vendor/js/";
 
         if (document.referrer &&
             /\/owf\/$/i.test(decodeURIComponent(document.referrer))) {
@@ -93,7 +93,7 @@ if (!window.esriJsPath) {
 
         if (window.isOffline()) {
             // Use local copy of API files
-            path = window.contextPath + "js/lib/esri-3.7/";
+            path = window.contextPath + "vendor/js/esri-3.7/";
         } else if (window.location.protocol != "file:") {
             // Match same protocol as page to avoid mixed content issues
             path = path.replace("http://", window.location.protocol + "//");
@@ -136,8 +136,7 @@ dojoConfig.packages = [
     { location: window.esriJsPath + "js/put-selector", main: "put", name: "put-selector" },
 
     // Additional packages for this webapp
-    { location: window.contextPath + "js/models", name: "models" },
-    { location: window.contextPath + "js/lib", name: "lib" },
+    { location: window.contextPath + "digits", name: "digits" },
     { location: window.contextPath + "../cmwapi", name: "cmwapi" },
     { location: window.contextPath + "../cmwapi-adapter", name: "cmwapi-adapter" },
     { location: window.contextPath + "js", name:"OWFWidgetExtensions"}

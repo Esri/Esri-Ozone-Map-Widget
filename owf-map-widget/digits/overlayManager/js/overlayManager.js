@@ -1,10 +1,27 @@
-
+/**
+ * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+ *
+ * @license
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at<br>
+ * <br>
+ *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+ * <br>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 define(["cmwapi-adapter/cmwapi-adapter",],
        function(cmwapiAdapter) {
         var adapter;
     var OverlayManager =  function(map) {
         this.adapter = adapter = new cmwapiAdapter(map);
-        $('#popover_overlay_wrapper').load('./templates/overlayTemplate.html', function() {
+        $('#popover_overlay_wrapper').load('./digits/overlayManager/index.html', function() {
             $(window).bind("resize",function() {
                 changeAddScrollState();
             });
@@ -14,7 +31,8 @@ define(["cmwapi-adapter/cmwapi-adapter",],
                 autoOpen: 1,
                 onCreateLi: function(node, $li) {
                     node['node-type'] = node.type;
-                    var image = node.type === 'feature' ? './images/icons/kml_icon.gif': './images/icons/Tree_Folder.png';
+                    var basePath = './digits/overlayManager/images/icons/';
+                    var image = node.type === 'feature' ? basePath + 'kml_icon.gif': basePath + 'Tree_Folder.png';
                     var inputString = '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type;
                     var checked = node.isHidden === false ? (inputString + '" checked="checked"/>') : (inputString + '"/>');
                     $li.find('.jqtree-title').before(
@@ -202,7 +220,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
             $(this).removeClass('has-error');
             $('.help-block').hide();
         }
-        resizeOverlayManager();
+        changeAddScrollState();
     };
 
     var isValidUrl = function(url){
