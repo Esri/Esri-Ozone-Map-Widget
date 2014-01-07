@@ -291,20 +291,22 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
-        /**
-         * Destructive archival!  Will remove esriObjects, prior to sending through to stringify, as the esri data apparently has a recursive structure
-        */
         me.archiveState = function() {
             console.log("archive state for widget");
             var overlayData = me.getOverlays();
 
-            var overlay, feature;
-            for(var overlayId in overlayData) {
+            /*
+                The Esri data apparently has a recursive structure, so making it a JSON string won't work while esri objects are embedded
+            */
+            var overlay, feature, overlayId;
+            var esriObjectMapping = [];
+            for(overlayId in overlayData) {
                 overlay = overlayData[overlayId];
                 if (overlay.features) {
                     for (var featureId in overlayData[overlayId].features) {
                         feature = overlayData[overlayId].features[featureId];
                         if (feature.esriObject) {
+                            esriObjectMapping.push( { feature: feature, esriObject: feature.esriObject });
                             feature.esriObject = null;
                         }
                     }    
@@ -320,6 +322,13 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             var dataValue = OWFWidgetExtensions.Util.toString(overlayData); 
             OWFWidgetExtensions.Preferences.setWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME, 
                 value: dataValue, onSuccess: successHandler, onFailure: failureHandler  });
+
+            // reapply esriObjects
+            var esriObjectId;
+            for (esriObjectId in esriObjectMapping) {
+                esriObjectMapping[esriObjectId].feature.esriObject = esriObjectMapping[esriObjectId].esriObject;
+            }
+
         };
 
         me.retrieveState = function() {
@@ -327,12 +336,39 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             
             var successHandler = function(retValue) {
                 if (retValue) {
-                    //if (retValue.preference) {
-                        console.log("Retrieved: " + retValue.value);
-                        me.overlays = OWFWidgetExtensions.Util.parseJson(retValue.value);
-                    } else {
-                        console.log("No value retrieved");
-                    //}
+                    console.log("Retrieved: " + retValue.value);
+                    me.overlays = OWFWidgetExtensions.Util.parseJson(retValue.value);
+                } else {
+                    console.log("No value retrieved");
+                }
+
+                // iterate over overlays and apply...
+                var i, j;
+                var overlayId, overlayName;
+                var feature, featureId, featureName, featureFormat, featureUrl, featureParams, zoom;
+                for (i in me.overlays) {
+                    // create overlay
+                    overlayId = me.overlays[i].id;
+                    overlayName = me.overlays[i].name;
+
+                    me.sendOverlayCreate(overlayId, overlayName);
+
+                    // create any child features in overlay
+                    for (j in me.overlays[i].features) {
+                        feature = me.overlays[i].features[j];
+                        featureId = feature.featureId;
+                        featureName = feature.name;
+
+                        // esri returns kml-url in its esriObject, but won't itself accept it...
+                        featureFormat = feature.format;
+                        if (featureFormat == "kml-url") featureFormat = "kml";
+
+                        featureUrl = feature.feature;
+                        featureParams = null;
+                        zoom = feature.zoom;
+                        me.sendFeaturePlotUrl(overlayId, featureId, featureName,
+                            featureFormat, featureUrl, featureParams, zoom);              
+                    }
                 }
             };
 

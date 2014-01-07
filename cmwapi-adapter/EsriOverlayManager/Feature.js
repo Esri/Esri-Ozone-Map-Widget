@@ -338,7 +338,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 return;
             }
 
-            map.removeLayer(feature.esriObject);
+            if (feature.esriObject) {   // we may have added to the tree, but are still in state on pulling up esri layers
+                map.removeLayer(feature.esriObject);
+            }
+
             delete overlay.features[featureId];
             manager.treeChanged();
         };
