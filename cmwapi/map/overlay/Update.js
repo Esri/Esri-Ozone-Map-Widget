@@ -38,9 +38,9 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
         /**
          * Send information that upates a map overlay.
          * @param {Object|Array} data
-         * @param {string} [data.name] The name of the overlay.  If a valid name string is not specified, the overlayId is used.
-         * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
-         * @param {string} [data.parentId] The ID of the parent overlay.  This will establishes or changes a parent/child relationship
+         * @param {string} [data.name] The name of the overlay.  
+         * @param {string} [data.overlayId] The ID of the overlay.  If a valid, non-empty ID string is not specified, the sending widget's ID is used.
+         * @param {string} [data.parentId] The ID of the parent overlay.  This will establish or changes a parent/child relationship
          */
         send: function(data) {
 
@@ -58,7 +58,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
             // Check all the overlay objects; fill-in any missing attributes.
             for (var i = 0; i < payload.length; i ++) {
                 // The overlayId is optional; defaults to widget id if not specified.
-                payload[i].overlayId = (payload[i].overlayId) ? payload[i].overlayId : OWF.getInstanceId();
+                payload[i].overlayId = (payload[i].overlayId && Validator.isString(payload[i].overlayId)) ? payload[i].overlayId : OWF.getInstanceId();
 
                 // Unlike the overlay creation operation, if no name or parentId is specified, do not fill them
                 // in, so we do not blow away any existing values.
@@ -94,7 +94,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
 
                 for (var i = 0; i < data.length; i ++) {
                     // The overlayId is optional; defaults to widget id if not specified.
-                    data[i].overlayId = (data[i].overlayId) ? data[i].overlayId : jsonSender.id;
+                    data[i].overlayId = (data[i].overlayId && Validator.isString(data[i].overlayId)) ? data[i].overlayId : jsonSender.id;
 
                     // Unlike the overlay creation operation, if no name or parentId is specified, do not fill them
                     // in, so we do not blow away any existing values.

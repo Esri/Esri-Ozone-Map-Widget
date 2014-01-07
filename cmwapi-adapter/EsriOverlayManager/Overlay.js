@@ -50,8 +50,6 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
         var sendError = function(caller, msg, error) {
             var sender = caller;
             var type = error.type;
-            var msg = msg;
-            var error = error;
 
             cmwapi.error.send(sender, type, msg, error);
         };
@@ -75,6 +73,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
         };
 
         /**
+         * This function will create a new overlay in a non-destructive manner.  If an overlay with the
+         * given overlayId already exists, this function will have no effect.
          * @method createOverlay
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param name {String} optional; The readable name for the overlay; if not specified the id will be used
@@ -83,9 +83,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Overlay#
          */
         me.createOverlay = function(caller, overlayId, name, parentId) {
-            if(manager.overlays[overlayId]) {
-                me.updateOverlay(caller, overlayId, name, parentId);
-            } else {
+            if(!manager.overlays[overlayId]) {
                 manager.overlays[overlayId] = new Overlay(overlayId, name, parentId);
                 manager.treeChanged();
             }
