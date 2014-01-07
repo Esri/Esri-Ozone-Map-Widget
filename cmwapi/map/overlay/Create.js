@@ -41,7 +41,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
          * Send information that supports the creation of a map overlay.
          * @param {Object|Array} data
          * @param {string} [data.name] The name of the overlay.  If a valid, name string is not specified, the overlayId  is used.
-         * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
+         * @param {string} [data.overlayId] The ID of the overlay.  If a valid, non-empty ID string is not specified, the sending widget's ID is used.
          * @param {string} [data.parentId] The ID of the parent overlay.  This will establish a parent/child relationship
          */
         send: function(data) {
