@@ -28,7 +28,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
             $('#overlay-tree').tree({
                 data: adapter.overlayManager.getOverlayTree(),
                 dragAndDrop:true,
-                autoOpen: 1,
+                autoOpen: true,
                 onCreateLi: function(node, $li) {
                     node['node-type'] = node.type;
                     var basePath = './digits/overlayManager/images/icons/';
@@ -90,6 +90,9 @@ define(["cmwapi-adapter/cmwapi-adapter",],
                     adapter.overlayManager.sendOverlayUpdate(moveInfo.moved_node.id, moveInfo.moved_node.name, moveInfo.target_node.id);
                 }
             });
+            $('#overlay-tree').bind('tree.open', function() {
+                resizeOverlayToTree('#overlay-tree', 90);
+            });
 
             adapter.overlayManager.bindTreeChangeHandler(updateTreeData);
             $('#overlay-add-icon').on('click', setStateAdd);
@@ -146,15 +149,16 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         var overlayName = $('#overlay-add-name').val();
         var overlayId = $('#overlay-add-id').val();
         var zoom = $('#zoom-checkbox').is(':checked');
+        var featureType = $('#feature-add-params').is(':visible') ? 'wms' : 'kml';
         if(!($('#add-feature-div').is(':visible'))) {
             adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
         } else if($('#overlay-selection').val() === 'Add New Overlay') {
             adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
             adapter.overlayManager.sendFeaturePlotUrl(overlayId, featureId, featureName,
-                'kml', featureUrl, featureParams, zoom);
+                featureType, featureUrl, featureParams, zoom);
         } else {
             adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
-                featureId, featureName,'kml', featureUrl, featureParams, zoom);
+                featureId, featureName, featureType, featureUrl, featureParams, zoom);
         }
         setStateInit();
     };
