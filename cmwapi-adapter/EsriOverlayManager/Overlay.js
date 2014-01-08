@@ -35,14 +35,15 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
          */
         var Overlay = function(overlayId, name, parentId) {
             this.id= overlayId;
-            this.name= name;
+            this.name= name || '';
             //Overlay IDs of children overlays
             this.children = {};
-            this.parentId = parentId;
+
             //Mapping FeatureID->Feature object of children features
             this.features = {};
             this.isHidden = false;
             if(parentId) {
+                this.parentId = parentId;
                 resolveParent(this, parentId);
             }
         };
@@ -50,8 +51,6 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
         var sendError = function(caller, msg, error) {
             var sender = caller;
             var type = error.type;
-            var msg = msg;
-            var error = error;
 
             cmwapi.error.send(sender, type, msg, error);
         };
@@ -75,6 +74,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
         };
 
         /**
+         * This function will create a new overlay in a non-destructive manner.  If an overlay with the
+         * given overlayId already exists, this function will have no effect.
          * @method createOverlay
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param name {String} optional; The readable name for the overlay; if not specified the id will be used
@@ -83,9 +84,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Overlay#
          */
         me.createOverlay = function(caller, overlayId, name, parentId) {
-            if(manager.overlays[overlayId]) {
-                me.updateOverlay(caller, overlayId, name, parentId);
-            } else {
+            if(!manager.overlays[overlayId]) {
                 manager.overlays[overlayId] = new Overlay(overlayId, name, parentId);
                 manager.treeChanged();
             }
@@ -234,21 +233,23 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
 
             var extent = ViewUtils.findOverlayExtent(overlay);
 
-            // If auto zoom, reset the entire extent.
-            if (range && range.toString().toLowerCase() === "auto") {
-                map.setExtent(extent, true);
-            }
-            // If we have a non-auto zoom, recenter the map and zoom.
-            else if (typeof range !== "undefined") {
-                // Set the zoom level.
-                map.setScale(ViewUtils.zoomAltitudeToScale(map, range));
+            if(extent) {
+                // If auto zoom, reset the entire extent.
+                if (range && range.toString().toLowerCase() === "auto") {
+                    map.setExtent(extent, true);
+                }
+                // If we have a non-auto zoom, recenter the map and zoom.
+                else if (typeof range !== "undefined") {
+                    // Set the zoom level.
+                    map.setScale(ViewUtils.zoomAltitudeToScale(map, range));
 
-                // Recenter the map.
-                map.centerAt(extent.getCenter());
-            }
-            // Otherwise, use recenter the map.
-            else {
-                map.centerAt(extent.getCenter());
+                    // Recenter the map.
+                    map.centerAt(extent.getCenter());
+                }
+                // Otherwise, use recenter the map.
+                else {
+                    map.centerAt(extent.getCenter());
+                }
             }
         };
     };

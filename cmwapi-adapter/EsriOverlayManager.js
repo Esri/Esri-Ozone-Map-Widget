@@ -40,7 +40,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
         var treeChangedHandlers = [];
 
-        var OVERLAY_PREF_NAMESPACE = 'com.esri', 
+        var OVERLAY_PREF_NAMESPACE = 'com.esri',
             OVERLAY_PREF_NAME = 'overlayState';
 
 
@@ -147,11 +147,18 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.sendOverlayCreate = function(id, name, parentId) {
-            cmwapi.overlay.create.send({
-                name: name,
-                overlayId: id,
-                parentId: parentId
-            });
+            var payload = {};
+            if (typeof(id) !== 'undefined') {
+                payload.overlayId = id;
+            }
+            if (typeof(name) !== 'undefined') {
+                payload.name = name;
+            }
+            if (typeof(parentId) !== 'undefined') {
+                payload.parentId = parentId;
+            }
+
+            cmwapi.overlay.create.send(payload);
         };
 
         /**
@@ -224,7 +231,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 name: name,
                 format: format,
                 url: url,
-                params: params,
+                params: OWF.Util.parseJson(params),
                 zoom: zoom
             });
         };
@@ -309,7 +316,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                             esriObjectMapping.push( { feature: feature, esriObject: feature.esriObject });
                             feature.esriObject = null;
                         }
-                    }    
+                    }
                 }
             }
 
@@ -319,8 +326,8 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             };
             var failureHandler = function() { console.log ("Unable to archive state."); };
 
-            var dataValue = OWFWidgetExtensions.Util.toString(overlayData); 
-            OWFWidgetExtensions.Preferences.setWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME, 
+            var dataValue = OWFWidgetExtensions.Util.toString(overlayData);
+            OWFWidgetExtensions.Preferences.setWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME,
                 value: dataValue, onSuccess: successHandler, onFailure: failureHandler  });
 
             // reapply esriObjects
@@ -332,8 +339,8 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
         };
 
         me.retrieveState = function() {
-            console.log("retrieve state for widget");
-            
+            //console.log("retrieve state for widget");
+
             var successHandler = function(retValue) {
                 if (retValue) {
                     console.log("Retrieved: " + retValue.value);
@@ -361,13 +368,15 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
                         // esri returns kml-url in its esriObject, but won't itself accept it...
                         featureFormat = feature.format;
-                        if (featureFormat == "kml-url") featureFormat = "kml";
+                        if (featureFormat === "kml-url") {
+                            featureFormat = "kml";
+                        }
 
                         featureUrl = feature.feature;
                         featureParams = null;
                         zoom = feature.zoom;
                         me.sendFeaturePlotUrl(overlayId, featureId, featureName,
-                            featureFormat, featureUrl, featureParams, zoom);              
+                            featureFormat, featureUrl, featureParams, zoom);
                     }
                 }
             };
@@ -376,7 +385,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 console.log("Error in getting preference" + e);
             };
 
-            OWFWidgetExtensions.Preferences.getWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME, 
+            OWFWidgetExtensions.Preferences.getWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME,
                 onSuccess: successHandler, onFailure: failureHandler });
 
         };

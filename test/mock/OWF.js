@@ -48,6 +48,12 @@ define(function() {
             }
         },
 
+        Util: {
+            parseJson: function(param) {
+                return JSON.parse(param);
+            }
+        },
+
         getInstanceId : function() {
             return this.INSTANCE_ID;
         }

@@ -10,9 +10,10 @@
         <script src="js/dojoConfig.js"></script>
 
         <!-- Load non-AMD libs before dojo to avoid timing problems -->
-        <link href="css/dragAndDrop.css" rel="stylesheet">
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/jqtree.css" rel="stylesheet">
+        <link href="vendor/css/dragAndDrop.css" rel="stylesheet">
+        <link href="vendor/css/bootstrap.min.css" rel="stylesheet">
+        <link href="vendor/css/jqtree.css" rel="stylesheet">
+        <link href="digits/overlayManager/css/overlayManager.css" rel="stylesheet">
 
     </head>
 <body>
@@ -22,99 +23,8 @@
         <div id="basemaps" rel="tooltip" title="Base Maps"></div>
         <div id="search"></div>
         <div id="popover_content_wrapper" class='basemaptip'><div id="basemapGallery"></div></div>
-        <div id="popover_overlay_wrapper" class='overlaytip'>
-            <div id="overlay-hr-wrapper">
-                <p id="overlay-manager-title"><b>Overlay Manager</b></p>
-                <div id="no-overlay-tooltip">
-                    <div class='no-overlays-tip'></div>
-                    <p id='no-overlay-tooltip-text'>Please add an overlay.</p>
-                </div>
-
-                <div class='default init remove remove-tree' id="overlay-tree"></div>
-                <div class ='add remove' id="overlay-manager">
-                    <div class = "add" id="overlay-manager-add">
-                        <div id= "add-feature-div">
-                            <p id="add-feature-subtitle"><b>Add New Feature</b></p>
-                            <form class="form-horizontal" role="form">
-                                <div class="form-group">
-                                    <label for="feature-add-name" class="col-xs-offset-1 col-xs-2 control-label">Name</label>
-                                    <div class="col-xs-8">
-                                        <input type="text" class="form-control default input-sm" id="feature-add-name" placeholder="Name">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="feature-add-id" class="col-xs-offset-1 col-xs-2 control-label">ID</label>
-                                    <div class="col-xs-8">
-                                        <input type="text" class="form-control default input-sm" id="feature-add-id" placeholder="ID">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="kml-radio" class="col-xs-offset-1 col-xs-2 control-label">Type</label>
-                                    <label class="radio-inline">
-                                        <input type="radio" name ="type-radio" class = 'type-radio' id="kml-radio" value="option1" checked> KML
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input type="radio" name= "type-radio" class = 'type-radio' id="wms-radio" value="option2"> WMS
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <label for="zoom-checkbox" class="col-xs-offset-1 col-xs-2 control-label">Zoom</label>
-                                    <label class="checkbox-inline">
-                                        <input id='zoom-checkbox' type="checkbox">
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <label for="feature-add-url" class="col-xs-offset-1 col-xs-2 control-label">URL</label>
-                                    <div class="col-xs-8">
-                                        <input type="text" class="form-control default input-sm" id="feature-add-url" placeholder="URL">
-                                        <span class="help-block">Please enter a valid URL.</span>
-                                    </div>
-                                </div>
-                                <div class="form-group" id= 'feature-params-group'>
-                                    <label for="feature-add-params" class="col-xs-offset-1 col-xs-2 control-label">Params</label>
-                                    <div class="col-xs-8">
-                                        <input type="text" class="form-control input-sm" id="feature-add-params" placeholder="Params">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="overlay-selection" class="col-xs-offset-1 col-xs-2 control-label">Overlay</label>
-                                    <div class="col-xs-8">
-                                        <select id = "overlay-selection" class="form-control input-sm"></select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div id= "add-overlay-div">
-                            <p id="add-overlay-subtitle"><b>Add New Overlay</b></p>
-                            <form class="form-horizontal" role="form">
-                                <div class="form-group">
-                                    <label for="overlay-add-name" class="col-xs-offset-1 col-xs-2 control-label">Name</label>
-                                    <div class="col-xs-8">
-                                        <input type="text" class="form-control default add input-sm" id="overlay-add-name" placeholder="Name">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="overlay-add-id" class="col-xs-offset-1 col-xs-2 control-label">ID</label>
-                                    <div class="col-xs-8">
-                                        <input type="text" class="form-control default add input-sm" id="overlay-add-id" placeholder="ID">
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class= 'remove' id="overlay-manager-delete">
-                        <p class = 'remove' id="delete-feature-subtitle"><b>Delete Existing Overlays & Features</b></p>
-                    </div>
-                </div>
-                <div id="overlay-hr"></div>
-                <div class="init" id="add-overlay-icon"></div>
-                <div class="init" id="overlay-add-icon"></div>
-                <div class='btn disabled init' id="overlay-delete-icon"></div>
-                <div class="btn remove" id="overlay-manager-delete-button"></div>
-                <div class="btn disabled add" id="overlay-manager-add-button"></div>
-                <div class = "add remove" id="overlay-back-icon"></div>
-            </div>
-        </div>
+        <!-- The overlay wrappers content will be populated by the overlayTemplate-->
+        <div id="popover_overlay_wrapper" class='overlaytip'></div>
     </div>
 <span id="loading"></span>
 <script>
@@ -127,6 +37,7 @@
     }
     addCss(window.esriJsPath + "js/esri/css/esri.css");
     addCss("css/map.css");
+    addCss("digits/basemapGallery/css/basemapGallery.css");
 
     // Add OWF widget API
     addScript(window.owfJsPath + "owf-widget-" + ((window.isDebug) ? ("debug") : ("min")) + ".js");
@@ -137,8 +48,8 @@
     // Trigger app entry point
     addScript("js/app.js");
 </script>
-<script src="js/lib/jquery.min.js"></script>
-<script src="js/lib/bootstrap.min.js"></script>
-<script src="js/lib/tree.jquery.js"></script>
+<script src="vendor/js/jquery.min.js"></script>
+<script src="vendor/js/bootstrap.min.js"></script>
+<script src="vendor/js/tree.jquery.js"></script>
 </body>
 </html>
