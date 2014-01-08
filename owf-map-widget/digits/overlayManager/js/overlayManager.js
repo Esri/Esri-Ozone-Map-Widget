@@ -28,7 +28,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
             $('#overlay-tree').tree({
                 data: adapter.overlayManager.getOverlayTree(),
                 dragAndDrop:true,
-                autoOpen: 1,
+                autoOpen: true,
                 onCreateLi: function(node, $li) {
                     node['node-type'] = node.type;
                     var basePath = './digits/overlayManager/images/icons/';
@@ -89,6 +89,9 @@ define(["cmwapi-adapter/cmwapi-adapter",],
                 } else {
                     adapter.overlayManager.sendOverlayUpdate(moveInfo.moved_node.id, moveInfo.moved_node.name, moveInfo.target_node.id);
                 }
+            });
+            $('#overlay-tree').bind('tree.open', function() {
+                resizeOverlayToTree('#overlay-tree', 90);
             });
 
             adapter.overlayManager.bindTreeChangeHandler(updateTreeData);

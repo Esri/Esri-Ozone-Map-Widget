@@ -35,14 +35,15 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
          */
         var Overlay = function(overlayId, name, parentId) {
             this.id= overlayId;
-            this.name= name;
+            this.name= name || '';
             //Overlay IDs of children overlays
             this.children = {};
-            this.parentId = parentId;
+
             //Mapping FeatureID->Feature object of children features
             this.features = {};
             this.isHidden = false;
             if(parentId) {
+                this.parentId = parentId;
                 resolveParent(this, parentId);
             }
         };
