@@ -372,8 +372,8 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 }
             };
 
-            var failureHandler = function() {
-                console.log("Error in getting preference");
+            var failureHandler = function(e) {
+                console.log("Error in getting preference" + e);
             };
 
             OWFWidgetExtensions.Preferences.getWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME, 
