@@ -415,23 +415,28 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 return;
             }
 
-            var extent = ViewUtils.findLayerExtent(feature.esriObject);
+            //wms -> noop -- Can't center or zoom on wms because wms always responds to current extent
+            if(feature.format !== 'wms' && feature.format !== 'wms-url') {
+                var extent = ViewUtils.findLayerExtent(feature.esriObject);
 
-            // If auto zoom, reset the entire extent.
-            if (range && range.toString().toLowerCase() === "auto") {
-                map.setExtent(extent, true);
-            }
-            // If we have a non-auto zoom, recenter the map and zoom.
-            else if (typeof range !== "undefined") {
-                // Set the zoom level.
-                map.setScale(ViewUtils.zoomAltitudeToScale(map, range));
+                if(extent) {
+                    // If auto zoom, reset the entire extent.
+                    if (range && range.toString().toLowerCase() === "auto") {
+                        map.setExtent(extent, true);
+                    }
+                    // If we have a non-auto zoom, recenter the map and zoom.
+                    else if (typeof range !== "undefined") {
+                        // Set the zoom level.
+                        map.setScale(ViewUtils.zoomAltitudeToScale(map, range));
 
-                // Recenter the map.
-                map.centerAt(extent.getCenter());
-            }
-            // Otherwise, use recenter the map.
-            else {
-                map.centerAt(extent.getCenter());
+                        // Recenter the map.
+                        map.centerAt(extent.getCenter());
+                    }
+                    // Otherwise, use recenter the map.
+                    else {
+                        map.centerAt(extent.getCenter());
+                    }
+                }
             }
         };
 

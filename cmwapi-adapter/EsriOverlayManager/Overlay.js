@@ -232,21 +232,23 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
 
             var extent = ViewUtils.findOverlayExtent(overlay);
 
-            // If auto zoom, reset the entire extent.
-            if (range && range.toString().toLowerCase() === "auto") {
-                map.setExtent(extent, true);
-            }
-            // If we have a non-auto zoom, recenter the map and zoom.
-            else if (typeof range !== "undefined") {
-                // Set the zoom level.
-                map.setScale(ViewUtils.zoomAltitudeToScale(map, range));
+            if(extent) {
+                // If auto zoom, reset the entire extent.
+                if (range && range.toString().toLowerCase() === "auto") {
+                    map.setExtent(extent, true);
+                }
+                // If we have a non-auto zoom, recenter the map and zoom.
+                else if (typeof range !== "undefined") {
+                    // Set the zoom level.
+                    map.setScale(ViewUtils.zoomAltitudeToScale(map, range));
 
-                // Recenter the map.
-                map.centerAt(extent.getCenter());
-            }
-            // Otherwise, use recenter the map.
-            else {
-                map.centerAt(extent.getCenter());
+                    // Recenter the map.
+                    map.centerAt(extent.getCenter());
+                }
+                // Otherwise, use recenter the map.
+                else {
+                    map.centerAt(extent.getCenter());
+                }
             }
         };
     };
