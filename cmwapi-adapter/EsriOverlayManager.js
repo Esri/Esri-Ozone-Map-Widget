@@ -339,7 +339,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
         };
 
         me.retrieveState = function() {
-            console.log("retrieve state for widget");
+            //console.log("retrieve state for widget");
 
             var successHandler = function(retValue) {
                 if (retValue) {
@@ -368,7 +368,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
                         // esri returns kml-url in its esriObject, but won't itself accept it...
                         featureFormat = feature.format;
-                        if (featureFormat == "kml-url") featureFormat = "kml";
+                        if (featureFormat === "kml-url") {
+                            featureFormat = "kml";
+                        }
 
                         featureUrl = feature.feature;
                         featureParams = null;

@@ -63,11 +63,11 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             this.esriObject = esriObject;
         };
 
-        var sendError = function(caller, msg, error) {
+        var sendError = function(caller, message, err) {
             var sender = caller;
-            var type = error.type;
-            var msg = msg;
-            var error = error;
+            var type = err.type;
+            var msg = message;
+            var error = err;
 
             cmwapi.error.send(sender, type, msg, error);
         };
@@ -277,28 +277,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             manager.treeChanged();
         };
 
-        var addFeatureListeners = function(caller, overlayId, featureId, layer) {
-            (function onLoadListenRecurs(currLayer) {
-                var curr = currLayer.getLayers();
-                for(var i =0; i < curr.length; i++) {
-                    if(curr[i].loaded) {
-                        curr[i].on('click', function(e) {
-                            cmwapi.feature.selected.send({
-                                overlayId:overlayId,
-                                featureId:featureId,
-                                selectedId: e.graphic.attributes.id,
-                                selectedName: e.graphic.attributes.name
-                            });
-                        });
-                    } else {
-                        curr[i].on('load', function(loaded) {
-                            onLoadListenRecurs(loaded.layer);
-                        });
-                    }
-                }
-            })(layer);
-        };
-
         /**
          * @method deleteFeature
          * @param overlayId {String} The id of the overlay which contains the feature to be removed
@@ -467,7 +445,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             for(var i =0; i < layers.length; i++) {
                 var graphics = layers[i].graphics;
                 for(var j =0; j < graphics.length; j++) {
-                    if(graphics[j].attributes.id == selectedId || graphics[j].attributes.name == selectedName) {
+                    if(graphics[j].attributes.id === selectedId || graphics[j].attributes.name === selectedName) {
                         map.centerAt(graphics[j].geometry);
                     }
                 }
