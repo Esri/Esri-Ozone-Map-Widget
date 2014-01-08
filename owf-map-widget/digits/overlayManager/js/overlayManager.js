@@ -149,15 +149,16 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         var overlayName = $('#overlay-add-name').val();
         var overlayId = $('#overlay-add-id').val();
         var zoom = $('#zoom-checkbox').is(':checked');
+        var featureType = $('#feature-add-params').is(':visible') ? 'wms' : 'kml';
         if(!($('#add-feature-div').is(':visible'))) {
             adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
         } else if($('#overlay-selection').val() === 'Add New Overlay') {
             adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
             adapter.overlayManager.sendFeaturePlotUrl(overlayId, featureId, featureName,
-                'kml', featureUrl, featureParams, zoom);
+                featureType, featureUrl, featureParams, zoom);
         } else {
             adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
-                featureId, featureName,'kml', featureUrl, featureParams, zoom);
+                featureId, featureName, featureType, featureUrl, featureParams, zoom);
         }
         setStateInit();
     };
