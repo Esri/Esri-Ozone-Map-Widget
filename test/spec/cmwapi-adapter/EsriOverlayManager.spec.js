@@ -77,7 +77,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
             });
 
 
-            it("verify overlay create with duplicate id calls update", function() {
+            it("verify overlay create with duplicate id is a no-op and does not update an overlay.", function() {
                 var update = spyOn(overlayManager.overlay, 'updateOverlay').andCallThrough();
 
                 expect(Object.keys(overlayManager.getOverlays()).length).toBe(0);
@@ -90,7 +90,10 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 //create with same ID
                 overlayManager.overlay.createOverlay("FakeWidget", "1111", "Name 2");
 
-                expect(update).toHaveBeenCalledWith("FakeWidget", "1111", "Name 2", undefined);
+                expect(update).not.toHaveBeenCalled();
+                
+                var overlays = overlayManager.getOverlays();
+                expect(overlays["1111"].name).toEqual("Name 1");
             });
 
             it("verify overlay remove of one", function() {
@@ -374,7 +377,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
 
                 overlayManager.sendOverlayCreate("id", "name");
 
-                expect(CommonMapApi.overlay.create.send).toHaveBeenCalledWith({overlayId: "id", name: "name", parentId: null});
+                expect(CommonMapApi.overlay.create.send).toHaveBeenCalledWith({overlayId: "id", name: "name"});
             });
 
             it("verify send overlay remove calls api correctly", function() {

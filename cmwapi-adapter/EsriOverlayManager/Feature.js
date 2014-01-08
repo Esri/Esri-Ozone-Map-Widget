@@ -260,28 +260,11 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             console.log(params);
 
             var details = {extent: map.geographicExtent, layerInfos: [new WMSLayerInfo({name: params.layers, title: params.layers})]};
-            //console.log(details);
             var layer = new WMSLayer(url, details);
             layer.setVisibleLayers([params.layers]);
             map.addLayer(layer);
 
             var overlay = manager.overlays[overlayId];
-
-            //get map extent
-
-            //get layers from params
-
-            //copyright
-            //extent
-            //description
-            //layerInfos
-            //getMapUrl
-            //minScale
-            //maxScale
-            //MaxHeight
-            //maxWidth
-            //title
-            //version
 
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'wms-url', url, zoom, layer);
 

@@ -10,10 +10,10 @@
         <script src="js/dojoConfig.js"></script>
 
         <!-- Load non-AMD libs before dojo to avoid timing problems -->
-        <link href="css/dragAndDrop.css" rel="stylesheet">
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/jqtree.css" rel="stylesheet">
-        <link href="css/overlayManager.css" rel="stylesheet">
+        <link href="vendor/css/dragAndDrop.css" rel="stylesheet">
+        <link href="vendor/css/bootstrap.min.css" rel="stylesheet">
+        <link href="vendor/css/jqtree.css" rel="stylesheet">
+        <link href="digits/overlayManager/css/overlayManager.css" rel="stylesheet">
 
     </head>
 <body>
@@ -37,6 +37,7 @@
     }
     addCss(window.esriJsPath + "js/esri/css/esri.css");
     addCss("css/map.css");
+    addCss("digits/basemapGallery/css/basemapGallery.css");
 
     // Add OWF widget API
     addScript(window.owfJsPath + "owf-widget-" + ((window.isDebug) ? ("debug") : ("min")) + ".js");
@@ -47,8 +48,8 @@
     // Trigger app entry point
     addScript("js/app.js");
 </script>
-<script src="js/lib/jquery.min.js"></script>
-<script src="js/lib/bootstrap.min.js"></script>
-<script src="js/lib/tree.jquery.js"></script>
+<script src="vendor/js/jquery.min.js"></script>
+<script src="vendor/js/bootstrap.min.js"></script>
+<script src="vendor/js/tree.jquery.js"></script>
 </body>
 </html>

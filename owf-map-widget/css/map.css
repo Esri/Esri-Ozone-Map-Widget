@@ -4,12 +4,10 @@ html, body, #map {
   margin:0;
   padding:0;
 }
-
 #search {
   padding-right: 5px;
   display: inline-block;
 }
-
 #overlay {
   margin-right: 5px;
   width: 30px;
@@ -22,7 +20,6 @@ html, body, #map {
   display: inline-block;
   z-index:3;
 }
-
 #overlay:hover{
   background-image: url("../images/icons/Overlay_Manager_Hover.png");
   background-position: center center;
@@ -33,13 +30,11 @@ html, body, #map {
   background-position: center center;
   background-repeat: no-repeat;
 }
-
 #basemaps.selected{
   background-image: url("../images/icons/BaseMaps_Selected.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
-
 #basemaps {
   margin-right: 5px;
   width: 30px;
@@ -52,19 +47,16 @@ html, body, #map {
   display: inline-block;
   z-index:3;
 }
-
 #basemaps:hover{
   background-image: url("../images/icons/BaseMaps_Hover.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
-
 #basemaps.selected{
   background-image: url("../images/icons/BaseMaps_Selected.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
-
 #map-controls {
   position: absolute;
   top: 20px;
@@ -72,93 +64,21 @@ html, body, #map {
   right: 20px;
   display: inline-block;
 }
-
 .esriAttribution {
   visibility: hidden;
 }
-
-.esriBasemapGallerySelectedNode .esriBasemapGalleryThumbnail{
-  border-color: #2BA2CD !important;
-  margin-bottom: 2px;
-}
-
-.esriBasemapGalleryLabelContainer {
-  height: 3em;
-  overflow:visible;
-}
-
-#popover_content_wrapper {
-  display:none;
-  background: #fff;
-  width: 376px;
-  top: 60px;
-  right:65px;
-  border:2px solid #666;
-}
-
-.basemaptip {
-  position: absolute;
-  background: #fff;
-  border: 2px solid #666;
-  border-radius: 8px;
-}
-
-.basemaptip:after, .basemaptip:before {
-  bottom: 100%;
-  left: 50%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
-}
-
-.basemaptip:after {
-  border-color: rgba(255, 255, 255, 0);
-  border-bottom-color: #fff;
-  border-width: 25px;
-  margin-left: -25px;
-}
-
-.basemaptip:before {
-  border-color: rgba(102, 102, 102, 0);
-  border-bottom-color: #666;
-  border-width: 28px;
-  margin-left: -28px;
-}
-
-#popover_overlay_wrapper {
-  display:none;
-  background: #fff;
-  width: 330px;
-  min-height: 150px;
-  top: 60px;
-  right:128px;
-  border:2px solid #666;
-}
-
-
-
-.esriBasemapGalleryNode {
-  padding:5px;
-  padding-top: 10px;
-}
-
 .esriSimpleSliderIncrementButton{
   background-image: url("../images/icons/Zoom_In_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
   border: 1.5px solid #928F8F;
 }
-
 .esriSimpleSliderDecrementButton{
   background-image: url("../images/icons/Zoom_Out_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
   border: 1.5px solid #928F8F;
 }
-
 .esriSimpleSliderDecrementButton:hover{
   background-color: transparent;
   background-image: url("../images/icons/Zoom_Out_Hover.png");
@@ -171,7 +91,6 @@ html, body, #map {
   background-position: center center;
   background-repeat: no-repeat;
 }
-
 .esriSimpleSliderDecrementButton:active{
   background-color: transparent;
   background-image: url("../images/icons/Zoom_Out_Selected.png");
@@ -192,7 +111,6 @@ html, body, #map {
   font-size:0px;
   height:28px;
 }
-
 .esriSimpleSliderVertical .esriSimpleSliderIncrementButton {
   border-bottom: none;
 }
@@ -201,11 +119,6 @@ html, body, #map {
 }
 .tooltip.bottom .tooltip-arrow {
   border-bottom-color: #666666;
-}
-
-
-input[type="checkbox"] {
-  margin: 10px 3px 0;
 }
 #meta {
     position: absolute;
@@ -223,38 +136,35 @@ input[type="checkbox"] {
     border-radius: 5px;
     font-family: arial;
     font-size: 0.9em;
-  }
-  #meta h3 {
-    color: #666;
-    font-size: 1.1em;
-    padding: 0px;
-    margin: 0px;
-    display: inline-block;
-  }
-  #loading {
-    float: right;
-  }
-
-  .sizer > .titlePane {
-    background-color: #0E6280;
-  }
-  .pointer {
-    background-color: #0E6280;
-  }
-  .titleButton, .close {
-    opacity: 1;
-  }
-  .maximize:hover, .restore:hover {
-    opacity: 0.2;
-  }
-  .esriPopup a {
-    text-decoration: none;
-  }
-  .esriPopup a:hover {
-    text-decoration: underline;
-  }
-
-
+}
+#meta h3 {
+  color: #666;
+  font-size: 1.1em;
+  padding: 0px;
+  margin: 0px;
+  display: inline-block;
+}
+#loading {
+  float: right;
+}
+.sizer > .titlePane {
+  background-color: #0E6280;
+}
+.pointer {
+  background-color: #0E6280;
+}
+.titleButton, .close {
+  opacity: 1;
+}
+.maximize:hover, .restore:hover {
+  opacity: 0.2;
+}
+.esriPopup a {
+  text-decoration: none;
+}
+.esriPopup a:hover {
+  text-decoration: underline;
+}
 .esriPopup .pointer, .esriPopup .outerPointer {
   position: absolute;
   background: url("../images/icons/Esri_Detail_Triangles.png") no-repeat;
@@ -262,7 +172,6 @@ input[type="checkbox"] {
 .esriPopup .pointer.topLeft {
   background-position: -75px -525px;
 }
-
 .esriPopup .pointer.topRight {
   background-position: -75px -706px;
 }
@@ -272,20 +181,4 @@ input[type="checkbox"] {
 img {
   margin-bottom: 5px;
   margin-left: 5px;
-}
-
-@media (max-height: 500px) {
-  #popover_content_wrapper {
-    width: 616px;
-    right: 67px;
-  }
-  .basemaptip:after {
-    left: 70%;
-  }
-  .basemaptip:before {
-    left: 70%;
-  }
-  .esriControlsBR{
-    display: none;
-  }
 }
