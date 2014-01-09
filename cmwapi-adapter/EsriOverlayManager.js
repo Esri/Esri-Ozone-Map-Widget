@@ -225,15 +225,18 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.sendFeaturePlotUrl = function(overlayId, featureId, name, format, url, params, zoom) {
-            cmwapi.feature.plot.url.send({
+            var payload = {
                 overlayId: overlayId,
                 featureId: featureId,
                 name: name,
                 format: format,
                 url: url,
-                params: OWF.Util.parseJson(params),
                 zoom: zoom
-            });
+            };
+            if (params !== null && typeof(params) !== 'undefined') {
+                payload.params = params;
+            }
+            cmwapi.feature.plot.url.send(payload);
         };
 
         /**
