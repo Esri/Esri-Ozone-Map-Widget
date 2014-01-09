@@ -254,8 +254,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         var plotWmsFeatureUrl = function(caller, overlayId, featureId, name, url, params, zoom) {
-            console.log("Hit");
-            console.log(params);
 
             var details = {extent: map.geographicExtent, layerInfos: [new WMSLayerInfo({name: params.layers, title: params.layers})]};
             var layer = new WMSLayer(url, details);
@@ -265,6 +263,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             var overlay = manager.overlays[overlayId];
 
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'wms-url', url, zoom, layer);
+            overlay.features[featureId].params = params;
 
             layer.on("load", function() {
                 if(zoom) {
