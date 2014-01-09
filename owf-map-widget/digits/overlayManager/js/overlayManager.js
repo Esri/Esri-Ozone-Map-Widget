@@ -149,7 +149,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         var overlayName = $('#overlay-add-name').val();
         var overlayId = $('#overlay-add-id').val();
         var zoom = $('#zoom-checkbox').is(':checked');
-        var featureType = $('#feature-add-params').is(':visible') ? 'wms' : 'kml';
+        var featureType = $('#wms-radio').is(':checked') ? 'wms' : 'kml';
         if(!($('#add-feature-div').is(':visible'))) {
             adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
         } else if($('#overlay-selection').val() === 'Add New Overlay') {
