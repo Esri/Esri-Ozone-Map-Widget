@@ -182,6 +182,35 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
         };
 
         /**
+         * Plots a kml layer via url to the map
+         * @private
+         * @method plotKmlFeatureUrl
+         * @param caller {String} The widget making a request that led to this method call
+         * @param overlayId {String} The unique id of the overlay containing the feature to be plotted
+         * @param featureId {String} The id, unique to the overlay, to be given to the plotted feature
+         * @param name {String} The non-unique readable name to give to the feature
+         * @param url {String} The url containing kml data to be plotted
+         * @param [zoom] {Boolean} If the plotted feature should be zoomed to upon being plotted
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
+         */
+        var plotKmlFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
+            var layer = new KMLLayer(url);
+
+            map.addLayer(layer);
+
+            var overlay = manager.overlays[overlayId];
+            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'kml-url', url, zoom, layer);
+
+            layer.on("load", function() {
+                addKmlFeatureListeners(caller, overlayId, featureId, layer);
+                if(zoom) {
+                    me.zoom(caller, overlayId, featureId, null, null, "auto");
+                }
+            });
+            manager.treeChanged();
+        };
+
+        /**
          * Recursively adds listeners to kml layer data in order to bind to kml select events
          * @private
          * @param caller {String} The widget making a request that led to this method call
@@ -210,37 +239,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                     }
                 }
             })(layer);
-        };
-
-        /**
-         * Plots a kml layer via url to the map
-         * @private
-         * @method plotKmlFeatureUrl
-         * @param caller {String} The widget making a request that led to this method call
-         * @param overlayId {String} The unique id of the overlay containing the feature to be plotted
-         * @param featureId {String} The id, unique to the overlay, to be given to the plotted feature
-         * @param name {String} The non-unique readable name to give to the feature
-         * @param url {String} The url containing kml data to be plotted
-         * @param [zoom] {Boolean} If the plotted feature should be zoomed to upon being plotted
-         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
-         */
-        var plotKmlFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
-            var layer = new KMLLayer(url);
-
-            map.addLayer(layer);
-
-            var overlay = manager.overlays[overlayId];
-            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'kml-url', url, zoom, layer);
-
-            layer.on("load", function() {
-                addKmlFeatureListeners(caller, overlayId, featureId, layer);
-                if(zoom) {
-                    me.zoom(caller, overlayId, featureId, null, null, "auto");
-                }
-            });
-            manager.treeChanged();
-
-
         };
 
         /**
