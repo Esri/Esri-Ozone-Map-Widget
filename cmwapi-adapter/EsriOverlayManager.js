@@ -375,8 +375,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                             featureFormat = "kml";
                         }
 
+                        if (featureFormat === "wms-url") {
+                            featureFormat = "wms";
+                        }
+
                         featureUrl = feature.feature;
-                        featureParams = null;
+                        featureParams = (feature.params) ? feature.params : null;
                         zoom = feature.zoom;
                         me.sendFeaturePlotUrl(overlayId, featureId, featureName,
                             featureFormat, featureUrl, featureParams, zoom);
