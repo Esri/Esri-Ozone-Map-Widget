@@ -423,7 +423,6 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                     name: "n",
                     format: "kml",
                     url: "http://fake.com",
-                    params: null,
                     zoom: false
                 });
             });
