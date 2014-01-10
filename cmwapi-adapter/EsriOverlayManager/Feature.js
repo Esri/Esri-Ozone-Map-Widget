@@ -213,7 +213,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 _notifyError(caller, "Something bad happened");
             }
             
-
             manager.treeChanged();
         };
 
