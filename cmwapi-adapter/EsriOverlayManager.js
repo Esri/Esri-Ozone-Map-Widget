@@ -1,34 +1,33 @@
+/**
+ * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+ *
+ * @license
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at<br>
+ * <br>
+ *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+ * <br>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @description Manager for overlay layers to be used in conjunction with an ESRI map,
+ *  the {@link EsriAdapter}, and the {@link Map|Common Map Widget API}
+ * @module cmwapi-adapter/EsriOverlayManager
+ * @version 1.1
+ */
 define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayManager/Overlay",
     "cmwapi-adapter/EsriOverlayManager/Feature", "OWFWidgetExtensions/owf-widget-extended" ],
     function(cmwapi, KMLLayer, OverlayHandler, FeatureHandler, OWFWidgetExtensions) {
 
     /**
-     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
-     *
-     * @license
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at<br>
-     * <br>
-     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
-     * <br>
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     *
-     * @description Manager for overlay layers to be used in conjunction with an ESRI map,
-     * the {@link EsriAdapter}, and the {@link Map|Common Map Widget API}
-     * @version 1.1
-     * @module cmwapi-adapter/EsriOverlayManager
-     */
-
-    /**
      * @constructor
-     * @alias module:cmwapi-adapter/EsriOverlayManager
      * @param map {object} The ESRI map object which this overlay manager should apply to
+     * @alias module:cmwapi-adapter/EsriOverlayManager
      */
     var EsriOverlayManager = function(map) {
         var me = this;
@@ -58,7 +57,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
         /**
          * Call the registered handlers when the overlay tree structure has
-         * changed
+         *  changed
          * @method treeChanged
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
@@ -234,7 +233,11 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 zoom: zoom
             };
             if (params !== null && typeof(params) !== 'undefined') {
-                payload.params = params;
+                if(cmwapi.validator.isString(params)) {
+                    payload.params = OWF.Util.parseJson(params);
+                } else {
+                    payload.params = params;
+                }
             }
             cmwapi.feature.plot.url.send(payload);
         };
