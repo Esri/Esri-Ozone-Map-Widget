@@ -225,15 +225,18 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.sendFeaturePlotUrl = function(overlayId, featureId, name, format, url, params, zoom) {
-            cmwapi.feature.plot.url.send({
+            var payload = {
                 overlayId: overlayId,
                 featureId: featureId,
                 name: name,
                 format: format,
                 url: url,
-                params: OWF.Util.parseJson(params),
                 zoom: zoom
-            });
+            };
+            if (params !== null && typeof(params) !== 'undefined') {
+                payload.params = params;
+            }
+            cmwapi.feature.plot.url.send(payload);
         };
 
         /**
@@ -372,8 +375,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                             featureFormat = "kml";
                         }
 
+                        if (featureFormat === "wms-url") {
+                            featureFormat = "wms";
+                        }
+
                         featureUrl = feature.feature;
-                        featureParams = null;
+                        featureParams = (feature.params) ? feature.params : null;
                         zoom = feature.zoom;
                         me.sendFeaturePlotUrl(overlayId, featureId, featureName,
                             featureFormat, featureUrl, featureParams, zoom);
