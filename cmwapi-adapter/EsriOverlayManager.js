@@ -233,7 +233,11 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 zoom: zoom
             };
             if (params !== null && typeof(params) !== 'undefined') {
-                payload.params = params;
+                if(cmwapi.validator.isString(params)) {
+                    payload.params = OWF.Util.parseJson(params);
+                } else {
+                    payload.params = params;
+                }
             }
             cmwapi.feature.plot.url.send(payload);
         };
