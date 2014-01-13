@@ -1,19 +1,5 @@
-define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], 
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
     function(Channels, Validator, Error) {
-
-    var ALT = "alt";
-    var SHIFT = "shift";
-    var CTRL = "ctrl";
-    var NONE = "none";
-    var LEFT = "left";
-    var MIDDLE = "middle";
-    var RIGHT = "right";
-    var SINGLE = "single";
-    var DOUBLE = "double";
-    var SUPPORTED_KEYS = [ALT, CTRL, SHIFT, NONE];
-    var SUPPORTED_BUTTONS = [LEFT, MIDDLE, RIGHT];
-    var SUPPORTED_TYPES = [SINGLE, DOUBLE];
-
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -32,21 +18,37 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
      * limitations under the License.
      *
      * @description The Clicked module provides methods for reporting mouse clicks on a map via an OWF Eventing channel
-     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
-     * According to the 
+     * According to the
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
      *
-     * @exports cmwapi/map/view/Clicked
+     * @version 1.1
+     *
+     * @module cmwapi/map/view/Clicked
      */
+
+    var ALT = "alt";
+    var SHIFT = "shift";
+    var CTRL = "ctrl";
+    var NONE = "none";
+    var LEFT = "left";
+    var MIDDLE = "middle";
+    var RIGHT = "right";
+    var SINGLE = "single";
+    var DOUBLE = "double";
+    var SUPPORTED_KEYS = [ALT, CTRL, SHIFT, NONE];
+    var SUPPORTED_BUTTONS = [LEFT, MIDDLE, RIGHT];
+    var SUPPORTED_TYPES = [SINGLE, DOUBLE];
+
     var Clicked = {
 
         /** CMWAPI Representation of a DOM MouseEvent key or button element. */
@@ -79,28 +81,30 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
         /**
          * Send information that centers a map on a location.
-         * @param {Object|Array} data 
-         * @param {number} data.lat A latitude value in decimal degrees of the click point.
-         * @param {number} data.lon A longitude value in decimal degrees of the click point.
-         * @param {string} data.button The mouse button clicked: "left", "middle", "right".  For
+         * method send
+         * @param {Object|Object[]} data
+         * @param {Number} data.lat A latitude value in decimal degrees of the click point.
+         * @param {Number} data.lon A longitude value in decimal degrees of the click point.
+         * @param {String} data.button The mouse button clicked: "left", "middle", "right".  For
          *     backwards compatibility, a missing button value should be considered as "left".
-         * @param {string} data.type The type of mouse click: "single", "double".  For backwards
+         * @param {String} data.type The type of mouse click: "single", "double".  For backwards
          *     compatibility, a missing type value should be considered as "single".
-         * @param {Array<string>} data.keys An array of keys pressed during the click event.
+         * @param {Array<String>} data.keys An array of keys pressed during the click event.
          *     Supported values are "alt", "ctrl", "shift", and "none".  For backwards compatibility,
          *     a missing keys value should be treated as "none".
+         * @memberof module:cmwapi/map/view/Clicked
          */
-        send : function ( data ) {
+        send: function(data) {
 
             // validData will story results from any Validator and may be resused for internal
             // error bookkeeping.
             var validData = Validator.validObjectOrArray( data );
             var payload = validData.payload;
 
-            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // If the data was not in proper payload structure, an Object or Array of objects,
             // note the error and return.
             if (!validData.result) {
-                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_CLICKED, data, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_CLICKED, data,
                     validData.msg);
                 return;
             }
@@ -139,7 +143,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
             }
 
-            // Send along the payload if we did not fail validation.    
+            // Send along the payload if we did not fail validation.
             if (validData.result) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_VIEW_CLICKED, Ozone.util.toString(payload[0]));
@@ -149,7 +153,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
             }
             else {
-                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_CLICKED, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_CLICKED,
                     Ozone.util.toString(data),
                     validData.msg);
             }
@@ -159,15 +163,15 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
         /**
          * Subscribes to the clicked channel and registers a handler to be called when messages
          * are published to it.
-         *
+         * @method addHandler
          * @param {module:cmwapi/map/view/Clicked~Handler} handler An event handler for any creation messages.
-         *
+         * @memberof module:cmwapi/map/view/Clicked
          */
-        addHandler : function (handler) {
+        addHandler: function(handler) {
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
-            var newHandler = function( sender, msg ) {
-              
+            var newHandler = function(sender, msg) {
+
                 // Parse the sender and msg to JSON.
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
                 var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
@@ -211,11 +215,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                     handler(sender, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_VIEW_CLICKED, 
+                    Error.send(sender, Channels.MAP_VIEW_CLICKED,
                         msg,
                         validData.msg);
                 }
-                
+
             };
 
             OWF.Eventing.subscribe(Channels.MAP_VIEW_CLICKED, newHandler);
@@ -224,6 +228,8 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
         /**
          * Stop listening to the channel and handling events upon it.
+         * @method removeHandlers
+         * @memberof module:cmwapi/map/view/Clicked
          */
         removeHandlers : function() {
             OWF.Eventing.unsubscribe(Channels.MAP_VIEW_CLICKED);
@@ -232,17 +238,18 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
         /**
          * A function for handling channel messages.
          * @callback module:cmwapi/map/view/Clicked~Handler
-         * @param {string} sender The widget sending a format message
-         * @param {Object|Array} data  A data object or array of data objects.
-         * @param {number} data.lat A latitude value in decimal degrees of the click point.
-         * @param {number} data.lon A longitude value in decimal degrees of the click point.
-         * @param {string} data.button The mouse button clicked: "left", "middle", "right".  For
+         * @param {String} sender The widget sending a format message
+         * @param {Object|Object[]} data  A data object or array of data objects.
+         * @param {Number} data.lat A latitude value in decimal degrees of the click point.
+         * @param {Number} data.lon A longitude value in decimal degrees of the click point.
+         * @param {String} data.button The mouse button clicked: "left", "middle", "right".  For
          *     backwards compatibility, a missing button value should be considered as "left".
-         * @param {string} data.type The type of mouse click: "single", "double".  For backwards
+         * @param {String} data.type The type of mouse click: "single", "double".  For backwards
          *     compatibility, a missing type value should be considered as "single".
-         * @param {Array<string>} data.keys An array of keys pressed during the click event.
+         * @param {Array<String>} data.keys An array of keys pressed during the click event.
          *     Supported values are "alt", "ctrl", "shift", and "none".  For backwards compatibility,
          *     a missing keys value should be treated as "none".
+         * @memberof module:cmwapi/map/view/Clicked
          */
 
     };

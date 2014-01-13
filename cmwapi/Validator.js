@@ -25,7 +25,10 @@ define('cmwapi/Validator', function() {
      * has static members that specify the supported map status types and map types allowed as well
      * a number of functions for checking latitude/longitude pairs, various type fields, and bounding
      * boxes for map views.
-     * @exports cmwapi/Validator
+     *
+     * @version 1.1
+     *
+     * @module cmwapi/Validator
      */
     var Validator = {
         /**
@@ -41,8 +44,10 @@ define('cmwapi/Validator', function() {
 
         /**
          * Validate the input type against the supported map types.
-         * @param types {Array<string>} The types to validate.
+         * @method validMapType
+         * @param types {Array<String>} The types to validate.
          * @returns {module:cmwapi/Validator~Result}
+         * @memberof module:cmwapi/Validator
          */
         validMapType: function(type) {
             var retVal = {
@@ -64,8 +69,10 @@ define('cmwapi/Validator', function() {
 
         /**
          * Validate the input types against the supported map status request types.
-         * @param types {Array<string>} The types to validate.
+         * @method validRequestTypes
+         * @param types {Array<String>} The types to validate.
          * @returns {module:cmwapi/Validator~Result}
+         * @memberof module:cmwapi/Validator
          */
         validRequestTypes: function(types) {
             var retVal = {
@@ -93,14 +100,16 @@ define('cmwapi/Validator', function() {
         /**
          * Validate a set of bounds used to drive view messages in the CMWAPI.  Bounds require
          * latitude/longitude values for the southwest and northeast corners of a bounding box on map.
-         * @param {object} bounds Information about the bounding view.
-         * @param {object} bounds.southWest The southwest corner object with attributes
-         * @param {number} bounds.southWest.lat A latitude value
-         * @param {number} bounds.southWest.lon A longitude value
-         * @param {object} bounds.northEast The northeast corner object with attributes
-         * @param {number} bounds.northEast.lat A latitude value
-         * @param {number} bounds.northEast.lon A longitude value
+         * @method
+         * @param {Object} bounds Information about the bounding view.
+         * @param {Object} bounds.southWest The southwest corner object with attributes
+         * @param {Number} bounds.southWest.lat A latitude value
+         * @param {Number} bounds.southWest.lon A longitude value
+         * @param {Object} bounds.northEast The northeast corner object with attributes
+         * @param {Number} bounds.northEast.lat A latitude value
+         * @param {Number} bounds.northEast.lon A longitude value
          * @returns {module:cmwapi/Validator~Result}
+         * @memberof module:cmwapi/Validator
          */
         validBounds: function(bounds) {
             if (!bounds) {
@@ -122,10 +131,12 @@ define('cmwapi/Validator', function() {
 
         /**
          * Validates the center point as latitude/longitude value.
-         * @param {object} center A point on which to center a map.
-         * @param {number} center.lat The latitude value in decimal degrees.
-         * @param {number} center.lon The longitude value in decimal degrees.
+         * @method validCenter
+         * @param {Object} center A point on which to center a map.
+         * @param {Number} center.lat The latitude value in decimal degrees.
+         * @param {Number} center.lon The longitude value in decimal degrees.
          * @returns {module:cmwapi/Validator~Result}
+         * @memberof module:cmwapi/Validator
          */
         validCenter: function(center) {
             if (!center) {
@@ -142,8 +153,10 @@ define('cmwapi/Validator', function() {
          * Validates the range as a positive number.  Note that individual maps may accept any valid range but
          * round them to a set of discrete values.  Such refinement is responsibility of any client code/maps using
          * this function.
+         * @method validRange
          * @param {Number} range A range value specifying a map's potential zoom level.
          * @returns {module:cmwapi/Validator~Result}
+         * @memberof module:cmwapi/Validator
          */
         validRange: function(range) {
            if (!range) {
@@ -161,26 +174,28 @@ define('cmwapi/Validator', function() {
          * format for drag and drop data.  This method will check the structure and return a description
          * of any errors found.  Note that this method will not alter the structure of the payload. Payloads must
          * include at least one of a marker, feature, or featureUrl attribute.
-         * @param {object} payload A point on which to center a map.
-         * @param {string} [payload.overlayId] The ID of the overlay.  This is optional.  If missing, client code is expected to use the sending widget's ID.
-         * @param {string} payload.featureId The ID of the feature.  If an ID is not specified, an error is generated.
-         * @param {string} [payload.name] The name of the feature.  Names are optional, not unique and are meant purely for display purposes.
-         * @param {boolean} [payload.zoom] Boolean denoting whether or not to zoom to the feature.  This is optional and not validated at present.
-         * @param {object} [payload.marker]
-         * @param {string} [payload.marker.details] An optional marker description. No validation is performed on this.
-         * @param {string} [payload.marker.iconUrl] An optional marker icon URL.  No validation is performed on this at present.
-         * @param {object} [payload.feature]
-         * @param {string} payload.feature.format The format of the feature.  Valid values depend on CMWAPI implementations.  This is
+         * @method validDragAndDropPayload
+         * @param {Object} payload A point on which to center a map.
+         * @param {String} [payload.overlayId] The ID of the overlay.  This is optional.  If missing, client code is expected to use the sending widget's ID.
+         * @param {String} payload.featureId The ID of the feature.  If an ID is not specified, an error is generated.
+         * @param {String} [payload.name] The name of the feature.  Names are optional, not unique and are meant purely for display purposes.
+         * @param {Boolean} [payload.zoom] Boolean denoting whether or not to zoom to the feature.  This is optional and not validated at present.
+         * @param {Object} [payload.marker]
+         * @param {String} [payload.marker.details] An optional marker description. No validation is performed on this.
+         * @param {String} [payload.marker.iconUrl] An optional marker icon URL.  No validation is performed on this at present.
+         * @param {Object} [payload.feature]
+         * @param {String} payload.feature.format The format of the feature.  Valid values depend on CMWAPI implementations.  This is
          *     merely checked for existence.
-         * @param {string} payload.feature.featureData The data of the feature.  This should be a non-empty string.
-         * @param {object} [payload.featureUrl]
-         * @param {string} payload.featureUrl.format The format of the feature.  Valid values depend on CMWAPI implementations.  This is
+         * @param {String} payload.feature.featureData The data of the feature.  This should be a non-empty string.
+         * @param {Object} [payload.featureUrl]
+         * @param {String} payload.featureUrl.format The format of the feature.  Valid values depend on CMWAPI implementations.  This is
          *     merely checked for existence.
-         * @param {string} payload.featureUrl.url The URL of the feature data.
+         * @param {String} payload.featureUrl.url The URL of the feature data.
          * @param {Object} [payload.featureUrl.params] A JSON object of parameters to be added to the URL during a feature request from a server.
          *     According to the [CMWAPI 1.1 Specification](http://www.cmwapi.org), params may be ignored unless the format is
          *     set to "wms".  Also, request, exceptions, SRS/CRS, widgeth, height, and bbox params should not be passed in
          *     as they are determined by the map as needed.  Finally, all parameters should <em>not</em> be URL encoded.
+         * @memberof module:cmwapi/Validator
          */
         validDragAndDropPayload: function(payload) {
             var retVal = {result: true, msg: ''};
@@ -234,7 +249,10 @@ define('cmwapi/Validator', function() {
          * Objects.  This function will check the type of the input to see if it is an object or object
          * array.  Undefined inputs are considered valid and returned as an array containing
          * a single empty object. Note that this function does not evaluate individual payload attributes.
+         * @method validObjectOrArray
+         * @param data {Object|Object[]} Object or Object array to validate
          * @returns {module:cmwapi/Validator~PayloadResult}
+         * @memberof module:cmwapi/Validator
          */
         validObjectOrArray: function(data) {
             var retVal = {
@@ -261,8 +279,10 @@ define('cmwapi/Validator', function() {
 
         /**
          * A basic number validator that checks that the value can be parsed as a float and in finite in value.
-         * @param {number} n A value to test
-         * @returns {boolean}
+         * @method isNumber
+         * @param {Number} n A value to test
+         * @returns {Boolean}
+         * @memberof module:cmwapi/Validator
          */
         isNumber: function(n) {
             // from http://stackoverflow.com/a/1830844
@@ -275,6 +295,9 @@ define('cmwapi/Validator', function() {
          * @todo using this limits the requirement of this api implementation on other libraries.  However, we
          *     may want to leverage dojo or underscore instead.
          * @see http://stackoverflow.com/questions/1303646/check-whether-variable-is-number-or-string-in-javascript
+         * @method isString
+         * @param data {Object|String} What should be evaluated to determine if string
+         * @memberof module:cmwapi/Validator
          */
         isString: function(data) {
             // The first type will also catch stringified json.
@@ -287,6 +310,9 @@ define('cmwapi/Validator', function() {
          *     this api implementation on other libraries.  However, we may want to leverage dojo or
          *     underscore instead.
          * @see http://stackoverflow.com/questions/1303646/check-whether-variable-is-number-or-string-in-javascript
+         * @method isArray
+         * @param data {Object|Object[]} What to determine if array
+         * @memberof module:cmwapi/Validator
          */
         isArray: function(data) {
             return (Object.prototype.toString.call( data ) === '[object Array]');
@@ -294,9 +320,11 @@ define('cmwapi/Validator', function() {
 
         /**
          * Validates a latitude, longitude pair in decimal degrees.
-         * @param {number} lat A latitude in decimal degrees
-         * @param {number} lon A longitude in decimal degrees
-         * @returns {boolean}
+         * @method validLatLon
+         * @param {Number} lat A latitude in decimal degrees
+         * @param {Number} lon A longitude in decimal degrees
+         * @returns {Boolean}
+         * @memberof module:cmwapi/Validator
          */
         validLatLon: function(lat,lon) {
             // Check that both are numbers.
@@ -312,9 +340,11 @@ define('cmwapi/Validator', function() {
 
         /**
          * Validate the input type against the values in the input list.
-         * @param types {Array<string>} The allowed values.
-         * @param item {string} The value to test.
+         * @method containsValue
+         * @param types {Array<String>} The allowed values.
+         * @param item {String} The value to test.
          * @returns {module:cmwapi/Validator~Result}
+         * @memberof module:cmwapi/Validator
          */
         containsValue : function(allowedValues, item) {
             if (typeof item !== "undefined") {
@@ -333,8 +363,9 @@ define('cmwapi/Validator', function() {
          * A validation results object that includes the boolean result and an error message if
          * validation fails.
          * @typedef {Object} module:cmwapi/Validator~Result
-         * @property {boolean} result True, if validation passes; false, otherwise
-         * @property {string} msg An error message denoting types of errors when validation fails
+         * @property {Boolean} result True, if validation passes; false, otherwise
+         * @property {String} msg An error message denoting types of errors when validation fails
+         * @memberof module:cmwapi/Validator
          */
 
          /**
@@ -342,9 +373,10 @@ define('cmwapi/Validator', function() {
          * validation fails.  The payload array will contain an empty object if no input was given
          * or an array of objects that were passed in.
          * @typedef {Object} module:cmwapi/Validator~PayloadResult
-         * @property {boolean} result True, if validation passes; false, otherwise
-         * @property {Array.Object} payload An array of payload objects
-         * @property {string} msg An error message denoting types of errors when validation fails
+         * @property {Boolean} result True, if validation passes; false, otherwise
+         * @property {Object[]} payload An array of payload objects
+         * @property {String} msg An error message denoting types of errors when validation fails
+         * @memberof module:cmwapi/Validator
          */
     };
 
