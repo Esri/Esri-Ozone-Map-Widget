@@ -2,6 +2,7 @@
 define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/map/status/About", "cmwapi/map/status/Format",
         "cmwapi/map/status/Request", "cmwapi/map/status/View"],
     function(Channels, Error, About, Format, Request, View) {
+
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -21,41 +22,33 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/map/status/About", "cmwap
      *
      * @description Defines a convenience module for handling all the map.status interactions according to the CMW API 1.1 specification.
      *
-     * @version 1.1
-     *
-     * @module cmwapi/map/Status
+     * @exports cmwapi/map/Status
      */
     var Status = {
 
         /**
          * @see module:cmwapi/map/status/Request.SUPPORTED_STATUS_TYPES
-         * @memberof module:cmwapi/map/Status
          */
         SUPPORTED_STATUS_TYPES: Request.SUPPORTED_STATUS_TYPES,
         /**
          * @see module:cmwapi/map/status/Format.REQUIRED_FORMATS
-         * @memberof module:cmwapi/map/Status
          */
         REQUIRED_FORMATS: Format.REQUIRED_FORMATS,
 
         /**
          * @see module:cmwapi/map/status/Request
-         * @memberof module:cmwapi/map/Status
          */
         request: Request,
         /**
          * @see module:cmwapi/map/status/View
-         * @memberof module:cmwapi/map/Status
          */
         view: View,
         /**
          * @see module:cmwapi/map/status/About
-         * @memberof module:cmwapi/map/Status
          */
         about: About,
         /**
          * @see module:cmwapi/map/status/Format
-         * @memberof module:cmwapi/map/Status
          */
         format: Format
     };

@@ -1,4 +1,5 @@
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Channels, Validator, Error) {
+
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -22,39 +23,35 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
-     * According to the
+     * According to the 
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
      *
-     * @version 1.1
-     *
-     * @todo status.view: would we filter out if the requester isn't me?
-     *
      * @exports cmwapi/map/status/View
+     * @todo status.view: would we filter out if the requester isn't me?
      */
     var View = {
 
         /**
          * Sends a status view message.  The only real CMWAPI requirement here is what goes out over the channel.
-         * @param {Object|Object[]} data
-         * @param {String} data.requester Client that requested this status message be sent (if any). An empty requestor
+         * @param {Object|Array} data
+         * @param {string} data.requester Client that requested this status message be sent (if any). An empty requestor
          *     denotes that the message is being sent due to a map view change.
-         * @param {Object} data.bounds Information about the bounding view.
-         * @param {Object} data.bounds.southWest The southwest corner object with attributes
-         * @param {Number} data.bounds.southWest.lat A latitude value
-         * @param {Number} data.bounds.southWest.lon A longitude value
-         * @param {Object} data.bounds.northEast The northeast corner object with attributes
-         * @param {Number} data.bounds.northEast.lat A latitude value
-         * @param {Number} data.bounds.northEast.lon A longitude value
-         * @param {Object} data.center A point on which to center a map.
-         * @param {Number} data.center.lat The latitude value in decimal degrees.
-         * @param {Number} data.center.lon The longitude value in decimal degrees.
-         * @param {Number} data.range  The current distance in meters the map is zoomed out.
-         * @memberof module:cmwapi/map/status/View
+         * @param {object} data.bounds Information about the bounding view.
+         * @param {object} data.bounds.southWest The southwest corner object with attributes
+         * @param {number} data.bounds.southWest.lat A latitude value
+         * @param {number} data.bounds.southWest.lon A longitude value
+         * @param {object} data.bounds.northEast The northeast corner object with attributes
+         * @param {number} data.bounds.northEast.lat A latitude value
+         * @param {number} data.bounds.northEast.lon A longitude value
+         * @param {object} data.center A point on which to center a map.
+         * @param {number} data.center.lat The latitude value in decimal degrees.
+         * @param {number} data.center.lon The longitude value in decimal degrees.
+         * @param {number} data.range  The current distance in meters the map is zoomed out.
          */
         send: function(data) {
 
@@ -69,10 +66,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var payload = validData.payload;
             var isValidData = true;
 
-            // If the data was not in proper payload structure, an Object or Array of objects,
+            // If the data was not in proper payload structure, an Object or Array of objects, 
             // note the error and return.
             if (!validData.result) {
-                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_VIEW, data,
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_VIEW, data, 
                     validData.msg);
                 return;
             }
@@ -95,14 +92,14 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 if (!checkRange.result) {
                     msg+=checkRange.msg+' for view index[' + i + ']. ';
                     isValidData = false;
-                }
+                }                
             }
             if (!isValidData) {
                 Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_VIEW,
                     payload,
                     msg);
             } else {
-                if (payload.length === 1) {
+                if (payload.length === 1) {                
                     OWF.Eventing.publish(Channels.MAP_STATUS_VIEW, Ozone.util.toString(payload[0]));
                 } else {
                     OWF.Eventing.publish(Channels.MAP_STATUS_VIEW, Ozone.util.toString(payload));
@@ -113,9 +110,8 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
         /**
          * Subscribes to the view channel and registers a handler to be called when messages are published to it.
-         * @method addHandler
+         *
          * @param {module:cmwapi/map/status/View~Handler} handler An event handler for any view messages.
-         * @memberof module:cmwapi/map/status/View
          */
         addHandler: function(handler) {
 
@@ -148,7 +144,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                         isValidData = false;
                     }
                 }
-
+    
                 if (isValidData) {
                     handler(sender, jsonMsg.requester, jsonMsg.bounds, jsonMsg.center, jsonMsg.range );
                 } else {
@@ -164,8 +160,6 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
         /**
          * Stop listening to the channel and handling events upon it.
-         * @method removeHandlers
-         * @memberof module:cmwapi/map/status/View
          */
         removeHandlers: function() {
             OWF.Eventing.unsubscribe(Channels.MAP_STATUS_VIEW);
@@ -174,20 +168,19 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         /**
          * A function for handling View channel messages.
          * @callback module:cmwapi/map/status/View~Handler
-         * @param {Object|Object} data
-         * @param {String} data.sender The widget sending a view message
-         * @param {Object} data.bounds Information about the bounding view.
-         * @param {Object} data.bounds.southWest The southwest corner object with attributes
-         * @param {Number} data.bounds.southWest.lat A latitude value
-         * @param {Number} data.bounds.southWest.lon A longitude value
-         * @param {Object} data.bounds.northEast The northeast corner object with attributes
-         * @param {Number} data.bounds.northEast.lat A latitude value
-         * @param {Number} data.bounds.northEast.lon A longitude value
-         * @param {Object} data.center A point on which to center a map.
-         * @param {Number} data.center.lat The latitude value in decimal degrees.
-         * @param {Number} data.center.lon The longitude value in decimal degrees.
-         * @param {Number} data.range The current distance in meters the map is zoomed out.
-         * @memberof module:cmwapi/map/status/View
+         * @param {Object|Array} data         
+         * @param {string} data.sender The widget sending a view message
+         * @param {object} data.bounds Information about the bounding view.
+         * @param {object} data.bounds.southWest The southwest corner object with attributes
+         * @param {number} data.bounds.southWest.lat A latitude value
+         * @param {number} data.bounds.southWest.lon A longitude value
+         * @param {object} data.bounds.northEast The northeast corner object with attributes
+         * @param {number} data.bounds.northEast.lat A latitude value
+         * @param {number} data.bounds.northEast.lon A longitude value
+         * @param {object} data.center A point on which to center a map.
+         * @param {number} data.center.lat The latitude value in decimal degrees.
+         * @param {number} data.center.lon The longitude value in decimal degrees.
+         * @param {number} data.range The current distance in meters the map is zoomed out.
          */
     };
 

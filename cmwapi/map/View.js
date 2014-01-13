@@ -1,9 +1,10 @@
 
 define(["cmwapi/Channels", "cmwapi/map/view/Zoom", "cmwapi/map/view/CenterOverlay",
     "cmwapi/map/view/CenterFeature", "cmwapi/map/view/CenterLocation",
-    "cmwapi/map/view/CenterBounds", "cmwapi/map/view/Clicked"],
+    "cmwapi/map/view/CenterBounds", "cmwapi/map/view/Clicked"], 
     function(Channels, Zoom, CenterOverlay, CenterFeature, CenterLocation,
         CenterBounds, Clicked) {
+
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -23,43 +24,35 @@ define(["cmwapi/Channels", "cmwapi/map/view/Zoom", "cmwapi/map/view/CenterOverla
      *
      * @description Defines a convenience module for handling all the map.view interactions according to the CMW API 1.1 specification.
      *
-     * @version 1.1
-     *
-     * @module cmwapi/map/View
+     * @exports cmwapi/map/View
      */
     var View = {
 
         /**
          * @see module:cmwapi/map/view/Zoom
-         * @memberof module:cmwapi/map/View
          */
         zoom : Zoom,
         center : {
             /**
              * @see module:cmwapi/map/view/CenterOverlay
-             * @memberof module:cmwapi/map/View
              */
             overlay: CenterOverlay,
             /**
              * @see module:cmwapi/map/view/CenterFeature
-             * @memberof module:cmwapi/map/View
              */
             feature: CenterFeature,
             /**
              * @see module:cmwapi/map/view/CenterLocation
-             * @memberof module:cmwapi/map/View
              */
             location: CenterLocation,
             /**
              * @see module:cmwapi/map/view/CenterBounds
-             * @memberof module:cmwapi/map/View
              */
             bounds: CenterBounds
         },
-
+        
         /**
          * @see module:cmwapi/map/view/Clicked
-         * @memberof module:cmwapi/map/View
          */
         clicked: Clicked
     };

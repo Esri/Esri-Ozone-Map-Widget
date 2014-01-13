@@ -1,6 +1,6 @@
 
 define(["cmwapi/map/feature/Plot", "cmwapi/map/feature/PlotURL", "cmwapi/map/feature/Unplot",
-    "cmwapi/map/feature/Hide", "cmwapi/map/feature/Show", "cmwapi/map/feature/Selected", "cmwapi/map/feature/Update"],
+    "cmwapi/map/feature/Hide", "cmwapi/map/feature/Show", "cmwapi/map/feature/Selected", "cmwapi/map/feature/Update"], 
     function(Plot, PlotURL, Unplot, Hide, Show, Selected, Update) {
 
     /**
@@ -22,47 +22,38 @@ define(["cmwapi/map/feature/Plot", "cmwapi/map/feature/PlotURL", "cmwapi/map/fea
      *
      * @description Defines a convenience module for handling all the map.feature interactions according to the CMW API 1.1 specification.
      *
-     * @version 1.1
-     *
-     * @module cmwapi/map/Feature
+     * @exports cmwapi/map/Feature
      */
     var Feature = {
 
         /**
          * @see module:cmwapi/map/feature/Plot
-         * @memberof module:cmwapi/map/Feature
          */
         plot : Plot,
         /**
          * @see module:cmwapi/map/feature/Unplot
-         * @memberof module:cmwapi/map/Feature
          */
         unplot: Unplot,
         /**
          * @see module:cmwapi/map/feature/Hide
-         * @memberof module:cmwapi/map/Feature
          */
         hide: Hide,
         /**
          * @see module:cmwapi/map/feature/Show
-         * @memberof module:cmwapi/map/Feature
          */
         show: Show,
         /**
          * @see module:cmwapi/map/feature/Selected
-         * @memberof module:cmwapi/map/Feature
          */
         selected: Selected,
         /**
          * @see module:cmwapi/map/feature/Update
-         * @memberof module:cmwapi/map/Feature
          */
         update: Update
     };
 
     /**
      * @see module:cmwapi/map/feature/PlotURL
-     * @memberof module:cmwapi/map/Feature
      */
     Feature.plot.url = PlotURL;
 

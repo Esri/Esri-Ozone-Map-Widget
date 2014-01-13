@@ -1,4 +1,4 @@
-define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], 
     function(Channels, Validator, Error) {
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
@@ -18,46 +18,42 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
      * limitations under the License.
      *
      * @description The CenterFeature module provides methods for centering a map feature via an OWF Eventing channel
-     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
-     * According to the
+     * According to the 
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
      *
-     * @version 1.1
-     *
-     * @module cmwapi/map/view/CenterFeature
+     * @exports cmwapi/map/view/CenterFeature
      */
     var CenterFeature = {
 
         /**
          * Send information that centers a map feature.
-         * @metod send
-         * @param {Object|Array} data
-         * @param {String} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
-         * @param {String} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
-         * @param {Number|String} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
+         * @param {Object|Array} data 
+         * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
+         * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
+         * @param {number|string} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
          *     to ask a map to best vit the overlay in the user's viewable area.
-         * @memberof module:cmwapi/map/view/CenterFeature
          */
-        send: function(data) {
+        send : function ( data ) {
 
             // validData will story results from any Validator and may be resused for internal
             // error bookkeeping.
-            var validData = Validator.validObjectOrArray(data);
+            var validData = Validator.validObjectOrArray( data );
             var payload = validData.payload;
 
-            // If the data was not in proper payload structure, an Object or Array of objects,
+            // If the data was not in proper payload structure, an Object or Array of objects, 
             // note the error and return.
             if (!validData.result) {
-                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_CENTER_FEATURE, data,
+                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_CENTER_FEATURE, data, 
                     validData.msg);
                 return;
             }
@@ -84,7 +80,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
             }
 
             // Since everything is optional, no major data validation is performed here.  Send
-            // along the payload.
+            // along the payload.    
             if (validData.result) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_VIEW_CENTER_FEATURE, Ozone.util.toString(payload[0]));
@@ -94,7 +90,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
             }
             else {
-                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_CENTER_FEATURE,
+                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_CENTER_FEATURE, 
                     Ozone.util.toString(data),
                     validData.msg);
             }
@@ -104,15 +100,15 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
         /**
          * Subscribes to the center feature channel and registers a handler to be called when messages
          * are published to it.
-         * @method addHandler
+         *
          * @param {module:cmwapi/map/view/CenterFeature~Handler} handler An event handler for any creation messages.
-         * @memberof module:cmwapi/map/view/CenterFeature
+         *
          */
-        addHandler: function(handler) {
+        addHandler : function (handler) {
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
-            var newHandler = function(sender, msg) {
-
+            var newHandler = function( sender, msg ) {
+              
                 // Parse the sender and msg to JSON.
                 var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
@@ -142,11 +138,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                     handler(sender, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_VIEW_CENTER_FEATURE,
+                    Error.send(sender, Channels.MAP_VIEW_CENTER_FEATURE, 
                         msg,
                         validData.msg);
                 }
-
+                
             };
 
             OWF.Eventing.subscribe(Channels.MAP_VIEW_CENTER_FEATURE, newHandler);
@@ -155,23 +151,20 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
         /**
          * Stop listening to the channel and handling events upon it.
-         * @method removeHandlers
-         * @memberof module:cmwapi/map/view/CenterFeature
          */
-        removeHandlers: function() {
+        removeHandlers : function() {
             OWF.Eventing.unsubscribe(Channels.MAP_VIEW_CENTER_FEATURE);
         }
 
         /**
          * A function for handling channel messages.
          * @callback module:cmwapi/map/view/CenterFeature~Handler
-         * @param {String} sender The widget sending a format message
+         * @param {string} sender The widget sending a format message
          * @param {Object|Array} data  A data object or array of data objects.
-         * @param {String} data.overlayId The ID of the overlay.
-         * @param {String} data.featureId The ID of the feature.
-         * @param {Number|String} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
+         * @param {string} data.overlayId The ID of the overlay. 
+         * @param {string} data.featureId The ID of the feature. 
+         * @param {number|string} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
          *     to ask a map to best vit the overlay in the user's viewable area.
-         * @memberof module:cmwapi/map/view/CenterFeature
          */
 
     };
