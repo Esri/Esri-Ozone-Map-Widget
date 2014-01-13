@@ -327,7 +327,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             }
 
             var successHandler = function() {
-                console.log("Saved preference...");
+                //console.log("Saved preference...");
                 //console.log("Saved preference handler: " + dataValue);
             };
             var failureHandler = function() { console.log ("Unable to archive state."); };
@@ -345,15 +345,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
         };
 
         me.retrieveState = function() {
-            //console.log("retrieve state for widget");
 
             var successHandler = function(retValue) {
-                if (retValue) {
-                    console.log("Retrieved: " + retValue.value);
+                if (retValue && retValue.value) {
+                    console.log("Retrieved overlay configuration: " + retValue.value);
                     me.overlays = OWFWidgetExtensions.Util.parseJson(retValue.value);
-                } else {
-                    console.log("No value retrieved");
-                }
+                } 
 
                 // iterate over overlays and apply...
                 var i, j;
