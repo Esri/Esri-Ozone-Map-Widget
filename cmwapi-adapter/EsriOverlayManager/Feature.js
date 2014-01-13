@@ -207,6 +207,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                     me.zoom(caller, overlayId, featureId, null, null, "auto");
                 }
             });
+
+            var errorHandler = function(layer) {
+                overlay.features[featureId] = null;
+                _notifyError(caller, "Something bad happened");
+            }
+            
             manager.treeChanged();
         };
 
@@ -490,6 +496,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 manager.treeChanged();
             }
         };
+
+        var _notifyError = function( src, msg ) {
+
+        }
 
     };
 
