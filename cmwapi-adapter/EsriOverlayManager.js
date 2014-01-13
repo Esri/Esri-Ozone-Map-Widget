@@ -1,28 +1,30 @@
-/**
- * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
- *
- * @license
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at<br>
- * <br>
- *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
- * <br>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @description Manager for overlay layers to be used in conjunction with an ESRI map,
- *  the {@link EsriAdapter}, and the {@link Map|Common Map Widget API}
- * @module cmwapi-adapter/EsriOverlayManager
- * @version 1.1
- */
 define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayManager/Overlay",
     "cmwapi-adapter/EsriOverlayManager/Feature", "OWFWidgetExtensions/owf-widget-extended" ],
     function(cmwapi, KMLLayer, OverlayHandler, FeatureHandler, OWFWidgetExtensions) {
+    /**
+     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+     *
+     * @license
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at<br>
+     * <br>
+     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+     * <br>
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     *
+     * @description Manager for overlay layers to be used in conjunction with an ESRI map,
+     *  the {@link EsriAdapter}, and the {@link Map|Common Map Widget API}
+     *
+     * @version 1.1
+     *
+     * @module cmwapi-adapter/EsriOverlayManager
+     */
 
     /**
      * @constructor
@@ -304,6 +306,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             });
         };
 
+        /**
+         * @method archiveState
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.archiveState = function() {
             console.log("archive state for widget");
             var overlayData = me.getOverlays();
@@ -344,6 +350,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
         };
 
+        /**
+         * @method retrieveState
+         * @memberof module:cmwapi-adapter/EsriOverlayManager#
+         */
         me.retrieveState = function() {
             //console.log("retrieve state for widget");
 
@@ -400,6 +410,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
         };
 
+        /**
+         * @method deleteState
+         * @memberof module:cmwapi-adaper/EsriOverlayManager#
+         */
         me.deleteState = function() {
             // TODO: not yet implemented - need to determine when a widget is removed, rather than just closed - want to hold onto
             //   widget instance preferences in between....
