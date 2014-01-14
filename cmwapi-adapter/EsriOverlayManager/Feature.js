@@ -208,12 +208,18 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 }
             });
 
-            var errorHandler = function(layer) {
-                overlay.features[featureId] = null;
-                _notifyError(caller, "Something bad happened");
-            }
+            layer.on("error", function(e) {
+                _layerErrorHandler(caller, overlayId, featureId, layer, e);
+            });
             
             manager.treeChanged();
+        };
+
+        var _layerErrorHandler = function( caller, overlayId, featureId, layer, e ) {
+            _notifyError(caller, "Unable to apply layer: " + e.error.message);
+
+            me.deleteFeature(caller, overlayId, featureId);
+
         };
 
         /**
@@ -263,6 +269,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
 
             var details = {extent: map.geographicExtent, layerInfos: [new WMSLayerInfo({name: params.layers, title: params.layers})]};
             var layer = new WMSLayer(url, details);
+            
             layer.setVisibleLayers([params.layers]);
             map.addLayer(layer);
 
@@ -277,6 +284,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 }
 
             });
+
+            layer.on("error", function(e) {
+                _layerErrorHandler(caller, overlayId, featureId, layer, e);
+            });
+
+
             manager.treeChanged();
         };
 
@@ -497,9 +510,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             }
         };
 
+        /**
+          @TODO: hook in notification library
+        */
         var _notifyError = function( src, msg ) {
-
-        }
+            console.log(src + ", " + msg);
+        };
 
     };
 
