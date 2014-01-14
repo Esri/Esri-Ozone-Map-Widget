@@ -1,4 +1,4 @@
-define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], 
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
     function(Channels, Validator, Error) {
 
     /**
@@ -19,18 +19,20 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
      * limitations under the License.
      *
      * @description The Plot module provides methods for using a feature plotting OWF Eventing channel
-     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
-     * According to the 
+     * According to the
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
+     * @version 1.1
      *
      * @exports cmwapi/map/feature/Plot
      */
@@ -38,7 +40,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
         /**
          * Send information that plots one or more map features.
-         * @param {Object|Array} data 
+         * @param {Object|Array} data
          * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
          * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
          * @param {string} [data.name] The name of the feature.  If a valid name string is not specified,
@@ -46,7 +48,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @param {string} [data.format] The format of the feature.  If not specified, this defaults to "kml".
          * @param {string} data.feature The data of the feature.
          * @param {boolean} [data.zoom] True, if the map should automatically zoom to this feature; false, otherwise.
-         *     Defaults to false. 
+         *     Defaults to false.
          * @todo At present, we're not defaulting the name to the feature id if not supplied.  Is this valid?  The API does
          *     not require a default; does that imply an empty string?
          */
@@ -57,10 +59,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
             var validData = Validator.validObjectOrArray( data );
             var payload = validData.payload;
 
-            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // If the data was not in proper payload structure, an Object or Array of objects,
             // note the error and return.
             if (!validData.result) {
-                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_PLOT, data, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_PLOT, data,
                     validData.msg);
                 return;
             }
@@ -92,7 +94,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 payload[i].zoom = (payload[i].zoom) ? payload[i].zoom : false;
             }
 
-            // Send along the payload if we did not fail validation.     
+            // Send along the payload if we did not fail validation.
             if (validData.result) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_PLOT, Ozone.util.toString(payload[0]));
@@ -102,7 +104,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
             }
             else {
-                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_PLOT, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_PLOT,
                     Ozone.util.toString(data),
                     validData.msg);
             }
@@ -120,7 +122,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
             var newHandler = function( sender, msg ) {
-              
+
                 // Parse the sender and msg to JSON.
                 var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
@@ -158,11 +160,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                     handler(sender, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_FEATURE_PLOT, 
+                    Error.send(sender, Channels.MAP_FEATURE_PLOT,
                         msg,
                         errorMsg);
                 }
-                
+
             };
 
             OWF.Eventing.subscribe(Channels.MAP_FEATURE_PLOT, newHandler);
@@ -187,7 +189,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @param {string} data.format The format of the feature.  This defaults to "kml".
          * @param {string} data.feature The data of the feature.
          * @param {boolean} [data.zoom] True, if the map should automatically zoom to this feature; false, otherwise.
-         *     Defaults to false. 
+         *     Defaults to false.
          */
 
     };

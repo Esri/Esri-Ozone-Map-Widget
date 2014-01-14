@@ -23,13 +23,15 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
-     * According to the 
+     * According to the
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
+     * @version 1.1
      *
      * @exports cmwapi/map/status/Request
      */
@@ -54,22 +56,22 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var payload = validData.payload;
 
             if (!validData.result) {
-                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, data, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, data,
                     validData.msg);
                 return;
             }
 
-            var isValidData = true; 
+            var isValidData = true;
             var errorMsg = '';
 
             for (var i=0 ; i < payload.length ; i++ ) {
                 var checkTypes = Validator.validRequestTypes(payload[i].types);
                 if (!checkTypes.result) {
-                    isValidData = false;                    
+                    isValidData = false;
                     errorMsg += checkTypes.msg + ' at index[' + i + ']. ';
-                }         
-                
-            } 
+                }
+
+            }
             if (!isValidData) {
                 // Send an error with the current widget instance as the sender.
                 Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, payload, errorMsg);

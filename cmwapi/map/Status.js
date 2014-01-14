@@ -22,6 +22,8 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/map/status/About", "cmwap
      *
      * @description Defines a convenience module for handling all the map.status interactions according to the CMW API 1.1 specification.
      *
+     * @version 1.1
+     *
      * @exports cmwapi/map/Status
      */
     var Status = {

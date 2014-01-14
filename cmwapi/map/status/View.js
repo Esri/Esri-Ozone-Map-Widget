@@ -23,13 +23,15 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
-     * According to the 
+     * According to the
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
+     * @version 1.1
      *
      * @exports cmwapi/map/status/View
      * @todo status.view: would we filter out if the requester isn't me?
@@ -66,10 +68,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var payload = validData.payload;
             var isValidData = true;
 
-            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // If the data was not in proper payload structure, an Object or Array of objects,
             // note the error and return.
             if (!validData.result) {
-                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_VIEW, data, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_VIEW, data,
                     validData.msg);
                 return;
             }
@@ -92,14 +94,14 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 if (!checkRange.result) {
                     msg+=checkRange.msg+' for view index[' + i + ']. ';
                     isValidData = false;
-                }                
+                }
             }
             if (!isValidData) {
                 Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_VIEW,
                     payload,
                     msg);
             } else {
-                if (payload.length === 1) {                
+                if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_STATUS_VIEW, Ozone.util.toString(payload[0]));
                 } else {
                     OWF.Eventing.publish(Channels.MAP_STATUS_VIEW, Ozone.util.toString(payload));
@@ -144,7 +146,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                         isValidData = false;
                     }
                 }
-    
+
                 if (isValidData) {
                     handler(sender, jsonMsg.requester, jsonMsg.bounds, jsonMsg.center, jsonMsg.range );
                 } else {
@@ -168,7 +170,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
         /**
          * A function for handling View channel messages.
          * @callback module:cmwapi/map/status/View~Handler
-         * @param {Object|Array} data         
+         * @param {Object|Array} data
          * @param {string} data.sender The widget sending a view message
          * @param {object} data.bounds Information about the bounding view.
          * @param {object} data.bounds.southWest The southwest corner object with attributes

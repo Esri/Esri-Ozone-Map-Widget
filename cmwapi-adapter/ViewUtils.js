@@ -1,13 +1,4 @@
 define(function() {
-
-    var unionExtents = function(newExtent, currentMax) {
-        if(currentMax === null) {
-            return newExtent;
-        } else {
-            return currentMax.union(newExtent);
-        }
-    };
-
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -30,8 +21,20 @@ define(function() {
      * @see {@link https://developers.arcgis.com/en/javascript/jsapi/extent-amd.html|Extent}
      * @see {@link https://developers.arcgis.com/en/javascript/jsapi/map-amd.html|Map}
      * @see {@link https://developers.arcgis.com/en/javascript/jsapi/layer-amd.html|Layer}
+     *
+     * @version 1.1
+     *
      * @exports cmwapi-adapter/ViewUtils
      */
+
+    var unionExtents = function(newExtent, currentMax) {
+        if(currentMax === null) {
+            return newExtent;
+        } else {
+            return currentMax.union(newExtent);
+        }
+    };
+
     var ViewUtils = {
 
         /**

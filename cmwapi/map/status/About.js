@@ -23,13 +23,15 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
-     * According to the 
+     * According to the
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
+     * @version 1.1
      *
      * @todo status.about - version parameter: how to return that you support multiple versions?  and/or, how could you?
      * @todo status.about - widgetName: assume that's a "human-readable" name, rather than universal name?
@@ -58,10 +60,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var payload = validData.payload;
             var msg;
 
-            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // If the data was not in proper payload structure, an Object or Array of objects,
             // note the error and return.
             if (!validData.result) {
-                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_ABOUT, data, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_ABOUT, data,
                     validData.msg);
                 return;
             }
@@ -93,7 +95,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 }
             }
 
-            // Send along the payload if we did not fail validation.    
+            // Send along the payload if we did not fail validation.
             if (validData.result) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_STATUS_ABOUT, Ozone.util.toString(payload[0]));
@@ -138,13 +140,13 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                         errorMsg += 'Need a widget name for the status at index ' + i + '. ';
                         validData = false;
                     }
-                } 
+                }
 
                 if (validData) {
                     handler(sender, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_STATUS_ABOUT, 
+                    Error.send(sender, Channels.MAP_STATUS_ABOUT,
                         msg,
                         errorMsg);
                 }

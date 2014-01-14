@@ -35,6 +35,7 @@
  *      w1: receive: map.status.view - and the requester matches, so it handles
  *
  * @version 1.1
+ *
  * @exports cmwapi/cmwapi
  */
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error", "cmwapi/map/Status", "cmwapi/map/Overlay",

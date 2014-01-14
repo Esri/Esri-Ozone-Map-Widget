@@ -1,28 +1,38 @@
-/**
- * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
- *
- * @license
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at<br>
- * <br>
- *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
- * <br>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 define(["cmwapi/cmwapi"], function(CommonMapApi) {
+    /**
+     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+     *
+     * @license
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at<br>
+     * <br>
+     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+     * <br>
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     *
+     * @version 1.1
+     *
+     * @module cmwapi-adapter/Feature
+     */
+
+    /**
+     * @constructor
+     * @param adapter {module:cmwapi-adapter/cmwapi-adapter}
+     * @param overlayManager {module:cmwapi-adapter/EsriOverlayManager}
+     * @alias module:cmwapi-adapter/Feature
+     */
     var Feature = function(adapater, overlayManager) {
         var me = this;
 
         /**
          * Handler for plot feature request
-         * @method feature.handlePlot
+         * @method handlePlot
          * @param sender {String} the widget which made the plot feature request
          * @param data {Object|Object[]}
          * @param data.overlayId {String} The Id of the overlay to which the feature should be plotted.
@@ -31,7 +41,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          * @param data.format {String} The format type of the feature data
          * @param data.feature The data for the feature to be plotted
          * @param [data.zoom] {Boolean} Whether or not the feature should be zoomed to when plotted.
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/Feature#
          */
         me.handlePlot = function(sender, data) {
             if(data.length > 1) {
@@ -51,7 +61,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
 
         /**
          * Handler for plot url request
-         * @method feature.handlePlot
+         * @method handlePlot
          * @param sender {String} the widget which made the feature plot url request
          * @param data {Object|Object[]}
          * @param data.overlayId {String} The Id of the overlay to which the feature should be plotted.
@@ -60,7 +70,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          * @param data.format {String} The format type of the feature data
          * @param data.url {String} The url for where the feature data could be retrieved
          * @param [data.zoom] {Boolean} Whether or not the feature should be zoomed to when plotted.
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/Feature#
          */
         me.handlePlotUrl = function(sender, data) {
             if(data.length > 1) {
@@ -80,13 +90,13 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
 
         /**
          * Handler for feature unplot request
-         * @method feature.handleUnplot
+         * @method handleUnplot
          * @param sender {String} the widget which made the feature unplot request
          * @param data {Object|Object[]}
          * @param data.overlayId {String} optional; the id for the overlay from which the feature should be
          *      unplotted. If not provided, the id of the sender will be assumed
          * @param data.featureId {String} The id of the feature to unplot
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/Feature#
          */
         me.handleUnplot = function(sender, data) {
             if(data.length > 1) {
@@ -104,13 +114,13 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
 
         /**
          * Handler for request to hide feature
-         * @method feature.handleHide
+         * @method handleHide
          * @param sender {String} the widget which made the feature hide request
          * @param data {Object|Object[]}
          * @param data.overlayId {String} optional; the id for the overlay from which the feature should be
          *      hidden. If not provided, the id of the sender will be assumed
          * @param data.featureId {String} The id of the feature to hide
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/Feature#
          */
         me.handleHide = function(sender, data) {
             if(data.length > 1) {
@@ -128,10 +138,12 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
 
         /**
          * Handler for request to show feature
+         * @method handleShow
          * @param sender {String} The id of the widget making the request to show the feature
          * @param data {Object|Object[]}
          * @param data.overlayId {String} The id of the overlay to which the feature to show belongs
          * @param data.featureId {Stirng} The id of the feature which should be shown
+         * @memberof module:cmwapi-adapter/Feature#
          */
         me.handleShow = function(sender, data) {
             if(data.length > 1) {
@@ -149,13 +161,15 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
 
         /**
          * Handler for a given feature being selected
-         * @param {string} sender The widget sending a format message
-         * @param {Object|Array} data  A data object or array of data objects.
-         * @param {string} data.overlayId The ID of the overlay.
-         * @param {string} data.featureId The ID of the feature.
-         * @param {string} [data.selectedId] The ID of the actual selected object.  This may be an implementation
+         * @method handleSelected
+         * @param {String} sender The widget sending a format message
+         * @param {Object|Object[]} data  A data object or array of data objects.
+         * @param {String} data.overlayId The ID of the overlay.
+         * @param {String} data.featureId The ID of the feature.
+         * @param {String} [data.selectedId] The ID of the actual selected object.  This may be an implementation
          *    specific subfeature id for data within an aggregated feature.
-         * @param {string} [data.selectedName] The name of the selected object.
+         * @param {String} [data.selectedName] The name of the selected object.
+         * @memberof module:cmwapi-adapter/Feature#
          */
         me.handleSelected = function(sender, data) {
             var senderObj = OWF.Util.parseJson(sender);
@@ -176,6 +190,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
 
         /**
          * Handler for request to update a feature
+         * @method handleUpdate
          * @param Sender {String} The id of the widgets making the request to update the feature
          * @param data {Object|Object[]}
          * @param data.overlayId {String} The id of the overlay for which the feature to be updated belongs.
@@ -183,6 +198,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          * @param [data.name] {String} the optional name to be set for the feature; If not provided, the name will not be changed.
          * @param [data.newOverlayId] {String} The optional id of the new overlay for which the feature should belong. If not
          *      provided the parent overlay will not be changed.
+         * @memberof module:cmwapi-adapter/Feature#
          */
         me.handleUpdate = function(sender, data) {
             if(data.length > 1) {

@@ -21,7 +21,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
      *
      * @description Manager for overlay layers to be used in conjunction with an ESRI map,
      * the {@link EsriAdapter}, and the {@link Map|Common Map Widget API}
+     *
      * @version 1.1
+     *
      * @module cmwapi-adapter/EsriOverlayManager/Feature
      */
 
@@ -212,7 +214,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 overlay.features[featureId] = null;
                 _notifyError(caller, "Something bad happened");
             }
-            
+
             manager.treeChanged();
         };
 

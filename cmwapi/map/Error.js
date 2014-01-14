@@ -20,6 +20,9 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
      *
      * @todo error sender - instance id or widget id? (inferring by example, need to ask on forums)
      * @todo error description - no common list, correct?
+     *
+     * @version 1.1
+     *
      * @exports cmwapi/map/Error
      */
     var Error = {
@@ -48,7 +51,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
                 };
             }
             return sendPayload;
-        }, 
+        },
 
         /**
          * Send information that supports the creation of a map overlay.
@@ -62,18 +65,18 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
 
             // cheat, for folks who are using the previous simple approach of sending across sender, type, msg, error...
             if (arguments.length === 4) {
-                data = Error.sendHelper(arguments); 
+                data = Error.sendHelper(arguments);
             }
 
             var validData = Validator.validObjectOrArray( data );
             var payload = validData.payload;
 
-            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // If the data was not in proper payload structure, an Object or Array of objects,
             // note the error and return.
-            // If we call Error here, this will get us in a recursive loop!  
+            // If we call Error here, this will get us in a recursive loop!
             if (!validData.result) {
                 //console.error ("Unable to send on error channel - sent data is not valid: [data: " + data + "].  " + validData.msg);
-                Error.send( OWF.getInstanceId(), Channels.MAP_ERROR, data, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_ERROR, data,
                     validData.msg);
                 return;
             }
@@ -91,7 +94,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
 
         /**
          * Subscribes to the error channel and registers a handler to be called when messages are published to it.
-         * 
+         *
          * @param {module:cmwapi/map/Error~Handler} handler An event handler for any creation messages.
          * @returns {module:cmwapi/map/Error~ReturnedHandler} Wrapped handler, useful for testing
          */

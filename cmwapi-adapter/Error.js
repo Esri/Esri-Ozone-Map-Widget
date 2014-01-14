@@ -1,22 +1,25 @@
-/**
- * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
- *
- * @license
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at<br>
- * <br>
- *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
- * <br>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 define(["cmwapi/cmwapi"], function(CommonMapApi) {
+    /**
+     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+     *
+     * @license
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at<br>
+     * <br>
+     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+     * <br>
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     *
+     * @version 1.1
+     *
+     * @module cmwapi-adapter/Error
+     */
     var ErrorAdapter = function() {
         var me = this;
 
@@ -47,7 +50,7 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          * @memberof! module:EsriAdapter#
          */
         me.handleError = function(sender, type, message, error) {
-            //TODO
+            //TODO What do we want to do with an error
         };
         CommonMapApi.error.addHandler(me.handleError);
     };

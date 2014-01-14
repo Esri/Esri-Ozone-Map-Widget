@@ -1,6 +1,5 @@
-define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], 
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
     function(Channels, Validator, Error) {
-
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -19,18 +18,20 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
      * limitations under the License.
      *
      * @description The Hide module provides methods for using a feature hiding OWF Eventing channel
-     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
-     * According to the 
+     * According to the
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
+     * @version 1.1
      *
      * @exports cmwapi/map/feature/Hide
      */
@@ -38,21 +39,21 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
         /**
          * Send information that hides one or more map features.
-         * @param {Object|Array} data 
+         * @param {Object|Array} data
          * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
          * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
          */
         send : function ( data ) {
-            
+
             // validData will story results from any Validator and may be resused for internal
             // error bookkeeping.
             var validData = Validator.validObjectOrArray( data );
             var payload = validData.payload;
 
-            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // If the data was not in proper payload structure, an Object or Array of objects,
             // note the error and return.
             if (!validData.result) {
-                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_HIDE, data, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_HIDE, data,
                     validData.msg);
                 return;
             }
@@ -68,7 +69,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
             }
 
-            // Send along the payload if we did not fail validation.   
+            // Send along the payload if we did not fail validation.
             if (validData.result) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_HIDE, Ozone.util.toString(payload[0]));
@@ -78,7 +79,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
             }
             else {
-                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_HIDE, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_HIDE,
                     Ozone.util.toString(data),
                     validData.msg);
             }
@@ -96,7 +97,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
             var newHandler = function( sender, msg ) {
-              
+
                 // Parse the sender and msg to JSON.
                 var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
@@ -118,11 +119,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                     handler(sender, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_FEATURE_HIDE, 
+                    Error.send(sender, Channels.MAP_FEATURE_HIDE,
                         msg,
                         errorMsg);
                 }
-                
+
             };
 
             OWF.Eventing.subscribe(Channels.MAP_FEATURE_HIDE, newHandler);
@@ -141,7 +142,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @callback module:cmwapi/map/feature/Hide~Handler
          * @param {string} sender The widget sending a format message
          * @param {Object|Array} data  A data object or array of data objects.
-         * @param {string} data.overlayId The ID of the overlay. 
+         * @param {string} data.overlayId The ID of the overlay.
          * @param {string} data.featureId The ID of the feature.
          */
 

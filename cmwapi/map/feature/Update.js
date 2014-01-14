@@ -1,4 +1,4 @@
-define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], 
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
     function(Channels, Validator, Error) {
 
     /**
@@ -19,18 +19,20 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
      * limitations under the License.
      *
      * @description The Update module provides methods for modifying a feature's name and parent overlya via OWF Eventing channels
-     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
-     * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.  
-     * 
-     * According to the 
+     * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
+     *
+     * According to the
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
+     * @version 1.1
      *
      * @exports cmwapi/map/feature/Update
      */
@@ -38,20 +40,20 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
         /**
          * Send information that modifies the name or overlay of one or more map features.
-         * @param {Object|Array} data 
+         * @param {Object|Array} data
          * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
          * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
          * @param {string} [data.name] The name of the feature.  If set, this will override any previous feature name.
          *     If no value is provided, the existing name, if any, will persist.
-         * @param {string} [data.newOverlayId] The ID of the new parent overlay for this feature.  Setting this 
+         * @param {string} [data.newOverlayId] The ID of the new parent overlay for this feature.  Setting this
          *     effectively moves the feature to a different location in the overlay heirarchy.
          */
         send : function ( data ) {
 
-            var payload; 
+            var payload;
             var msg = "";
             var validData = true;
-            
+
             if( Object.prototype.toString.call( data ) === '[object Array]' ) {
                 payload = data;
             }
@@ -72,7 +74,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 // No validation is done on the new name or parent overlay id.
             }
 
-            // Send along the payload if we did not fail validation.     
+            // Send along the payload if we did not fail validation.
             if (validData) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_UPDATE, Ozone.util.toString(payload[0]));
@@ -82,7 +84,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
             }
             else {
-                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_UPDATE, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_UPDATE,
                     Ozone.util.toString(data),
                     msg);
             }
@@ -90,7 +92,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
         },
 
         /**
-         * Subscribes to the channel that modifies the name or overlay of one or more map features and 
+         * Subscribes to the channel that modifies the name or overlay of one or more map features and
          * registers a handler to be called when messages are published to it.
          *
          * @param {module:cmwapi/map/feature/Update~Handler} handler An event handler for any creation messages.
@@ -100,7 +102,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
             var newHandler = function( sender, msg ) {
-              
+
                 // Parse the sender and msg to JSON.
                 var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
@@ -124,11 +126,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                     handler(sender, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_FEATURE_UPDATE, 
+                    Error.send(sender, Channels.MAP_FEATURE_UPDATE,
                         msg,
                         errorMsg);
                 }
-                
+
             };
 
             OWF.Eventing.subscribe(Channels.MAP_FEATURE_UPDATE, newHandler);
@@ -147,11 +149,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @callback module:cmwapi/map/feature/Update~Handler
          * @param {string} sender The widget sending a format message
          * @param {Object|Array} data  A data object or array of data objects.
-         * @param {string} data.overlayId The ID of the overlay. 
+         * @param {string} data.overlayId The ID of the overlay.
          * @param {string} data.featureId The ID of the feature.
          * @param {string} [data.name] The name of the feature.  If set, this will override any previous feature name.
          *     If no value is provided, the existing name, if any, will persist.
-         * @param {string} [data.newOverlayId] The ID of the new parent overlay for this feature.  Setting this 
+         * @param {string} [data.newOverlayId] The ID of the new parent overlay for this feature.  Setting this
          *     effectively moves the feature to a different location in the overlay heirarchy.
          */
 

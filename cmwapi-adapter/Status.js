@@ -1,33 +1,43 @@
-/**
- * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
- *
- * @license
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at<br>
- * <br>
- *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
- * <br>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/ViewUtils"], 
+define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/ViewUtils"],
     function(CommonMapApi, EsriNS, Extent, ViewUtils) {
+    /**
+     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+     *
+     * @license
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at<br>
+     * <br>
+     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+     * <br>
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     *
+     * @version 1.1
+     *
+     * @module cmwapi-adapter/Status
+     */
+
+    /**
+     * @constructor
+     * @param adapter {module:cmwapi-adapter/cmwapi-adapter}
+     * @param map {object} ESRI map object for which this adapter should apply
+     * @alias module:cmwapi-adapter/Status
+     */
     var Status = function(adapater, map) {
         var me = this;
 
         /**
          * Handler for an incoming map status request.
-         * @method status.handleRequest
+         * @method handleRequest
          * @param caller {String} optional; the widget making the status request
          * @param types {String[]} optional; the types of status being requested. Array of strings;
          *      1.1 only supports "about", "format", and "view"
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/Status#
          */
         me.handleRequest = function(caller, types) {
             if (!types) {
@@ -53,9 +63,9 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/
 
         /**
          * Calculate the view details of the map and announce via the CMW-API
-         * @method status.sendView
+         * @method sendView
          * @param caller {String} The Id of the widget which requested the map view status
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/Status#
          */
         me.sendView = function(caller) {
             var bounds = {
@@ -81,13 +91,12 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/
 
         /**
          * Compile the map about details and announce via the CMW-API
-         * @private
-         * @method status.sendAbout
-         * @param caller {object} The Id of the widget which requested the map view status
-         * @memberof! module:EsriAdapter#
+         * @method sendAbout
+         * @param caller {Object} The Id of the widget which requested the map view status
+         * @memberof module:cmwapi-adapter/Status#
          */
         me.sendAbout = function() {
-            var version = CommonMapApi.version;    
+            var version = CommonMapApi.version;
             var type = "2-D";
             var widgetName = OWF.getInstanceId();
 
@@ -96,10 +105,9 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/
 
         /**
          * Announce the accepted formats via the CMW-API
-         * @private
-         * @method status.sendFormat
+         * @method sendFormat
          * @param caller {object} The Id of the widget which requested the map view status
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/Status#
          */
         me.sendFormat = function() {
             var formats = ["kml"/*, "geojson", "wms"*/];

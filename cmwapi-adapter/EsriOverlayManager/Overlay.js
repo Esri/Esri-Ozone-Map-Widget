@@ -18,7 +18,9 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
      *
      * @description Manager for overlay layers to be used in conjunction with an ESRI map,
      * the {@link EsriAdapter}, and the {@link Map|Common Map Widget API}
+     *
      * @version 1.1
+     *
      * @module cmwapi-adapter/EsriOverlayManager/Overlay
      */
 

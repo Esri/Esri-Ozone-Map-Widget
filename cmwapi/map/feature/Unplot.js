@@ -1,4 +1,4 @@
-define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], 
+define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
     function(Channels, Validator, Error) {
 
     /**
@@ -19,18 +19,20 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
      * limitations under the License.
      *
      * @description The Unplot module provides methods for using a feature removal OWF Eventing channel
-     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module 
+     * according to the [CMWAPI 1.1 Specification](http://www.cmwapi.org).  This module
      * abstracts the OWF Eventing channel mechanism from client code and validates messages
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
-     * 
-     * According to the 
+     *
+     * According to the
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
+     * @version 1.1
      *
      * @exports cmwapi/map/feature/Unplot
      */
@@ -38,16 +40,16 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
         /**
          * Send information that removes one or more map features.
-         * @param {Object|Array} data 
+         * @param {Object|Array} data
          * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
          * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
          */
         send : function ( data ) {
 
-            var payload; 
+            var payload;
             var msg = "";
             var validData = true;
-            
+
             if( Object.prototype.toString.call( data ) === '[object Array]' ) {
                 payload = data;
             }
@@ -66,7 +68,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
             }
 
-            // Send along the payload if we did not fail validation.     
+            // Send along the payload if we did not fail validation.
             if (validData) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_UNPLOT, Ozone.util.toString(payload[0]));
@@ -76,7 +78,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
             }
             else {
-                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_UNPLOT, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_UNPLOT,
                     Ozone.util.toString(data),
                     msg);
             }
@@ -94,7 +96,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
             var newHandler = function( sender, msg ) {
-              
+
                 // Parse the sender and msg to JSON.
                 var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
@@ -116,11 +118,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                     handler(sender, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_FEATURE_UNPLOT, 
+                    Error.send(sender, Channels.MAP_FEATURE_UNPLOT,
                         msg,
                         errorMsg);
                 }
-                
+
             };
 
             OWF.Eventing.subscribe(Channels.MAP_FEATURE_UNPLOT, newHandler);
@@ -139,7 +141,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @callback module:cmwapi/map/feature/Unplot~Handler
          * @param {string} sender The widget sending a format message
          * @param {Object|Array} data  A data object or array of data objects.
-         * @param {string} data.overlayId The ID of the overlay. 
+         * @param {string} data.overlayId The ID of the overlay.
          * @param {string} data.featureId The ID of the feature.
          */
 

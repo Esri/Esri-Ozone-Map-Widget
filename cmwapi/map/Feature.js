@@ -1,6 +1,6 @@
 
 define(["cmwapi/map/feature/Plot", "cmwapi/map/feature/PlotURL", "cmwapi/map/feature/Unplot",
-    "cmwapi/map/feature/Hide", "cmwapi/map/feature/Show", "cmwapi/map/feature/Selected", "cmwapi/map/feature/Update"], 
+    "cmwapi/map/feature/Hide", "cmwapi/map/feature/Show", "cmwapi/map/feature/Selected", "cmwapi/map/feature/Update"],
     function(Plot, PlotURL, Unplot, Hide, Show, Selected, Update) {
 
     /**
@@ -21,6 +21,8 @@ define(["cmwapi/map/feature/Plot", "cmwapi/map/feature/PlotURL", "cmwapi/map/fea
      * limitations under the License.
      *
      * @description Defines a convenience module for handling all the map.feature interactions according to the CMW API 1.1 specification.
+     *
+     * @version 1.1
      *
      * @exports cmwapi/map/Feature
      */

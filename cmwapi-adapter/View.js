@@ -1,34 +1,41 @@
-/**
- * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
- *
- * @license
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at<br>
- * <br>
- *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
- * <br>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/Point",
     "cmwapi-adapter/ViewUtils"],
     function(CommonMapApi, EsriNS, Extent, Point, ViewUtils) {
+    /**
+     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+     *
+     * @license
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at<br>
+     * <br>
+     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+     * <br>
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     *
+     * @module cmwapi-adapter/View
+     */
 
+    /**
+     * @constructor
+     * @param map {object} ESRI map object for which this adapter should apply
+     * @param overlayManager {module:cmwapi-adapter/EsriOverlayManager}
+     * @alias module:cmwapi-adapter/View
+     */
     var View = function(map, overlayManager) {
         var me = this;
 
         /**
          * Zooms a map to a particular range.  If given an array of zoom ranges,
          * only the last one is used for the attached Map.
-         * @method view.handleZoom
+         * @method handleZoom
          * @see module:cmwapi/map/view/Zoom~Handler
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/View#
          */
         me.handleZoom = function(sender, data) {
             if(data.length > 1) {
@@ -47,9 +54,9 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
          * Centers/zooms a map to a particular overlay.  If given an overlay and zoom level, it will attempt to center
          * on the union of all Features under that overlay.  If given an array of overlays and zoom ranges are provided,
          * only the last one is used to center the map.
-         * @method view.handleCenterOverlay
+         * @method handleCenterOverlay
          * @see module:cmwapi/map/view/CenterOverlay~Handler
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/View#
          */
         me.handleCenterOverlay = function(sender, data) {
             if(data.length > 1) {
@@ -66,9 +73,9 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         /**
          * Centers/zooms a map to a particular CMWAPI feature.  If given an array of features and zoom ranges,
          * only the last one is used to center the map.
-         * @method view.handleCenterFeature
+         * @method handleCenterFeature
          * @see module:cmwapi/map/view/CenterFeaure~Handler
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/View#
          */
         me.handleCenterFeature = function(sender, data) {
             if(data.length > 1) {
@@ -85,11 +92,11 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         CommonMapApi.view.center.feature.addHandler(me.handleCenterFeature);
 
         /**
-         * Centers/zooms a map to a particular location as specified by latitude/longitude.  If given an array of 
+         * Centers/zooms a map to a particular location as specified by latitude/longitude.  If given an array of
          * locations, only the last one is used.
-         * @method view.handleCenterLocation
+         * @method handleCenterLocation
          * @see module:cmwapi/map/view/CenterLocation~Handler
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/View#
          */
         me.handleCenterLocation = function(sender, data) {
             var point;
@@ -132,9 +139,9 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         /**
          * Centers/zooms a map to a particular CMWAPI bounds.  If given an array of bounds and zoom ranges,
          * only the last one is used to adjust the map.
-         * @method view.handleCenterBounds
+         * @method handleCenterBounds
          * @see module:cmwapi/map/view/CenterBounds~Handler
-         * @memberof! module:EsriAdapter#
+         * @memberof module:cmwapi-adapter/View#
          */
         me.handleCenterBounds = function(sender, data) {
             var extent;
@@ -176,7 +183,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             }
         };
         CommonMapApi.view.center.bounds.addHandler(me.handleCenterBounds);
-        
+
     };
 
     return View;

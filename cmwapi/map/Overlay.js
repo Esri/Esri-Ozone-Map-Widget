@@ -21,6 +21,8 @@ define(["cmwapi/Channels", "cmwapi/map/overlay/Create", "cmwapi/map/overlay/Remo
      *
      * @description Defines a convenience module for handling all the map.overlay interactions according to the CMW API 1.1 specification.
      *
+     * @version 1.1
+     *
      * @exports cmwapi/map/Overlay
      */
     var Overlay = {

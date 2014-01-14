@@ -1,28 +1,31 @@
-/**
- * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
- *
- * @license
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at<br>
- * <br>
- *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
- * <br>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @description Adapter layer between Common Map Widget API v. 1.1 javascript
- *  implementation and ESRI map implementations
- * @module cmwapi-adapter/cmwapi-adapter
- * @version 1.1
- */
+
 define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cmwapi-adapter/Status",
         "cmwapi-adapter/View", "cmwapi-adapter/Error", "cmwapi-adapter/EsriOverlayManager"],
         function(CommonMapApi, Overlay, Feature, Status, View, Error, OverlayManager) {
+    /**
+     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+     *
+     * @license
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at<br>
+     * <br>
+     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+     * <br>
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     *
+     * @description Adapter layer between Common Map Widget API v. 1.1 javascript
+     *  implementation and ESRI map implementations
+     *
+     * @version 1.1
+     *
+     * @module cmwapi-adapter/cmwapi-adapter
+     */
 
     /**
      * @constructor
@@ -39,11 +42,12 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         /**
          * Handles click events on an ArcGIS map and reports the event over a CMWAPI channel.
          * @private
+         * @method sendClick
          * @param {MouseEvent} evt A MouseEvent fired by an ArcGIS map.  This is essentially a DOM MouseEvent
          *     with added, ArcGIS-specific attributes.
-         * @param {string} type Should be either {@link module:cmwapi/map/view/Clicked.SINGLE|SINGLE} or
+         * @param {String} type Should be either {@link module:cmwapi/map/view/Clicked.SINGLE|SINGLE} or
          *    {@link module:cmwapi/map/view/Clicked.DOUBLE|DOUBLE}; Default is the former value.
-         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         * @memberof module:cmwapi-adapter/cmwapi-adapter#
          */
         var sendClick = function(evt, type) {
             var payload = {};
@@ -95,9 +99,10 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         /**
          * Handles double click events on an ArcGIS map and reports the event over a CMWAPI channel.
          * @private
+         * @method sendDoubleClick
          * @param {MouseEvent} evt A MouseEvent fired by an ArcGIS map.  This is
          *  essentially a DOM MouseEvent with added, ArcGIS-specific attributes.
-         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         * @memberof module:cmwapi-adapter/cmwapi-adapter#
          */
         var sendDoubleClick = function(evt) {
             sendClick(evt, CommonMapApi.view.clicked.DOUBLE);
@@ -106,9 +111,10 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         /**
          * Handles drag and drop events over the OWF DragAndDrop API.
          * @private
+         * @method sendDragAndDrop
          * @param {MouseEvent} evt A MouseEvent fired by OWF.  This is essentially a DOM MouseEvent
          *  with added, OWF-specific attributes.
-         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         * @memberof module:cmwapi-adapter/cmwapi-adapter#
          */
         var sendDragAndDrop = function(evt) {
             var callerId = OWF.Util.parseJson(evt.dragSourceId).id;
@@ -181,7 +187,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
          * Reports out changes in an ArcGIS map extent according to the CMWAPI
          *  map.status.view channel definition.
          * @private
-         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         * @method sendStatusViewUpdate
+         * @memberof module:cmwapi-adapter/cmwapi-adapter#
          */
         var sendStatusViewUpdate = function() {
             me.status.sendView(OWF.getInstanceId());
@@ -190,8 +197,9 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         /**
          * Updates the mouse location on mouse up events, to get to location for drag and drop
          * @private
+         * @method updateMouseLocation
          * @param location {MouseEvent} The MouseEvent generated by the click mouseUp
-         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         * @memberof module:cmwapi-adapter/cmwapi-adapter#
          */
         var updateMouseLocation = function(location) {
             mouseLocation = location;
@@ -201,7 +209,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
          * Notifies OWF that the map is compatible with the drag and drop api
          *  when a drag event is brought onto the map.
          * @private
-         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         * @method setDropEnabled
+         * @memberof module:cmwapi-adapter/cmwapi-adapter#
          */
         var setDropEnabled = function() {
             OWF.DragAndDrop.setDropEnabled(true);
@@ -211,6 +220,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
          * Notifies OWF that the map is no longer compatible with the drag and
          *  drop api when it is dragged outside of the map.
          * @private
+         * @method setDropDisabled
          * @memberof! module:cmwapi-adapter/cmwapi-adapter#
          */
         var setDropDisabled = function() {
@@ -220,7 +230,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         /**
          * An event unloader. It removes our custom handlers from an ArcGIS map object.
          * @private
-         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         * @method unloadHandlers
+         * @memberof module:cmwapi-adapter/cmwapi-adapter#
          */
         var unloadHandlers = function() {
             console.log("UNLOADING OUR CUSTOM MAP EVENT HANDLERS!");
@@ -239,10 +250,30 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         this.overlayManager.retrieveState();
 
         // Attach any exposed instance attributes.
+        /**
+         * @see module:cmwapi-adapter/Overlay
+         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         */
         this.overlay = new Overlay(this, this.overlayManager);
+        /**
+         * @see module:cmwapi-adapter/Feature
+         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         */
         this.feature = new Feature(this, this.overlayManager);
+        /**
+         * @see module:cmwapi-adapter/Status
+         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         */
         this.status = new Status(this, map );
+        /**
+         * @see module:cmwapi-adapter/View
+         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         */
         this.view = new View(map, this.overlayManager);
+        /**
+         * @see module:cmwapi-adapter/Error
+         * @memberof! module:cmwapi-adapter/cmwapi-adapter#
+         */
         this.error = new Error(this);
 
         // Attach any custom map handlers.

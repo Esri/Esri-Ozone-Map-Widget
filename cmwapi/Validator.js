@@ -25,6 +25,9 @@ define('cmwapi/Validator', function() {
      * has static members that specify the supported map status types and map types allowed as well
      * a number of functions for checking latitude/longitude pairs, various type fields, and bounding
      * boxes for map views.
+     *
+     * @version 1.1
+     *
      * @exports cmwapi/Validator
      */
     var Validator = {

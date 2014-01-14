@@ -46,6 +46,9 @@ define(function() {
      * limitations under the License.
      *
      * @description Defines the OWF Eventing channels used by the CMW API 1.1.
+     *
+     * @version 1.1
+     *
      * @exports cmwapi/Channels
      */
     var Channels = {

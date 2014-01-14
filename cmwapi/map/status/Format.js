@@ -25,13 +25,15 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
-     * According to the 
+     * According to the
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
+     * @version 1.1
      *
      * @exports cmwapi/map/status/Format
      */
@@ -58,14 +60,14 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
 
             if (!validData.result) {
                 //console.error ("Unable to send on error channel - sent data is not valid: [data: " + data + "].  " + validData.msg);
-                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_FORMAT, data, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_FORMAT, data,
                     validData.msg);
                 return;
             }
 
             var formatsSet = [];
             for (var i=0; i < payload.length; i++)  {
-                var listedFormats = payload[i].formats; 
+                var listedFormats = payload[i].formats;
 
                 if (listedFormats instanceof Array) {
                     for (var j=0; j < listedFormats.length; j++ ) {
@@ -73,9 +75,9 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
                             formatsSet.push(listedFormats[j]);
                         }
                     }
-                } 
+                }
             }
-            
+
             // verify that we're also including REQUIRED_FORMATS
             for (var k=0; k < REQUIRED_FORMATS.length; k++) {
                 if (! Validator.containsValue(formatsSet, REQUIRED_FORMATS[k])) {
@@ -104,7 +106,7 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
                 var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
 
                 for (var i = 0; i < data.length; i ++) {
-                    if (!data[i].formats) { 
+                    if (!data[i].formats) {
                         Error.send(sender, Channels.MAP_STATUS_FORMATS, msg, "Unable to determine formats" );
                     } else {
                         handler(sender, data[i]);

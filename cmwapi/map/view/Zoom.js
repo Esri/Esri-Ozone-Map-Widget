@@ -23,13 +23,15 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
      * using specification rules.  Any errors are published
      * on the map.error channel using an {@link module:cmwapi/map/Error|Error} module.
      *
-     * According to the 
+     * According to the
      * CMWAPI Specification payloads sent over the channel may require validation of individual parameters or
      * default values for omitted parameters.  Where possible, this module abstracts those rules from client code.
      * Both the send and addHandler functions will auto-fill defaults for missing parameters. Further, addHandler
      * will wrap any passed-in function with payload validation code, so that they fail fast on invalid payloads and
-     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the 
+     * do not push bad data into any map specific handlers.  A summary of payload errors is pushed to the
      * {@link module:cmwapi/map/Error|Error} channel if that occurs.
+     *
+     * @version 1.1
      *
      * @exports cmwapi/map/view/Zoom
      */
@@ -45,10 +47,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var validData = Validator.validObjectOrArray( data );
             var payload = validData.payload;
 
-            // If the data was not in proper payload structure, an Object or Array of objects, 
+            // If the data was not in proper payload structure, an Object or Array of objects,
             // note the error and return.
             if (!validData.result) {
-                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_ZOOM, data, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_ZOOM, data,
                     validData.msg);
                 return;
             }
@@ -71,7 +73,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 }
             }
             else {
-                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_ZOOM, 
+                Error.send( OWF.getInstanceId(), Channels.MAP_VIEW_ZOOM,
                     Ozone.util.toString(data),
                     validData.msg);
             }
@@ -107,7 +109,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                     handler(sender, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_VIEW_ZOOM, 
+                    Error.send(sender, Channels.MAP_VIEW_ZOOM,
                         msg,
                         validData.msg);
                 }

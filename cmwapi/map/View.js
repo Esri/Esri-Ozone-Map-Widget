@@ -1,7 +1,7 @@
 
 define(["cmwapi/Channels", "cmwapi/map/view/Zoom", "cmwapi/map/view/CenterOverlay",
     "cmwapi/map/view/CenterFeature", "cmwapi/map/view/CenterLocation",
-    "cmwapi/map/view/CenterBounds", "cmwapi/map/view/Clicked"], 
+    "cmwapi/map/view/CenterBounds", "cmwapi/map/view/Clicked"],
     function(Channels, Zoom, CenterOverlay, CenterFeature, CenterLocation,
         CenterBounds, Clicked) {
 
@@ -23,6 +23,8 @@ define(["cmwapi/Channels", "cmwapi/map/view/Zoom", "cmwapi/map/view/CenterOverla
      * limitations under the License.
      *
      * @description Defines a convenience module for handling all the map.view interactions according to the CMW API 1.1 specification.
+     *
+     * @version 1.1
      *
      * @exports cmwapi/map/View
      */
@@ -50,7 +52,7 @@ define(["cmwapi/Channels", "cmwapi/map/view/Zoom", "cmwapi/map/view/CenterOverla
              */
             bounds: CenterBounds
         },
-        
+
         /**
          * @see module:cmwapi/map/view/Clicked
          */
