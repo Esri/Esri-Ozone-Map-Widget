@@ -32,7 +32,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
      * @param map {object} ESRI map object for which this adapter should apply
      * @alias module:cmwapi-adapter/cmwapi-adapter
      */
-    var EsriAdapter = function(map) {
+    var EsriAdapter = function(map, errorNotifier) {
         // Capture 'this' for use in custom event handlers.
         var me = this;
 
@@ -246,7 +246,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
 
 
 
-        this.overlayManager = new OverlayManager(map);
+        this.overlayManager = new OverlayManager(map, errorNotifier);
         this.overlayManager.retrieveState();
 
         // Attach any exposed instance attributes.

@@ -31,8 +31,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
      * @param map {object} The ESRI map object which this overlay manager should apply to
      * @alias module:cmwapi-adapter/EsriOverlayManager
      */
-    var EsriOverlayManager = function(map) {
+    var EsriOverlayManager = function(map, errorNotifier) {
         var me = this;
+        var notifier = errorNotifier;   
 
         me.overlays = {};
 
@@ -85,6 +86,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             }
             return result;
         };
+
+        me.notifyError = function( src, msg) {
+            notifier(msg);
+        }
 
         /**
          *

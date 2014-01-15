@@ -23,7 +23,7 @@
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
     "esri/map", "digits/overlayManager/js/overlayManager", "esri/dijit/BasemapGallery", "esri/dijit/Scalebar",
-    "esri/dijit/Geocoder","dojo/dom-style", /*"OWFWidgetExtensions/owf-widget-extended",*/ "dojo/domReady!"],
+    "esri/dijit/Geocoder", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
     function(Map, OverlayManager, BasemapGallery,Scalebar, Geocoder) {
 
         var map = new Map("map", {
@@ -51,7 +51,7 @@ require([
                 esri.config.defaults.io.proxyUrl = "/owf/proxy.jsp";
 
                 OWF.notifyWidgetReady();
-                var overlayManager = new OverlayManager(map);
+                var overlayManager = new OverlayManager(map, $.notify);
                 $('#map').on('mouseup', function() {
                     $('#popover_overlay_wrapper').hide();
                     $('#popover_content_wrapper').hide();
