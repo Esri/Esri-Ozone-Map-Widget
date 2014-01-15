@@ -60,6 +60,7 @@ require([
 
     var handleLegendPopOut = function() {
         var legendWidth = 250;
+        var legendDividerWidth = 3;
 
         $('.legend_button').hide();
 
@@ -67,12 +68,15 @@ require([
 
 
 
-        $("#map").width((windowWidth - legendWidth));
+        $("#map").width((windowWidth - legendWidth) - legendDividerWidth);
         //map.reposition(true);
         map.resize(true);
 
         $("#legend").width(legendWidth);
         $("#legend").css("background-color", "#eeeeee");
+
+        $(".legend_vertical_divider").width(legendDividerWidth);
+        
     };
     $(".legend_button").on('click', handleLegendPopOut);
 
