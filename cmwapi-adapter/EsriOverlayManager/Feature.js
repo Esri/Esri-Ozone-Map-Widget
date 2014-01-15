@@ -481,7 +481,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                             }
                         }
                     }
-                } else if(!currLayer.graphics && currLayer._url) {
+                } else if(!currLayer.graphics && (typeof(currLayer.getLayers) != "undefined")) {
                     recurseGraphic(currLayer.getLayers(), selectedId, selectedName);
                 }
             }
