@@ -1,124 +1,151 @@
-html, body, #map {
-  height:100%;
-  width:100%;
-  margin:0;
-  padding:0;
+html, body {
+    height:100%;
+    width:100%;
+    margin:0;
+    padding:0;
 }
+
+#map {
+    height:100%;
+    width:100%;
+    margin:0;
+    padding:0;
+    float:right;
+}
+
+#legend {
+    height:100%;
+    width:0;
+    margin:0;
+    padding:0;
+    float:left;
+}
+
+.legend_button {
+    height: 25px;
+    width: 25px;
+    float: left;
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    background-color: #000000;
+}
+
 #search {
-  padding-right: 5px;
-  display: inline-block;
+    padding-right: 5px;
+    display: inline-block;
 }
 #overlay {
-  margin-right: 5px;
-  width: 30px;
-  height: 30px;
-  background-image: url("../images/icons/Overlay_Manager_Default.png");
-  background-position: center center;
-  background-repeat: no-repeat;
-  border-radius: 5px;
-  border: 1.5px solid #928F8F;
-  display: inline-block;
-  z-index:3;
+    margin-right: 5px;
+    width: 30px;
+    height: 30px;
+    background-image: url("../images/icons/Overlay_Manager_Default.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    border: 1.5px solid #928F8F;
+    display: inline-block;
+    z-index:3;
 }
 #overlay:hover{
-  background-image: url("../images/icons/Overlay_Manager_Hover.png");
-  background-position: center center;
-  background-repeat: no-repeat;
+    background-image: url("../images/icons/Overlay_Manager_Hover.png");
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 #overlay.selected{
-  background-image: url("../images/icons/Overlay_Manager_Selected.png");
-  background-position: center center;
-  background-repeat: no-repeat;
+    background-image: url("../images/icons/Overlay_Manager_Selected.png");
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 #basemaps.selected{
-  background-image: url("../images/icons/BaseMaps_Selected.png");
-  background-position: center center;
-  background-repeat: no-repeat;
+    background-image: url("../images/icons/BaseMaps_Selected.png");
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 #basemaps {
-  margin-right: 5px;
-  width: 30px;
-  height: 30px;
-  background-image: url("../images/icons/BaseMaps_Default.png");
-  background-position: center center;
-  background-repeat: no-repeat;
-  border: 1.5px solid #928F8F;
-  border-radius: 5px;
-  display: inline-block;
-  z-index:3;
+    margin-right: 5px;
+    width: 30px;
+    height: 30px;
+    background-image: url("../images/icons/BaseMaps_Default.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 1.5px solid #928F8F;
+    border-radius: 5px;
+    display: inline-block;
+    z-index:3;
 }
 #basemaps:hover{
-  background-image: url("../images/icons/BaseMaps_Hover.png");
-  background-position: center center;
-  background-repeat: no-repeat;
+    background-image: url("../images/icons/BaseMaps_Hover.png");
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 #basemaps.selected{
-  background-image: url("../images/icons/BaseMaps_Selected.png");
-  background-position: center center;
-  background-repeat: no-repeat;
+    background-image: url("../images/icons/BaseMaps_Selected.png");
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 #map-controls {
-  position: absolute;
-  top: 20px;
-  z-index: 2;
-  right: 20px;
-  display: inline-block;
+    position: absolute;
+    top: 20px;
+    z-index: 2;
+    right: 20px;
+    display: inline-block;
 }
 .esriAttribution {
-  visibility: hidden;
+    visibility: hidden;
 }
 .esriSimpleSliderIncrementButton{
-  background-image: url("../images/icons/Zoom_In_Default.png");
-  background-position: center center;
-  background-repeat: no-repeat;
-  border: 1.5px solid #928F8F;
+    background-image: url("../images/icons/Zoom_In_Default.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 1.5px solid #928F8F;
 }
 .esriSimpleSliderDecrementButton{
-  background-image: url("../images/icons/Zoom_Out_Default.png");
-  background-position: center center;
-  background-repeat: no-repeat;
-  border: 1.5px solid #928F8F;
+    background-image: url("../images/icons/Zoom_Out_Default.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 1.5px solid #928F8F;
 }
 .esriSimpleSliderDecrementButton:hover{
-  background-color: transparent;
-  background-image: url("../images/icons/Zoom_Out_Hover.png");
-  background-position: center center;
-  background-color: transparent;
+    background-color: transparent;
+    background-image: url("../images/icons/Zoom_Out_Hover.png");
+    background-position: center center;
+    background-color: transparent;
 }
 .esriSimpleSliderIncrementButton:hover{
-  background-color: transparent;
-  background-image: url("../images/icons/Zoom_In_Hover.png");
-  background-position: center center;
-  background-repeat: no-repeat;
+    background-color: transparent;
+    background-image: url("../images/icons/Zoom_In_Hover.png");
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 .esriSimpleSliderDecrementButton:active{
-  background-color: transparent;
-  background-image: url("../images/icons/Zoom_Out_Selected.png");
-  background-position: center center;
-  background-color: transparent;
+    background-color: transparent;
+    background-image: url("../images/icons/Zoom_Out_Selected.png");
+    background-position: center center;
+    background-color: transparent;
 }
 .esriSimpleSliderIncrementButton:active{
-  background-color: transparent;
-  background-image: url("../images/icons/Zoom_In_Selected.png");
-  background-position: center center;
-  background-repeat: no-repeat;
+    background-color: transparent;
+    background-image: url("../images/icons/Zoom_In_Selected.png");
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 .esriSimpleSlider {
-  border: none;
-  background-color: transparent;
+    border: none;
+    background-color: transparent;
 }
 .esriSimpleSlider div {
-  font-size:0px;
-  height:28px;
+    font-size:0px;
+    height:28px;
 }
 .esriSimpleSliderVertical .esriSimpleSliderIncrementButton {
-  border-bottom: none;
+    border-bottom: none;
 }
 .tooltip > .tooltip-inner {
-  background-color: #666666;
+    background-color: #666666;
 }
 .tooltip.bottom .tooltip-arrow {
-  border-bottom-color: #666666;
+    border-bottom-color: #666666;
 }
 #meta {
     position: absolute;
@@ -138,47 +165,52 @@ html, body, #map {
     font-size: 0.9em;
 }
 #meta h3 {
-  color: #666;
-  font-size: 1.1em;
-  padding: 0px;
-  margin: 0px;
-  display: inline-block;
+    color: #666;
+    font-size: 1.1em;
+    padding: 0px;
+    margin: 0px;
+    display: inline-block;
 }
 #loading {
-  float: right;
+    float: right;
 }
 .sizer > .titlePane {
-  background-color: #0E6280;
+    background-color: #0E6280;
 }
 .pointer {
-  background-color: #0E6280;
+    background-color: #0E6280;
 }
 .titleButton, .close {
-  opacity: 1;
+    opacity: 1;
 }
 .maximize:hover, .restore:hover {
-  opacity: 0.2;
+    opacity: 0.2;
 }
 .esriPopup a {
-  text-decoration: none;
+    text-decoration: none;
 }
 .esriPopup a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 .esriPopup .pointer, .esriPopup .outerPointer {
-  position: absolute;
-  background: url("../images/icons/Esri_Detail_Triangles.png") no-repeat;
+    position: absolute;
+    background: url("../images/icons/Esri_Detail_Triangles.png") no-repeat;
 }
 .esriPopup .pointer.topLeft {
-  background-position: -75px -525px;
+    background-position: -75px -525px;
 }
 .esriPopup .pointer.topRight {
-  background-position: -75px -706px;
+    background-position: -75px -706px;
 }
 .esriPopup .pointer.top {
-  background-position: -73px -618px;
+    background-position: -73px -618px;
 }
 img {
-  margin-bottom: 5px;
-  margin-left: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+#map .scalebar_bottom-left.esriScalebar {
+    position: relative;
+    bottom: 40px;
 }

@@ -1,6 +1,5 @@
 define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
     function(Channels, Validator, Error) {
-
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -40,23 +39,23 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
         /**
          * Send information that plots one or more map features.
-         * @param {Object|Array} data
-         * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
-         * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
-         * @param {string} [data.name] The name of the feature.  If a valid name string is not specified,
+         * @param {Object|Object[]} data
+         * @param {String} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
+         * @param {String} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
+         * @param {String} [data.name] The name of the feature.  If a valid name string is not specified,
          *     the featureId is used.  Names are not unique and are meant purely for display purposes.
-         * @param {string} [data.format] The format of the feature.  If not specified, this defaults to "kml".
-         * @param {string} data.feature The data of the feature.
-         * @param {boolean} [data.zoom] True, if the map should automatically zoom to this feature; false, otherwise.
+         * @param {String} [data.format] The format of the feature.  If not specified, this defaults to "kml".
+         * @param {String} data.feature The data of the feature.
+         * @param {Boolean} [data.zoom] True, if the map should automatically zoom to this feature; false, otherwise.
          *     Defaults to false.
          * @todo At present, we're not defaulting the name to the feature id if not supplied.  Is this valid?  The API does
          *     not require a default; does that imply an empty string?
          */
-        send : function ( data ) {
+        send: function(data) {
 
             // validData will story results from any Validator and may be resused for internal
             // error bookkeeping.
-            var validData = Validator.validObjectOrArray( data );
+            var validData = Validator.validObjectOrArray(data);
             var payload = validData.payload;
 
             // If the data was not in proper payload structure, an Object or Array of objects,
@@ -114,14 +113,12 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
         /**
          * Subscribes to the feature plot channel and registers a handler to be called when messages
          * are published to it.
-         *
          * @param {module:cmwapi/map/feature/Plot~Handler} handler An event handler for any creation messages.
-         *
          */
-        addHandler : function (handler) {
+        addHandler: function(handler) {
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
-            var newHandler = function( sender, msg ) {
+            var newHandler = function(sender, msg) {
 
                 // Parse the sender and msg to JSON.
                 var jsonSender = Ozone.util.parseJson(sender);
@@ -181,14 +178,14 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
         /**
          * A function for handling channel messages.
          * @callback module:cmwapi/map/feature/Plot~Handler
-         * @param {string} sender The widget sending a format message
-         * @param {Object|Array} data  A data object or array of data objects.
-         * @param {string} data.overlayId The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
-         * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
-         * @param {string} [data.name] The name of the feature.  Names are not unique and are meant purely for display purposes.
-         * @param {string} data.format The format of the feature.  This defaults to "kml".
-         * @param {string} data.feature The data of the feature.
-         * @param {boolean} [data.zoom] True, if the map should automatically zoom to this feature; false, otherwise.
+         * @param {String} sender The widget sending a format message
+         * @param {Object|Object[]} data  A data object or array of data objects.
+         * @param {String} data.overlayId The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
+         * @param {String} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
+         * @param {String} [data.name] The name of the feature.  Names are not unique and are meant purely for display purposes.
+         * @param {String} data.format The format of the feature.  This defaults to "kml".
+         * @param {String} data.feature The data of the feature.
+         * @param {Boolean} [data.zoom] True, if the map should automatically zoom to this feature; false, otherwise.
          *     Defaults to false.
          */
 

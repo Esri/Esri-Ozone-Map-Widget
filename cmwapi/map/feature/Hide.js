@@ -39,15 +39,15 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
 
         /**
          * Send information that hides one or more map features.
-         * @param {Object|Array} data
-         * @param {string} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
-         * @param {string} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
+         * @param {Object|Object[]} data
+         * @param {String} [data.overlayId] The ID of the overlay.  If a valid ID string is not specified, the sending widget's ID is used.
+         * @param {String} data.featureId The ID of the feature.  If an ID is not specified, an error is generated.
          */
-        send : function ( data ) {
+        send: function(data) {
 
             // validData will story results from any Validator and may be resused for internal
             // error bookkeeping.
-            var validData = Validator.validObjectOrArray( data );
+            var validData = Validator.validObjectOrArray(data);
             var payload = validData.payload;
 
             // If the data was not in proper payload structure, an Object or Array of objects,
@@ -89,14 +89,12 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
         /**
          * Subscribes to the feature hiding channel and registers a handler to be called when messages
          * are published to it.
-         *
          * @param {module:cmwapi/map/feature/Hide~Handler} handler An event handler for any creation messages.
-         *
          */
-        addHandler : function (handler) {
+        addHandler: function(handler) {
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
-            var newHandler = function( sender, msg ) {
+            var newHandler = function(sender, msg) {
 
                 // Parse the sender and msg to JSON.
                 var jsonSender = Ozone.util.parseJson(sender);
@@ -140,10 +138,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
         /**
          * A function for handling channel messages.
          * @callback module:cmwapi/map/feature/Hide~Handler
-         * @param {string} sender The widget sending a format message
-         * @param {Object|Array} data  A data object or array of data objects.
-         * @param {string} data.overlayId The ID of the overlay.
-         * @param {string} data.featureId The ID of the feature.
+         * @param {String} sender The widget sending a format message
+         * @param {Object|Object[]} data  A data object or array of data objects.
+         * @param {String} data.overlayId The ID of the overlay.
+         * @param {String} data.featureId The ID of the feature.
          */
 
     };

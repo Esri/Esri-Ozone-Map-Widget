@@ -23,44 +23,85 @@
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
     "esri/map", "digits/overlayManager/js/overlayManager", "esri/dijit/BasemapGallery", "esri/dijit/Scalebar",
-    "esri/dijit/Geocoder","dojo/dom-style", /*"OWFWidgetExtensions/owf-widget-extended",*/ "dojo/domReady!"],
-    function(Map, OverlayManager, BasemapGallery,Scalebar, Geocoder) {
+    "esri/dijit/Legend", "esri/dijit/Geocoder","dojo/dom-style", "dojo/domReady!"],
+    function(Map, OverlayManager, BasemapGallery, Scalebar, Legend, Geocoder) {
 
-        var map = new Map("map", {
-            center: [-76.809469, 39.168101],
-            zoom: 7,
-            basemap: "streets"
-        });
-        var geocoder = new Geocoder({ map: map }, "search");
-        geocoder.startup();
+    var map = new Map("map", {
+        center: [-76.809469, 39.168101],
+        zoom: 7,
+        basemap: "streets"
+    });
 
-        var basemapGallery = new BasemapGallery({ showArcGISBasemaps: true, map: map }, "basemapGallery");
-        basemapGallery.startup();
+    map.on('load', function() {
+        handleLayout();
+    });
 
-        new Scalebar({ map:map, attachTo:"bottom-left", scalebarUnit: "dual" });
+    var geocoder = new Geocoder({map: map}, "search");
+    geocoder.startup();
 
-        var toggleBasemapGallery = function() {
-            $('#popover_content_wrapper').toggle();
-            $('#overlay').removeClass('selected');
-            $('#popover_overlay_wrapper').hide();
-            $('#basemaps').toggleClass('selected');
-        }
+    var basemapGallery = new BasemapGallery({showArcGISBasemaps: true, map: map}, "basemapGallery");
+    basemapGallery.startup();
 
-        if (OWF.Util.isRunningInOWF()) {
-            OWF.ready(function () {
-                esri.config.defaults.io.proxyUrl = "/owf/proxy.jsp";
+    new Scalebar({ map:map, attachTo:"bottom-left", scalebarUnit: "dual" });
 
-                OWF.notifyWidgetReady();
-                var overlayManager = new OverlayManager(map);
-                $('#map').on('mouseup', function() {
-                    $('#popover_overlay_wrapper').hide();
-                    $('#popover_content_wrapper').hide();
-                    $('#basemaps').removeClass('selected');
-                    $('#overlay').removeClass('selected');
-                });
-                $('#overlay').on('click', overlayManager.toggleOverlayManager);
-                $('#basemaps').on('click', toggleBasemapGallery);
-                $("[rel=tooltip]").tooltip({ placement: 'bottom'});
-           });
-        }
+    var legend = new Legend({
+        autoUpdate: true,
+        map: map,
+        respectCurrentMapScale: true
+    }, 'legend');
+    legend.startup();
+
+    var toggleBasemapGallery = function() {
+        $('#popover_content_wrapper').toggle();
+        $('#overlay').removeClass('selected');
+        $('#popover_overlay_wrapper').hide();
+        $('#basemaps').toggleClass('selected');
+    };
+
+    var handleLegendPopOut = function() {
+        var legendWidth = 250;
+
+        $('.legend_button').hide();
+
+        var windowWidth = $(window).width();
+
+
+
+        $("#map").width((windowWidth - legendWidth));
+        //map.reposition(true);
+        map.resize(true);
+
+        $("#legend").width(legendWidth);
+        $("#legend").css("background-color", "#eeeeee");
+    };
+    $(".legend_button").on('click', handleLegendPopOut);
+
+    var handleLayout = function() {
+        var windowWidth = $(window).width();
+
+        console.log(windowWidth);
+
+        $("#map").width(windowWidth - $("#legend").width());
+        //map.reposition(true);
+        map.resize(true);
+    };
+
+    if (OWF.Util.isRunningInOWF()) {
+        OWF.ready(function () {
+            esri.config.defaults.io.proxyUrl = "/owf/proxy.jsp";
+
+            OWF.notifyWidgetReady();
+            var overlayManager = new OverlayManager(map);
+            $('#map').on('mouseup', function() {
+                $('#popover_overlay_wrapper').hide();
+                $('#popover_content_wrapper').hide();
+                $('#basemaps').removeClass('selected');
+                $('#overlay').removeClass('selected');
+            });
+
+            $('#overlay').on('click', overlayManager.toggleOverlayManager);
+            $('#basemaps').on('click', toggleBasemapGallery);
+            $("[rel=tooltip]").tooltip({ placement: 'bottom'});
+       });
+    }
 });
