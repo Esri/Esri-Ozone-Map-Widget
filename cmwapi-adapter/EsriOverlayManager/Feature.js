@@ -461,12 +461,28 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 return;
             }
             var layers = feature.esriObject.getLayers();
-            for(var i =0; i < layers.length; i++) {
-                var graphics = layers[i].graphics;
-                for(var j =0; j < graphics.length; j++) {
-                    if(graphics[j].attributes.id === selectedId || graphics[j].attributes.name === selectedName) {
-                        map.centerAt(graphics[j].geometry);
+            recurseGraphic(layers, selectedId, selectedName);
+        };
+
+
+        var recurseGraphic = function(currLayerArr, selectedId, selectedName) {
+            for(var i = 0; i < currLayerArr.length; i++) {
+                var currLayer = currLayerArr[i].layer || currLayerArr[i];
+                if(currLayer.graphics) {
+                    var graphics = currLayer.graphics;
+                    for(var j =0; j < graphics.length; j++) {
+                        if(graphics[j].attributes.id === selectedId || graphics[j].attributes.name === selectedName) {
+                            if(graphics[j].geometry.type.toLowerCase() === 'point') {
+                                map.centerAt(graphics[j].geometry);
+                            } else if(graphics[j].geometry.type.toLowerCase() === 'extent') {
+                                 map.centerAt(graphics[j].geometry.getCenter());
+                            } else {
+                                map.centerAt(graphics[j].geometry.getExtent().getCenter());
+                            }
+                        }
                     }
+                } else if(!currLayer.graphics && (typeof(currLayer.getLayers) != "undefined")) {
+                    recurseGraphic(currLayer.getLayers(), selectedId, selectedName);
                 }
             }
         };
