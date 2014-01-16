@@ -218,8 +218,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
         };
 
         var _layerErrorHandler = function( caller, overlayId, featureId, layer, e ) {
-            _notifyError(caller, "Unable to apply layer: " + e.error.message);
-
+            var msg = 'Unable to apply layer - ' + e.error;
+            manager.notifyError(caller, msg);
+            sendError( caller, msg, {msg: msg, type: 'layer_error'});
             me.deleteFeature(caller, overlayId, featureId);
 
         };
@@ -510,13 +511,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 }
                 manager.treeChanged();
             }
-        };
-
-        /**
-          @TODO: hook in notification library
-        */
-        var _notifyError = function( src, msg ) {
-            console.log(src + ", " + msg);
         };
 
     };

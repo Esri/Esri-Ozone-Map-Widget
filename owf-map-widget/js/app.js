@@ -23,7 +23,7 @@
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
     "esri/map", "digits/overlayManager/js/overlayManager", "esri/dijit/BasemapGallery", "esri/dijit/Scalebar",
-    "esri/dijit/Legend", "esri/dijit/Geocoder","dojo/dom-style", "dojo/domReady!"],
+    "esri/dijit/Legend", "esri/dijit/Geocoder", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
     function(Map, OverlayManager, BasemapGallery, Scalebar, Legend, Geocoder) {
 
     var map = new Map("map", {
@@ -44,12 +44,12 @@ require([
 
     new Scalebar({ map:map, attachTo:"bottom-left", scalebarUnit: "dual" });
 
-    var legend = new Legend({
+    /*var legend = new Legend({
         autoUpdate: true,
         map: map,
         respectCurrentMapScale: true
     }, 'legend');
-    legend.startup();
+    legend.startup();*/
 
     var toggleBasemapGallery = function() {
         $('#popover_content_wrapper').toggle();
@@ -61,21 +61,24 @@ require([
     var handleLegendPopOut = function() {
         var legendWidth = 250;
         var legendDividerWidth = 3;
+        var totalWidth = legendWidth + legendDividerWidth;
 
         $('.legend_button').hide();
 
         var windowWidth = $(window).width();
 
+        console.log(windowWidth);
+        console.log(totalWidth);
 
-
-        $("#map").width((windowWidth - legendWidth) - legendDividerWidth);
+        $("#map").width((windowWidth - totalWidth));
+        console.log($("#map").width());
         //map.reposition(true);
         map.resize(true);
 
-        $("#legend").width(legendWidth);
-        $("#legend").css("background-color", "#eeeeee");
-
-        $(".legend_vertical_divider").width(legendDividerWidth);
+        $('.esri_info_div').width(totalWidth);
+        $("#legend").width(245);
+        
+        $(".legend_vertical_divider").width(1);
         
     };
     $(".legend_button").on('click', handleLegendPopOut);
@@ -95,7 +98,7 @@ require([
             esri.config.defaults.io.proxyUrl = "/owf/proxy.jsp";
 
             OWF.notifyWidgetReady();
-            var overlayManager = new OverlayManager(map);
+            var overlayManager = new OverlayManager(map, $.notify);
             $('#map').on('mouseup', function() {
                 $('#popover_overlay_wrapper').hide();
                 $('#popover_content_wrapper').hide();

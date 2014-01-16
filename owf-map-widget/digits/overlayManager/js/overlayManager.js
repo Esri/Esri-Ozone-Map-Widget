@@ -19,8 +19,8 @@
 define(["cmwapi-adapter/cmwapi-adapter",],
        function(cmwapiAdapter) {
         var adapter;
-    var OverlayManager =  function(map) {
-        this.adapter = adapter = new cmwapiAdapter(map);
+    var OverlayManager =  function(map, errorNotifier) {
+        this.adapter = adapter = new cmwapiAdapter(map, errorNotifier);
         $('#popover_overlay_wrapper').load('./digits/overlayManager/index.html', function() {
             $(window).bind("resize",function() {
                 changeAddScrollState();

@@ -139,5 +139,6 @@ dojoConfig.packages = [
     { location: window.contextPath + "digits", name: "digits" },
     { location: window.contextPath + "../cmwapi", name: "cmwapi" },
     { location: window.contextPath + "../cmwapi-adapter", name: "cmwapi-adapter" },
-    { location: window.contextPath + "js", name:"OWFWidgetExtensions"}
+    { location: window.contextPath + "js", name:"OWFWidgetExtensions"},
+    { location: window.contextPath + "vendor/js", name: "notify" }
 ];

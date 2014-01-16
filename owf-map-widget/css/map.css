@@ -13,12 +13,14 @@ html, body {
     float:right;
 }
 
-.info_div {
+.esri_info_div {
     height: 100%;
     width: 0px;
     margin: 0;
     padding: 0;
+    border: 0;
     float: left;
+    overflow:hidden;
 }
 
 #legend {
@@ -26,7 +28,11 @@ html, body {
     width:0;
     margin:0;
     padding:0;
-    position: relative;
+    border:0;
+    display:inline-block;
+    overflow:hidden;
+    /*FIXME*/
+    background-color: #00FF00;
 }
 
 .legend_vertical_divider {
@@ -34,7 +40,8 @@ html, body {
     width: 0px;
     margin: 0;
     padding: 0;
-    position: relative;
+    border:0;
+    display:inline-block;
     /*FIXME*/
     background-color: #FF0000;
 }
