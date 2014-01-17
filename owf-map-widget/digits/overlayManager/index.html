@@ -24,13 +24,14 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="kml-radio" class="col-xs-offset-1 col-xs-2 control-label">Type</label>
-                        <label class="radio-inline">
-                            <input type="radio" name ="type-radio" class = 'type-radio' id="kml-radio" value="option1" checked> KML
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name= "type-radio" class = 'type-radio' id="wms-radio" value="option2"> WMS
-                        </label>
+                        <label for="type-selection" class="col-xs-offset-1 col-xs-2 control-label">Type</label>
+                        <div class="col-xs-8">
+                            <select id = "type-selection" class="form-control input-sm">
+                                <option>KML</option>
+                                <option>WMS</option>
+                                <option>Feature</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="zoom-checkbox" class="col-xs-offset-1 col-xs-2 control-label">Zoom</label>

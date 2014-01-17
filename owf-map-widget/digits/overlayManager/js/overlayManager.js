@@ -102,7 +102,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
             $('#overlay-manager-add-button').on('click',  addOverlayOrFeature);
             $('#overlay-manager-delete-button').on('click',  deleteOverlayOrFeature);
             $('#overlay-selection').on('change', overlaySelectonChanged);
-            $('.type-radio').on('change', getRadioButtonSelection);
+            $('#type-selection').on('change', getTypeSelection);
             $('form').find('.form-control.default').keyup(removeSucessFromURL);
             $('#feature-add-url').keyup(validateURLInput);
         });
@@ -149,7 +149,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         var overlayName = $('#overlay-add-name').val();
         var overlayId = $('#overlay-add-id').val();
         var zoom = $('#zoom-checkbox').is(':checked');
-        var featureType = $('#wms-radio').is(':checked') ? 'wms' : 'kml';
+        var featureType = $('#type-selection').val().toLowerCase();
         if(!($('#add-feature-div').is(':visible'))) {
             adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
         } else if($('#overlay-selection').val() === 'Add New Overlay') {
@@ -175,11 +175,12 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         });
     };
 
-    var getRadioButtonSelection = function() {
-        if($('#wms-radio').is(':checked')) {
-            $('#feature-params-group').show();
-        } else {
+    var getTypeSelection = function() {
+
+        if($('#type-selection').val().toLowerCase() === 'kml') {
             $('#feature-params-group').hide();
+        } else {
+            $('#feature-params-group').show();
         }
         changeAddScrollState();
         checkAddFormCompleted();
