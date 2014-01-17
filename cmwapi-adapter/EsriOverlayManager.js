@@ -239,8 +239,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 url: url,
                 zoom: zoom
             };
-            if (params !== null && typeof(params) !== 'undefined' && params.length > 0) {
-                if(cmwapi.validator.isString(params)) {
+
+            if (params !== null && typeof(params) !== 'undefined') {
+                if(cmwapi.validator.isString(params) && params.length > 0) {
                     payload.params = OWF.Util.parseJson(params);
                 } else {
                     payload.params = params;
