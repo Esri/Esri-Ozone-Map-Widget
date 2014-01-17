@@ -398,8 +398,15 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                         featureUrl = feature.feature;
                         featureParams = (feature.params) ? feature.params : null;
                         zoom = feature.zoom;
-                        me.sendFeaturePlotUrl(overlayId, featureId, featureName,
-                            featureFormat, featureUrl, featureParams, zoom);
+
+                        //payload contains a marker.
+                        if(featureFormat === "marker") {
+                            me.feature.plotMarker(null, overlayId, featureId, featureName, feature.marker, zoom);
+                        }
+                        else {
+                            me.sendFeaturePlotUrl(overlayId, featureId, featureName,
+                                featureFormat, featureUrl, featureParams, zoom);
+                        }
                     }
                 }
             };

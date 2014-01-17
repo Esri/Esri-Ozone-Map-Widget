@@ -171,6 +171,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             map.setZoom(zoom);
             map.centerAt(point);
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'marker', null, null, layer);
+            
+            // Add the original marker data to the feature so it can be recreated if persisted to OWF preferences or elsewhere.
+            overlay.features[featureId].marker = marker;
 
             layer.on('click', function(e) {
                 cmwapi.feature.selected.send({
@@ -179,6 +182,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                     selectedId: e.graphic.attributes.id,
                     selectedName: e.graphic.attributes.name
                 });
+            });
+
+            layer.on("error", function(e) {
+                _layerErrorHandler(caller, overlayId, featureId, layer, e);
             });
             manager.treeChanged();
         };
