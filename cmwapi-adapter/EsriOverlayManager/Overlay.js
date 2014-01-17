@@ -223,6 +223,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
          * @param caller {String}
          * @param overlayId {String}
          * @param zoom {number}
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Overlay#
          */
         me.zoom = function(caller, overlayId, range) {
             var overlay = manager.overlays[overlayId];
