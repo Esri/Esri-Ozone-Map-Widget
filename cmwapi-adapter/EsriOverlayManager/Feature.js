@@ -171,7 +171,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             map.setZoom(zoom);
             map.centerAt(point);
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'marker', null, null, layer);
-            
+
             // Add the original marker data to the feature so it can be recreated if persisted to OWF preferences or elsewhere.
             overlay.features[featureId].marker = marker;
 
@@ -203,7 +203,8 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         var plotKmlFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
-            var layer = new KMLLayer(url);
+            var id = overlayId + " - " + featureId;
+            var layer = new KMLLayer(url, {id: id});
 
             map.addLayer(layer);
 
@@ -287,7 +288,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 layerInfos = [new WMSLayerInfo({name: params.layers, title: params.layers})];
             }
 
-            var details = {extent: map.geographicExtent, layerInfos: layerInfos};
+            /** id controls legend display **/
+            var id = overlayId + " - " + featureId;
+            var details = {id: id, extent: map.geographicExtent, layerInfos: layerInfos};
             var layer = new WMSLayer(url, details);
 
             layer.setVisibleLayers([params.layers]);
