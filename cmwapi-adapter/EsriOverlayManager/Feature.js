@@ -278,7 +278,17 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
          */
         var plotWmsFeatureUrl = function(caller, overlayId, featureId, name, url, params, zoom) {
 
-            var details = {extent: map.geographicExtent, layerInfos: [new WMSLayerInfo({name: params.layers, title: params.layers})]};
+            var layerInfos;
+            if(cmwapi.validator.isArray(params.layers)) {
+                layerInfos = [];
+                for(var i = 0; i < params.layers.length; i++) {
+                    layerInfos.push(new WMSLayerInfo({name: params.layers[i], title: params.layers[i]}));
+                }
+            } else {
+                layerInfos = [new WMSLayerInfo({name: params.layers, title: params.layers})];
+            }
+
+            var details = {extent: map.geographicExtent, layerInfos: layerInfos};
             var layer = new WMSLayer(url, details);
 
             layer.setVisibleLayers([params.layers]);
