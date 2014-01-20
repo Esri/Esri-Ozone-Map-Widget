@@ -239,8 +239,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 url: url,
                 zoom: zoom
             };
-            if (params !== null && typeof(params) !== 'undefined' && params.length > 0) {
-                if(cmwapi.validator.isString(params)) {
+
+            if (params !== null && typeof(params) !== 'undefined') {
+                if(cmwapi.validator.isString(params) && params.length > 0) {
                     payload.params = OWF.Util.parseJson(params);
                 } else {
                     payload.params = params;
@@ -397,8 +398,15 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                         featureUrl = feature.feature;
                         featureParams = (feature.params) ? feature.params : null;
                         zoom = feature.zoom;
-                        me.sendFeaturePlotUrl(overlayId, featureId, featureName,
-                            featureFormat, featureUrl, featureParams, zoom);
+
+                        //payload contains a marker.
+                        if(featureFormat === "marker") {
+                            me.feature.plotMarker(null, overlayId, featureId, featureName, feature.marker, zoom);
+                        }
+                        else {
+                            me.sendFeaturePlotUrl(overlayId, featureId, featureName,
+                                featureFormat, featureUrl, featureParams, zoom);
+                        }
                     }
                 }
             };

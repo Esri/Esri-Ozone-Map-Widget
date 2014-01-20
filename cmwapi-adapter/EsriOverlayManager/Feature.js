@@ -171,6 +171,9 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             map.setZoom(zoom);
             map.centerAt(point);
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'marker', null, null, layer);
+            
+            // Add the original marker data to the feature so it can be recreated if persisted to OWF preferences or elsewhere.
+            overlay.features[featureId].marker = marker;
 
             layer.on('click', function(e) {
                 cmwapi.feature.selected.send({
@@ -179,6 +182,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                     selectedId: e.graphic.attributes.id,
                     selectedName: e.graphic.attributes.name
                 });
+            });
+
+            layer.on("error", function(e) {
+                _layerErrorHandler(caller, overlayId, featureId, layer, e);
             });
             manager.treeChanged();
         };
@@ -270,7 +277,17 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
          */
         var plotWmsFeatureUrl = function(caller, overlayId, featureId, name, url, params, zoom) {
 
-            var details = {extent: map.geographicExtent, layerInfos: [new WMSLayerInfo({name: params.layers, title: params.layers})]};
+            var layerInfos;
+            if(cmwapi.validator.isArray(params.layers)) {
+                layerInfos = [];
+                for(var i = 0; i < params.layers.length; i++) {
+                    layerInfos.push(new WMSLayerInfo({name: params.layers[i], title: params.layers[i]}));
+                }
+            } else {
+                layerInfos = [new WMSLayerInfo({name: params.layers, title: params.layers})];
+            }
+
+            var details = {extent: map.geographicExtent, layerInfos: layerInfos};
             var layer = new WMSLayer(url, details);
 
             layer.setVisibleLayers([params.layers]);

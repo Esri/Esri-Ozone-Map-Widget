@@ -177,6 +177,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
                         payload.featureUrl.params,
                         zoom);
                 }
+                // Save the manager state.
+                me.overlayManager.archiveState();
                 mouseLocation = null;
             } else {
                 me.error.error(callerId, payloadValidation.msg, {type: "map.feature.dragAndDrop", msg: payloadValidation.msg});
