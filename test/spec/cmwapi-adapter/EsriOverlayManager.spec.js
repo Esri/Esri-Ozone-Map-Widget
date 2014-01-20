@@ -91,7 +91,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 overlayManager.overlay.createOverlay("FakeWidget", "1111", "Name 2");
 
                 expect(update).not.toHaveBeenCalled();
-                
+
                 var overlays = overlayManager.getOverlays();
                 expect(overlays["1111"].name).toEqual("Name 1");
             });
@@ -537,9 +537,40 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 expect(overlays["o"].features["f"].esriObject).toBeDefined();
             });
 
-            xit("verify plot feature with wms url and existing overlay", function() {
+            it("verify plot feature with wms url and existing overlay and one layer", function() {
+                var overlays = overlayManager.getOverlays();
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(Object.keys(overlays["o"].features).length).toBe(0);
 
+                overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "wms", "http://url", {layers: "layer"});
+
+                overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(Object.keys(overlays["o"].features).length).toBe(1);
+
+                expect(overlays["o"].features["f"]).toBeDefined();
+                expect(overlays["o"].features["f"].esriObject).toBeDefined();
             });
+
+            it("verify plot feature with wms url and existing overlay with 2 layers", function() {
+                var overlays = overlayManager.getOverlays();
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(Object.keys(overlays["o"].features).length).toBe(0);
+
+                overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "wms", "http://url", {layers: ["layer","layer2"]});
+
+                overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(Object.keys(overlays["o"].features).length).toBe(1);
+
+                expect(overlays["o"].features["f"]).toBeDefined();
+                expect(overlays["o"].features["f"].esriObject).toBeDefined();
+            });
+
 
             it("verify plot kml url with duplicate featureId calls delete first", function() {
                 var overlays = overlayManager.getOverlays();
