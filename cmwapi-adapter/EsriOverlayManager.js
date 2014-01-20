@@ -91,6 +91,10 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             notifier(msg);
         }
 
+        me.notifyInfo = function( src, msg) {
+            notifier(msg, "info");
+        }
+
         /**
          *
          * @private

@@ -19,8 +19,12 @@
 define(["cmwapi-adapter/cmwapi-adapter",],
        function(cmwapiAdapter) {
         var adapter;
-    var OverlayManager =  function(map, errorNotifier) {
+        var infoNotifier; 
+    var OverlayManager =  function(map, errorNotifier, notifier) {
+        infoNotifier = notifier;
         this.adapter = adapter = new cmwapiAdapter(map, errorNotifier);
+
+
         $('#popover_overlay_wrapper').load('./digits/overlayManager/index.html', function() {
             $(window).bind("resize",function() {
                 changeAddScrollState();
@@ -172,6 +176,8 @@ define(["cmwapi-adapter/cmwapi-adapter",],
                 var node = $('#overlay-tree').tree('getNodeById', $(this).attr('id'));
                 adapter.overlayManager.sendFeatureUnplot(node.parent.id,$(this).attr('id'));
             }
+            
+            infoNotifier("Deleted " + $(this).attr('id'));
         });
     };
 
