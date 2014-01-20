@@ -29,10 +29,17 @@ html, body {
     margin:0;
     padding:0;
     border:0;
-    display:inline-block;
-    overflow:hidden;
+    position: absolute;
+    left: 0px;
     /*FIXME*/
-    background-color: #00FF00;
+    background-color: #EEE;
+}
+
+#legend_holder_div {
+    height: 100%;
+    width:0;
+    padding: 10px;
+    margin: 0px;
 }
 
 .legend_vertical_divider {
@@ -41,9 +48,11 @@ html, body {
     margin: 0;
     padding: 0;
     border:0;
-    display:inline-block;
+    position:absolute;
+    left: 0px;
+    cursor: col-resize;
     /*FIXME*/
-    background-color: #FF0000;
+    background-color: #000;
 }
 
 .legend_button {

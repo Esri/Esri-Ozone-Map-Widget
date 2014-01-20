@@ -44,12 +44,12 @@ require([
 
     new Scalebar({ map:map, attachTo:"bottom-left", scalebarUnit: "dual" });
 
-    /*var legend = new Legend({
+    var legend = new Legend({
         autoUpdate: true,
         map: map,
         respectCurrentMapScale: true
-    }, 'legend');
-    legend.startup();*/
+    }, 'legend_holder_div');
+    legend.startup();
 
     var toggleBasemapGallery = function() {
         $('#popover_content_wrapper').toggle();
@@ -76,10 +76,35 @@ require([
         map.resize(true);
 
         $('.esri_info_div').width(totalWidth);
-        $("#legend").width(245);
-        
-        $(".legend_vertical_divider").width(1);
-        
+        $("#legend").width(legendWidth);
+
+        $('#legend_holder_div').width(legendWidth - $('#legend_holder_div').outerWidth());
+
+        $(".legend_vertical_divider").width(legendDividerWidth);
+        $(".legend_vertical_divider").css('left', '250px');
+
+        $('.legend_vertical_divider').mousedown(function(e){
+            e.preventDefault();
+
+            $('*').css({'cursor':'col-resize'});
+
+            $(document).mousemove(function(e){
+                var position = e.pageX;
+                $('#map').width(windowWidth - position);
+                map.resize(true);
+
+                $('.esri_info_div').width(position - 3);
+                $("#legend").width(position - 3);
+                $('#legend_holder_div').width((position - 3) - ($('#legend_holder_div').outerWidth() - $('#legend_holder_div').innerWidth()));
+
+                $(".legend_vertical_divider").css('left', position - 3);
+            });
+        });
+        $(document).mouseup(function(e){
+            $(document).unbind('mousemove');
+            $('*').css({'cursor':''});
+        });
+
     };
     $(".legend_button").on('click', handleLegendPopOut);
 
