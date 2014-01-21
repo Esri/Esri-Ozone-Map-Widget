@@ -215,7 +215,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 if(zoom) {
                     me.zoom(caller, overlayId, featureId, null, null, "auto");
                 }
-                manager.notifyInfo("Layer loaded!");
+                manager.notifyInfo(caller, "Layer loaded!");
             });
 
             layer.on("error", function(e) {
@@ -303,7 +303,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 if(zoom) {
                     me.zoom(caller, overlayId, featureId, null, null, "auto");
                 }
-                manager.notifyInfo("Layer loaded!");
+                manager.notifyInfo(caller, "Layer loaded!");
 
             });
 

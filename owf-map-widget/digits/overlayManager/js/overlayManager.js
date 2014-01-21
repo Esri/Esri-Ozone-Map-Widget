@@ -22,7 +22,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         var infoNotifier;
     var OverlayManager =  function(map, errorNotifier, notifier) {
         infoNotifier = notifier;
-        this.adapter = adapter = new cmwapiAdapter(map, errorNotifier);
+        this.adapter = adapter = new cmwapiAdapter(map, errorNotifier, notifier);
 
 
         $('#popover_overlay_wrapper').load('./digits/overlayManager/index.html', function() {
