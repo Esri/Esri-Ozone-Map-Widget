@@ -35,11 +35,19 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
 
 ## Requirements
 
-1. OWF 7.0 GA.  See the OWF [Get Started](http://www.owfgoss.org/getstarted.html) page, if you are not familiar with the framework.
+1. OWF 6.0 GA or better.  See the OWF [Get Started](http://www.owfgoss.org/getstarted.html) page, if you are not familiar with the framework.
+    
+    > NOTE: Although CMWAPI 1.1 makes use of eventing, the widgets also take advantage of widget intents, introduced in OWF6.  Since CMWAPI 1.2 intends to add widget intents to the specification, we have concentrated on supporting releases of OWF which have the widget intents capability.  
 
 2. Web server to host the widgets
 
     > NOTE: You may choose to host the widgets on the same server as OWF for convenience. The [OWF download](https://www.owfgoss.org/download.html) features a bundled [Tomcat](http://tomcat.apache.org/) instance.
+
+3. Proxy to provide access to Esri services
+
+    > NOTE: Certain Esri services, including those dealing with WMS, require provision of a [proxy](https://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html), which is a server-side code deployment.  Choose and configure the appropriate proxy implementation (ASP.NET, Java, PHP, ...) for your web server.  
+
+    > NOTE: The location for the proxy used by the ArcGIS OWF Map Widget is configured in app.js as esri.config.defaults.io.proxyUrl.
 
 ## Installation
 
