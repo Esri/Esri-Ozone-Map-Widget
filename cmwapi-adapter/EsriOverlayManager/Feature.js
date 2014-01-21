@@ -1,6 +1,8 @@
 define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/layers/WMSLayerInfo", "cmwapi-adapter/ViewUtils",
-    "esri/layers/GraphicsLayer", "esri/graphic","esri/symbols/PictureMarkerSymbol", "esri/geometry/Point", "esri/InfoTemplate"],
-    function(cmwapi, KMLLayer, WMSLayer, WMSLayerInfo, ViewUtils, GraphicsLayer, Graphic, PictureMarkerSymbol, Point, InfoTemplate) {
+    "esri/layers/GraphicsLayer", "esri/graphic","esri/symbols/PictureMarkerSymbol", "esri/geometry/Point", "esri/InfoTemplate",
+     "esri/layers/FeatureLayer",  "esri/layers/ArcGISDynamicMapServiceLayer","esri/config"],
+    function(cmwapi, KMLLayer, WMSLayer, WMSLayerInfo, ViewUtils, GraphicsLayer, Graphic, PictureMarkerSymbol, Point, InfoTemplate,
+        FeatureLayer, ArcGISDynamicMapServiceLayer, esriConfig) {
 
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
@@ -75,35 +77,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
         };
 
         /**
-         * @method plotFeature
-         * @param caller {String} the id of the widget which made the request resulting in this function call.
-         * @param overlayId {String} The id of the overlay on which this feature should be displayed
-         * @param featureId {String} The id to be given for the feature, unique to the provided overlayId
-         * @param name {String} The readable name for which this feature should be labeled
-         * @param format {String} The format type of the feature data included
-         * @param feature The data in the format specified providing the detail for this feature
-         * @param [zoom] {boolean} Whether or not the map should zoom to this feature upon creation
-         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
-         */
-        me.plotFeature = function(caller, overlayId, featureId, name, format, feature, zoom) {
-            /*if(typeof(manager.overlays[overlayId]) === undefined) {
-                manager.overlay.createOverlay(caller, overlayId, overlayId);
-            }
-
-            var overlay = manager.overlays[overlayId];
-
-            if(typeof(overlay.features[featureId] !== 'undefined')) {
-                me.deleteFeature(caller, overlayId, featureId);
-            }
-            //create
-            //overlay.features[featureId] = new Feature(ovelayId, featureId, name, format, feature, zoom);
-            //add to map
-            //zoom if feature.zoom === true*/
-            var msg = "Function not yet implemented";
-            sendError(caller, msg, {msg: msg, type: "not_yet_implemented"});
-        };
-
-        /**
          * @method plotFeatureUrl
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} The id of the overlay on which this feature should be displayed
@@ -124,12 +97,17 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             if(typeof(overlay.features[featureId]) !== 'undefined') {
                 me.deleteFeature(caller, overlayId, featureId);
             }
-
             //if a type we like then handler function
             if(format === 'kml') {
                 plotKmlFeatureUrl(caller, overlayId, featureId, name, url, zoom);
             } else if(format === "wms") {
                 plotWmsFeatureUrl(caller, overlayId, featureId, name, url, params, zoom);
+            } else if (format === 'arcgis-feature') {
+                plotArcgisFeature(caller, overlayId, featureId, name, url, params, zoom);
+            } else if (format === 'arcgis-dynamicmapservice') {
+                plotArcgisDynamicMapService(caller, overlayId, featureId, name, url, params, zoom);
+            } else if (format === 'arcgis-tiledmapservice') {
+                plotArcgisTiledMapService(caller, overlayId, featureId, name, url, zoom);
             } else {
                 var msg = "Format, " + format + " of data is not accepted";
                 sendError(caller, msg, {msg: msg, type: 'invalid_data_format'});
@@ -171,7 +149,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             map.setZoom(zoom);
             map.centerAt(point);
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'marker', null, null, layer);
-            
+
             // Add the original marker data to the feature so it can be recreated if persisted to OWF preferences or elsewhere.
             overlay.features[featureId].marker = marker;
 
@@ -311,6 +289,61 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 _layerErrorHandler(caller, overlayId, featureId, layer, e);
             });
 
+
+            manager.treeChanged();
+        };
+
+
+
+        var plotArcgisFeature = function(caller, overlayId, featureId, name, url, params, zoom) {
+            var layer = new FeatureLayer(url, params);
+            map.addLayer(layer);
+
+            var overlay = manager.overlays[overlayId];
+
+            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'arcgis-feature', url, zoom, layer);
+            overlay.features[featureId].params = params;
+
+            layer.on("load", function() {
+                if(zoom) {
+                    me.zoom(caller, overlayId, featureId, null, null, "auto");
+                }
+
+            });
+
+            layer.on("error", function(e) {
+                _layerErrorHandler(caller, overlayId, featureId, layer, e);
+            });
+
+            manager.treeChanged();
+        };
+
+        var plotArcgisDynamicMapService = function(caller, overlayId, featureId, name, url, params, zoom) {
+            var layer = new ArcGISDynamicMapServiceLayer(url, params);
+            map.addLayer(layer);
+
+            var overlay = manager.overlays[overlayId];
+            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'arcgis-dynamicmapservice', url, zoom, layer);
+            overlay.features[featureId].params = params;
+
+            layer.on("load", function() {
+                if(zoom) {
+                    var projectParams = new esri.tasks.ProjectParameters();
+                    projectParams.geometries = [layer.initialExtent];
+                    projectParams.outSR = map.spatialReference;;
+                    esriConfig.defaults.geometryService = new esri.tasks.GeometryService("http://servicesbeta.esri.com/ArcGIS/rest/services/Geometry/GeometryServer");
+                    var defer = esriConfig.defaults.geometryService.project(projectParams);
+                    dojo.when(defer, function (projectedGeometry) {
+                        if (projectedGeometry.length > 0) {
+                            map.setExtent(projectedGeometry[0]);
+                        }
+                    });
+                };
+            });
+
+            layer.on("error", function(e) {
+                _layerErrorHandler(caller, overlayId, featureId, layer, e);
+            });
 
             manager.treeChanged();
         };
