@@ -19,8 +19,12 @@
 define(["cmwapi-adapter/cmwapi-adapter",],
        function(cmwapiAdapter) {
         var adapter;
-    var OverlayManager =  function(map, errorNotifier) {
-        this.adapter = adapter = new cmwapiAdapter(map, errorNotifier);
+        var infoNotifier;
+    var OverlayManager =  function(map, errorNotifier, notifier) {
+        infoNotifier = notifier;
+        this.adapter = adapter = new cmwapiAdapter(map, errorNotifier, notifier);
+
+
         $('#popover_overlay_wrapper').load('./digits/overlayManager/index.html', function() {
             $(window).bind("resize",function() {
                 changeAddScrollState();
@@ -149,7 +153,7 @@ define(["cmwapi-adapter/cmwapi-adapter",],
         var overlayName = $('#overlay-add-name').val();
         var overlayId = $('#overlay-add-id').val();
         var zoom = $('#zoom-checkbox').is(':checked');
-        var featureType = $('#type-selection').val().toLowerCase();
+        var featureType = $('#type-selection').val().toLowerCase().replace(' ', '-').replace(/\s/g, '');
         if(!($('#add-feature-div').is(':visible'))) {
             adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
         } else if($('#overlay-selection').val() === 'Add New Overlay') {
@@ -172,12 +176,14 @@ define(["cmwapi-adapter/cmwapi-adapter",],
                 var node = $('#overlay-tree').tree('getNodeById', $(this).attr('id'));
                 adapter.overlayManager.sendFeatureUnplot(node.parent.id,$(this).attr('id'));
             }
+
+            infoNotifier("Deleted " + $(this).attr('id'));
         });
     };
 
     var getTypeSelection = function() {
-
-        if($('#type-selection').val().toLowerCase() === 'kml') {
+        var selection = $('#type-selection').val().toLowerCase();
+        if(selection === 'kml' || selection ==='arcgis tiled map service') {
             $('#feature-params-group').hide();
         } else {
             $('#feature-params-group').show();
