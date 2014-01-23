@@ -1,5 +1,5 @@
 define(function() {
-    return function(){
-
-    };
+	var ArcGISDynamicMapServiceLayer = function() {};
+	ArcGISDynamicMapServiceLayer.prototype.on  = function() {};
+    return ArcGISDynamicMapServiceLayer;
 });

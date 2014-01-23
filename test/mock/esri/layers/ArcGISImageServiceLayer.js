@@ -1,5 +1,5 @@
 define(function() {
-    return function(){
-
-    };
+	var ArcGISImageServiceLayer = function() {};
+	ArcGISImageServiceLayer.prototype.on  = function() {};
+    return ArcGISImageServiceLayer;
 });
