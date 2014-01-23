@@ -23,14 +23,15 @@
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
     "esri/map", "digits/overlayManager/js/overlayManager", "esri/dijit/BasemapGallery", "esri/dijit/Scalebar",
-    "esri/dijit/Geocoder", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
-    function(Map, OverlayManager, BasemapGallery,Scalebar, Geocoder) {
+    "esri/dijit/Geocoder", "dojo/parser", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
+    function(Map, OverlayManager, BasemapGallery,Scalebar, Geocoder, parser) {
 
         var map = new Map("map", {
             center: [-76.809469, 39.168101],
             zoom: 7,
             basemap: "streets"
         });
+        parser.parse();
 
         var geocoder = new Geocoder({ map: map }, "search");
         geocoder.startup();
@@ -48,9 +49,9 @@ require([
         }
 
         $.notify.addStyle('esri', {  // modeled after bootstrap style
-            html: "<div>\n" + 
+            html: "<div>\n" +
                 "<div class='title' data-notify-html='title'/>\n" +
-                "<span data-notify-text/>\n</div>",    
+                "<span data-notify-text/>\n</div>",
             classes: {
                 base: {
                     "font-weight": "bold",
@@ -88,9 +89,9 @@ require([
 
         if (OWF.Util.isRunningInOWF()) {
             OWF.ready(function () {
-                // see https://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html for options 
-                //  applicable to your deployment environment 
-                // Base installation - applying with a JSP available in this app.  
+                // see https://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html for options
+                //  applicable to your deployment environment
+                // Base installation - applying with a JSP available in this app.
                 //  However, other options (ASP.NET, PHP) exist
                 // TODO: Need means of configuring for the overall application...  Also, dealing with authentication
                 esri.config.defaults.io.proxyUrl = "proxy.jsp";
