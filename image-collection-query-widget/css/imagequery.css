@@ -1,0 +1,125 @@
+html, body {
+  display:block;
+  margin:0;
+  padding:0;
+}
+
+img {
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
+
+.tooltip > .tooltip-inner {
+  background-color: #666666;
+}
+
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: #666666;
+}
+
+.sizer > .titlePane {
+  background-color: #0E6280;
+}
+
+.pointer {
+  background-color: #0E6280;
+}
+
+.form-horizontal .control-label {
+  font-weight: normal;
+  text-align: left;
+  vertical-align: center;
+}
+
+.help-block {
+  display: none;
+}
+
+#image-collection-query-form {
+  display: block;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+#meta {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    width: 300px;
+    height: 100px;
+    z-index: 40;
+    background: #fff;
+    color: #777;
+    padding: 5px;
+    border: 2px solid #666;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    font-family: arial;
+    font-size: 0.9em;
+}
+
+#meta h3 {
+  color: #666;
+  font-size: 1.1em;
+  padding: 0px;
+  margin: 0px;
+  display: inline-block;
+}
+
+#query-form-title {
+  font-style: bold;
+  background-color: #003366;
+  color: white;
+  padding-left: 26px;
+  padding-top: 5px;
+  height: 30px;
+}
+
+#query-hr {
+  position: absolute;
+  border: 1px solid #666;
+  width: 100%;
+  position: absolute;
+  bottom: 40px;
+}
+
+#widget-title {
+  font-size: 18px;
+  margin: 20px 20px 10px;
+}
+
+#loading {
+  float: right;
+}
+
+
+
+#tooltip-x-button {
+  margin-top: -12px;
+  margin-right:2px;
+}
+
+#query-btn-bar {
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  height: 35px;
+}
+#query-btn {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+#overlay-delete-icon{
+  height:25px;
+  width:25px;
+  bottom: 0px;
+
+  right: 8px;
+  position: absolute;
+  background-image: url("../images/icons/Remove_Overlay_Default.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+}
