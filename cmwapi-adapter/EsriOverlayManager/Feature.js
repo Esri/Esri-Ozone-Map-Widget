@@ -1,8 +1,11 @@
 define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/layers/WMSLayerInfo", "cmwapi-adapter/ViewUtils",
     "esri/layers/GraphicsLayer", "esri/graphic","esri/symbols/PictureMarkerSymbol", "esri/geometry/Point", "esri/InfoTemplate",
-     "esri/layers/FeatureLayer",  "esri/layers/ArcGISDynamicMapServiceLayer","esri/config"],
+     "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer","esri/config",  "esri/symbols/SimpleFillSymbol",
+     "esri/symbols/SimpleLineSymbol","esri/dijit/AttributeInspector", "dojo/dom-construct",
+     "esri/tasks/query", "dojo/_base/Color","esri/renderers/SimpleRenderer"],
     function(cmwapi, KMLLayer, WMSLayer, WMSLayerInfo, ViewUtils, GraphicsLayer, Graphic, PictureMarkerSymbol, Point, InfoTemplate,
-        FeatureLayer, ArcGISDynamicMapServiceLayer, esriConfig) {
+        FeatureLayer, ArcGISDynamicMapServiceLayer, esriConfig, SimpleFillSymbol, SimpleLineSymbol, AttributeInspector,
+        domConstruct, Query, Color, SimpleRenderer) {
 
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
@@ -107,7 +110,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             } else if (format === 'arcgis-dynamicmapservice') {
                 plotArcgisDynamicMapService(caller, overlayId, featureId, name, url, params, zoom);
             } else if (format === 'arcgis-tiledmapservice') {
-                plotArcgisTiledMapService(caller, overlayId, featureId, name, url, zoom);
+                plotArcgisImageService(caller, overlayId, featureId, name, url, params, zoom);
             } else {
                 var msg = "Format, " + format + " of data is not accepted";
                 sendError(caller, msg, {msg: msg, type: 'invalid_data_format'});
@@ -296,29 +299,63 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
 
 
         var plotArcgisFeature = function(caller, overlayId, featureId, name, url, params, zoom) {
+            map.on("layers-add-result", handleQueryClick);
+            params = params || {};
+            params.mode = FeatureLayer.MODE_ONDEMAND;
             var layer = new FeatureLayer(url, params);
-            map.addLayer(layer);
+
+            var symbol = new SimpleFillSymbol(
+                  SimpleFillSymbol.STYLE_SOLID,
+                  new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,new Color([255,255,255,0.35]),1),
+                  new Color([125,125,125,0.35])
+            );
+
+            layer.setRenderer(new SimpleRenderer(symbol));
+            map.addLayers([layer]);
 
             var overlay = manager.overlays[overlayId];
-
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'arcgis-feature', url, zoom, layer);
             overlay.features[featureId].params = params;
 
             layer.on("load", function() {
                 if(zoom) {
-                    me.zoom(caller, overlayId, featureId, null, null, "auto");
+                    arcgisZoom(layer);
                 }
-
             });
 
-            layer.on("error", function(e) {
-                _layerErrorHandler(caller, overlayId, featureId, layer, e);
-            });
+            function handleQueryClick(evt) {
+                var layer = evt.layers[0].layer;
+                var selectQuery = new Query();
+
+                map.on("click", function(evt) {
+                    selectQuery.geometry = evt.mapPoint;
+                    layer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function(features) {
+                        if (features.length > 0) {
+                            map.infoWindow.setTitle(features[0].getLayer().name);
+                            map.infoWindow.show(evt.screenPoint,map.getInfoWindowAnchor(evt.screenPoint));
+                        } else {
+                            map.infoWindow.hide();
+                        }
+                    });
+                });
+
+                map.infoWindow.on("hide", function() {
+                    layer.clearSelection();
+                });
+
+                var attInspector = new esri.dijit.AttributeInspector({
+                  layerInfos:[{'featureLayer':layer}]
+                }, domConstruct.create("div"));
+
+                map.infoWindow.setContent(attInspector.domNode);
+                map.infoWindow.resize(350, 240);
+            }
 
             manager.treeChanged();
         };
 
-        var plotArcgisDynamicMapService = function(caller, overlayId, featureId, name, url, params, zoom) {
+       var plotArcgisDynamicMapService = function(caller, overlayId, featureId, name, url, params, zoom) {
+            params = params || {};
             var layer = new ArcGISDynamicMapServiceLayer(url, params);
             map.addLayer(layer);
 
@@ -328,17 +365,8 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
 
             layer.on("load", function() {
                 if(zoom) {
-                    var projectParams = new esri.tasks.ProjectParameters();
-                    projectParams.geometries = [layer.initialExtent];
-                    projectParams.outSR = map.spatialReference;;
-                    esriConfig.defaults.geometryService = new esri.tasks.GeometryService("http://servicesbeta.esri.com/ArcGIS/rest/services/Geometry/GeometryServer");
-                    var defer = esriConfig.defaults.geometryService.project(projectParams);
-                    dojo.when(defer, function (projectedGeometry) {
-                        if (projectedGeometry.length > 0) {
-                            map.setExtent(projectedGeometry[0]);
-                        }
-                    });
-                };
+                    arcgisZoom(layer);
+                }
             });
 
             layer.on("error", function(e) {
@@ -346,6 +374,25 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             });
 
             manager.treeChanged();
+        };
+
+        var plotArcgisImageService = function(caller, overlayId, featureId, name, url, params, zoom) {
+            params = params || {};
+
+
+        };
+
+        var arcgisZoom = function(layer) {
+            var projectParams = new esri.tasks.ProjectParameters();
+            projectParams.geometries = [layer.initialExtent];
+            projectParams.outSR = map.spatialReference;
+            esriConfig.defaults.geometryService = new esri.tasks.GeometryService("http://servicesbeta.esri.com/ArcGIS/rest/services/Geometry/GeometryServer");
+            var defer = esriConfig.defaults.geometryService.project(projectParams);
+            dojo.when(defer, function (projectedGeometry) {
+                if (projectedGeometry.length > 0) {
+                    map.setExtent(projectedGeometry[0]);
+                }
+            });
         };
 
         /**
