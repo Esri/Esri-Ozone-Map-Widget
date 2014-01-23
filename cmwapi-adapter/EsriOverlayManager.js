@@ -402,7 +402,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
                         featureUrl = feature.feature;
                         featureParams = (feature.params) ? feature.params : null;
-                        zoom = feature.zoom;
+                        zoom = false;
 
                         //payload contains a marker.
                         if(featureFormat === "marker") {
