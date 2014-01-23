@@ -107,6 +107,12 @@ Notes that targets can be nested for further refinement.  For example, to produc
 
         grunt jsdoc:cmwapi
          
+
+Note that the below task accomplishes all of the development tasks listed above, and finally prepares a deployment folder with minify-ed versions of necessary JavaScript files and all other needed resources.
+
+        grunt deploy
+
+
 ### Additional JavaScript Test Options
 
 If you have installed Karma globally (as noted above) you may execute it manually from the command and reference a specific configuration file:
