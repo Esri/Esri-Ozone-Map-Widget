@@ -334,6 +334,15 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 }
             });
 
+            layer.on('click', function(e) {
+                cmwapi.feature.selected.send({
+                    overlayId:overlayId,
+                    featureId:featureId,
+                    selectedId: e.graphic.getLayer().id,
+                    selectedName: e.graphic.getLayer().name
+                });
+            });
+
             //Feature layers have information associated with the layer, this is to query for that
             //information on mouse click.
             function handleQueryClick(evt) {
