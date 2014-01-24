@@ -38,15 +38,15 @@ img {
 }
 
 #form-container {
-  display:block;
+  display: block;
+  width: 100%;
 }
 
 #image-collection-query-form {
-  display: block;
   overflow-x: hidden;
   overflow-y: auto;
   min-height: 225px;
-  border: 2px solid red;
+  min-width: 335px;
 }
 
 #query-form-title {
@@ -59,23 +59,19 @@ img {
 }
 
 #query-hr {
-  position: absolute;
-  border: 1px solid #666;
+  margin-top: 10px;
   width: 100%;
-  position: absolute;
-  bottom: 40px;
+  border: 1px solid #666;
 }
 
 #widget-title {
   font-size: 18px;
-  margin: 20px 20px 10px;
+  margin: 10px 20px 10px;
 }
 
 #loading {
   float: right;
 }
-
-
 
 #tooltip-x-button {
   margin-top: -12px;
@@ -84,14 +80,22 @@ img {
 
 #query-btn-bar {
   display: block;
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  height: 35px;
 }
+
+#query-btn-bar2 {
+  display: block;
+  position: fixed;
+  width: 100%;
+  bottom: 0px;
+  left: 0px;
+  border: 2px solid green;
+}
+
 #query-btn {
-  margin-right: 5px;
-  margin-bottom: 5px;
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 #overlay-delete-icon{
