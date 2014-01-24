@@ -2,6 +2,8 @@ html, body {
   display:block;
   margin:0;
   padding:0;
+  overflow-y:none;
+  autoscrolls:none;
 }
 
 img {
@@ -35,41 +37,21 @@ img {
   display: none;
 }
 
+#form-container {
+  display:block;
+}
+
 #image-collection-query-form {
   display: block;
   overflow-x: hidden;
-  overflow-y: scroll;
-}
-
-#meta {
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    width: 300px;
-    height: 100px;
-    z-index: 40;
-    background: #fff;
-    color: #777;
-    padding: 5px;
-    border: 2px solid #666;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    font-family: arial;
-    font-size: 0.9em;
-}
-
-#meta h3 {
-  color: #666;
-  font-size: 1.1em;
-  padding: 0px;
-  margin: 0px;
-  display: inline-block;
+  overflow-y: auto;
+  min-height: 225px;
+  border: 2px solid red;
 }
 
 #query-form-title {
   font-style: bold;
-  background-color: #003366;
+  background-color: #428bca;
   color: white;
   padding-left: 26px;
   padding-top: 5px;
