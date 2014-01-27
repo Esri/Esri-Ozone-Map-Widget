@@ -1,9 +1,6 @@
 html, body {
-  display:block;
   margin:0;
   padding:0;
-  overflow-y:none;
-  autoscrolls:none;
 }
 
 img {
@@ -42,7 +39,7 @@ img {
   width: 100%;
 }
 
-#image-collection-query-form {
+#image-collection-query-form-div {
   overflow-x: hidden;
   overflow-y: auto;
   min-height: 225px;
