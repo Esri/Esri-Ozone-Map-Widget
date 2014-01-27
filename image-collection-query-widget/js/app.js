@@ -26,7 +26,7 @@ require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "di
         parser.parse();
 
         var DEFAULT_SERVER = "http://wdcintelgis.esri.com/arcgis/rest/services/Iran/ImageCollectionCoverage/MapServer/2/query";
-        var DEFAULT_CLOUD = 50;
+        var DEFAULT_CLOUD = 0;
         var DEFAULT_NAME = "Image Query";
         var DEFAULT_PARAMS = "?f=kml&outfields=*";
 
@@ -54,7 +54,7 @@ require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "di
                 where = "CLOUD_COVER_PERCENT < " + cloud;
             } else {
                 //query.where = "1=1 AND 2=2";
-                where = "1=1";
+                where = "CLOUD_COVER_PERCENT < " + DEFAULT_CLOUD;
             }
 
             // Add the start and end times.
