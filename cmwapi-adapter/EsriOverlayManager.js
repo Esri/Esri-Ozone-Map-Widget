@@ -33,7 +33,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
      */
     var EsriOverlayManager = function(map, errorNotifier, infoNotifier) {
         var me = this;
-        var notifier = errorNotifier;   
+        var notifier = errorNotifier;
         var infoNotifier = infoNotifier;
 
         me.overlays = {};
@@ -371,7 +371,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                 if (retValue && retValue.value) {
                     console.log("Retrieved overlay configuration: " + retValue.value);
                     me.overlays = OWFWidgetExtensions.Util.parseJson(retValue.value);
-                } 
+                }
 
                 // iterate over overlays and apply...
                 var i, j;
@@ -402,7 +402,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
                         featureUrl = feature.feature;
                         featureParams = (feature.params) ? feature.params : null;
-                        zoom = feature.zoom;
+                        zoom = false;
 
                         //payload contains a marker.
                         if(featureFormat === "marker") {

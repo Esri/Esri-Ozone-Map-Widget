@@ -1106,6 +1106,70 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/cmwapi-adapter", "cmwapi-adapter/EsriOv
                 expect(overlays["o1"].features["f2"].name).toBe("marker 2");
             });
 
+            it("verify that an Arcgis feature layer can be created", function() {
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
+
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "arcgis-feature", "http://url");
+
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(Object.keys(overlays["o"].features).length).toBe(1);
+            });
+
+            it("verify that an Arcgis Dynamic Map Service layer can be created", function() {
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
+
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "arcgis-dynamicmapservice", "http://url");
+
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(Object.keys(overlays["o"].features).length).toBe(1);
+            });
+
+            it("verify that an Arcgis Image Service layer can be created", function() {
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
+
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "arcgis-imageservice", "http://url");
+
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(Object.keys(overlays["o"].features).length).toBe(1);
+            });
+
+            it("verify that an error is thrown if a layer type of an unknow type is given", function() {
+                var eventing = OWF.Eventing;
+                expect(eventing).not.toBe(null);
+
+                var err = spyOn(eventing, 'publish').andCallThrough();
+
+                overlayManager.overlay.createOverlay("fake", "o", "on");
+                overlayManager.feature.plotFeatureUrl("fake2", "o", "f", "fn", "fake-type", "http://url");
+
+                var overlays = overlayManager.getOverlays();
+                expect(Object.keys(overlays).length).toBe(1);
+                expect(Object.keys(overlays["o"].features).length).toBe(0);
+
+                var msg = "Format, fake-type of data is not accepted";
+                expect(err).toHaveBeenCalledWith("map.error", JSON.stringify({
+                    sender: "fake2",
+                    type: "invalid_data_format",
+                    msg: msg,
+                    error: {msg: msg, type: "invalid_data_format"}
+                }));
+            });
+
         });
     });
 });

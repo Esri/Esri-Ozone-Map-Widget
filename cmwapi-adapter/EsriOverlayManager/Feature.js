@@ -1,8 +1,11 @@
 define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/layers/WMSLayerInfo", "cmwapi-adapter/ViewUtils",
     "esri/layers/GraphicsLayer", "esri/graphic","esri/symbols/PictureMarkerSymbol", "esri/geometry/Point", "esri/InfoTemplate",
-     "esri/layers/FeatureLayer",  "esri/layers/ArcGISDynamicMapServiceLayer","esri/config"],
+     "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/layers/ArcGISImageServiceLayer", "esri/config",
+     "esri/symbols/SimpleFillSymbol","esri/symbols/SimpleLineSymbol","esri/dijit/AttributeInspector", "dojo/dom-construct",
+     "esri/tasks/query", "dojo/_base/Color","esri/renderers/SimpleRenderer"],
     function(cmwapi, KMLLayer, WMSLayer, WMSLayerInfo, ViewUtils, GraphicsLayer, Graphic, PictureMarkerSymbol, Point, InfoTemplate,
-        FeatureLayer, ArcGISDynamicMapServiceLayer, esriConfig) {
+        FeatureLayer, ArcGISDynamicMapServiceLayer, ArcGISImageServiceLayer, esriConfig, SimpleFillSymbol, SimpleLineSymbol,
+        AttributeInspector,domConstruct, Query, Color, SimpleRenderer) {
 
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
@@ -106,8 +109,8 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 plotArcgisFeature(caller, overlayId, featureId, name, url, params, zoom);
             } else if (format === 'arcgis-dynamicmapservice') {
                 plotArcgisDynamicMapService(caller, overlayId, featureId, name, url, params, zoom);
-            } else if (format === 'arcgis-tiledmapservice') {
-                plotArcgisTiledMapService(caller, overlayId, featureId, name, url, zoom);
+            } else if (format === 'arcgis-imageservice') {
+                plotArcgisImageService(caller, overlayId, featureId, name, url, params, zoom);
             } else {
                 var msg = "Format, " + format + " of data is not accepted";
                 sendError(caller, msg, {msg: msg, type: 'invalid_data_format'});
@@ -297,31 +300,100 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
         };
 
 
-
+        /**
+         * Plots a Arcgis Specific Feature Layer via url to the map
+         * @private
+         * @param caller {String} The widget making a request that led to this method call
+         * @param overlayId {String} The unique id of the overlay containing the feature to be plotted
+         * @param featureId {String} The id, unique to the overlay, to be given to the plotted feature
+         * @param name {String} The non-unique readable name to give to the feature
+         * @param url {String} The url containing kml data to be plotted
+         * @param params {Object} wms params to be used when pulling data from the url
+         * @param [zoom] {Boolean} If the plotted feature should be zoomed to upon being plotted
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
+         */
         var plotArcgisFeature = function(caller, overlayId, featureId, name, url, params, zoom) {
+            map.on("layers-add-result", handleQueryClick);
+            params = params || {};
+            params.mode = FeatureLayer.MODE_ONDEMAND;
             var layer = new FeatureLayer(url, params);
-            map.addLayer(layer);
+
+            var symbol = new SimpleFillSymbol(
+                  SimpleFillSymbol.STYLE_SOLID,
+                  new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,new Color([255,255,255,0.35]),1),
+                  new Color([125,125,125,0.35])
+            );
+
+            layer.setRenderer(new SimpleRenderer(symbol));
+            map.addLayers([layer]);
 
             var overlay = manager.overlays[overlayId];
-
             overlay.features[featureId] = new Feature(overlayId, featureId, name, 'arcgis-feature', url, zoom, layer);
             overlay.features[featureId].params = params;
 
             layer.on("load", function() {
                 if(zoom) {
-                    me.zoom(caller, overlayId, featureId, null, null, "auto");
+                    arcgisZoom(layer);
                 }
-
             });
 
-            layer.on("error", function(e) {
-                _layerErrorHandler(caller, overlayId, featureId, layer, e);
+            layer.on('click', function(e) {
+                cmwapi.feature.selected.send({
+                    overlayId:overlayId,
+                    featureId:featureId,
+                    selectedId: e.graphic.getLayer().id,
+                    selectedName: e.graphic.getLayer().name
+                });
             });
+
+            //Feature layers have information associated with the layer, this is to query for that
+            //information on mouse click.
+            function handleQueryClick(evt) {
+                var layer = evt.layers[0].layer;
+                var selectQuery = new Query();
+
+                map.on("click", function(evt) {
+                    selectQuery.geometry = evt.mapPoint;
+                    layer.selectFeatures(selectQuery, FeatureLayer.SELECTION_NEW, function(features) {
+                        if (features.length > 0) {
+                            map.infoWindow.setTitle(features[0].getLayer().name);
+                            map.infoWindow.show(evt.screenPoint,map.getInfoWindowAnchor(evt.screenPoint));
+                        } else {
+                            map.infoWindow.hide();
+                        }
+                    });
+                });
+
+                map.infoWindow.on("hide", function() {
+                    layer.clearSelection();
+                });
+
+                var attInspector = new esri.dijit.AttributeInspector({
+                  layerInfos:[{'featureLayer':layer}]
+                }, domConstruct.create("div"));
+
+                map.infoWindow.setContent(attInspector.domNode);
+                map.infoWindow.resize(350, 240);
+            }
 
             manager.treeChanged();
         };
 
-        var plotArcgisDynamicMapService = function(caller, overlayId, featureId, name, url, params, zoom) {
+
+        /**
+         * Plots a Arcgis Specific Dynamic Service Layer via url to the map
+         * @private
+         * @param caller {String} The widget making a request that led to this method call
+         * @param overlayId {String} The unique id of the overlay containing the feature to be plotted
+         * @param featureId {String} The id, unique to the overlay, to be given to the plotted feature
+         * @param name {String} The non-unique readable name to give to the feature
+         * @param url {String} The url containing kml data to be plotted
+         * @param params {Object} wms params to be used when pulling data from the url
+         * @param [zoom] {Boolean} If the plotted feature should be zoomed to upon being plotted
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
+         */
+       var plotArcgisDynamicMapService = function(caller, overlayId, featureId, name, url, params, zoom) {
+            params = params || {};
             var layer = new ArcGISDynamicMapServiceLayer(url, params);
             map.addLayer(layer);
 
@@ -331,17 +403,8 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
 
             layer.on("load", function() {
                 if(zoom) {
-                    var projectParams = new esri.tasks.ProjectParameters();
-                    projectParams.geometries = [layer.initialExtent];
-                    projectParams.outSR = map.spatialReference;;
-                    esriConfig.defaults.geometryService = new esri.tasks.GeometryService("http://servicesbeta.esri.com/ArcGIS/rest/services/Geometry/GeometryServer");
-                    var defer = esriConfig.defaults.geometryService.project(projectParams);
-                    dojo.when(defer, function (projectedGeometry) {
-                        if (projectedGeometry.length > 0) {
-                            map.setExtent(projectedGeometry[0]);
-                        }
-                    });
-                };
+                    arcgisZoom(layer);
+                }
             });
 
             layer.on("error", function(e) {
@@ -349,6 +412,60 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             });
 
             manager.treeChanged();
+        };
+
+        /**
+         * Plots a Arcgis Specific Image Layer via url to the map
+         * @private
+         * @param caller {String} The widget making a request that led to this method call
+         * @param overlayId {String} The unique id of the overlay containing the feature to be plotted
+         * @param featureId {String} The id, unique to the overlay, to be given to the plotted feature
+         * @param name {String} The non-unique readable name to give to the feature
+         * @param url {String} The url containing kml data to be plotted
+         * @param params {Object} wms params to be used when pulling data from the url
+         * @param [zoom] {Boolean} If the plotted feature should be zoomed to upon being plotted
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
+         */
+        var plotArcgisImageService = function(caller, overlayId, featureId, name, url, params, zoom) {
+            params = params || {};
+            var layer = new ArcGISImageServiceLayer(url, params);
+            map.addLayer(layer);
+
+            var overlay = manager.overlays[overlayId];
+            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'arcgis-imageservice', url, zoom, layer);
+            overlay.features[featureId].params = params;
+
+            layer.on("load", function() {
+                if(zoom) {
+                    arcgisZoom(layer);
+                }
+            });
+
+            layer.on("error", function(e) {
+                _layerErrorHandler(caller, overlayId, featureId, layer, e);
+            });
+
+            manager.treeChanged();
+        };
+
+        /**
+         * Method to zoom to Arcgis specific layers based on a bug that will not allow you to set the extent of
+         * a map to an extent with a spacial reference of a different type.
+         * @private
+         * @param layer {String} The layer in which to get extent and chnage view to that extent
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
+         */
+        var arcgisZoom = function(layer) {
+            var projectParams = new esri.tasks.ProjectParameters();
+            projectParams.geometries = [layer.initialExtent];
+            projectParams.outSR = map.spatialReference;
+            esriConfig.defaults.geometryService = new esri.tasks.GeometryService("http://servicesbeta.esri.com/ArcGIS/rest/services/Geometry/GeometryServer");
+            var defer = esriConfig.defaults.geometryService.project(projectParams);
+            dojo.when(defer, function (projectedGeometry) {
+                if (projectedGeometry.length > 0) {
+                    map.setExtent(projectedGeometry[0]);
+                }
+            });
         };
 
         /**

@@ -23,55 +23,50 @@
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
     "esri/map", "digits/overlayManager/js/overlayManager", "esri/dijit/BasemapGallery", "esri/dijit/Scalebar",
-    "esri/dijit/Legend", "esri/dijit/Geocoder", "dojo/_base/array", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
-    function(Map, OverlayManager, BasemapGallery, Scalebar, Legend, Geocoder, arrayUtils) {
+    "esri/dijit/Legend", "esri/dijit/Geocoder", "dojo/_base/array", "dojo/parser", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
+    function(Map, OverlayManager, BasemapGallery, Scalebar, Legend, Geocoder, arrayUtils, parser) {
 
     var map = new Map("map", {
         center: [-76.809469, 39.168101],
         zoom: 7,
         basemap: "streets"
     });
+    parser.parse();
 
     var layers = [];
     var legend;
     map.on("layer-add-result", function (evt) {
-        try{
-            if(evt.layer.declaredClass === "esri.layers.ArcGISTiledMapServiceLayer") {
-                //basemap
-                console.debug(evt.layer);
-            } else if(evt.layer.declaredClass != "esri.layers.KMLLayer"){/* ||
-                evt.layer.declaredClass === "esri.layers.WMSLayer"){*/
+        if(evt.layer.declaredClass === "esri.layers.ArcGISTiledMapServiceLayer") {
+            //basemap
+            //noop
+        } else if(evt.layer.declaredClass != "esri.layers.KMLLayer"){/* ||
+            evt.layer.declaredClass === "esri.layers.WMSLayer"){*/
 
-                console.debug(evt.layer);
-                evt.layer._titleForLegend = evt.layer.id;
-                var layerInfo = {layer:evt.layer, name:evt.layer.id};
-                layers.push(layerInfo);
+            evt.layer._titleForLegend = evt.layer.id;
+            var layerInfo = {layer:evt.layer, name:evt.layer.id};
+            layers.push(layerInfo);
 
-                if (layers.length > 0) {
-                    /*var legendDijit = new Legend({
+            if (layers.length > 0) {
+                /*var legendDijit = new Legend({
+                    map: map,
+                    layerInfos: layers
+                }, "legend_holder_div");*/
+                //legendDijit.startup();
+
+                if(legend) {
+                    legend.refresh(layers);
+                } else {
+                    legend = new Legend({
+                        autoUpdate: true,
                         map: map,
+                        respectCurrentMapScale: true,
                         layerInfos: layers
-                    }, "legend_holder_div");*/
-                    //legendDijit.startup();
-
-                    console.debug("Test");
-                    if(legend) {
-                        legend.refresh(layers);
-                    } else {
-                        legend = new Legend({
-                            autoUpdate: true,
-                            map: map,
-                            respectCurrentMapScale: true
-                        }, 'legend_holder_div');
-                        legend.startup();
-                    }
-
+                    }, 'legend_holder_div');
+                    legend.startup();
                 }
-            } else {
-                console.debug(evt.layer);
             }
-        } catch(e) {
-            console.debug(e);
+        } else {
+            //kml layer.... dont display this as it has sublayers which will display making this a duplicate
         }
     });
 
@@ -293,7 +288,7 @@ require([
             // Base installation - applying with a JSP available in this app.
             //  However, other options (ASP.NET, PHP) exist
             // TODO: Need means of configuring for the overall application...  Also, dealing with authentication
-            esri.config.defaults.io.proxyUrl = "/owf/proxy.jsp";
+            esri.config.defaults.io.proxyUrl = "proxy.jsp";
 
             OWF.notifyWidgetReady();
             var overlayManager = new OverlayManager(map, errorNotifier, infoNotifier);

@@ -68,11 +68,11 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
 
 ## Development Environment Setup
 
-The unit tests and JavaScript documentation for this repository can be run/generated using the [GRUNT Task Runner](http://gruntjs.com "GRUNT: The JavaScript Task Runner - Homepage"). Said tests leverage the [Jasmine v1.3.1](http://pivotal.github.io/jasmine "Jasmine Introduction") testing framework and are executed with [Karma v0.10.2](http://karma-runner.github.io/0.10/index.html "Karma: Spectacular Test Runner for JavaScript - Homepage"). The required development tools are provided by the [NPM Registry](http://npmjs.org "Node Packaged Modules - Homepage") and [Node JS v0.10.21](http://nodejs.org "Node.js - Homepage").
+The unit tests and JavaScript documentation for this repository can be run/generated using the [GRUNT Task Runner](http://gruntjs.com "GRUNT: The JavaScript Task Runner - Homepage"). Said tests leverage the [Jasmine v1.3.1](http://pivotal.github.io/jasmine "Jasmine Introduction") testing framework and are executed with [Karma v0.10.2](http://karma-runner.github.io/0.10/index.html "Karma: Spectacular Test Runner for JavaScript - Homepage"). The required development tools are provided by the [NPM Registry](http://npmjs.org "Node Packaged Modules - Homepage") and [Node JS v0.10.21](http://nodejs.org "Node.js - Homepage").  Java must be installed and available in your PATH for use by [JSDoc](https://github.com/krampstudio/grunt-jsdoc "Grunt-jsdoc plugin").
 
 > NOTE: The products of this repository can be developed and extended using any number of current JavaScript and web development frameworks. The installation steps below are provided for the convenience of contributors.
 
-To setup the development environment:
+To setup the development environment, use the directions below. 
 
 1. Install the appropriate [Node JS v0.10.21](http://nodejs.org/download "Node.js Downloads") package for your platform and the accompanying Node Package Manager (NPM).
 
@@ -92,6 +92,8 @@ To setup the development environment:
 
 5. To run the unit tests and create JavaScript documentation simply execute `grunt` in the source code root directory.
 
+We are also internally experimenting with the use of [Vagrant](http://www.vagrantup.com) and make our Vagrantfile efforts available in the dev-ops folder.  
+
 ### Grunt Targets
 Once the development environment has been setup, grunt can be used to run JSHint on the JavaScript code, execute the functional tests and generate project documentation.  To run everything in series, use the following command from the top level directory.
 
@@ -105,6 +107,12 @@ Notes that targets can be nested for further refinement.  For example, to produc
 
         grunt jsdoc:cmwapi
          
+
+Note that the below task accomplishes all of the development tasks listed above, and finally prepares a deployment folder with minify-ed versions of necessary JavaScript files and all other needed resources.
+
+        grunt deploy
+
+
 ### Additional JavaScript Test Options
 
 If you have installed Karma globally (as noted above) you may execute it manually from the command and reference a specific configuration file:
