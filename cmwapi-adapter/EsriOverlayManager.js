@@ -381,8 +381,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                     // create overlay
                     overlayId = me.overlays[i].id;
                     overlayName = me.overlays[i].name;
-
-                    me.sendOverlayCreate(overlayId, overlayName);
+                    me.overlay.createOverlay(OWF.getInstanceId(), overlayId, overlayName);
 
                     // create any child features in overlay
                     for (j in me.overlays[i].features) {
@@ -403,14 +402,16 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                         featureUrl = feature.feature;
                         featureParams = (feature.params) ? feature.params : null;
                         zoom = false;
-
                         //payload contains a marker.
                         if(featureFormat === "marker") {
                             me.feature.plotMarker(null, overlayId, featureId, featureName, feature.marker, zoom);
                         }
                         else {
-                            me.sendFeaturePlotUrl(overlayId, featureId, featureName,
+                            me.feature.plotFeatureUrl(OWF.getInstanceId(), overlayId, featureId, featureName,
                                 featureFormat, featureUrl, featureParams, zoom);
+                        }
+                        if(feature && feature.isHidden) {
+                            me.feature.hideFeature(OWF.getInstanceId(), overlayId, featureId);
                         }
                     }
                 }
