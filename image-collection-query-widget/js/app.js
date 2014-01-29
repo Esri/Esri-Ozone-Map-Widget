@@ -43,12 +43,12 @@ require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "di
 
 
             // Change the server if necessary
-            if (server && server.toString().trim().length > 0) {
+            if (server && server.toString().replace(/^\s+|\s+$/g, '').length > 0) {
                 url = server;
             }
 
             // Add the cloud coverage query param.
-            if (cloud && cloud.toString().trim().length > 0) {
+            if (cloud && cloud.toString().replace(/^\s+|\s+$/g, '').length > 0) {
                 //query.where = "CLOUD_COVER_PERCENT < " + cloud;
                 where = "CLOUD_COVER_PERCENT <= " + cloud;
             } else {
@@ -99,7 +99,7 @@ require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "di
                 query("#cloud-cover").attr("value")),
                 featureId = query("#query-name").attr("value");
 
-            featureId = (featureId && featureId.toString().trim().length > 0) ? featureId : DEFAULT_NAME;
+            featureId = (featureId && featureId.toString().replace(/^\s+|\s+$/g, '').length > 0) ? featureId : DEFAULT_NAME;
 
             var payload = {
                 overlayId: OWF.getInstanceId(),
