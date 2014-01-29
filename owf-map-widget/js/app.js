@@ -23,13 +23,56 @@
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
     "esri/map", "digits/overlayManager/js/overlayManager", "esri/dijit/BasemapGallery", "esri/dijit/Scalebar",
-    "esri/dijit/Legend", "esri/dijit/Geocoder", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
-    function(Map, OverlayManager, BasemapGallery, Scalebar, Legend, Geocoder) {
+    "esri/dijit/Legend", "esri/dijit/Geocoder", "dojo/_base/array", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
+    function(Map, OverlayManager, BasemapGallery, Scalebar, Legend, Geocoder, arrayUtils) {
 
     var map = new Map("map", {
         center: [-76.809469, 39.168101],
         zoom: 7,
         basemap: "streets"
+    });
+
+    var layers = [];
+    var legend;
+    map.on("layer-add-result", function (evt) {
+        try{
+            if(evt.layer.declaredClass === "esri.layers.ArcGISTiledMapServiceLayer") {
+                //basemap
+                console.debug(evt.layer);
+            } else if(evt.layer.declaredClass != "esri.layers.KMLLayer"){/* ||
+                evt.layer.declaredClass === "esri.layers.WMSLayer"){*/
+
+                console.debug(evt.layer);
+                evt.layer._titleForLegend = evt.layer.id;
+                var layerInfo = {layer:evt.layer, name:evt.layer.id};
+                layers.push(layerInfo);
+
+                if (layers.length > 0) {
+                    /*var legendDijit = new Legend({
+                        map: map,
+                        layerInfos: layers
+                    }, "legend_holder_div");*/
+                    //legendDijit.startup();
+
+                    console.debug("Test");
+                    if(legend) {
+                        legend.refresh(layers);
+                    } else {
+                        legend = new Legend({
+                            autoUpdate: true,
+                            map: map,
+                            respectCurrentMapScale: true
+                        }, 'legend_holder_div');
+                        legend.startup();
+                    }
+
+                }
+            } else {
+                console.debug(evt.layer);
+            }
+        } catch(e) {
+            console.debug(e);
+        }
     });
 
     map.on('load', function() {
@@ -90,18 +133,19 @@ require([
         $.notify( msg, {className: "info", autoHide: true, autoHideDelay: 5000});
     }
 
-    var legend = new Legend({
+    /*var legend = new Legend({
         autoUpdate: true,
         map: map,
         respectCurrentMapScale: true
     }, 'legend_holder_div');
-    legend.startup();
+    legend.startup();*/
 
     var legendWidth = 250;
     var legendDividerWidth = 3;
     var handleLegendPopOut = function() {
         $('#overlay').removeClass('selected');
         $('#basemaps').removeClass('selected');
+        $('#data_div_button').removeClass('selected');
         $('#legend_button').toggleClass('selected');
 
         //change handler to close the legend
@@ -111,6 +155,8 @@ require([
         var windowWidth = $(window).width();
         setMapWidth((windowWidth - totalWidth));
         setLegendWidth(legendWidth);
+
+        //$('#legend_button').removeClass('selected');
 
         $('.legend_vertical_divider').mousedown(function(e){
             e.preventDefault();
@@ -126,6 +172,7 @@ require([
     var handleLegendClose = function() {
         setLegendWidth(0);
         setMapWidth($(window).width());
+        $('#legend_button').removeClass('selected');
         $("#legend_button").on('click', handleLegendPopOut);
     };
 
@@ -143,7 +190,8 @@ require([
     var handleDataDivPopOut = function() {
         $('#overlay').removeClass('selected');
         $('#basemaps').removeClass('selected');
-        $('#legend_button').toggleClass('selected');
+        $('#legend_button').removeClass('selected');
+        $('#data_div_button').toggleClass('selected');
 
         //change handler to close the legend
         $("#data_div_button").on('click', handleDataDivClose);
@@ -153,6 +201,8 @@ require([
         setMapHeight(windowHeight - totalHeight);
         setLegendHeight(windowHeight - totalHeight);
         setDataDivHeight(dataDivHeight);
+
+        $('#data_div_button').removeClass('selected');
 
         $('.esri_bottom_horizontal_divider').mousedown(function(e){
             e.preventDefault();
@@ -200,7 +250,8 @@ require([
         $(".legend_vertical_divider").css('left', width+'px');
         if(width > 0) {
             $('.esri_info_div').width(width + legendDividerWidth);
-            $('#legend_holder_div').width(width - ($('#legend_holder_div').outerWidth() - $('#legend_holder_div').innerWidth()));
+
+            $('#legend_holder_div').width(width - 20);
             $(".legend_vertical_divider").width(3);
         } else {
             $('.esri_info_div').width(0);
@@ -222,12 +273,12 @@ require([
 
     var setMapWidth = function(width) {
         $('#map').width(width);
-        map.resize(true);
+        map.resize();
     };
 
     var setMapHeight = function(height) {
         $('#map').height(height);
-        map.resize(true);
+        map.resize();
     }
 
     var handleLayout = function() {

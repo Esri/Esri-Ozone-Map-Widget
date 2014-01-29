@@ -20,7 +20,7 @@ html, body {
     padding: 0;
     border: 0;
     float: left;
-    overflow:auto;
+    /*overflow:auto;*/
 }
 
 #legend {
@@ -32,6 +32,7 @@ html, body {
     position: absolute;
     left: 0px;
     background-color: #FFF;
+    overflow:auto;
 }
 
 #legend_holder_div {
@@ -57,7 +58,7 @@ html, body {
     margin-right: 5px;
     width: 30px;
     height: 30px;
-    background-image: url("../images/icons/Overlay_Manager_Default.png");
+    background-image: url("../images/icons/Legend_Default.png");
     background-position: center center;
     background-repeat: no-repeat;
     border-radius: 5px;
@@ -66,12 +67,12 @@ html, body {
     z-index:3;
 }
 #legend_button:hover{
-    background-image: url("../images/icons/Overlay_Manager_Hover.png");
+    background-image: url("../images/icons/Legend_Hover.png");
     background-position: center center;
     background-repeat: no-repeat;
 }
 #legend_button.selected{
-    background-image: url("../images/icons/Overlay_Manager_Selected.png");
+    background-image: url("../images/icons/Legend_Selected.png");
     background-position: center center;
     background-repeat: no-repeat;
 }
