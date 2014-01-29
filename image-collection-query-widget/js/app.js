@@ -38,7 +38,6 @@ require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "di
             var query = {
                 f: "kmz",
                 outFields: "*",
-                //where: "1=1",
                 returnGeometry: true
             };
 
@@ -51,10 +50,10 @@ require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "di
             // Add the cloud coverage query param.
             if (cloud && cloud.toString().trim().length > 0) {
                 //query.where = "CLOUD_COVER_PERCENT < " + cloud;
-                where = "CLOUD_COVER_PERCENT < " + cloud;
+                where = "CLOUD_COVER_PERCENT <= " + cloud;
             } else {
                 //query.where = "1=1 AND 2=2";
-                where = "CLOUD_COVER_PERCENT < " + DEFAULT_CLOUD;
+                where = "CLOUD_COVER_PERCENT <= " + DEFAULT_CLOUD;
             }
 
             // Add the start and end times.
@@ -72,24 +71,13 @@ require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "di
             // Add the collection dates to the where clause.
             where += " AND COLLECTION_DATE>=" + "date '" + start + "'"; 
             where += " AND COLLECTION_DATE<=" + "date '" + end + "'";
-            
-            // Where clauses need to be double url encoded since KMLLayer pulls 
-            // apart the KML url and munges any encoded query parameters prior to 
-            // rebuilding the url and passing it to the kml utility service.
-            var whereParam = {
-                a: where
-            };
-            var where = ioQuery.objectToQuery(whereParam).substring(2);
-            where = where.replace(/'/g, "%27");
 
-            whereParam = {
-                where: where 
-            };
+            // Add the where clause to the query params and generate the main
+            // query URL.
+            query.where = where;
             url = url + "?" + ioQuery.objectToQuery(query);
-            url = url + "&" + ioQuery.objectToQuery(whereParam);
-
+            url = url.replace(/'/g, "%27");
             return url;
-
         }
 
         var createQueryOverlay = function(name) {
