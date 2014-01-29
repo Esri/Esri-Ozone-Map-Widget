@@ -42,8 +42,13 @@ img {
 #image-collection-query-form-div {
   overflow-x: hidden;
   overflow-y: auto;
-  min-height: 225px;
+  min-height: 175px;
   min-width: 335px;
+}
+
+#msg-area {
+  display: block;
+  height: 60px;
 }
 
 #query-form-title {

@@ -19,10 +19,12 @@
 
 // NOTE: Modules that are not compatible with asynchronous module loading
 // (AMD) are included in the webapp's HTML file to prevent issues.
-require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "dijit/form/DateTextBox", 
-    "cmwapi/cmwapi",
+require(["dojo/request/script", "dojo/json",
+    "dojo/query","dojo/io-query", "dojo/parser",
+    "dojox/html/entities", 
+    "dijit/form/DateTextBox", "cmwapi/cmwapi",
     "dojox/form/Manager", "dojo/dom-style", "dojo/domReady!"],
-    function(query, ioQuery, parser, Entities, DateTextBox, CMWAPI) {
+    function(script, json, query, ioQuery, parser, Entities, DateTextBox, CMWAPI) {
         parser.parse();
 
         var DEFAULT_SERVER = "http://wdcintelgis.esri.com/arcgis/rest/services/Iran/ImageCollectionCoverage/MapServer/2/query";
@@ -30,15 +32,16 @@ require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "di
         var DEFAULT_NAME = "Image Query";
         var DEFAULT_PARAMS = "?f=kml&outfields=*";
 
-        var buildRequestUrl = function(server, start, end, cloud) {
+        var buildRequestUrl = function(server, start, end, cloud, returnCountOnly) {
             var url = DEFAULT_SERVER;
             var start;
             var end;
             var where = "";
             var query = {
-                f: "kmz",
+                f: (returnCountOnly) ? "json" : "kmz",
+                returnCountOnly: (returnCountOnly === true),
                 outFields: "*",
-                returnGeometry: true
+                returnGeometry: (returnCountOnly === true)
             };
 
 
@@ -88,6 +91,26 @@ require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "di
             CMWAPI.overlay.create.send(payload)
         };
 
+        var setQueryMsg = function(msg, msgClass) {
+            query("#msg").attr("innerHTML", msg);
+            query("#msg-area").addClass(msgClass);
+            query("#msg-area").removeClass("invisible");
+        };
+
+        var clearQueryMsg = function() {
+            query("#msg").attr("innerHTML", "");
+            
+            query("#msg-area").removeClass("alert-success");
+            query("#msg-area").removeClass("alert-warning");
+            query("#msg-area").removeClass("alert-danger");
+
+            query("#msg-area").addClass("invisible");
+        };
+
+        query("#msg-btn").on("click", function(event) {
+            clearQueryMsg();
+        })
+        
         query("#query-btn").on("click", function(event) {
 
             // Create the overlay for results.
@@ -110,7 +133,38 @@ require(["dojo/query","dojo/io-query", "dojo/parser", "dojox/html/entities", "di
                 zoom: true
             };
 
-            CMWAPI.feature.plot.url.send(payload);
+
+            // Get the number of results.
+            var countRequestUrl = buildRequestUrl(query("#collection-url").attr("value"),
+                startTime.get("value"), 
+                endTime.get("value"), 
+                query("#cloud-cover").attr("value"),
+                true);
+
+            // Request the count request and use the results to determine whether
+            // or not to publish the query results to any maps via the CMWAPI channels.
+            script.get(countRequestUrl, {
+                jsonp: "callback"
+
+            }).then(function(data) {
+                clearQueryMsg();
+
+                if (data.count <= 1000) {
+                    setQueryMsg(data.count + " found. Sending to maps.", "alert-success")
+                } 
+                else {
+                    setQueryMsg(data.count + " found. Only first 1000 will be plotted."
+                        + "  Please refine your search.",
+                        "alert-warning");
+                }
+                
+                CMWAPI.feature.plot.url.send(payload);   
+            }, function(error) {
+                clearQueryMsg();
+                setQueryMsg("Could not query the server at this time.", "alert-danger");
+            });
+
+            //CMWAPI.feature.plot.url.send(payload);
             event.preventDefault();
         });
 
