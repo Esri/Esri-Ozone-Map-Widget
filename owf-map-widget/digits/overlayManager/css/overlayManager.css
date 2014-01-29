@@ -13,6 +13,7 @@
   background: #fff;
   border: 2px solid #666;
   border-radius: 8px;
+  z-index: -1
 }
 
 .overlaytip:after, .overlaytip:before {
@@ -24,6 +25,7 @@
   width: 0;
   position: absolute;
   pointer-events: none;
+  z-index: -1
 }
 
 .overlaytip:after {
@@ -31,6 +33,7 @@
   border-bottom-color: #fff;
   border-width: 25px;
   margin-left: -25px;
+  z-index: -1
 }
 
 .overlaytip:before {
@@ -38,6 +41,7 @@
   border-bottom-color: #666;
   border-width: 28px;
   margin-left: -28px;
+  z-index: -1
 }
 
 .no-overlays-tip {
