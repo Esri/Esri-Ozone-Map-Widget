@@ -84,6 +84,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * Subscribes to the view channel and registers a handler to be called when messages are published to it.
          *
          * @param {module:cmwapi/map/status/Request~Handler} handler An event handler for any request messages.
+         * @return {module:cmwapi/map/status/Request~Handler} The original event handler wrapped in CMWAPI payload validation code.
+         *     Where appropriate default values for missing payload attributes are filled in and
+         *     invalid payloads are noted on the Error channel prior to execution of the
+         *     the input handler.  Invalid payloads will short-circuit execution of the provided handler.
          * @todo Since single item (types), working to leave it as JSON &#123;types: []&#125;.<br />
          */
         addHandler: function(handler) {
