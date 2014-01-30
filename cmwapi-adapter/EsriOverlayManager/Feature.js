@@ -692,6 +692,15 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                     } else {
                         name = (name ? name : feature.name);
 
+                        var oldId = feature.esriObject.id;
+                        feature.esriObject.id = newOverlayId + " - " + featureId;
+
+                        if(typeof(feature.esriObject.getLayers === 'function')) {
+                            emitKmlUpdate(overlayId, newOverlayId, feature.esriObject);
+                        } else {
+                            map.emit('layerUpdated', {old_id: oldId, layer: feature.esriObject});
+                        }
+
                         var newFeature = new Feature(newOverlayId, featureId, name, feature.format, feature.feature, feature.zoom, feature.esriObject);
                         manager.overlays[newOverlayId].features[featureId] = newFeature;
                         delete manager.overlays[overlayId].features[featureId];
@@ -705,6 +714,21 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 manager.treeChanged();
             }
         };
+
+        var emitKmlUpdate = function(oldId, newId, layer) {
+            var layers = layer.getLayers();
+            for(var i = 0; i < layers.length; i++) {
+                if(typeof(layers[i].getLayers) === 'function') {
+                    emitKmlUpdate(layers[i]);
+                } else {
+                    var oldSublayerId = layers[i].id;
+                    var newFullId = newId + oldSublayerId.slice(oldId.length);
+                    layers[i].id = newFullId;
+                    layers[i]._titleForLegend = newFullId;
+                    map.emit('layerUpdated', {old_id: oldSublayerId, layer: layers[i]});
+                }
+            }
+        }
 
     };
 

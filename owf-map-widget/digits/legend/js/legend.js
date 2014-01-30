@@ -45,6 +45,29 @@ define(["esri/dijit/Legend"], function(esriLegend) {
             }
         });
 
+        map.on('layer-remove', function(layer) {
+            for(var i = 0; i < layers.length; i++) {
+                if(layers[i].name === layer.layer.id) {
+                    layers.splice(i, 1);
+                    legend.refresh(layers);
+                    return;
+                }
+            }
+        });
+
+        map.on('layerUpdated', function(data) {
+            for(var i = 0; i < layers.length; i++) {
+                console.debug(data.old_id);
+                console.debug(layers[i])
+                if(layers[i].name === data.old_id) {
+                    layers[i] = {name: data.layer.id, layer: data.layer}
+                    console.debug(layers[i]);
+                    legend.refresh(layers);
+                    return;
+                }
+            }
+        });
+
         var legendWidth = 250;
         var legendDividerWidth = 3;
         me.handleLegendPopOut = function() {

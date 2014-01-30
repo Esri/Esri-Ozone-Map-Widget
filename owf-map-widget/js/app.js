@@ -97,7 +97,7 @@ require([
             // Base installation - applying with a JSP available in this app.
             //  However, other options (ASP.NET, PHP) exist
             // TODO: Need means of configuring for the overall application...  Also, dealing with authentication
-            esri.config.defaults.io.proxyUrl = "proxy.jsp";
+            esri.config.defaults.io.proxyUrl = "/owf/proxy.jsp";
 
             OWF.notifyWidgetReady();
             var overlayManager = new OverlayManager(map, errorNotifier, infoNotifier);
