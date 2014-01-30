@@ -219,3 +219,6 @@ img {
     position: relative;
     bottom: 40px;
 }
+.esriControlsBR{
+  visibility: hidden;
+}

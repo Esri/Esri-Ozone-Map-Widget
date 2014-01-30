@@ -184,8 +184,13 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         var plotKmlFeatureUrl = function(caller, overlayId, featureId, name, url, zoom) {
+            // TODO: Work with Esri to see if this is necessary.  KMLLayer seems to unencode
+            // URLs before passing them to a server-based parser.  This will break if the
+            // URL includes spaces and other characters that need to be encode.  To avoid this,
+            // We encode it before sending it to the layer constructor.  Technically, this could
+            // send along a double-encoded url string, but that seems to be required.
             var id = overlayId + " - " + featureId;
-            var layer = new KMLLayer(url, {id: id});
+            var layer = new KMLLayer(encodeURI(url), {id: id});
 
             map.addLayer(layer);
 
