@@ -6,9 +6,12 @@ define(["esri/dijit/Legend"], function(esriLegend) {
         var layers = [];
         var legend;
 
-        map.on('load', function() {
-            handleLayout();
-        });
+         map.on('load', function() {
+            $(window).resize(function() {
+                handleLayout();
+            });
+         });
+
 
         map.on("layer-add-result", function (evt) {
             if(evt.layer.declaredClass === "esri.layers.ArcGISTiledMapServiceLayer") {
