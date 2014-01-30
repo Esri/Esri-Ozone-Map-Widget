@@ -1,0 +1,72 @@
+.esri_info_div {
+    height: 100%;
+    width: 0px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    float: left;
+}
+
+#legend {
+    height:100%;
+    width:0;
+    margin:0;
+    padding:0;
+    border:0;
+    position: absolute;
+    left: 0px;
+    background-color: #FFF;
+    overflow:auto;
+    overflow-x: hidden;
+}
+
+.esriLegendLayer tbody tr {
+    height: 34px;
+}
+
+#legend_holder_div {
+    /*height: 100%;*/
+    width:0;
+    padding: 10px;
+    margin: 0px;
+}
+
+.legend_vertical_divider {
+    height: 100%;
+    width: 0px;
+    margin: 0;
+    padding: 0;
+    border:0;
+    position:absolute;
+    left: 0px;
+    cursor: col-resize;
+    background-color: #000;
+}
+
+#legend_button {
+    margin-right: 5px;
+    width: 30px;
+    height: 30px;
+    background-image: url("../images/icons/Legend_Default.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    border: 1.5px solid #928F8F;
+    display: inline-block;
+    z-index:3;
+}
+#legend_button:hover{
+    background-image: url("../images/icons/Legend_Hover.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+#legend_button.selected{
+    background-image: url("../images/icons/Legend_Selected.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+#legend_title {
+    font-size: 18px;
+    margin: 20px 10px 0px;
+}

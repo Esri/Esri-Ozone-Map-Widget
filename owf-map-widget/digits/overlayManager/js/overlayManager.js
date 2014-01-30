@@ -16,10 +16,9 @@
  * limitations under the License.
  *
  */
-define(["cmwapi-adapter/cmwapi-adapter",],
-       function(cmwapiAdapter) {
-        var adapter;
-        var infoNotifier;
+define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
+    var adapter;
+    var infoNotifier;
     var OverlayManager =  function(map, errorNotifier, notifier) {
         infoNotifier = notifier;
         this.adapter = adapter = new cmwapiAdapter(map, errorNotifier, notifier);

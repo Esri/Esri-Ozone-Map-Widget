@@ -11,25 +11,27 @@
         <script src="vendor/js/jquery.min.js"></script>
         <script src="vendor/js/bootstrap.min.js"></script>
         <script src="vendor/js/tree.jquery.js"></script>
-        
+
         <!-- Load non-AMD libs before dojo to avoid timing problems -->
         <link href="vendor/css/dragAndDrop.css" rel="stylesheet">
         <link href="vendor/css/bootstrap.min.css" rel="stylesheet">
         <link href="vendor/css/jqtree.css" rel="stylesheet">
         <link href="digits/overlayManager/css/overlayManager.css" rel="stylesheet">
+        <link href="digits/legend/css/legend.css" rel="stylesheet">
+
 
     </head>
 <body>
 
-        <div id="legend">
-            <p id="legend_title"><b>Legend</b></p>
-            <div id="legend_holder_div"></div>
-        </div>
-        <div class="legend_vertical_divider"></div>
+    <div id="legend">
+        <p id="legend_title"><b>Legend</b></p>
+        <div id="legend_holder_div"></div>
+    </div>
+    <div class="legend_vertical_divider"></div>
 
     <div id="map"></div>
     <div id="map-controls">
-        <div id="data_div_button"></div>
+        <!--div id="data_div_button"></div-->
         <div id="legend_button" rel="tooltip" title="Legend"></div>
         <div id="overlay" rel="tooltip" title="Overlay Manager"></div>
         <div id="basemaps" rel="tooltip" title="Base Maps"></div>
@@ -39,8 +41,8 @@
         <div id="popover_overlay_wrapper" class='overlaytip'></div>
     </div>
 
-    <div class="esri_bottom_data_div"></div>
-    <div class="esri_bottom_horizontal_divider"></div>
+    <!--div class="esri_bottom_data_div"></div-->
+    <!--div class="esri_bottom_horizontal_divider"></div-->
 
 <span id="loading"></span>
 <script>
@@ -55,6 +57,7 @@
     addCss(window.esriJsPath + "js/dojo/dijit/themes/claro/claro.css");
     addCss("css/map.css");
     addCss("digits/basemapGallery/css/basemapGallery.css");
+
 
     // Add OWF widget API
     addScript(window.owfJsPath + "owf-widget-" + ((window.isDebug) ? ("debug") : ("min")) + ".js");

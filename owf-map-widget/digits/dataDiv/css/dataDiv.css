@@ -1,0 +1,44 @@
+.esri_bottom_data_div {
+    width: 100%;
+    height: 0px;
+    margin:0;
+    padding:0;
+    bottom: 0px;
+    position: absolute;
+    background-color: #FFF;
+}
+
+.esri_bottom_horizontal_divider {
+    height: 0px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border:0;
+    position:absolute;
+    left: 0px;
+    cursor: row-resize;
+    background-color: #000;
+}
+
+#data_div_button {
+    margin-right: 5px;
+    width: 30px;
+    height: 30px;
+    background-image: url("../images/icons/BaseMaps_Default.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 1.5px solid #928F8F;
+    border-radius: 5px;
+    display: inline-block;
+    z-index:3;
+}
+#data_div_button:hover{
+    background-image: url("../images/icons/BaseMaps_Hover.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+#data_div_button.selected{
+    background-image: url("../images/icons/BaseMaps_Selected.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+}
