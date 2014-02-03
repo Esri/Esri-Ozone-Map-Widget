@@ -28,6 +28,8 @@ img {
   font-weight: normal;
   text-align: left;
   vertical-align: center;
+  margin-left: 0px;
+
 }
 
 .help-block {
@@ -48,6 +50,8 @@ img {
 #form-container {
   display: block;
   width: 100%;
+  padding-left: 15px;
+
 }
 
 #cloud-cover-slider {
@@ -74,7 +78,7 @@ img {
   font-style: bold;
   background-color: #428bca;
   color: white;
-  padding-left: 26px;
+  padding-left: 0px;
   padding-top: 5px;
   height: 30px;
 }
@@ -87,7 +91,7 @@ img {
 
 #widget-title {
   font-size: 18px;
-  margin: 10px 20px 10px;
+  margin-bottom: 10px;
 }
 
 #loading {
@@ -115,7 +119,7 @@ img {
 #query-btn {
   float: right;
   margin-top: 10px;
-  margin-right: 10px;
+  margin-right: 55px;
   margin-bottom: 10px;
 }
 
