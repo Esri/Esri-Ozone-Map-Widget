@@ -28,7 +28,6 @@ img {
   font-weight: normal;
   text-align: left;
   vertical-align: center;
-  margin-left: 0px;
 
 }
 
@@ -50,7 +49,6 @@ img {
 #form-container {
   display: block;
   width: 100%;
-  padding-left: 15px;
 
 }
 
@@ -75,12 +73,15 @@ img {
 }
 
 #query-form-title {
-  font-style: bold;
   background-color: #428bca;
   color: white;
   padding-left: 0px;
   padding-top: 5px;
   height: 30px;
+}
+
+#query-form-title span {
+  font-style: bold;
 }
 
 #query-hr {
@@ -91,7 +92,7 @@ img {
 
 #widget-title {
   font-size: 18px;
-  margin-bottom: 10px;
+  margin-bottom: 10px 20px 10px;
 }
 
 #loading {
@@ -119,7 +120,7 @@ img {
 #query-btn {
   float: right;
   margin-top: 10px;
-  margin-right: 55px;
+  margin-right: 10px;
   margin-bottom: 10px;
 }
 
