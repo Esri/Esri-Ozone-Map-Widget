@@ -8,55 +8,98 @@
 
         <!-- MUST include dojo configuration before other js and css -->
         <script src="js/dojoConfig.js"></script>
+        <!-- Load non-AMD libs before dojo to avoid timing problems -->
+        <link href="vendor/css/bootstrap.min.css" rel="stylesheet">
+<!--         <link rel="stylesheet" href="http://js.arcgis.com/3.8/js/dojo/dijit/themes/claro/claro.css"> -->
 
     </head>
 <body class="claro">
-    <p id="widget-title">Image Collection Query</p>
+    <div class="form-group">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-6">
+            <p id="widget-title">Image Collection Query</p>
+        </div>
+        <div class="col-xs-5"></div>
+    </div>
 
-    <p id="query-form-title"><b>Enter Search Parameters Below</b></p>
+    <br/>
+    <br/>
+
+    <div  id="query-form-title">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-6">
+            <p id=""><b>Enter Search Parameters Below</b></p>
+        </div>
+        <div class="col-xs-5"></div>
+    </div>
+
     <div id="form-container">
     <div id="image-collection-query-form-div">  
         <form id="query-form" data-dojo-type="dojox.form.Manager" data-dojo-id="queryForm" class="form-horizontal" role="form">
+
             <div class="form-group">
-                <label for="query-namee" class="col-xs-offset-1 col-xs-2 control-label">Name</label>
-                <div class="col-xs-8">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-3">
+                    <label for="query-namee" class="control-label">Query Name</label>
+                </div>
+                <div class="col-xs-7">
                     <input type="text" data-dojo-type="dijit.form.TextBox" data-dojo-id="queryName" class="form-control default input-sm" id="query-name" placeholder="Name this search">
                 </div>
+                <div class="col-xs-1"></div>
             </div>
-            <!-- <div class="form-group">
-                <label for="collection-url" class="col-xs-offset-1 col-xs-2 control-label">URL</label>
-                <div class="col-xs-8">
-                    <input type="text" class="form-control default input-sm" id="collection-url" data-dojo-type="dijit.form.TextBox" data-dojo-id="serverUrl" placeholder="http://wdcintelgis.esri.com/arcgis/rest/services/Iran/ImageCollectionCoverage/MapServer/2">
-                    <span class="help-block">Please enter a valid URL.</span>
-                </div>
-            </div> -->
+
             <div class="form-group">
-                <label for="start-time" class="col-xs-offset-1 col-xs-2 control-label">Start</label>
-                <div class="col-xs-8">
-                    <input type="text" name="start-time" id="start-time" value="2013-07-01" data-dojo-type="dijit/form/DateTextBox" data-dojo-id="startTime" required="true" class="form-control default input-sm  dropdown-toggle"/>
+                <div class="col-xs-1"></div>
+                <div class="col-xs-3">
+                    <label for="collection-url" class="control-label">URL</label>
                 </div>
+                <div class="col-xs-7">
+                    <input type="text" class="form-control default input-sm" id="collection-url" placeholder="http://wdcintelgis.esri.com/arcgis/rest/services/Iran/ImageCollectionCoverage/MapServer/2">
+                     <span class="help-block">Please enter a valid URL.</span>
+                </div>
+                <div class="col-xs-1"></div>
             </div>
+
             <div class="form-group">
-                <label for="end-time" class="col-xs-offset-1 col-xs-2 control-label">End</label>
-                <div class="col-xs-8">
-                    <input type="text" name="end-time" id="end-time" value="2013-08-31" data-dojo-type="dijit/form/DateTextBox" data-dojo-id="endTime" required="true"  class="form-control default input-sm"/>
+                <div class="col-xs-1"></div>
+                <div class="col-xs-3">
+                    <label for="start-time" class="control-label">Start Time</label>
                 </div>
+                <div class="col-xs-7">
+                    <input type="text" name="start-time" id="start-time" value="2013-07-01" data-dojo-type="dijit/form/DateTextBox" data-dojo-id="startTime" required="true" />
+                </div>
+                <div class-"col-xs-1"></div>
             </div>
+
             <div class="form-group">
-                <label for="cloud-cover" class="col-xs-offset-1 col-xs-2 control-label">Cloud&nbsp;%</label>
-                <div class="col-xs-8">
-                    <input type="text" class="form-control default input-sm" data-dojo-type="dijit.form.TextBox" data-dojo-id="cloudCover" id="cloud-cover" placeholder="Enter maximum cloud cover (0-100)">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-3">
+                    <label for="end-time" class="control-label">End Time</label>
+                </div>
+                <div class="col-xs-7">
+                    <input type="text" name="end-time" id="end-time" value="2013-08-31" data-dojo-type="dijit/form/DateTextBox" data-dojo-id="endTime" required="true" />
+                </div>
+                <div class="col-xs-1"></div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-3">
+                    <label for="cloud-cover" class="control-label">Percent Cloud Cover</label>
+                </div>
+                <div class="col-xs-7">
+                    <input type="text" class="form-control default input-sm" id="cloud-cover" placeholder="0">
                     <span class="help-block">Mamimum allowed cloud cover as a percent from 0 - 100.</span>
                 </div>
+                <div class="col-xs-1"></div>
             </div>
+
         </form>
     </div>
     </div>
-    <div id="msg-area" class="alert invisible">
-        <button type="button" class="close" id="msg-btn" data-dismiss="alert" aria-invisible="true">&times;</button>
-        <span id="msg"></span>
-    </div>
-    <div id="query-btn-bar"><div id="query-hr"></div><button id="query-btn" class="btn btn-large btn-primary" type="submit">Plot</button></div>
+
+    <div id="query-btn-bar"><div id="query-hr"></div><button id="query-btn" class="btn btn-large btn-primary" type="submit">Query</button></div>
+    <div id="msg-area"></div>
 <span id="loading"></span>
 <script>
     function addCss(src) {
