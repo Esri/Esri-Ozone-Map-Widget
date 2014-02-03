@@ -23,13 +23,11 @@
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require([
     "esri/map", "digits/overlayManager/js/overlayManager", "digits/legend/js/legend",
-    "esri/dijit/BasemapGallery", "esri/dijit/Scalebar", "esri/dijit/Geocoder", "dojo/_base/array",
+    "digits/basemapGallery/js/basemapGallery", "esri/dijit/Scalebar", "esri/dijit/Geocoder", "dojo/_base/array",
     "dojo/parser", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
     function(Map, OverlayManager, Legend, BasemapGallery, Scalebar, Geocoder, arrayUtils, parser) {
 
     var map = new Map("map", {
-        center: [-76.809469, 39.168101],
-        zoom: 7,
         basemap: "streets"
     });
     parser.parse();
