@@ -14,19 +14,13 @@ define(["esri/dijit/Legend"], function(esriLegend) {
             if(evt.layer.declaredClass === "esri.layers.ArcGISTiledMapServiceLayer") {
                 //basemap
                 //noop
-            } else if(evt.layer.declaredClass !== "esri.layers.KMLLayer"){/* ||
-                evt.layer.declaredClass === "esri.layers.WMSLayer"){*/
-
+            } else if(evt.layer.declaredClass !== "esri.layers.KMLLayer"){
                 evt.layer._titleForLegend = evt.layer.id;
                 var layerInfo = {layer:evt.layer, name:evt.layer.id};
                 layers.push(layerInfo);
 
                 if (layers.length > 0) {
-                    /*var legendDijit = new Legend({
-                        map: map,
-                        layerInfos: layers
-                    }, "legend_holder_div");*/
-                    //legendDijit.startup();
+
 
                     if(legend) {
                         legend.refresh(layers);
@@ -41,7 +35,8 @@ define(["esri/dijit/Legend"], function(esriLegend) {
                     }
                 }
             } else {
-                //kml layer.... dont display this as it has sublayers which will display making this a duplicate
+                //kml layer....
+                //dont display this as it has sublayers which will display making this a duplicate
             }
         });
 
@@ -57,11 +52,8 @@ define(["esri/dijit/Legend"], function(esriLegend) {
 
         map.on('layerUpdated', function(data) {
             for(var i = 0; i < layers.length; i++) {
-                console.debug(data.old_id);
-                console.debug(layers[i])
                 if(layers[i].name === data.old_id) {
                     layers[i] = {name: data.layer.id, layer: data.layer}
-                    console.debug(layers[i]);
                     legend.refresh(layers);
                     return;
                 }
@@ -127,8 +119,6 @@ define(["esri/dijit/Legend"], function(esriLegend) {
                 $(".legend_vertical_divider").width(0);
             }
         };
-
-
 
         var setMapWidth = function(width) {
             $('#map').width(width);

@@ -275,7 +275,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                 layerInfos = [new WMSLayerInfo({name: params.layers, title: params.layers})];
             }
 
-            /** id controls legend display **/
+            /* id controls legend display -- must be unique */
             var id = overlayId + " - " + featureId;
             var details = {id: id, extent: map.geographicExtent, layerInfos: layerInfos};
             var layer = new WMSLayer(url, details);
@@ -693,9 +693,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                         name = (name ? name : feature.name);
 
                         var oldId = feature.esriObject.id;
-                        feature.esriObject.id = newOverlayId + " - " + featureId;
+                        var newIdString = newOverlayId + " - " + featureId;
+                        feature.esriObject.id = newIdString;
+                        feature.esriObject._titleForLegend = newIdString;
 
-                        if(typeof(feature.esriObject.getLayers === 'function')) {
+
+                        if(typeof(feature.esriObject.getLayers) === 'function') {
                             emitKmlUpdate(overlayId, newOverlayId, feature.esriObject);
                         } else {
                             map.emit('layerUpdated', {old_id: oldId, layer: feature.esriObject});

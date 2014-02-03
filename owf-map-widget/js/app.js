@@ -60,8 +60,8 @@ require([
                 "font-weight": "bold",
                 "padding": "8px 15px 8px 14px",
                 "text-shadow": "0 1px 0 rgba(255, 255, 255, 0.5)",
-                "background-color": "rgb(204, 204, 204)",  // icon's grey
-                // background-color: "rgb(104, 104, 104)",  // icon background's grey
+                "background-color": "rgb(204, 204, 204)",  // icon's gray
+                // background-color: "rgb(104, 104, 104)",  // icon background's gray
                 "border": "1px solid #fbeed5",
                 "border-radius": "4px",
                 "white-space": "normal",
