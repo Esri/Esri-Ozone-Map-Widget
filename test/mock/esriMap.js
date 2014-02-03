@@ -42,6 +42,8 @@ define(function() {
         this.removeLayer = function(){};
 
         this.setExtent = function(){};
+
+        this.emit = function() {};
     };
 
     return Map;

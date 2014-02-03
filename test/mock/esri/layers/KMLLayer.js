@@ -5,7 +5,8 @@ define(function() {
                 fullExtent: {
                     name: "mockExtent",
                     getCenter: function(){}
-                }
+                },
+                id: "mockObject - ID"
             }];
         };
 
