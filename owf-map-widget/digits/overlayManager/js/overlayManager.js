@@ -35,7 +35,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
                 onCreateLi: function(node, $li) {
                     node['node-type'] = node.type;
                     var basePath = './digits/overlayManager/images/icons/';
-                    var image = node.type === 'feature' ? basePath + 'kml_icon.gif': basePath + 'Tree_Folder.png';
+                    var image = node.type === 'feature' ? basePath + 'KML.png': basePath + 'Tree_Folder.png';
                     var inputString = '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type;
                     var checked = node.isHidden === false ? (inputString + '" checked="checked"/>') : (inputString + '"/>');
                     $li.find('.jqtree-title').before(
