@@ -34,8 +34,28 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
                 autoOpen: true,
                 onCreateLi: function(node, $li) {
                     node['node-type'] = node.type;
+                    var imageIcon = 'KML.png';
+                    switch(node.format)
+                    {
+                        case "kml-url":
+                            imageIcon = 'KML.png';
+                            break;
+                        case "wms-url":
+                            imageIcon = 'WMS.png';
+                            break;
+                        case "arcgis-feature":
+                            imageIcon = 'Feat.png';
+                            break;
+                        case "arcgis-dynamicmapservice":
+                            imageIcon = 'DMS.png';
+                            break;
+                        case "arcgis-imageservice":
+                            imageIcon = 'ISL.png';
+                            break;
+                    }
+
                     var basePath = './digits/overlayManager/images/icons/';
-                    var image = node.type === 'feature' ? basePath + 'KML.png': basePath + 'Tree_Folder.png';
+                    var image = node.type === 'feature' ? basePath + imageIcon: basePath + 'Tree_Folder.png';
                     var inputString = '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type;
                     var checked = node.isHidden === false ? (inputString + '" checked="checked"/>') : (inputString + '"/>');
                     $li.find('.jqtree-title').before(
