@@ -34,9 +34,28 @@ img {
   display: none;
 }
 
+.dijitSliderBarH {
+  height: 8px;
+  border-width: 1px 0;
+}
+
+.dijitSliderBumperH {
+  width: 8px;
+  height: 8px;
+  border-width: 1px 0;
+}
+
 #form-container {
   display: block;
   width: 100%;
+}
+
+#cloud-cover-slider {
+  height: 20px;
+}
+
+#cloud-cover {
+
 }
 
 #image-collection-query-form-div {
@@ -61,7 +80,7 @@ img {
 }
 
 #query-hr {
-  margin-top: 10px;
+  margin-top: 5px;
   width: 100%;
   border: 1px solid #666;
 }

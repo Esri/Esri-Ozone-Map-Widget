@@ -45,8 +45,11 @@
             <div class="form-group">
                 <label for="cloud-cover" class="col-xs-offset-1 col-xs-2 control-label">Cloud&nbsp;%</label>
                 <div class="col-xs-8">
-                    <input type="text" class="form-control default input-sm" data-dojo-type="dijit.form.TextBox" data-dojo-id="cloudCover" id="cloud-cover" placeholder="Enter maximum cloud cover (0-100)">
+                    <div id="cloud-cover-slider">
+                    </div>
+                    <input type="text" id="cloud-cover" data-dojo-type="dijit/form/TextBox" data-dojo-id="cloudCover" value="25" class="form-control default input-sm"/>
                     <span class="help-block">Mamimum allowed cloud cover as a percent from 0 - 100.</span>
+                </div>
                 </div>
             </div>
         </form>
