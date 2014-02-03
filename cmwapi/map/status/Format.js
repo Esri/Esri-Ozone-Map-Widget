@@ -95,6 +95,10 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
          * are published to it.
          *
          * @param {module:cmwapi/map/status/Format~Handler} handler An event handler for any format messages.
+         * @return {module:cmwapi/map/status/Format~Handler} The original event handler wrapped in CMWAPI payload validation code.
+         *     Where appropriate default values for missing payload attributes are filled in and
+         *     invalid payloads are noted on the Error channel prior to execution of the
+         *     the input handler.  Invalid payloads will short-circuit execution of the provided handler.
          */
         addHandler: function(handler) {
 

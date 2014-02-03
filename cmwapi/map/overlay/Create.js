@@ -86,7 +86,10 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
          * are published to it.
          *
          * @param {module:cmwapi/map/overlay/Create~Handler} handler An event handler for any creation messages.
-         *
+         * @return {module:cmwapi/map/overlay/Create~Handler} The original event handler wrapped in CMWAPI payload validation code.
+         *     Where appropriate default values for missing payload attributes are filled in and
+         *     invalid payloads are noted on the Error channel prior to execution of the
+         *     the input handler.  Invalid payloads will short-circuit execution of the provided handler.
          */
         addHandler: function(handler) {
 

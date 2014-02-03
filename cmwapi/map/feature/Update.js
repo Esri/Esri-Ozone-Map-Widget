@@ -96,7 +96,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * registers a handler to be called when messages are published to it.
          *
          * @param {module:cmwapi/map/feature/Update~Handler} handler An event handler for any creation messages.
-         *
+         * @return {module:cmwapi/map/feature/Update~Handler} The original event handler wrapped in CMWAPI payload validation code.
+         *     Where appropriate default values for missing payload attributes are filled in and
+         *     invalid payloads are noted on the Error channel prior to execution of the
+         *     the input handler.  Invalid payloads will short-circuit execution of the provided handler.
          */
         addHandler : function (handler) {
 
