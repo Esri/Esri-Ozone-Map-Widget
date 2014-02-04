@@ -140,13 +140,15 @@ require(["dojo/request/script", "dojo/json",
 
             featureId = (featureId && featureId.toString().replace(/^\s+|\s+$/g, '').length > 0) ? featureId : DEFAULT_NAME;
 
+            var zoomTo = query("#zoom-to").attr("checked")[0];
+
             var payload = {
                 overlayId: OWF.getInstanceId(),
                 featureId: featureId,
                 name: featureId,
                 format: "kml",
                 url: requestUrl,
-                zoom: true
+                zoom: zoomTo
             };
 
 

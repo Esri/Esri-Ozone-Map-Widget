@@ -94,7 +94,8 @@ img {
 
 #widget-title {
   font-size: 18px;
-  margin-bottom: 10px 20px 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 #loading {
@@ -121,6 +122,7 @@ img {
 
 #query-btn {
   float: right;
+  width: 100px;
   margin-top: 10px;
   margin-right: 10px;
   margin-bottom: 10px;
@@ -136,4 +138,9 @@ img {
   background-image: url("../images/icons/Remove_Overlay_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+#zoom-to {
+  width: 20px;
+  height: 20px;
 }
