@@ -92,7 +92,8 @@ img {
 
 #widget-title {
   font-size: 18px;
-  margin-bottom: 10px 20px 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 #loading {
@@ -119,6 +120,7 @@ img {
 
 #query-btn {
   float: right;
+  width: 100px;
   margin-top: 10px;
   margin-right: 10px;
   margin-bottom: 10px;
@@ -137,6 +139,6 @@ img {
 }
 
 #zoom-to {
-  width: 30px;
-  
+  width: 20px;
+  height: 20px;
 }
