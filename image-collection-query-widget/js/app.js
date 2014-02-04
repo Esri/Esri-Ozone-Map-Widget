@@ -116,7 +116,7 @@ require(["dojo/request/script", "dojo/json",
             discreteValues: 101,
             intermediateChanges: true,
             showButtons: false,
-            //style: "width:300px;",
+            style: "col-xs-8 pull-left", //full form width
             onChange: function(value){
                 cloudCover.set("value", value);
             }
