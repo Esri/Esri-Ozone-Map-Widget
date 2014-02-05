@@ -109,6 +109,7 @@ img {
 
 #query-btn-bar {
   display: block;
+  margin-right: 0px;
 }
 
 #query-btn-bar2 {
@@ -121,10 +122,9 @@ img {
 }
 
 #query-btn {
-  float: right;
+  /*float: right;*/
   width: 100px;
   margin-top: 10px;
-  margin-right: 10px;
   margin-bottom: 10px;
 }
 
