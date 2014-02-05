@@ -128,6 +128,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
                     type: 'feature',
                     id: feature.featureId,
                     name: feature.name,
+                    format: feature.format,
                     zoom: feature.zoom,
                     isHidden: feature.isHidden,
                     esriObject: feature.esriObject

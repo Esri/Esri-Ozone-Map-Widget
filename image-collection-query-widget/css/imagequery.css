@@ -28,15 +28,38 @@ img {
   font-weight: normal;
   text-align: left;
   vertical-align: center;
+
 }
 
 .help-block {
   display: none;
 }
 
+.dijitSliderBarH {
+  height: 8px;
+  border-width: 1px 0;
+}
+
+.dijitSliderBumperH {
+  width: 8px;
+  height: 8px;
+  border-width: 1px 0;
+}
+
 #form-container {
   display: block;
   width: 100%;
+
+}
+
+#cloud-cover-slider {
+  height: 20px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+#cloud-cover {
+
 }
 
 #image-collection-query-form-div {
@@ -52,23 +75,27 @@ img {
 }
 
 #query-form-title {
-  font-style: bold;
   background-color: #428bca;
   color: white;
-  padding-left: 26px;
+  padding-left: 0px;
   padding-top: 5px;
   height: 30px;
 }
 
+#query-form-title span {
+  font-style: bold;
+}
+
 #query-hr {
-  margin-top: 10px;
+  margin-top: 5px;
   width: 100%;
   border: 1px solid #666;
 }
 
 #widget-title {
   font-size: 18px;
-  margin: 10px 20px 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 #loading {
@@ -82,6 +109,7 @@ img {
 
 #query-btn-bar {
   display: block;
+  margin-right: 0px;
 }
 
 #query-btn-bar2 {
@@ -94,9 +122,9 @@ img {
 }
 
 #query-btn {
-  float: right;
+  /*float: right;*/
+  width: 100px;
   margin-top: 10px;
-  margin-right: 10px;
   margin-bottom: 10px;
 }
 
@@ -110,4 +138,9 @@ img {
   background-image: url("../images/icons/Remove_Overlay_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+#zoom-to {
+  width: 20px;
+  height: 20px;
 }

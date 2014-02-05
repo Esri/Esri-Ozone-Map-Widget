@@ -21,10 +21,10 @@
 // (AMD) are included in the webapp's HTML file to prevent issues.
 require(["dojo/request/script", "dojo/json",
     "dojo/query","dojo/io-query", "dojo/parser",
-    "dojox/html/entities", 
+    "dojox/html/entities", "dijit/form/HorizontalSlider",
     "dijit/form/DateTextBox", "cmwapi/cmwapi",
     "dojox/form/Manager", "dojo/dom-style", "dojo/domReady!"],
-    function(script, json, query, ioQuery, parser, Entities, DateTextBox, CMWAPI) {
+    function(script, json, query, ioQuery, parser, Entities, HorizontalSlider, DateTextBox, CMWAPI) {
         parser.parse();
 
         var DEFAULT_SERVER = "http://wdcintelgis.esri.com/arcgis/rest/services/Iran/ImageCollectionCoverage/MapServer/2/query";
@@ -107,10 +107,26 @@ require(["dojo/request/script", "dojo/json",
             query("#msg-area").addClass("invisible");
         };
 
+        // Build the cloud slider
+        var slider = new HorizontalSlider({
+            name: "cloud-cover-slider",
+            value: 25,
+            minimum: 0,
+            maximum: 100,
+            discreteValues: 101,
+            intermediateChanges: true,
+            showButtons: false,
+            style: "col-xs-8 pull-left", //full form width
+            onChange: function(value){
+                cloudCover.set("value", value);
+            }
+        }, "cloud-cover-slider");
+
+        // Clear the message box when the user clicks the message cancel button.
         query("#msg-btn").on("click", function(event) {
             clearQueryMsg();
-        })
-        
+        });
+
         query("#query-btn").on("click", function(event) {
 
             // Create the overlay for results.
@@ -124,13 +140,15 @@ require(["dojo/request/script", "dojo/json",
 
             featureId = (featureId && featureId.toString().replace(/^\s+|\s+$/g, '').length > 0) ? featureId : DEFAULT_NAME;
 
+            var zoomTo = query("#zoom-to").attr("checked")[0];
+
             var payload = {
                 overlayId: OWF.getInstanceId(),
                 featureId: featureId,
                 name: featureId,
                 format: "kml",
                 url: requestUrl,
-                zoom: true
+                zoom: zoomTo
             };
 
 
