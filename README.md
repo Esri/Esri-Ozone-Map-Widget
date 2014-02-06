@@ -6,6 +6,26 @@ This Git Repo provides sample widgets (light-weight web applications) designed f
 
 ## Included Components
 
+#### [ArcGIS OWF Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-map-widget)
+
+A more complex map widget.  This widget includes a few common ArcGIS JavaScript map controls for map view manipulation and allows the plotting of map layers through the CMWAPI.  Additionally, it includes a basic Overlay Manager for displaying and manipulating map Overlays and Features as defined by the CMWAPI.  This widget leverages the CMWAPI 1.1 Specification Implementation and the ArcGIS CMWAPI Adapter modules described below.
+
+#### [ArcGIS OWF Context Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-context-map-widget)
+
+The widget is intended to be used with the ArcGIS OWF Map Widget or another CMWAPI 1.1 compliant widget.  It shows the context of the viewed area in the primary map widget, as compared to a 2-D map of the world.  Clicking in or dragging a bounding box in the context map sends a message to listening maps to center on the click or bounding box location.
+
+#### [ArcGIS Image Collection Query Widget](https://github.com/Esri/Next-Century/tree/master/image-collection-query-widget)
+
+Allows the user to query for image metadata from a a particular feature service RESTful endpoint provided by Esri, within a time interval and cloud coverage percentage.  The endpoint returns KML, which the widget broadcasts via CMWAPI.  Users using CMWAPI-compliant widgets, including the ArcGIS OWF Map Widget, then see the existence and metadata of images of analytical interest, plotted on their map.
+
+#### [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi)
+
+A set of AMD modules that implement the CMWAPI specification and allow any OWF widget to communicate via CMWAPI channels without having to duplicate standard channel management and verification logic.  These modules attempt to provide all map-agnostic CMWAPI constructs and processing for client code.  They abstract the OWF pub/sub mechanism and include default message validation using specification rules. Where appropriate, missing message elements are replaced with default values (e.g., replacing missing overlayId values with the id of the sending widget).  Any errors detected by these modules are published on the map.error channel. 
+
+#### [cmwapi-adapter](https://github.com/Esri/Next-Century/tree/master/cmwapi-adapter)
+
+A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https://developers.arcgis.com/en/javascript/jsapi/map-amd.html) object to interact with OWF widgets via the CMWAPI.  These modules attach a serices of event handlers to the CMWAPI channels that translate CMWAPI messages to appropriate ArcGIS JavaScript calls via the [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi) modules. They represent the ArcGIS specific portion of a full CMWAPI implementation.
+
 #### [Basic Map Widget](https://github.com/Esri/Next-Century/tree/master/basic-map-widget)
 
 A simple map widget using the ESRI [ArcGIS JavaScript API](https://developers.arcgis.com/en/javascript/). It's purpose is to provide a basic demonstration of using ArcGIS maps within OWF widgets.  
@@ -21,18 +41,6 @@ When run within OWF alongside the Contacts Manager widget described below, it in
 
 A modified version of the [Contacts Manager](https://github.com/ozoneplatform/owf/tree/master/web-app/examples/walkthrough/widgets/contacts) example widget that ships with OWF 7. This version uses Intents to allow the user to select which map widget implementation should receive the address when contact entry is clicked. (The original version was hard coded to send the address to a specific map widget.)
 
-#### [ArcGIS OWF Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-map-widget)
-
-A more complex map widget.  This widget includes a few common ArcGIS JavaScript map controls for map view manipulation and allows the plotting of map layers through the CMWAPI.  Additionally, it includes a basic Overlay Manager for displaying and manipulating map Overlays and Features as defined by the CMWAPI.  This widget leverages the CMWAPI 1.1 Specification Implementation and the ArcGIS CMWAPI Adapter modules described below.
-
-#### [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi)
-
-A set of AMD modules that implement the CMWAPI specification and allow any OWF widget to communicate via CMWAPI channels without having to duplicate standard channel management and verification logic.  These modules attempt to provide all map-agnostic CMWAPI constructs and processing for client code.  They abstract the OWF pub/sub mechanism and include default message validation using specification rules. Where appropriate, missing message elements are replaced with default values (e.g., replacing missing overlayId values with the id of the sending widget).  Any errors detected by these modules are published on the map.error channel. 
-
-#### [cmwapi-adapter](https://github.com/Esri/Next-Century/tree/master/cmwapi-adapter)
-
-A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https://developers.arcgis.com/en/javascript/jsapi/map-amd.html) object to interact with OWF widgets via the CMWAPI.  These modules attach a serices of event handlers to the CMWAPI channels that translate CMWAPI messages to appropriate ArcGIS JavaScript calls via the [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi) modules. They represent the ArcGIS specific portion of a full CMWAPI implementation.
-
 ## Requirements
 
 1. OWF 6.0 GA or better.  See the OWF [Get Started](http://www.owfgoss.org/getstarted.html) page, if you are not familiar with the framework.
@@ -43,7 +51,17 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
 
     > NOTE: You may choose to host the widgets on the same server as OWF for convenience. The [OWF download](https://www.owfgoss.org/download.html) features a bundled [Tomcat](http://tomcat.apache.org/) instance.
 
-3. Proxy to provide access to Esri services
+3. Access to Esri services
+    
+    All widgets
+    
+    > _Esri Javascript API_, which itself presumes access to Esri services:   Tested with http://js.arcgis.com/3.7/, and configurable in each widget via the window.esriJsPath in js/dojoConfig.js. 
+
+    Image collection query widget
+
+    >   _Image Collection Coverage service_  is a query to a RESTful endpoint provided by Esri which interacts with a feature service to provide a set of images for Iran.  Its endpoint location is configurable via DEFAULT_SERVER in app.js.  
+
+4. Proxy to provide access to Esri services
 
     > NOTE: Certain Esri services, including those dealing with WMS, require provision of a [proxy](https://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html), which is a server-side code deployment.  Choose and configure the appropriate proxy implementation (ASP.NET, Java, PHP, ...) for your web server.  
 
@@ -63,6 +81,8 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
     * http(s)://_**yourserver**_:_**port**_/esri/owf-map-widget/descriptor.html
     * http(s)://_**yourserver**_:_**port**_/esri/basic-map-widget/descriptor.html
     * http(s)://_**yourserver**_:_**port**_/esri/contacts/descriptor/descriptor.html
+    * http(s)://_**yourserver**_:_**port**_/esri/owf-context-map-widget/descriptor.html
+    * http(s)://_**yourserver**_:_**port**_/esri/image-collection-query-widget/descriptor.html
 
 5. Assign the widgets to the [OWF Users Group](https://github.com/ozoneplatform/owf/wiki/OWF-7-Administrator-Default-Content) or to specific users so they can be opened.
 
