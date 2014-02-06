@@ -189,7 +189,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
     var addOverlayOrFeature = function() {
         var featureName = $('#feature-add-name').val();
         var featureId = $('#feature-add-id').val();
-        var featureUrl = $('#feature-add-url').val();
+        var featureUrl = $('#feature-add-url').val().trim();
         var featureParams = $('#feature-add-params').val();
         var overlayName = $('#overlay-add-name').val();
         var overlayId = $('#overlay-add-id').val();
