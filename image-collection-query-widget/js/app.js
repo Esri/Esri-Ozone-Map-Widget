@@ -169,7 +169,7 @@ require(["dojo/request/script", "dojo/json",
                     setQueryMsg(data.count + " found. Sending to maps.", "alert-success")
                 } 
                 else {
-                    setQueryMsg(data.count + " found. Only first 1000 will be plotted."
+                    setQueryMsg(data.count + " found. Only the first 1000 will be plotted."
                         + "  Please refine your search.",
                         "alert-warning");
                 }
