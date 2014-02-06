@@ -306,6 +306,10 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
           return (/\b(https?|ftp|file):\/\/[\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\-A-Za-z0-9+&@#\/%=~ |‌​]/).test(url);
     };
 
+    /**
+    * Guid generator for randomly generating IDs for overlays and features.
+    * See: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+    **/
     var guidGenerator = function() {
         var S4 = function() {
            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
