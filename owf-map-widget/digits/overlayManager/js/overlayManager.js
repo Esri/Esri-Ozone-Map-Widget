@@ -144,6 +144,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             $('#type-selection').on('change', getTypeSelection);
             $('form').find('.form-control.default').keyup(removeSucessFromURL);
             $('#feature-add-url').keyup(validateURLInput);
+            $('#feature-add-params').keyup(validateParamsInput);
         });
     };
 
@@ -265,14 +266,40 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         if(!isValidUrl($(this).val())) {
             $(this).parent().removeClass('has-success');
             $(this).parent().addClass('has-error');
-            $('.help-block').show();
+            $('#help-block-url').show();
         } else {
             $(this).parent().removeClass('has-error');
             $(this).parent().addClass('has-success');
             $(this).removeClass('has-error');
-            $('.help-block').hide();
+            $('#help-block-url').hide();
         }
         changeAddScrollState();
+    };//{outFields: ["approxacre","objectid","field_name","activeprod","cumm_oil","cumm_gas","avgdepth"]}
+
+    var validateParamsInput = function() {
+        if(!isValidParams($(this).val())) {
+            $(this).parent().removeClass('has-success');
+            $(this).parent().addClass('has-error');
+            $('#help-block-params').show();
+        } else {
+            $(this).parent().removeClass('has-error');
+            $(this).parent().addClass('has-success');
+            $(this).removeClass('has-error');
+            $('#help-block-params').hide();
+        }
+        changeAddScrollState();
+    };
+
+    var isValidParams = function(params) {
+        if(params) {
+            try {
+                var obj = OWF.Util.parseJson(params);
+                return true
+            } catch(e) {
+                return false;
+            }
+        }
+        return true;
     };
 
     var isValidUrl = function(url){
