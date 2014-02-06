@@ -110,7 +110,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "cmwapi-adapter/
          * @memberof module:cmwapi-adapter/Status#
          */
         me.sendFormat = function() {
-            var formats = ["kml"/*, "geojson", "wms"*/];
+            var formats = ["kml", "wms", "arcgis-dynamicmapservice", "arcgis-imageservice",  "arcgis-feature"];
 
             CommonMapApi.status.format.send({formats: formats});
         };
