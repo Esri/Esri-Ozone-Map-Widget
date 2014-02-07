@@ -1,17 +1,15 @@
-#popover_content_wrapper {
+.basemaptip {
   display:none;
   background: #fff;
-  width: 376px;
+  width: 385px;
   top: 60px;
   right:65px;
   border:2px solid #666;
-}
-.basemaptip {
   position: absolute;
-  background: #fff;
   border: 2px solid #666;
   border-radius: 8px;
-  z-index: -1
+  z-index: -1;
+  
 }
 .basemaptip:after, .basemaptip:before {
   bottom: 100%;
@@ -38,13 +36,23 @@
   margin-left: -28px;
   z-index: -1
 }
+
+.esriBasemapGallery {
+  width: 100%; 
+}
+
 .esriBasemapGalleryNode {
-  padding:5px;
-  padding-top: 10px;
+  height: 120px;
+  width : 100px;
+  float: left;
+  padding: 0px;
+  margin: 0px;
+  margin-left: 20px;
+  margin-top: 20px; 
 }
 .esriBasemapGallerySelectedNode .esriBasemapGalleryThumbnail{
   border-color: #2BA2CD !important;
-  margin-bottom: 2px;
+  border-width: 3px;
 }
 .esriBasemapGalleryLabelContainer {
   height: 3em;

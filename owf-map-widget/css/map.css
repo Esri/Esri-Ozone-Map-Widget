@@ -22,7 +22,7 @@ html, body {
     background-repeat: no-repeat;
     border-radius: 5px;
     border: 1.5px solid #928F8F;
-    display: inline-block;
+     float: left;
     z-index:3;
 }
 #legend_button:hover{
@@ -38,7 +38,7 @@ html, body {
 
 #search {
     padding-right: 5px;
-    display: inline-block;
+    float: left;
 }
 #overlay {
     margin-right: 5px;
@@ -49,7 +49,7 @@ html, body {
     background-repeat: no-repeat;
     border-radius: 5px;
     border: 1.5px solid #928F8F;
-    display: inline-block;
+    float: left;
     z-index:3;
 }
 #overlay:hover{
@@ -76,7 +76,7 @@ html, body {
     background-repeat: no-repeat;
     border: 1.5px solid #928F8F;
     border-radius: 5px;
-    display: inline-block;
+    float: left;
     z-index:3;
 }
 #basemaps:hover{
@@ -94,7 +94,8 @@ html, body {
     top: 20px;
     z-index: 2;
     right: 20px;
-    display: inline-block;
+    float: left;
+    width: 350px;
 }
 .esriAttribution {
     visibility: hidden;
