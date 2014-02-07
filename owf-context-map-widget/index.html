@@ -28,7 +28,6 @@
                 document.writeln('<script src="' + src + '"><\/script>');
             }
 
-            addCss(window.esriJsPath + "js/dojo/dijit/themes/claro/claro.css");
             addCss(window.esriJsPath + "js/esri/css/esri.css");
 
             // Add OWF widget API
@@ -37,12 +36,10 @@
 
             // Add ESRI JS API, which starts dojo AMD loader
             addScript(window.esriJsPath + "init.js");
-            //addScript(window.esriJsPath + "js/dojo/dojo/dojo.js");
 
             // Trigger app entry point
             addScript("js/app.js");
         </script>
         <div id="mapDiv"></div>
-        <div id="legendDiv"></div>
     </body>
 </html>

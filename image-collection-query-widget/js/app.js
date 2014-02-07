@@ -28,7 +28,7 @@ require(["dojo/request/script", "dojo/json",
         parser.parse();
 
         var DEFAULT_SERVER = "http://wdcintelgis.esri.com/arcgis/rest/services/Iran/ImageCollectionCoverage/MapServer/2/query";
-        var DEFAULT_CLOUD = 0;
+        var DEFAULT_CLOUD = 25;
         var DEFAULT_NAME = "Image Query";
         var DEFAULT_PARAMS = "?f=kml&outfields=*";
 
@@ -52,10 +52,8 @@ require(["dojo/request/script", "dojo/json",
 
             // Add the cloud coverage query param.
             if (cloud && cloud.toString().replace(/^\s+|\s+$/g, '').length > 0) {
-                //query.where = "CLOUD_COVER_PERCENT < " + cloud;
                 where = "CLOUD_COVER_PERCENT <= " + cloud;
             } else {
-                //query.where = "1=1 AND 2=2";
                 where = "CLOUD_COVER_PERCENT <= " + DEFAULT_CLOUD;
             }
 
@@ -171,18 +169,21 @@ require(["dojo/request/script", "dojo/json",
                     setQueryMsg(data.count + " found. Sending to maps.", "alert-success")
                 } 
                 else {
-                    setQueryMsg(data.count + " found. Only first 1000 will be plotted."
+                    setQueryMsg(data.count + " found. Only the first 1000 will be plotted."
                         + "  Please refine your search.",
                         "alert-warning");
                 }
                 
-                CMWAPI.feature.plot.url.send(payload);   
+                query("#query-btn").attr("disabled", true);
+                CMWAPI.feature.plot.url.send(payload);  
+                setTimeout(function() {
+                    query("#query-btn").attr("disabled", false);
+                }, 5000); 
             }, function(error) {
                 clearQueryMsg();
                 setQueryMsg("Could not query the server at this time.", "alert-danger");
             });
 
-            //CMWAPI.feature.plot.url.send(payload);
             event.preventDefault();
         });
 

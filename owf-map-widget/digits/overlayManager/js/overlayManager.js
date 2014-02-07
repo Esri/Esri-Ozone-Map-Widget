@@ -15,15 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
+ *  Overlay Mananger
+ *  This module applies a manager interface to the map which allows a user to
+ *  add, remove or manipulate various types of feature layers.
  */
 define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
     var adapter;
     var infoNotifier;
+
+    /**
+     * When the Overlay Manager is instantiated it will create the overlay tree, update it with
+     * the current values for overlays and features from the cmwapi-adapter then bind to all events
+     * for actions within the manager.
+     * @constructor
+     * @param map {object} ESRI map object for which this Overlay Manager should apply
+     * @param errorNotifier {module:cmwapi-adapter/errorNotifier}
+     * @param notifier {module:cmwapi-adapter/notifier}
+     * @alias module:digits/OverlayManager
+     */
     var OverlayManager =  function(map, errorNotifier, notifier) {
         infoNotifier = notifier;
         this.adapter = adapter = new cmwapiAdapter(map, errorNotifier, notifier);
 
-
+        //The manager html is populated from a template @ /digits/overlayManager/index.html
         $('#popover_overlay_wrapper').load('./digits/overlayManager/index.html', function() {
             $(window).bind("resize",function() {
                 changeAddScrollState();
@@ -56,7 +70,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
 
                     var basePath = './digits/overlayManager/images/icons/';
                     var image = node.type === 'feature' ? basePath + imageIcon: basePath + 'Tree_Folder.png';
-                    var inputString = '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type;
+                    var inputString = '<input type="checkbox" id="' + node.id+ '" name="' +node.name+ '"class ="tree-node" node-type="' + node.type;
                     var checked = node.isHidden === false ? (inputString + '" checked="checked"/>') : (inputString + '"/>');
                     $li.find('.jqtree-title').before(
                         checked + '<img src=' + image + ' alt="Overlay Icon" height="25" width="25">'
@@ -70,6 +84,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
                     }
                 }
             });
+            //build overlay tree with information in node so that it can make calls to the API on change.
             $('#overlay-tree').bind('tree.dblclick',
             function(event) {
                 var span = $('#' + event.node.id + '[node-type= "' + event.node['node-type'] + '"]').siblings('span');
@@ -79,6 +94,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
                 $(span).html(html);
                 $(span).find('input').focus();
 
+                //Validation against the add forms to verify filled out correctly.
                 $(span).find('input').keypress(function(e) {
                     var keycode = (e.keyCode ? e.keyCode : e.which);
                     if(keycode === 13) {
@@ -128,9 +144,12 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             $('#type-selection').on('change', getTypeSelection);
             $('form').find('.form-control.default').keyup(removeSucessFromURL);
             $('#feature-add-url').keyup(validateURLInput);
+            $('#feature-add-params').keyup(validateParamsInput);
         });
     };
 
+    //Only method avaiable outside of the scope of OverlayManager, this is to hook into the button
+    //on the map to allow the manager to open and close.
     OverlayManager.prototype.toggleOverlayManager = function() {
         $('#popover_overlay_wrapper').toggle();
         $('#basemaps').removeClass('selected');
@@ -139,6 +158,8 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
        setStateInit();
     };
 
+    //This handles the scroll states of the add form for the overlay manager, since this form
+    //could have a varying number of inputs and needs to react to the size of the window.
     var changeAddScrollState = function() {
         if($('#add-overlay-div').is(':visible') || $('#add-feature-div').is(':visible')) {
              var scrollHeight = parseInt($("#overlay-manager-add")[0].scrollHeight);
@@ -164,24 +185,26 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         checkAddFormCompleted();
     };
 
+    //Called when add button is clicked and fires call to cmwapi based on the information filled out
+    //in the Overlay Manager add form.
     var addOverlayOrFeature = function() {
         var featureName = $('#feature-add-name').val();
-        var featureId = $('#feature-add-id').val();
-        var featureUrl = $('#feature-add-url').val();
+        var featureUrl = $('#feature-add-url').val().replace(/^\s+|\s+$/g, '');
         var featureParams = $('#feature-add-params').val();
         var overlayName = $('#overlay-add-name').val();
-        var overlayId = $('#overlay-add-id').val();
+        var overlayID = guidGenerator();
         var zoom = $('#zoom-checkbox').is(':checked');
         var featureType = $('#type-selection').val().toLowerCase().replace(' ', '-').replace(/\s/g, '');
         if(!($('#add-feature-div').is(':visible'))) {
-            adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
+            adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
         } else if($('#overlay-selection').val() === 'Add New Overlay') {
-            adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
-            adapter.overlayManager.sendFeaturePlotUrl(overlayId, featureId, featureName,
+            var overlayID = guidGenerator();
+            adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
+            adapter.overlayManager.sendFeaturePlotUrl(overlayID, guidGenerator(), featureName,
                 featureType, featureUrl, featureParams, zoom);
         } else {
             adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
-                featureId, featureName, featureType, featureUrl, featureParams, zoom);
+                guidGenerator(), featureName, featureType, featureUrl, featureParams, zoom);
         }
         setStateInit();
     };
@@ -193,16 +216,16 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             }
             if($(this).attr('node-type') === 'feature') {
                 var node = $('#overlay-tree').tree('getNodeById', $(this).attr('id'));
-                adapter.overlayManager.sendFeatureUnplot(node.parent.id,$(this).attr('id'));
+                adapter.overlayManager.sendFeatureUnplot(node.parent.id, $(this).attr('id'));
             }
-
-            infoNotifier("Deleted " + $(this).attr('id'));
+            infoNotifier("Deleted " + $(this).attr('name'));
         });
     };
 
+    //Render the params form input based on the current selection of the feature type.
     var getTypeSelection = function() {
         var selection = $('#type-selection').val().toLowerCase();
-        if(selection === 'kml' || selection ==='arcgis tiled map service') {
+        if(selection === 'kml') {
             $('#feature-params-group').hide();
         } else {
             $('#feature-params-group').show();
@@ -243,19 +266,56 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         if(!isValidUrl($(this).val())) {
             $(this).parent().removeClass('has-success');
             $(this).parent().addClass('has-error');
-            $('.help-block').show();
+            $('#help-block-url').show();
         } else {
             $(this).parent().removeClass('has-error');
             $(this).parent().addClass('has-success');
             $(this).removeClass('has-error');
-            $('.help-block').hide();
+            $('#help-block-url').hide();
         }
         changeAddScrollState();
+    };//{outFields: ["approxacre","objectid","field_name","activeprod","cumm_oil","cumm_gas","avgdepth"]}
+
+    var validateParamsInput = function() {
+        if(!isValidParams($(this).val())) {
+            $(this).parent().removeClass('has-success');
+            $(this).parent().addClass('has-error');
+            $('#help-block-params').show();
+        } else {
+            $(this).parent().removeClass('has-error');
+            $(this).parent().addClass('has-success');
+            $(this).removeClass('has-error');
+            $('#help-block-params').hide();
+        }
+        changeAddScrollState();
+    };
+
+    var isValidParams = function(params) {
+        if(params) {
+            try {
+                var obj = OWF.Util.parseJson(params);
+                return true
+            } catch(e) {
+                return false;
+            }
+        }
+        return true;
     };
 
     var isValidUrl = function(url){
           return (/\b(https?|ftp|file):\/\/[\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\-A-Za-z0-9+&@#\/%=~ |‌​]/).test(url);
     };
+
+    /**
+    * Guid generator for randomly generating IDs for overlays and features.
+    * See: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+    **/
+    var guidGenerator = function() {
+        var S4 = function() {
+           return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        };
+        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    }
 
     var checkAddFormCompleted = function() {
         var emptyInputs = $('.form-control.default').filter(function() {
@@ -269,14 +329,11 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
     };
 
     var clearAddInputs = function() {
-        $('#feature-add-name').val('');
-        $('#feature-add-id').val('');
-        $('#feature-add-url').val('');
-        $('#feature-add-params').val('');
-        $('#overlay-add-name').val('');
-        $('#overlay-add-id').val('');
+        $('input[type=text]').val('');
     };
 
+    //Form to update and bind the overlay manager checkboxes.  When the overlay manager changes
+    //the checkboxes that handle hide/show need to be updated as well.
     var bindSelectionHandlers = function() {
         $("#overlay-tree.default input:checkbox").off('change');
         $("#overlay-tree.default input:checkbox").on('change', function () {
@@ -327,6 +384,8 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         }
     };
 
+    //This is the initial state that the overlay manager will be in when opening, or refreshing the
+    //page, guarentees that only the main form is visisble with the appropriate attributes
     var setStateInit = function() {
         $('#overlay-tree').removeClass('remove-tree');
         $('#overlay-tree').addClass('default');
@@ -336,8 +395,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             $('#no-overlay-tooltip').show();
             $('#overlay-delete-icon').addClass('disabled');
         }
-        $('.add').hide();
-        $('.remove').hide();
+        $('.add, .remove').hide();
         $('.init').show();
         $('#overlay-tree').css('top','50px');
         $('#feature-add-url').parent().removeClass('has-success');
@@ -346,6 +404,8 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         resizeOverlayToTree('#overlay-tree', 90);
     };
 
+
+    //Set state to be the combined add new feature, add new overlay form.
     var addState = function() {
         $('#no-overlay-tooltip').hide();
         clearAddInputs();
@@ -353,6 +413,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         $('.add').show();
     };
 
+    //Set state to be only the add new feature form.
     var setStateAdd = function() {
         $('#add-overlay-div').hide();
         $('#add-feature-div').show();
@@ -362,6 +423,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         changeAddScrollState();
     };
 
+    //Set the state to be only the Add New Overlay form.
     var setStateAddOverlay = function() {
         $('#add-overlay-div').show();
         $('#add-feature-div').hide();
@@ -369,6 +431,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         changeAddScrollState();
     };
 
+    //Set the state to be the Remove layer or feature form.
    var setStateRemove = function() {
         $("#overlay-tree.default input:checkbox").off('change');
         $('.init').hide();
@@ -382,7 +445,6 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         $('#overlay-tree').css('top','85px');
         resizeOverlayToTree('#overlay-tree', 125);
     };
-
 
     return OverlayManager;
 });
