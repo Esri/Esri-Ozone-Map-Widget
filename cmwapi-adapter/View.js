@@ -1,6 +1,6 @@
 define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/Point",
-    "cmwapi-adapter/ViewUtils"],
-    function(CommonMapApi, EsriNS, Extent, Point, ViewUtils) {
+    "cmwapi-adapter/ViewUtils", "OWFWidgetExtensions/owf-widget-extended"],
+    function(CommonMapApi, EsriNS, Extent, Point, ViewUtils, OWFWidgetExtensions) {
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -29,6 +29,9 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
      */
     var View = function(map, overlayManager) {
         var me = this;
+
+        var OVERLAY_PREF_NAMESPACE = 'com.esri';
+        var OVERLAY_PREF_NAME = 'mapView';
 
         /**
          * Zooms a map to a particular range.  If given an array of zoom ranges,
@@ -183,6 +186,73 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             }
         };
         CommonMapApi.view.center.bounds.addHandler(me.handleCenterBounds);
+
+        me.saveView = function() {
+            var bounds = {
+                southWest: {
+                    lat: map.geographicExtent.ymin,
+                    lon: Extent.prototype._normalizeX(map.geographicExtent.xmin, map.geographicExtent.spatialReference._getInfo()).x
+                },
+                northEast: {
+                    lat: map.geographicExtent.ymax,
+                    lon: Extent.prototype._normalizeX(map.geographicExtent.xmax, map.geographicExtent.spatialReference._getInfo()).x
+                }
+            };
+
+            var center = {
+                lat: map.geographicExtent.getCenter().y,
+                lon: Extent.prototype._normalizeX(map.geographicExtent.getCenter().x, map.geographicExtent.spatialReference._getInfo()).x
+            };
+
+            var range = ViewUtils.scaleToZoomAltitude(map);
+
+
+            var successHandler = function() {
+                console.log("Saved view preference...");
+            };
+            var failureHandler = function() {
+                console.log ("Unable to archive state.");
+            };
+            var dataValue = OWFWidgetExtensions.Util.toString({bounds: bounds, center: center, range: range});
+            OWFWidgetExtensions.Preferences.setWidgetInstancePreference({
+                namespace: OVERLAY_PREF_NAMESPACE,
+                name: OVERLAY_PREF_NAME,
+                value: dataValue,
+                onSuccess: successHandler,
+                onFailure: failureHandler
+            });
+        };
+
+        me.setInitialView = function() {
+            var successHandler = function(retValue) {
+                var viewDetails;
+                if (retValue && retValue.value) {
+                    console.log("Retrieved view info: " + retValue.value);
+                    viewDetails = OWFWidgetExtensions.Util.parseJson(retValue.value);
+                    viewDetails.zoom = viewDetails.range;
+                    console.debug(viewDetails);
+                }
+
+                me.handleCenterBounds(null, viewDetails)
+
+                map.on("extent-change", me.saveView);
+            };
+
+            var failureHandler = function(e) {
+                console.log("Error in getting preference" + e);
+
+                me.handleCenterLocation(null, {location: {lon: -76.809469, lat: 39.168101}, zoom: '447946.6823900473'});
+
+                map.on("extent-change", me.saveView);
+            };
+
+            OWFWidgetExtensions.Preferences.getWidgetInstancePreference({
+                namespace: OVERLAY_PREF_NAMESPACE,
+                name: OVERLAY_PREF_NAME,
+                onSuccess: successHandler,
+                onFailure: failureHandler
+            });
+        }
 
     };
 

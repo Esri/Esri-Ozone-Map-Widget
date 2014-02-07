@@ -76,7 +76,12 @@ define(["esri/dijit/Legend"], function(esriLegend) {
 
             var totalWidth = legendWidth + legendDividerWidth;
             var windowWidth = $(window).width();
-            setMapWidth((windowWidth - totalWidth));
+
+            if(totalWidth >= windowWidth) {
+                totalWidth = windowWidth - 1;
+            }
+
+            setMapWidth(windowWidth - totalWidth);
             setLegendWidth(legendWidth);
 
             //$('#legend_button').removeClass('selected');
@@ -102,6 +107,11 @@ define(["esri/dijit/Legend"], function(esriLegend) {
         var handleLegendResize = function(e){
             var windowWidth = $(window).width();
             var position = e.pageX;
+
+            if(position >= windowWidth) {
+                position = windowWidth - 1;
+            }
+
             legendWidth = position - 3;
 
             setMapWidth(windowWidth - position);

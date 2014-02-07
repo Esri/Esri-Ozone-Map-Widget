@@ -248,8 +248,6 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
 
         };
 
-
-
         this.overlayManager = new OverlayManager(map, errorNotifier, infoNotifier);
         this.overlayManager.retrieveState();
 
@@ -288,6 +286,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
         this.dropEnabledHandler = map.on('mouse-over', setDropEnabled);
         this.dropDisabledHandler = map.on('mouse-out', setDropDisabled);
         this.unloadMapHandler = map.on("unload", unloadHandlers);
+
+        map.on('load', this.view.setInitialView);
 
         //Attach drop zone handler to OWF.
         OWF.DragAndDrop.addDropZoneHandler({ dropZone: map.root, handler: sendDragAndDrop });

@@ -70,7 +70,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
 
                     var basePath = './digits/overlayManager/images/icons/';
                     var image = node.type === 'feature' ? basePath + imageIcon: basePath + 'Tree_Folder.png';
-                    var inputString = '<input type="checkbox" id="' + node.id+ '" class ="tree-node" node-type="' + node.type;
+                    var inputString = '<input type="checkbox" id="' + node.id+ '" name="' +node.name+ '"class ="tree-node" node-type="' + node.type;
                     var checked = node.isHidden === false ? (inputString + '" checked="checked"/>') : (inputString + '"/>');
                     $li.find('.jqtree-title').before(
                         checked + '<img src=' + image + ' alt="Overlay Icon" height="25" width="25">'
@@ -144,6 +144,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             $('#type-selection').on('change', getTypeSelection);
             $('form').find('.form-control.default').keyup(removeSucessFromURL);
             $('#feature-add-url').keyup(validateURLInput);
+            $('#feature-add-params').keyup(validateParamsInput);
         });
     };
 
@@ -188,22 +189,22 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
     //in the Overlay Manager add form.
     var addOverlayOrFeature = function() {
         var featureName = $('#feature-add-name').val();
-        var featureId = $('#feature-add-id').val();
-        var featureUrl = $('#feature-add-url').val();
+        var featureUrl = $('#feature-add-url').val().replace(/^\s+|\s+$/g, '');
         var featureParams = $('#feature-add-params').val();
         var overlayName = $('#overlay-add-name').val();
-        var overlayId = $('#overlay-add-id').val();
+        var overlayID = guidGenerator();
         var zoom = $('#zoom-checkbox').is(':checked');
         var featureType = $('#type-selection').val().toLowerCase().replace(' ', '-').replace(/\s/g, '');
         if(!($('#add-feature-div').is(':visible'))) {
-            adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
+            adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
         } else if($('#overlay-selection').val() === 'Add New Overlay') {
-            adapter.overlayManager.sendOverlayCreate(overlayId, overlayName);
-            adapter.overlayManager.sendFeaturePlotUrl(overlayId, featureId, featureName,
+            var overlayID = guidGenerator();
+            adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
+            adapter.overlayManager.sendFeaturePlotUrl(overlayID, guidGenerator(), featureName,
                 featureType, featureUrl, featureParams, zoom);
         } else {
             adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
-                featureId, featureName, featureType, featureUrl, featureParams, zoom);
+                guidGenerator(), featureName, featureType, featureUrl, featureParams, zoom);
         }
         setStateInit();
     };
@@ -215,9 +216,9 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             }
             if($(this).attr('node-type') === 'feature') {
                 var node = $('#overlay-tree').tree('getNodeById', $(this).attr('id'));
-                adapter.overlayManager.sendFeatureUnplot(node.parent.id,$(this).attr('id'));
+                adapter.overlayManager.sendFeatureUnplot(node.parent.id, $(this).attr('id'));
             }
-            infoNotifier("Deleted " + $(this).attr('id'));
+            infoNotifier("Deleted " + $(this).attr('name'));
         });
     };
 
@@ -265,19 +266,56 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         if(!isValidUrl($(this).val())) {
             $(this).parent().removeClass('has-success');
             $(this).parent().addClass('has-error');
-            $('.help-block').show();
+            $('#help-block-url').show();
         } else {
             $(this).parent().removeClass('has-error');
             $(this).parent().addClass('has-success');
             $(this).removeClass('has-error');
-            $('.help-block').hide();
+            $('#help-block-url').hide();
         }
         changeAddScrollState();
+    };//{outFields: ["approxacre","objectid","field_name","activeprod","cumm_oil","cumm_gas","avgdepth"]}
+
+    var validateParamsInput = function() {
+        if(!isValidParams($(this).val())) {
+            $(this).parent().removeClass('has-success');
+            $(this).parent().addClass('has-error');
+            $('#help-block-params').show();
+        } else {
+            $(this).parent().removeClass('has-error');
+            $(this).parent().addClass('has-success');
+            $(this).removeClass('has-error');
+            $('#help-block-params').hide();
+        }
+        changeAddScrollState();
+    };
+
+    var isValidParams = function(params) {
+        if(params) {
+            try {
+                var obj = OWF.Util.parseJson(params);
+                return true
+            } catch(e) {
+                return false;
+            }
+        }
+        return true;
     };
 
     var isValidUrl = function(url){
           return (/\b(https?|ftp|file):\/\/[\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\-A-Za-z0-9+&@#\/%=~ |‌​]/).test(url);
     };
+
+    /**
+    * Guid generator for randomly generating IDs for overlays and features.
+    * See: http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+    **/
+    var guidGenerator = function() {
+        var S4 = function() {
+           return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        };
+        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    }
 
     var checkAddFormCompleted = function() {
         var emptyInputs = $('.form-control.default').filter(function() {
