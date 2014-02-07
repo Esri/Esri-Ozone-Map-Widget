@@ -122,7 +122,7 @@ require(["dojo/request/script", "dojo/json",
             clearQueryMsg();
         });
 
-        query("#query-btn").on("click", function() {
+        query("#query-btn").on("click", function(event) {
 
             // Create the overlay for results.
             createQueryOverlay("Image Collection Queries");

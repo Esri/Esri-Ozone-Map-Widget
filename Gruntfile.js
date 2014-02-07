@@ -38,7 +38,10 @@ module.exports = function(grunt) {
         jshint: {
             src: ['Gruntfile.js',
                   'cmwapi/**/*.js',
-                  'cmwapi-adapter/**/*.js'],
+                  'cmwapi-adapter/**/*.js',
+                  'owf-map-widget/js/**/*.js',
+                  'owf-map-widget/dijits/**/*.js',
+                  'image-collection-query-widget/js/**/*.js'],
             options: {
                 jshintrc: true
             }
