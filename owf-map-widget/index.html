@@ -8,9 +8,7 @@
 
         <!-- MUST include dojo configuration before other js and css -->
         <script src="js/dojoConfig.js"></script>
-        <script src="vendor/js/jquery.min.js"></script>
-        <script src="vendor/js/bootstrap.min.js"></script>
-        <script src="vendor/js/tree.jquery.js"></script>
+        
 
         <!-- Load non-AMD libs before dojo to avoid timing problems -->
         <link href="vendor/css/dragAndDrop.css" rel="stylesheet">
@@ -64,6 +62,9 @@
 
     // Add ESRI JS API, which starts dojo AMD loader
     addScript(window.esriJsPath + "init.js");
+    addScript("vendor/js/jquery.min.js");
+    addScript("vendor/js/bootstrap.min.js");
+    addScript("vendor/js/tree.jquery.js");
 
     // Trigger app entry point
     addScript("js/app.js");
