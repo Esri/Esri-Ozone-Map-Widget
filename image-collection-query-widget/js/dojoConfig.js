@@ -20,7 +20,7 @@ if (!window.isOffline) {
         // Test if "offline=true" was passed in URL
         return /.*offline\s*=\s*true.*/i.test(
                    decodeURIComponent(window.location.search));
-    }
+    };
 }
 
 if (!window.isDebug) {
@@ -32,7 +32,7 @@ if (!window.isDebug) {
         // Test if "debug=true" was passed in URL
         return /.*debug\s*=\s*true.*/i.test(
                    decodeURIComponent(window.location.search));
-    }
+    };
 }
 
 if (!window.contextPath) {
@@ -138,8 +138,6 @@ dojoConfig.packages = [
     // Additional packages for this webapp
     { location: window.contextPath + "digits", name: "digits" },
     { location: window.contextPath + "../cmwapi", name: "cmwapi" },
-    { location: window.contextPath + "../cmwapi-adapter", name: "cmwapi-adapter" },
-    { location: window.contextPath + "js", name:"OWFWidgetExtensions"},
     { location: window.contextPath + "vendor/js/bootstrap.min", name: "bootstrap"}
 
 ];
