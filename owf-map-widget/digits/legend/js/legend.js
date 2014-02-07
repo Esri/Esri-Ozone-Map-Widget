@@ -140,7 +140,7 @@ define(["esri/dijit/Legend"], function(esriLegend) {
 
         var handleLayout = function() {
             var windowWidth = $(window).width();
-            setMapWidth(windowWidth - $("#legend").width());
+            setMapWidth(windowWidth - ($("#legend").width() + $(".legend_vertical_divider").width()));
         };
     };
 
