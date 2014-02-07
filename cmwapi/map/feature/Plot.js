@@ -48,8 +48,6 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @param {String} data.feature The data of the feature.
          * @param {Boolean} [data.zoom] True, if the map should automatically zoom to this feature; false, otherwise.
          *     Defaults to false.
-         * @todo At present, we're not defaulting the name to the feature id if not supplied.  Is this valid?  The API does
-         *     not require a default; does that imply an empty string?
          */
         send: function(data) {
 
