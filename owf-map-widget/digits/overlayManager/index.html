@@ -11,60 +11,48 @@
             <div id= "add-feature-div">
                 <p id="add-feature-subtitle"><b>Add New Feature</b></p>
                 <form class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label for="feature-add-name" class="col-xs-offset-1 col-xs-2 control-label">Name</label>
-                        <div class="col-xs-8">
-                            <input type="text" class="form-control default input-sm" id="feature-add-name" placeholder="Name">
-                        </div>
+                    <div class="manager-form-row">
+                        <label for="feature-add-name" class="input-label control-label">Name</label>
+                        <input type="text" class="manager-input form-control default input-sm" id="feature-add-name" placeholder="Name">
                     </div>
-                    <div class="form-group">
-                        <label for="type-selection" class="col-xs-offset-1 col-xs-2 control-label">Type</label>
-                        <div class="col-xs-8">
-                            <select id = "type-selection" class="form-control input-sm">
-                                <option>KML</option>
-                                <option>WMS</option>
-                                <option>ArcGIS Feature</option>
-                                <option>ArcGIS Dynamic Map Service</option>
-                                <option>ArcGIS Image Service</option>
-                            </select>
-                        </div>
+                    <div class="manager-form-row">
+                        <label for="type-selection" class="input-label control-label">Type</label>
+                        <select id = "type-selection" class="manager-input form-control input-sm">
+                            <option>KML</option>
+                            <option>WMS</option>
+                            <option>ArcGIS Feature</option>
+                            <option>ArcGIS Dynamic Map Service</option>
+                            <option>ArcGIS Image Service</option>
+                        </select>
                     </div>
-                    <div class="form-group">
-                        <label for="zoom-checkbox" class="col-xs-offset-1 col-xs-2 control-label">Zoom</label>
+                    <div class="manager-form-row">
+                        <label for="zoom-checkbox" class="control-label">Zoom</label>
                         <label class="checkbox-inline">
                             <input id='zoom-checkbox' type="checkbox">
                         </label>
                     </div>
-                    <div class="form-group">
-                        <label for="feature-add-url" class="col-xs-offset-1 col-xs-2 control-label">URL</label>
-                        <div class="col-xs-8">
-                            <input type="text" class="form-control default input-sm" id="feature-add-url" placeholder="URL">
-                            <span class="help-block" id="help-block-url">Please enter a valid URL.</span>
-                        </div>
+                    <div class="manager-form-row">
+                        <label for="feature-add-url" class="input-label control-label">URL</label>
+                        <input type="text" class="manager-input form-control default input-sm" id="feature-add-url" placeholder="URL">
+                        <span class="help-block" id="help-block-url">Please enter a valid URL.</span>
                     </div>
-                    <div class="form-group" id= 'feature-params-group'>
-                        <label for="feature-add-params" class="col-xs-offset-1 col-xs-2 control-label">Params</label>
-                        <div class="col-xs-8">
-                            <input type="text" class="form-control input-sm" id="feature-add-params" placeholder="Params">
-                            <span class="help-block" id="help-block-params">Params are invalid.</span>
-                        </div>
+                    <div class="manager-form-row" id= 'feature-params-group'>
+                        <label for="feature-add-params" class="input-label control-label">Params</label>
+                        <input type="text" class="manager-input form-control input-sm" id="feature-add-params" placeholder="Params">
+                        <span class="help-block" id="help-block-params">Params are invalid.</span>
                     </div>
-                    <div class="form-group">
-                        <label for="overlay-selection" class="col-xs-offset-1 col-xs-2 control-label">Overlay</label>
-                        <div class="col-xs-8">
-                            <select id = "overlay-selection" class="form-control input-sm"></select>
-                        </div>
+                    <div class="manager-form-row">
+                        <label for="overlay-selection" class="input-label control-label">Overlay</label>
+                        <select id = "overlay-selection" class="manager-input form-control input-sm"></select>
                     </div>
                 </form>
             </div>
             <div id= "add-overlay-div">
                 <p id="add-overlay-subtitle"><b>Add New Overlay</b></p>
                 <form class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label for="overlay-add-name" class="col-xs-offset-1 col-xs-2 control-label">Name</label>
-                        <div class="col-xs-8">
-                            <input type="text" class="form-control default add input-sm" id="overlay-add-name" placeholder="Name">
-                        </div>
+                    <div class="manager-form-row">
+                        <label for="overlay-add-name" class="input-label control-label">Name</label>
+                        <input type="text" class="manager-input form-control default add input-sm" id="overlay-add-name" placeholder="Name">
                     </div>
                 </form>
             </div>
