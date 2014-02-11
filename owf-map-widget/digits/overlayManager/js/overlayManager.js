@@ -434,10 +434,14 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
     //Set the state to be the Remove layer or feature form.
    var setStateRemove = function() {
         $("#overlay-tree.default input:checkbox").off('change');
+        $('#no-overlay-tooltip').hide();
+
         $('.init').hide();
+        
         $('.remove').show();
         $('#overlay-tree').addClass('remove-tree');
         $('#overlay-tree').removeClass('default');
+        $('#overlay-manager').hide();
         bindSelectionHandlers();
         updateOverlaySelection();
         checkDeleteButtonDisabled();

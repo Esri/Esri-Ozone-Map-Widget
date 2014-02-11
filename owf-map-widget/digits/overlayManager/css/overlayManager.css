@@ -2,7 +2,6 @@
   display:none;
   background: #fff;
   width: 330px;
-  min-height: 150px;
   top: 60px;
   right:128px;
   border:2px solid #666;
@@ -45,22 +44,17 @@
 }
 
 .no-overlays-tip {
-  position: relative;
+  float: right;
+  width: 90px;
+  height: 55px;
   background-image: url("../images/icons/Arrow.png");
   background-position: center center;
   background-repeat: no-repeat;
-  height:inherit;
-  bottom: 40px;
-  left: 70px;
-}
-
-#no-overlay-tooltip {
-  height: inherit;
 }
 
 #no-overlay-tooltip-text {
-  margin-top: -140px;
-  margin-left: 60px;
+  margin-left: 85px;
+  float:  left;
 }
 #overlay-hr-wrapper {
   height:100%;
@@ -69,56 +63,59 @@
   padding: 0;
 }
 #overlay-tree {
-  position: absolute;
-  left: 20px;
-  top: 50px;
+  height: auto !important;
+  height: 55px;
+  min-height: 55px;
+  margin-left: 15px;
 }
+
+#overlay-tree.remove-tree {
+  height: auto !important;
+  height: 25px;
+  min-height: 25px;
+}
+
 .remove-mode {
   top: 85px !important;;
 }
 #overlay-hr {
   border: 1px solid #666;
   width: 100%;
-  position: absolute;
-  bottom:27px;
+  margin: 0;
+  padding: 0px
 }
 #overlay-add-icon{
-  height:25px;
+  height:30px;
+  *margin-top: -8px;
   width:25px;
-  bottom: -1px;
-  right: 38px;
-  position: absolute;
+  float: right;
   background-image: url("../images/icons/Add_Overlay_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
 #add-overlay-icon{
-  height:25px;
+  height:30px;
+  *margin-top: -8px;
   width:25px;
-  bottom: -1px;
-  right: 68px;
-  position: absolute;
+  float: right;
   background-image: url("../images/icons/Add_Folder.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
   #overlay-delete-icon{
-  height:25px;
+  height:30px;
+  *margin-top: -8px;
   width:25px;
-  bottom: 0px;
-
-  right: 8px;
-  position: absolute;
+  float: right;
   background-image: url("../images/icons/Remove_Overlay_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
 }
 #overlay-back-icon{
-  height:25px;
+  height:30px;
+  *margin-top: -8px;
   width:25px;
-  bottom: 0px;
-  left: 8px;
-  position: absolute;
+  float: left;
   background-image: url("../images/icons/Overlay_Manager_Back_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
@@ -211,10 +208,10 @@ ul.jqtree-tree li.jqtree-ghost span.jqtree-line {
 
 #overlay-manager-add-button {
   height:25px;
-  width:25px;
-  bottom: 1px;
-  right: 8px;
-  position: absolute;
+  width:26px;
+  margin-right: 5px;
+  *margin-top: -8px;
+  float: right;
   background-image: url("../images/icons/Add_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
@@ -229,11 +226,11 @@ ul.jqtree-tree li.jqtree-ghost span.jqtree-line {
 }
 
 #overlay-manager-delete-button {
-height:25px;
+  height:25px;
   width:25px;
-  bottom: 1px;
-  right: 8px;
-  position: absolute;
+  float: right;
+  margin-right: 5px;
+  *margin-top: -8px;
   background-image: url("../images/icons/Remove_Default.png");
   background-position: center center;
   background-repeat: no-repeat;
@@ -266,17 +263,16 @@ ul.jqtree-tree .jqtree-element{
 #feature-params-group{
   display:none;
 }
-#zoom-checkbox {
-  margin-top: 4px;
-}
+
 #overlay-manager-add {
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-input[type="checkbox"] {
-  margin: 10px 3px 0;
+#overlay-manager {
+  margin-bottom: 12px;
 }
+
 
 .manager-form-row {
     width:  295px;
@@ -298,3 +294,8 @@ input[type="checkbox"] {
 select.input-sm {
   height: 30px;
 }
+
+.btn {
+  padding: 0px;
+}
+

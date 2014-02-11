@@ -1,71 +1,71 @@
-<div id="overlay-hr-wrapper">
-    <p id="overlay-manager-title"><b>Overlay Manager</b></p>
-    <div id="no-overlay-tooltip">
-        <div class='no-overlays-tip'></div>
-        <p id='no-overlay-tooltip-text'>Please add an overlay.</p>
-    </div>
 
-    <div class='default init remove remove-tree' id="overlay-tree"></div>
-    <div class ='add remove' id="overlay-manager">
-        <div class = "add" id="overlay-manager-add">
-            <div id= "add-feature-div">
-                <p id="add-feature-subtitle"><b>Add New Feature</b></p>
-                <form class="form-horizontal" role="form">
-                    <div class="manager-form-row">
-                        <label for="feature-add-name" class="input-label control-label">Name</label>
-                        <input type="text" class="manager-input form-control default input-sm" id="feature-add-name" placeholder="Name">
-                    </div>
-                    <div class="manager-form-row">
-                        <label for="type-selection" class="input-label control-label">Type</label>
-                        <select id = "type-selection" class="manager-input form-control input-sm">
-                            <option>KML</option>
-                            <option>WMS</option>
-                            <option>ArcGIS Feature</option>
-                            <option>ArcGIS Dynamic Map Service</option>
-                            <option>ArcGIS Image Service</option>
-                        </select>
-                    </div>
-                    <div class="manager-form-row">
-                        <label for="zoom-checkbox" class="control-label">Zoom</label>
-                        <label class="checkbox-inline">
-                            <input id='zoom-checkbox' type="checkbox">
-                        </label>
-                    </div>
-                    <div class="manager-form-row">
-                        <label for="feature-add-url" class="input-label control-label">URL</label>
-                        <input type="text" class="manager-input form-control default input-sm" id="feature-add-url" placeholder="URL">
-                        <span class="help-block" id="help-block-url">Please enter a valid URL.</span>
-                    </div>
-                    <div class="manager-form-row" id= 'feature-params-group'>
-                        <label for="feature-add-params" class="input-label control-label">Params</label>
-                        <input type="text" class="manager-input form-control input-sm" id="feature-add-params" placeholder="Params">
-                        <span class="help-block" id="help-block-params">Params are invalid.</span>
-                    </div>
-                    <div class="manager-form-row">
-                        <label for="overlay-selection" class="input-label control-label">Overlay</label>
-                        <select id = "overlay-selection" class="manager-input form-control input-sm"></select>
-                    </div>
-                </form>
-            </div>
-            <div id= "add-overlay-div">
-                <p id="add-overlay-subtitle"><b>Add New Overlay</b></p>
-                <form class="form-horizontal" role="form">
-                    <div class="manager-form-row">
-                        <label for="overlay-add-name" class="input-label control-label">Name</label>
-                        <input type="text" class="manager-input form-control default add input-sm" id="overlay-add-name" placeholder="Name">
-                    </div>
-                </form>
-            </div>
+<p id="overlay-manager-title"><b>Overlay Manager</b></p>
+<div id="no-overlay-tooltip">
+    <p id='no-overlay-tooltip-text'>Please add an overlay.</p>
+    <div class='no-overlays-tip'></div>
+</div>
+<div class= 'remove' id="overlay-manager-delete">
+        <p class = 'remove' id="delete-feature-subtitle"><b>Delete Existing Overlays & Features</b></p>
+</div>
+<div class='default init remove remove-tree' id="overlay-tree"></div>
+<div class ='add remove' id="overlay-manager">
+    <div class = "add" id="overlay-manager-add">
+        <div id= "add-feature-div">
+            <p id="add-feature-subtitle"><b>Add New Feature</b></p>
+            <form class="form-horizontal" role="form">
+                <div class="manager-form-row">
+                    <label for="feature-add-name" class="input-label control-label">Name</label>
+                    <input type="text" class="manager-input form-control default input-sm" id="feature-add-name" placeholder="Name">
+                </div>
+                <div class="manager-form-row">
+                    <label for="type-selection" class="input-label control-label">Type</label>
+                    <select id = "type-selection" class="manager-input form-control input-sm">
+                        <option>KML</option>
+                        <option>WMS</option>
+                        <option>ArcGIS Feature</option>
+                        <option>ArcGIS Dynamic Map Service</option>
+                        <option>ArcGIS Image Service</option>
+                    </select>
+                </div>
+                <div class="manager-form-row">
+                    <label for="zoom-checkbox" class="control-label">Zoom</label>
+                    <label class="checkbox-inline">
+                        <input id='zoom-checkbox' type="checkbox">
+                    </label>
+                </div>
+                <div class="manager-form-row">
+                    <label for="feature-add-url" class="input-label control-label">URL</label>
+                    <input type="text" class="manager-input form-control default input-sm" id="feature-add-url" placeholder="URL">
+                    <span class="help-block" id="help-block-url">Please enter a valid URL.</span>
+                </div>
+                <div class="manager-form-row" id= 'feature-params-group'>
+                    <label for="feature-add-params" class="input-label control-label">Params</label>
+                    <input type="text" class="manager-input form-control input-sm" id="feature-add-params" placeholder="Params">
+                    <span class="help-block" id="help-block-params">Params are invalid.</span>
+                </div>
+                <div class="manager-form-row">
+                    <label for="overlay-selection" class="input-label control-label">Overlay</label>
+                    <select id = "overlay-selection" class="manager-input form-control input-sm"></select>
+                </div>
+            </form>
         </div>
-        <div class= 'remove' id="overlay-manager-delete">
-            <p class = 'remove' id="delete-feature-subtitle"><b>Delete Existing Overlays & Features</b></p>
+        <div id= "add-overlay-div">
+            <p id="add-overlay-subtitle"><b>Add New Overlay</b></p>
+            <form class="form-horizontal" role="form">
+                <div class="manager-form-row">
+                    <label for="overlay-add-name" class="input-label control-label">Name</label>
+                    <input type="text" class="manager-input form-control default add input-sm" id="overlay-add-name" placeholder="Name">
+                </div>
+            </form>
         </div>
     </div>
-    <div id="overlay-hr"></div>
-    <div class="init" id="add-overlay-icon"></div>
-    <div class="init" id="overlay-add-icon"></div>
-    <div class='btn disabled init' id="overlay-delete-icon"></div>
-    <div class="btn remove" id="overlay-manager-delete-button"></div>
-    <div class="btn disabled add" id="overlay-manager-add-button"></div>
-    <div class = "add remove" id="overlay-back-icon"></div>
+    
 </div>
+<hr id="overlay-hr"></hr>
+
+<div class="disabled init" id="overlay-delete-icon"></div>
+<div class="init" id="overlay-add-icon"></div>
+<div class="init" id="add-overlay-icon"></div>
+<div class="remove" id="overlay-manager-delete-button"></div>
+<div class="disabled add" id="overlay-manager-add-button"></div>
+<div class = "add remove" id="overlay-back-icon"></div>
