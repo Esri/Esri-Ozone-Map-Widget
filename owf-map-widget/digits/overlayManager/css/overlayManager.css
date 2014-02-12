@@ -3,8 +3,9 @@
   background: #fff;
   width: 330px;
   top: 60px;
-  right:128px;
+  right:136px;
   border:2px solid #666;
+  margin-bottom: 
 }
 
 .overlaytip {
@@ -207,7 +208,7 @@ ul.jqtree-tree li.jqtree-ghost span.jqtree-line {
 }
 
 #overlay-manager-add-button {
-  height:25px;
+  height:26px;
   width:26px;
   margin-right: 5px;
   *margin-top: -8px;
@@ -265,12 +266,14 @@ ul.jqtree-tree .jqtree-element{
 }
 
 #overlay-manager-add {
-  overflow-x: hidden;
-  overflow-y: auto;
+ 
 }
 
 #overlay-manager {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  *padding-bottom: 6px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 
@@ -289,13 +292,22 @@ ul.jqtree-tree .jqtree-element{
   float:  left;
   width:  210px;
   height:   30px;
+  *height: 15px;
+  *width: 185px;
+  
 }
-
-select.input-sm {
-  height: 30px;
+select.manager-input {
+   *zoom: 112%;
 }
 
 .btn {
   padding: 0px;
 }
 
+.manager-form-row.has-error {
+  margin-bottom: 10px;
+}
+
+.help-block {
+  margin-left: 60px;
+}
