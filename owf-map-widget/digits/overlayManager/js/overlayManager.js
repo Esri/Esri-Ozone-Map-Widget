@@ -446,8 +446,8 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         updateOverlaySelection();
         checkDeleteButtonDisabled();
         $("#overlay-tree.remove-tree input:checkbox").removeAttr('checked');
-        $('#overlay-tree').css('top','85px');
-        resizeOverlayToTree('#overlay-tree', 125);
+        //$('#overlay-tree').css('top','85px');
+        resizeOverlayToTree('#overlay-tree', 132);
     };
 
     return OverlayManager;
