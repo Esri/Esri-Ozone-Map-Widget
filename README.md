@@ -70,7 +70,7 @@ A modified version of the [Contacts Manager](https://github.com/ozoneplatform/ow
 
 4. Proxy to provide access to Esri services
 
-    > NOTE: Certain Esri services, including those dealing with WMS, require provision of a [proxy](https://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html), which is a server-side code deployment.  Choose and configure the appropriate proxy implementation (ASP.NET, Java, PHP, ...) for your web server.  
+    > NOTE: Certain Esri services, including those dealing with WMS, require provision of a [proxy](https://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html), which is a server-side code deployment.  Choose and configure the appropriate proxy implementation (ASP.NET, Java, PHP, ...) for your web server.  These widgets were tested against the Java/JSP proxy.  If using the Java/JSP proxy, be sure to modify the serverUrls variable to match your data URLs.  For development purposes, this variable can be set to pass "http://" and "https://".  A deployment version of the proxy should use more restrictive URL filters.
 
     > NOTE: The location for the proxy used by the ArcGIS OWF Map Widget is configured in app.js as esri.config.defaults.io.proxyUrl.
 
