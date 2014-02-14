@@ -274,7 +274,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             $('#help-block-url').hide();
         }
         changeAddScrollState();
-    };//{outFields: ["approxacre","objectid","field_name","activeprod","cumm_oil","cumm_gas","avgdepth"]}
+    };
 
     var validateParamsInput = function() {
         if(!isValidParams($(this).val())) {
@@ -323,8 +323,10 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         }).length;
         if(emptyInputs === 0 || !($('#add-feature-div').is(':visible'))) {
             $('#overlay-manager-add-button').removeClass('disabled');
+            $('#overlay-manager-add-button').on('click',  addOverlayOrFeature);
         } else {
             $('#overlay-manager-add-button').addClass('disabled');
+            $('#overlay-manager-add-button').off('click');
         }
     };
 
@@ -432,22 +434,21 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
     };
 
     //Set the state to be the Remove layer or feature form.
-   var setStateRemove = function() {
-        $("#overlay-tree.default input:checkbox").off('change');
-        $('#no-overlay-tooltip').hide();
-
-        $('.init').hide();
-        
-        $('.remove').show();
-        $('#overlay-tree').addClass('remove-tree');
-        $('#overlay-tree').removeClass('default');
-        $('#overlay-manager').hide();
-        bindSelectionHandlers();
-        updateOverlaySelection();
-        checkDeleteButtonDisabled();
-        $("#overlay-tree.remove-tree input:checkbox").removeAttr('checked');
-        //$('#overlay-tree').css('top','85px');
-        resizeOverlayToTree('#overlay-tree', 132);
+   var setStateRemove = function(e) {
+    if(e.target.className.indexOf('disabled') < 0) {
+            $("#overlay-tree.default input:checkbox").off('change');
+            $('#no-overlay-tooltip').hide();
+            $('.init').hide();
+            $('.remove').show();
+            $('#overlay-tree').addClass('remove-tree');
+            $('#overlay-tree').removeClass('default');
+            $('#overlay-manager').hide();
+            bindSelectionHandlers();
+            updateOverlaySelection();
+            checkDeleteButtonDisabled();
+            $("#overlay-tree.remove-tree input:checkbox").removeAttr('checked');
+            resizeOverlayToTree('#overlay-tree', 132);
+        }
     };
 
     return OverlayManager;
