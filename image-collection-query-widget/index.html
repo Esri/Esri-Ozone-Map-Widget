@@ -14,69 +14,64 @@
     <div id="form-container">
     <div id="image-collection-query-form-div">  
         <form id="query-form" data-dojo-type="dojox.form.Manager" data-dojo-id="queryForm" class="form-horizontal" role="form">
-            <div class="form-group" id="widget-title">
-               <span class="col-xs-offset-1 col-xs-10">Image Collection Query</span>
-               <span class="col-xs-1"></span>
+            <div class="form-group-div" id="widget-title">
+               <span class="widget-title-span">Image Collection Query</span>
+               <!-- <span class="col-xs-1"></span> -->
             </div>
-            <div class="form-group" id="query-form-title">
-               <span class="col-xs-offset-1 col-xs-10">Enter Search Parameters Below</span>
-               <span class="col-xs-1"></span>
+            <div class="form-group-div" id="query-form-title">
+               <span class="instruction-span">Enter Search Parameters Below</span>
+              <!--  <span class="col-xs-1"></span> -->
             </div>
-            <div class="form-group">
-                <label for="query-name" class="col-xs-offset-1 col-xs-2 control-label">Name</label>
-                <div class="col-xs-8">
+            <div class="form-group-div">
+                <div class="label-position"><label for="query-name" class="control-label">Name</label></div>
+                <div class="control-position">
                     <input type="text" data-dojo-type="dijit/form/TextBox" data-dojo-id="queryName" class="form-control default input-sm" id="query-name" placeholder="Name this search">
                 </div>
             </div>
-            <!-- <div class="form-group">
-                <label for="collection-url" class="col-xs-offset-1 col-xs-2 control-label">URL</label>
-                <div class="col-xs-8">
+            <!-- <div class="form-group-div">
+                <label for="collection-url" class="label-position control-label">URL</label>
+                <div class="control-position">
                     <input type="text" class="form-control default input-sm" id="collection-url" data-dojo-type="dijit.form.TextBox" data-dojo-id="serverUrl" placeholder="http://wdcintelgis.esri.com/arcgis/rest/services/Iran/ImageCollectionCoverage/MapServer/2">
                     <span class="help-block">Please enter a valid URL.</span>
                 </div>
             </div> -->
-            <div class="form-group">
-                <label for="start-time" class="col-xs-offset-1 col-xs-2 control-label">Start</label>
-                <div class="col-xs-8">
-                    <input type="text" name="start-time" id="start-time" value="2013-07-01" data-dojo-type="dijit/form/DateTextBox" data-dojo-id="startTime"  class="form-control default input-sm  dropdown-toggle"/>
+            <div class="form-group-div">
+
+                <div class="label-position"><label for="start-time" class="control-label">Start</label></div>
+                <div class="control-position">
+                    <input type="text" name="start-time" id="start-time" value="2013-07-01" data-dojo-type="dijit/form/DateTextBox" data-dojo-id="startTime"  class="form-control default input-sm"/>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="end-time" class="col-xs-offset-1 col-xs-2 control-label">End</label>
-                <div class="col-xs-8">
+            <div class="form-group-div">
+                <div class="label-position"><label for="end-time" class="control-label">End</label></div>
+                <div class="control-position">
                     <input type="text" name="end-time" id="end-time" value="2013-08-31" data-dojo-type="dijit/form/DateTextBox" data-dojo-id="endTime" class="form-control default input-sm"/>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="cloud-cover" class="col-xs-offset-1 col-xs-2 control-label">Cloud&nbsp;%</label>
-                <div class="col-xs-8">
+            <div class="form-group-div-cloud">
+                <div class="label-position"><label for="cloud-cover" class="control-label" id="cloud-label">Cloud&nbsp;%</label></div>
+                <div class="control-position">
                     <div id="cloud-cover-slider"></div>
                     <input type="text" id="cloud-cover" data-dojo-type="dijit/form/TextBox" data-dojo-id="cloudCover" value="25" class="form-control default input-sm"/>
                     <span class="help-block">Mamimum allowed cloud cover as a percent from 0 - 100.</span>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="zoom-to" class="col-xs-offset-1 col-xs-2 control-label">Zoom&nbsp;To</label>
-                <div class="col-xs-8">
+            <div class="form-group-div">
+                <div class="label-position"><label for="zoom-to" class="control-label">Zoom&nbsp;To</label></div>
+                <div class="control-position">
                     <input type="checkbox" id="zoom-to"  class="form-control default input-sm" checked value="true">
                 </div>
             </div>
 
-            <div class="form-group">
-                <div id="msg-box" class="col-xs-offset-1 col-xs-10">
-                    <div id="msg-area" class="alert invisible">
-                        <div class="">
-                            <button type="button" class="close align-center" id="msg-btn" data-dismiss="alert">&times;</button>
-                            <span id="msg"></span>
-                        </div>
-                    </div>
+            <div id="msg-area" class="alert invisible">
+                <div class="">
+                    <button type="button" class="close align-center" id="msg-btn" data-dismiss="alert">&times;</button>
+                    <span id="msg"></span>
                 </div>
             </div>
 
-            <div class="form-group">
-                <div class="col-xs-11">
-                    <button id="query-btn" class="pull-right btn btn-large btn-primary" type="submit">Plot</button>
-                </div>
+            <div class="">
+                <button id="query-btn" class="pull-right btn btn-large btn-primary" type="submit">Plot</button>
             </div>
         </form>
     </div>

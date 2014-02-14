@@ -1,6 +1,8 @@
 html, body {
-  margin:0;
-  padding:0;
+  margin:0px;
+  padding:0px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 img {
@@ -28,11 +30,52 @@ img {
   font-weight: normal;
   text-align: left;
   vertical-align: center;
-
 }
 
 .help-block {
   display: none;
+}
+
+.form-control {
+  float:right;
+  padding:0px;
+  padding-top: 7px;
+}
+
+.control-label {
+  margin-left:20px;
+}
+
+.label-position {
+  clear:both;
+  display:inline;
+  text-align: left;
+  float: left;
+  width: 24%;
+}
+
+.control-position {
+  display: inline;
+  float:right;
+  padding: 0px;
+  margin: 0px;
+  width: 74%;
+  *width: 65%; /* IE 7 sizing issue work-around. */
+  padding-right:20px;
+}
+
+.form-group-div {
+  clear:both;
+  margin-top: 15px;
+  display:block;
+  height: 40px;
+}
+
+.form-group-div-cloud {
+  clear:both;
+  margin-top: 15px;
+  display:block;
+  height: 45px;
 }
 
 .dijitSliderBarH {
@@ -44,6 +87,15 @@ img {
   width: 8px;
   height: 8px;
   border-width: 1px 0;
+}
+
+#widget-title-span {
+  width: 100%;
+
+}
+
+#instruction-span {
+  width: 100%;
 }
 
 #form-container {
@@ -58,26 +110,31 @@ img {
   margin-right: 0px;
 }
 
-#cloud-cover {
-
+#cloud-label {
+  margin-top:8px;
 }
 
 #image-collection-query-form-div {
-  overflow-x: hidden;
-  overflow-y: auto;
   min-height: 175px;
   min-width: 335px;
+  width:100%;
+  margin: 0px;
+  padding: 0px;
 }
 
 #msg-area {
   display: block;
   height: 60px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 0px;
 }
 
 #query-form-title {
   background-color: #428bca;
   color: white;
-  padding-left: 0px;
+  padding-left: 20px;
   padding-top: 5px;
   height: 30px;
 }
@@ -96,6 +153,8 @@ img {
   font-size: 18px;
   margin-top: 15px;
   margin-bottom: 15px;
+  padding-left: 20px;
+  height: 26px;
 }
 
 #loading {
@@ -122,10 +181,10 @@ img {
 }
 
 #query-btn {
-  /*float: right;*/
   width: 100px;
   margin-top: 10px;
   margin-bottom: 10px;
+  margin-right: 20px;
 }
 
 #overlay-delete-icon{
@@ -143,4 +202,6 @@ img {
 #zoom-to {
   width: 20px;
   height: 20px;
+  float: left;
+  margin-top: 6px;
 }
