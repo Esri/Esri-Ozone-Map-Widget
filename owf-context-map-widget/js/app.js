@@ -55,6 +55,38 @@ require([
             CommonMapApi.view.center.bounds.send(locationEvent);
         };
 
+        //Function that uses the CMWAPI to listen to the status view channel and update the conext map with appropriate shaded areas to show
+        //the current views of the other maps on the dashboard.
+        var statusHadler = function() {
+            CommonMapApi.status.view.addHandler(function(jsonID, senderID, msg) {
+                var sourceID = senderID;
+                var northEast = msg.northEast;
+                var southWest = msg.southWest;
+                var extent = webMercatorUtils.geographicToWebMercator(new Extent(
+                    southWest.lon,
+                    southWest.lat,
+                    northEast.lon,
+                    northEast.lat,
+                    map.spatialReference));
+
+                var layer = new GraphicsLayer();
+                if(mapIds[sourceID.toString()]) {
+                    map.removeLayer(mapIds[sourceID.toString()]);
+                } else {
+                    mapColorCount[sourceID.toString()] = contextCount++;
+                }
+                mapIds[sourceID.toString()] = layer;
+
+                var symbol =  new SimpleFillSymbol(
+                    SimpleFillSymbol.STYLE_SOLID,
+                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, extentColors[mapColorCount[sourceID.toString()]], 1),
+                    new Color([125,125,125,0.35]));
+
+                layer.add(new Graphic(extent, symbol));
+                map.addLayer(layer);
+            });
+        };
+
         //Map is initialized as a map with all controls disabled in order to act a contextual map in which
         //a user uses its overview to direct the flow of other maps.
         var initMap = function() {
@@ -66,71 +98,14 @@ require([
             if (OWF.Util.isRunningInOWF()) {
                 OWF.ready(function () {
                     OWF.notifyWidgetReady();
-                    setHandlers();
+                    statusHadler();
+                    map.on('dbl-click', sendClickEvent);
+                    map.on('click', sendClickEvent);
                     draw.on('draw-end', sendDragEvent);
                 });
             }
         };
-
-        var setHandlers = function() {
-            doubleClickEvent = map.on('dbl-click', sendClickEvent);
-            clickEvent = map.on('click', sendClickEvent);
-        };
-
-        var removeHandlers = function() {
-            doubleClickEvent.remove();
-            clickEvent.remove();
-        };
-
-
-        OWF.Eventing.subscribe('map.status.view', function(source,msg) {
-            var sourceID = OWF.Util.parseJson(source).id;
-            var msgJson = OWF.Util.parseJson(msg);
-
-            var northEast = msgJson.bounds.northEast;
-            var southWest = msgJson.bounds.southWest;
-            var extent = webMercatorUtils.geographicToWebMercator(new Extent(
-                southWest.lon,
-                southWest.lat,
-                northEast.lon,
-                northEast.lat,
-                map.spatialReference));
-
-            var layer = new GraphicsLayer();
-            if(mapIds[sourceID.toString()]) {
-                map.removeLayer(mapIds[sourceID.toString()]);
-                mapIds[sourceID.toString()] = layer;
-            } else {
-                mapIds[sourceID.toString()] = layer;
-                mapColorCount[sourceID.toString()] = contextCount++;
-            }
-
-
-            var symbol = function(colorCount) {
-                return new SimpleFillSymbol(
-                    SimpleFillSymbol.STYLE_SOLID,
-                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, extentColors[colorCount], 1),
-                    new Color([125,125,125,0.35]));
-            };
-
-            layer.on('mouse-over', function() {
-                removeHandlers();
-                map.setMapCursor("pointer");
-
-            });
-            layer.on('mouse-out', function() {
-                setHandlers();
-                map.setMapCursor("crosshair");
-            });
-            console.log("**************************************");
-            console.log(mapColorCount[sourceID.toString()]);
-            console.log("**************************************");
-
-            layer.add(new Graphic(extent, symbol(mapColorCount[sourceID.toString()])));
-            map.addLayer(layer);
-        });
-
+        
         map.on('load', initMap);
-
     }
 );
