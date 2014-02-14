@@ -41,6 +41,14 @@ When run within OWF alongside the Contacts Manager widget described below, it in
 
 A modified version of the [Contacts Manager](https://github.com/ozoneplatform/owf/tree/master/web-app/examples/walkthrough/widgets/contacts) example widget that ships with OWF 7. This version uses Intents to allow the user to select which map widget implementation should receive the address when contact entry is clicked. (The original version was hard coded to send the address to a specific map widget.)
 
+## Limitations / Known Issues
+
+1. CMWAPI map.feature.plot messages are not supported by the map widget.  ArcGIS KMLLayers make use of an ArcGIS Portal service to parse KML data.  This service requires accessible URLs to KML data and does not accept KML string input.  See the [KML Layer JavaScript documentation] (https://developers.arcgis.com/javascript/jsapi/kmllayer-amd.html) for more details.  A client side parser or an enhancement to the KML processing service may be provided in an update. 
+
+2. CMWAPI Drag and Drop messages that include "feature" attributes are not supported by the map widget.  These drag and drop messages provide KML data in string format.  See limitation 1.  Note that CMWAPI drag and drop messages that provide markers or feature URLs are supported.
+
+3. "Zooming" to added feature layers when they are created is supported for features that can be rendered in one pass.  Composite features (e.g., KMZ files) that may result in multiple asynchronous data pulls do not auto-zoom the map after loading.  This may be added as an enhancement but can present certain usability issues.  If any of the asynchronous calls takes a long time, the eventual zooming to data may not appear connected to the user action that triggered it.
+
 ## Requirements
 
 1. OWF 6.0 GA or better.  See the OWF [Get Started](http://www.owfgoss.org/getstarted.html) page, if you are not familiar with the framework.
