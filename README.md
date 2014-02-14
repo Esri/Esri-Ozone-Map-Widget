@@ -8,7 +8,7 @@ This Git Repo provides sample widgets (light-weight web applications) designed f
 
 #### [ArcGIS OWF Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-map-widget)
 
-A more complex map widget.  This widget includes a few common ArcGIS JavaScript map controls for map view manipulation and allows the plotting of map layers through the CMWAPI.  Additionally, it includes a basic Overlay Manager for displaying and manipulating map Overlays and Features as defined by the CMWAPI.  This widget leverages the CMWAPI 1.1 Specification Implementation and the ArcGIS CMWAPI Adapter modules described below.
+A resusable map widget that supports CMWAPI v1.1 widget interactions.  This widget includes a few common ArcGIS JavaScript map controls for map view manipulation and allows the plotting of map layers through the CMWAPI.  Additionally, it includes a basic Overlay Manager for displaying and manipulating map Overlays and Features as defined by the CMWAPI.  This widget leverages the CMWAPI 1.1 Specification Implementation and the ArcGIS CMWAPI Adapter modules described below.
 
 #### [ArcGIS OWF Context Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-context-map-widget)
 
@@ -28,8 +28,7 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
 
 #### [Basic Map Widget](https://github.com/Esri/Next-Century/tree/master/basic-map-widget)
 
-A simple map widget using the ESRI [ArcGIS JavaScript API](https://developers.arcgis.com/en/javascript/). It's purpose is to provide a basic demonstration of using ArcGIS maps within OWF widgets.  
-When run within OWF alongside the Contacts Manager widget described below, it includes the following features:
+A simple map widget using the ESRI [ArcGIS JavaScript API](https://developers.arcgis.com/en/javascript/). It's purpose is to provide a basic demonstration of using ArcGIS maps within OWF widgets.  When run within OWF alongside the Contacts Manager widget described below, it includes the following features:
 
 * Receives [drag and drop](https://github.com/ozoneplatform/owf/wiki/OWF-7-Developer-Widget-Drag-and-Drop-API) data from other OWF widgets.
 
