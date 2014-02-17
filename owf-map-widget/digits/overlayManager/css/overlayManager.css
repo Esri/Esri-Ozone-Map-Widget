@@ -209,7 +209,8 @@ ul.jqtree-tree li.jqtree-ghost span.jqtree-line {
 }
 
 #overlay-manager-add-button {
-  height:26px;
+  height:28px;
+  *height:25px;
   width:26px;
   margin-right: 5px;
   float: right;

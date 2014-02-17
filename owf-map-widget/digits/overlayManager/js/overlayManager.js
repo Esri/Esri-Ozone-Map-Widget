@@ -187,26 +187,28 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
 
     //Called when add button is clicked and fires call to cmwapi based on the information filled out
     //in the Overlay Manager add form.
-    var addOverlayOrFeature = function() {
-        var featureName = $('#feature-add-name').val();
-        var featureUrl = $('#feature-add-url').val().replace(/^\s+|\s+$/g, '');
-        var featureParams = $('#feature-add-params').val();
-        var overlayName = $('#overlay-add-name').val();
-        var overlayID = guidGenerator();
-        var zoom = $('#zoom-checkbox').is(':checked');
-        var featureType = $('#type-selection').val().toLowerCase().replace(' ', '-').replace(/\s/g, '');
-        if(!($('#add-feature-div').is(':visible'))) {
-            adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
-        } else if($('#overlay-selection').val() === 'Add New Overlay') {
+    var addOverlayOrFeature = function(e) {
+        if(e.target.className.indexOf('disabled') < 0) {
+            var featureName = $('#feature-add-name').val();
+            var featureUrl = $('#feature-add-url').val().replace(/^\s+|\s+$/g, '');
+            var featureParams = $('#feature-add-params').val();
+            var overlayName = $('#overlay-add-name').val();
             var overlayID = guidGenerator();
-            adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
-            adapter.overlayManager.sendFeaturePlotUrl(overlayID, guidGenerator(), featureName,
-                featureType, featureUrl, featureParams, zoom);
-        } else {
-            adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
-                guidGenerator(), featureName, featureType, featureUrl, featureParams, zoom);
+            var zoom = $('#zoom-checkbox').is(':checked');
+            var featureType = $('#type-selection').val().toLowerCase().replace(' ', '-').replace(/\s/g, '');
+            if(!($('#add-feature-div').is(':visible'))) {
+                adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
+            } else if($('#overlay-selection').val() === 'Add New Overlay') {
+                var overlayID = guidGenerator();
+                adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
+                adapter.overlayManager.sendFeaturePlotUrl(overlayID, guidGenerator(), featureName,
+                    featureType, featureUrl, featureParams, zoom);
+            } else {
+                adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
+                    guidGenerator(), featureName, featureType, featureUrl, featureParams, zoom);
+            }
+            setStateInit();
         }
-        setStateInit();
     };
 
     var deleteOverlayOrFeature = function() {
@@ -429,6 +431,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         $('#add-feature-div').hide();
         addState();
         changeAddScrollState();
+        checkAddFormCompleted();
     };
 
     //Set the state to be the Remove layer or feature form.
