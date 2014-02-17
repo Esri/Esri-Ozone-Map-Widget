@@ -99,13 +99,14 @@ require([
                 OWF.ready(function () {
                     OWF.notifyWidgetReady();
                     statusHadler();
+                    CommonMapApi.status.request.send({types:['view']});
                     map.on('dbl-click', sendClickEvent);
                     map.on('click', sendClickEvent);
                     draw.on('draw-end', sendDragEvent);
                 });
             }
         };
-        
+
         map.on('load', initMap);
     }
 );
