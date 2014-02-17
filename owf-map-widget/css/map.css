@@ -223,7 +223,6 @@ img {
 
 .esriScalebarLine {
     border: 2px solid #333333;
-color: red;
 }
 
 .esriScalebarMetricLine {
@@ -235,6 +234,13 @@ color: red;
     border-bottom-style: none;
     top: -2px;
     box-shadow: 2px -2px 0px 0px #E0E0E0;
+}
+
+.esriScalebarLabel {
+    color: #333333;
+    font-size: 12px;
+    font-weight: bold;
+    -webkit-text-stroke: 0.5px #E0E0E0;
 }
 
 .esriControlsBR {
