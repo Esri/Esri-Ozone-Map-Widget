@@ -323,10 +323,8 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         }).length;
         if(emptyInputs === 0 || !($('#add-feature-div').is(':visible'))) {
             $('#overlay-manager-add-button').removeClass('disabled');
-            $('#overlay-manager-add-button').on('click',  addOverlayOrFeature);
         } else {
             $('#overlay-manager-add-button').addClass('disabled');
-            $('#overlay-manager-add-button').off('click');
         }
     };
 

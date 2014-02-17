@@ -84,8 +84,8 @@
     border-bottom:1px solid #666;
     border-top:1px solid #666;
     *border-top:0px;
-    clear:both; 
-    height:0; 
+    clear:both;
+    height:0;
     width: 100%;
 }
 
@@ -289,7 +289,7 @@ ul.jqtree-tree .jqtree-element{
   height:   30px;
   *height: 15px;
   *width: 185px;
-  
+
 }
 
 select.manager-input {
@@ -306,4 +306,18 @@ select.manager-input {
 
 .help-block {
   margin-left: 60px;
+}
+
+button {
+  border: none;
+  color: none;
+  background-color: transparent;
+  outline: none;
+}
+.btn, .btn:focus, .btn:active, .btn:hover{
+  border-radius: 0px;
+  outline: none;
+  background-color: transparent;
+  margin: 0px;
+  padding: 0px;
 }
