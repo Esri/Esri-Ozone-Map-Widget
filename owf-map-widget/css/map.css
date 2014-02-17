@@ -220,6 +220,23 @@ img {
     position: relative;
     bottom: 40px;
 }
+
+.esriScalebarLine {
+    border: 2px solid #333333;
+color: red;
+}
+
+.esriScalebarMetricLine {
+    border-top-style: none;
+    box-shadow: 2px 0px 0px 0px #E0E0E0;
+}
+
+.esriScalebarEnglishLine {
+    border-bottom-style: none;
+    top: -2px;
+    box-shadow: 2px -2px 0px 0px #E0E0E0;
+}
+
 .esriControlsBR {
   visibility: hidden;
 }
@@ -235,6 +252,7 @@ img {
     background-repeat: no-repeat;
     background-position: 3px 7px;
 }
+
 
 .notifyjs-esri-info {
     background-color: #80CC99;
