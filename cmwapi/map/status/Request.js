@@ -76,7 +76,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 // Send an error with the current widget instance as the sender.
                 Error.send( OWF.getInstanceId(), Channels.MAP_STATUS_REQUEST, payload, errorMsg);
             } else {
-                OWF.Eventing.publish(Channels.MAP_STATUS_REQUEST, payload);
+                if (payload.length === 1) {
+                    OWF.Eventing.publish(Channels.MAP_STATUS_REQUEST, Ozone.util.toString(payload[0]));
+                } else {
+                    OWF.Eventing.publish(Channels.MAP_STATUS_REQUEST, Ozone.util.toString(payload));
+                }
             }
         },
 
@@ -96,16 +100,20 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var newHandler = function(sender, msg) {
                 var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = Ozone.util.parseJson(msg);
-                if (jsonMsg.types) {
-                    var checkTypes = Validator.validRequestTypes(jsonMsg.types);
-                    if (checkTypes.result) {
-                        handler(jsonSender.id, jsonMsg.types);
+                var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
+
+                for (var i = 0; i < data.length; i ++) {
+                    if (data[i].types) {
+                        var checkTypes = Validator.validRequestTypes(data[i].types);
+                        if (checkTypes.result) {
+                            handler(jsonSender.id, data[i].types);
+                        } else {
+                            Error.send( jsonSender.id, Channels.MAP_STATUS_REQUEST, msg, checkTypes.msg);
+                        }
                     } else {
-                        Error.send( jsonSender.id, Channels.MAP_STATUS_REQUEST, msg, checkTypes.msg);
+                        // if none requested, handle _all_
+                        handler(jsonSender.id, Validator.SUPPORTED_STATUS_TYPES);
                     }
-                } else {
-                    // if none requested, handle _all_
-                    handler(jsonSender.id, Validator.SUPPORTED_STATUS_TYPES);
                 }
             };
             OWF.Eventing.subscribe(Channels.MAP_STATUS_REQUEST, newHandler );
