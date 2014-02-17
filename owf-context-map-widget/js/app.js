@@ -28,6 +28,7 @@ require([
         var clickEvent, doubleClickEvent;
 
         var map = new Map("mapDiv", {
+            wrapAround180: false,
             center: [-77.035841, 38.901721],
             zoom: 1,
             basemap: "streets",
@@ -59,7 +60,7 @@ require([
         //the current views of the other maps on the dashboard.
         var statusHadler = function() {
             CommonMapApi.status.view.addHandler(function(jsonID, senderID, msg) {
-                var sourceID = senderID;
+                var sourceID = OWF.Util.parseJson(jsonID).id;
                 var northEast = msg.northEast;
                 var southWest = msg.southWest;
                 var extent = webMercatorUtils.geographicToWebMercator(new Extent(
@@ -99,10 +100,10 @@ require([
                 OWF.ready(function () {
                     OWF.notifyWidgetReady();
                     statusHadler();
-                    CommonMapApi.status.request.send({types:['view']});
                     map.on('dbl-click', sendClickEvent);
                     map.on('click', sendClickEvent);
                     draw.on('draw-end', sendDragEvent);
+                    CommonMapApi.status.request.send({types:['view']});
                 });
             }
         };
