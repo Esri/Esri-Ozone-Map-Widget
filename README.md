@@ -8,7 +8,7 @@ This Git Repo provides sample widgets (light-weight web applications) designed f
 
 #### [ArcGIS OWF Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-map-widget)
 
-A more complex map widget.  This widget includes a few common ArcGIS JavaScript map controls for map view manipulation and allows the plotting of map layers through the CMWAPI.  Additionally, it includes a basic Overlay Manager for displaying and manipulating map Overlays and Features as defined by the CMWAPI.  This widget leverages the CMWAPI 1.1 Specification Implementation and the ArcGIS CMWAPI Adapter modules described below.
+A resusable map widget that supports CMWAPI v1.1 widget interactions.  This widget includes a few common ArcGIS JavaScript map controls for map view manipulation and allows the plotting of map layers through the CMWAPI.  Additionally, it includes a basic Overlay Manager for displaying and manipulating map Overlays and Features as defined by the CMWAPI.  This widget leverages the CMWAPI 1.1 Specification Implementation and the ArcGIS CMWAPI Adapter modules described below.
 
 #### [ArcGIS OWF Context Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-context-map-widget)
 
@@ -28,8 +28,7 @@ A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https:
 
 #### [Basic Map Widget](https://github.com/Esri/Next-Century/tree/master/basic-map-widget)
 
-A simple map widget using the ESRI [ArcGIS JavaScript API](https://developers.arcgis.com/en/javascript/). It's purpose is to provide a basic demonstration of using ArcGIS maps within OWF widgets.  
-When run within OWF alongside the Contacts Manager widget described below, it includes the following features:
+A simple map widget using the ESRI [ArcGIS JavaScript API](https://developers.arcgis.com/en/javascript/). It's purpose is to provide a basic demonstration of using ArcGIS maps within OWF widgets.  When run within OWF alongside the Contacts Manager widget described below, it includes the following features:
 
 * Receives [drag and drop](https://github.com/ozoneplatform/owf/wiki/OWF-7-Developer-Widget-Drag-and-Drop-API) data from other OWF widgets.
 
@@ -40,6 +39,14 @@ When run within OWF alongside the Contacts Manager widget described below, it in
 #### [Contacts Manager](https://github.com/Esri/Next-Century/tree/master/contacts)
 
 A modified version of the [Contacts Manager](https://github.com/ozoneplatform/owf/tree/master/web-app/examples/walkthrough/widgets/contacts) example widget that ships with OWF 7. This version uses Intents to allow the user to select which map widget implementation should receive the address when contact entry is clicked. (The original version was hard coded to send the address to a specific map widget.)
+
+## Limitations / Known Issues
+
+1. CMWAPI map.feature.plot messages are not supported by the map widget.  ArcGIS KMLLayers make use of an ArcGIS Portal service to parse KML data.  This service requires accessible URLs to KML data and does not accept KML string input.  See the [KML Layer JavaScript documentation] (https://developers.arcgis.com/javascript/jsapi/kmllayer-amd.html) for more details.  A client side parser or an enhancement to the KML processing service may be provided in an update. 
+
+2. CMWAPI Drag and Drop messages that include "feature" attributes are not supported by the map widget.  These drag and drop messages provide KML data in string format.  See limitation 1.  Note that CMWAPI drag and drop messages that provide markers or feature URLs are supported.
+
+3. "Zooming" to added feature layers when they are created is supported for features that can be rendered in one pass.  Composite features (e.g., KMZ files) that may result in multiple asynchronous data pulls do not auto-zoom the map after loading.  This may be added as an enhancement but can present certain usability issues.  If any of the asynchronous calls takes a long time, the eventual zooming to data may not appear connected to the user action that triggered it.
 
 ## Requirements
 
@@ -63,7 +70,7 @@ A modified version of the [Contacts Manager](https://github.com/ozoneplatform/ow
 
 4. Proxy to provide access to Esri services
 
-    > NOTE: Certain Esri services, including those dealing with WMS, require provision of a [proxy](https://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html), which is a server-side code deployment.  Choose and configure the appropriate proxy implementation (ASP.NET, Java, PHP, ...) for your web server.  
+    > NOTE: Certain Esri services, including those dealing with WMS, require provision of a [proxy](https://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html), which is a server-side code deployment.  Choose and configure the appropriate proxy implementation (ASP.NET, Java, PHP, ...) for your web server.  These widgets were tested against the Java/JSP proxy.  If using the Java/JSP proxy, be sure to modify the serverUrls variable to match your data URLs.  For development purposes, this variable can be set to pass "http://" and "https://".  A deployment version of the proxy should use more restrictive URL filters.
 
     > NOTE: The location for the proxy used by the ArcGIS OWF Map Widget is configured in app.js as esri.config.defaults.io.proxyUrl.
 

@@ -22,14 +22,22 @@
  */
 
 require([
-    "esri/map", "esri/toolbars/draw", "esri/geometry/webMercatorUtils", "cmwapi/cmwapi", "dojo/domReady!"],
-    function(Map, Draw, webMercatorUtils, CommonMapApi) {
+    "esri/map", "esri/toolbars/draw", "esri/graphic", "esri/geometry/Extent", "esri/symbols/SimpleFillSymbol","esri/symbols/SimpleLineSymbol",
+    "esri/layers/GraphicsLayer", "dojo/_base/Color", "esri/geometry/webMercatorUtils", "cmwapi/cmwapi", "dojo/domReady!"],
+    function(Map, Draw, Graphic, Extent, SimpleFillSymbol, SimpleLineSymbol, GraphicsLayer, Color, webMercatorUtils, CommonMapApi) {
+        var clickEvent, doubleClickEvent;
+
         var map = new Map("mapDiv", {
             center: [-77.035841, 38.901721],
             zoom: 1,
             basemap: "streets",
             slider:false
         });
+
+        var extentColors = [new Color([255,0,0,1]), new Color([0,255,0,1]), new Color([0,0,255,1])];
+        var mapIds = {};
+        var mapColorCount = {};
+        var contextCount = 0;
 
         var sendClickEvent = function(e) {
             var locationEvent = {};
@@ -47,6 +55,38 @@ require([
             CommonMapApi.view.center.bounds.send(locationEvent);
         };
 
+        //Function that uses the CMWAPI to listen to the status view channel and update the conext map with appropriate shaded areas to show
+        //the current views of the other maps on the dashboard.
+        var statusHadler = function() {
+            CommonMapApi.status.view.addHandler(function(jsonID, senderID, msg) {
+                var sourceID = senderID;
+                var northEast = msg.northEast;
+                var southWest = msg.southWest;
+                var extent = webMercatorUtils.geographicToWebMercator(new Extent(
+                    southWest.lon,
+                    southWest.lat,
+                    northEast.lon,
+                    northEast.lat,
+                    map.spatialReference));
+
+                var layer = new GraphicsLayer();
+                if(mapIds[sourceID.toString()]) {
+                    map.removeLayer(mapIds[sourceID.toString()]);
+                } else {
+                    mapColorCount[sourceID.toString()] = contextCount++;
+                }
+                mapIds[sourceID.toString()] = layer;
+
+                var symbol =  new SimpleFillSymbol(
+                    SimpleFillSymbol.STYLE_SOLID,
+                    new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, extentColors[mapColorCount[sourceID.toString()]], 1),
+                    new Color([125,125,125,0.35]));
+
+                layer.add(new Graphic(extent, symbol));
+                map.addLayer(layer);
+            });
+        };
+
         //Map is initialized as a map with all controls disabled in order to act a contextual map in which
         //a user uses its overview to direct the flow of other maps.
         var initMap = function() {
@@ -58,13 +98,14 @@ require([
             if (OWF.Util.isRunningInOWF()) {
                 OWF.ready(function () {
                     OWF.notifyWidgetReady();
+                    statusHadler();
                     map.on('dbl-click', sendClickEvent);
                     map.on('click', sendClickEvent);
                     draw.on('draw-end', sendDragEvent);
                 });
             }
         };
-
+        
         map.on('load', initMap);
     }
 );
