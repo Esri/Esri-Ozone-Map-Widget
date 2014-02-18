@@ -218,7 +218,7 @@ img {
 
 #map .scalebar_bottom-left.esriScalebar {
     position: relative;
-    bottom: 40px;
+    bottom: 50px;
 }
 
 .esriScalebarLine {
@@ -227,20 +227,29 @@ img {
 
 .esriScalebarMetricLine {
     border-top-style: none;
-    box-shadow: 2px 0px 0px 0px #E0E0E0;
+    /*box-shadow: 2px 2px 0px 0px #E0E0E0;*/
+    /*box-shadow: 0px -2px 0px 0px #E0E0E0;*/
+    box-shadow: 2px 2px 0px 0px #E0E0E0; /*Right & bottom sides of number line*/
 }
 
 .esriScalebarEnglishLine {
     border-bottom-style: none;
     top: -2px;
-    box-shadow: 2px -2px 0px 0px #E0E0E0;
+    box-shadow: 2px -2px 0px 0px #E0E0E0; /*Right side of number line*/
 }
 
 .esriScalebarLabel {
+    padding-top: 5px;
+    padding-bottom: 10px;
     color: #333333;
     font-size: 12px;
     font-weight: bold;
-    -webkit-text-stroke: 0.5px #E0E0E0;
+    /*-webkit-text-stroke: 0.5px #E0E0E0;*/
+    text-shadow: 
+    -1px -1px 0 #E0E0E0,
+    1px -1px 0 #E0E0E0,
+    -1px 1px 0 #E0E0E0,
+    1px 1px 0 #E0E0E0;
 }
 
 .esriControlsBR {
