@@ -22,15 +22,14 @@
  */
 
 require([
-    "esri/map", "esri/toolbars/draw", "esri/graphic", "esri/geometry/Extent", "esri/symbols/SimpleFillSymbol","esri/symbols/SimpleLineSymbol",
+    "esri/map", "esri/toolbars/draw", "esri/graphic", "esri/geometry/Extent", "esri/SpatialReference", "esri/symbols/SimpleFillSymbol","esri/symbols/SimpleLineSymbol",
     "esri/layers/GraphicsLayer", "dojo/_base/Color", "esri/geometry/webMercatorUtils", "cmwapi/cmwapi", "dojo/domReady!"],
-    function(Map, Draw, Graphic, Extent, SimpleFillSymbol, SimpleLineSymbol, GraphicsLayer, Color, webMercatorUtils, CommonMapApi) {
+    function(Map, Draw, Graphic, Extent, SpatialReference, SimpleFillSymbol, SimpleLineSymbol, GraphicsLayer, Color, webMercatorUtils, CommonMapApi) {
         var clickEvent, doubleClickEvent;
 
         var map = new Map("mapDiv", {
             wrapAround180: false,
-            center: [-77.035841, 38.901721],
-            zoom: 1,
+            center: [0, 0],
             basemap: "streets",
             slider:false
         });
@@ -63,12 +62,11 @@ require([
                 var sourceID = OWF.Util.parseJson(jsonID).id;
                 var northEast = msg.northEast;
                 var southWest = msg.southWest;
-                var extent = webMercatorUtils.geographicToWebMercator(new Extent(
-                    southWest.lon,
+                var extent = new Extent(southWest.lon,
                     southWest.lat,
                     northEast.lon,
                     northEast.lat,
-                    map.spatialReference));
+                    new SpatialReference(4326));
 
                 var layer = new GraphicsLayer();
                 if(mapIds[sourceID.toString()]) {
@@ -83,7 +81,36 @@ require([
                     new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, extentColors[mapColorCount[sourceID.toString()]], 1),
                     new Color([125,125,125,0.35]));
 
-                layer.add(new Graphic(extent, symbol));
+                // Handle the case out extent encompasses pretty much the entire world.  Using 359.9999 here instead of
+                // 360 to allow for some rounding error.  Also catch the case where rounding errors may have
+                // made xmax < xmin on very large extents that encompass nearly all of the globe.
+                if (Math.abs(extent.xmax - extent.xmin) >= 359.9999 ||
+                    (Math.abs(extent.xmax - extent.xmin) <= 0.0001 && extent.xmax < extent.xmin)) {
+                    layer.add(new Graphic(new Extent(-180, 
+                        extent.ymin,
+                        180,
+                        extent.ymax,
+                        extent.spatialReference), symbol));
+                }
+                // Handle the case where our bounding box wraps around the international date
+                // line.  In this case, we draw two bounding boxes to show the wrapping area.
+                else if (extent.xmax < extent.xmin) {
+                    layer.add(new Graphic(new Extent(extent.xmin,
+                        extent.ymin, 
+                        180, 
+                        extent.ymax, 
+                        extent.spatialReference), symbol));
+                    layer.add(new Graphic(new Extent(-180, 
+                        extent.ymin,
+                        extent.xmax,
+                        extent.ymax,
+                        extent.spatialReference), symbol));
+                }
+                // Otherwise draw a normal bounding box.
+                else {
+                    layer.add(new Graphic(extent, symbol));    
+                }
+                
                 map.addLayer(layer);
             });
         };
@@ -94,6 +121,9 @@ require([
             map.disableMapNavigation();
             map.enableRubberBandZoom();
             map.setMapCursor("crosshair");
+            map.setExtent(new Extent(-180,-90,180,90),
+                    new SpatialReference(4326), true);
+
             var draw = new Draw(map, { showTooltips: false });
             draw.activate(esri.toolbars.Draw.EXTENT);
             if (OWF.Util.isRunningInOWF()) {
