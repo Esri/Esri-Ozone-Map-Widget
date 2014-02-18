@@ -84,8 +84,8 @@ require([
                 // Handle the case out extent encompasses pretty much the entire world.  Using 359.9999 here instead of
                 // 360 to allow for some rounding error.  Also catch the case where rounding errors may have
                 // made xmax < xmin on very large extents that encompass nearly all of the globe.
-                if (Math.abs(extent.xmax - extent.xmin) >= 359.9999 ||
-                    (Math.abs(extent.xmax - extent.xmin) <= 0.0001 && extent.xmax < extent.xmin)) {
+                if (Math.abs(extent.xmax - extent.xmin) >= 359.999999 ||
+                    (Math.abs(extent.xmax - extent.xmin) <= 0.000001 && extent.xmax < extent.xmin)) {
                     layer.add(new Graphic(new Extent(-180, 
                         extent.ymin,
                         180,
