@@ -257,6 +257,7 @@ img {
 }
 .notifyjs-corner {
     position: absolute;
+    padding-right: 2px;
 }
 .notifyjs-corner .notifyjs-wrapper, .notifyjs-corner .notifyjs-container {
     height: 100%;
