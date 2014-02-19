@@ -322,3 +322,8 @@ button {
   margin: 0px;
   padding: 0px;
 }
+
+.tree-wrapper {
+    overflow-x: hidden;
+  overflow-y: auto;
+}

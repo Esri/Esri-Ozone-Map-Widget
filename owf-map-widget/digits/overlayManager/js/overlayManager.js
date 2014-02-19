@@ -41,6 +41,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         $('#popover_overlay_wrapper').load('./digits/overlayManager/index.html', function() {
             $(window).bind("resize",function() {
                 changeAddScrollState();
+                changeTreeScrollState();
             });
             $('#overlay-tree').tree({
                 data: adapter.overlayManager.getOverlayTree(),
@@ -173,6 +174,20 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             }
             resizeOverlayManager();
         }
+    };
+
+    var changeTreeScrollState = function() {
+        var isRemoveTree = $("#overlay-tree").hasClass('remove-tree');
+        var scrollHeight = parseInt($(".tree-wrapper")[0].scrollHeight);
+        var shrinkPadding = isRemoveTree ? 220 : 200;
+        if(($(window).height() - scrollHeight) <= shrinkPadding) {
+            $(".tree-wrapper").css("height", $(window).height() - shrinkPadding);
+        } else {
+            $(".tree-wrapper").css("height", $("#overlay-tree").height());
+        }
+        var height = $(".tree-wrapper").height();
+        var managerHeightPadding = isRemoveTree ? (height + 130): (height + 90);
+        $('#popover_overlay_wrapper').css('height',  managerHeightPadding);
     };
 
    var overlaySelectonChanged = function() {
@@ -404,6 +419,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         $('#feature-add-url').parent().removeClass('has-error');
         updateTree();
         resizeOverlayToTree('#overlay-tree', 90);
+        changeTreeScrollState();
     };
 
 
@@ -449,6 +465,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             checkDeleteButtonDisabled();
             $("#overlay-tree.remove-tree input:checkbox").removeAttr('checked');
             resizeOverlayToTree('#overlay-tree', 132);
+            changeTreeScrollState();
         }
     };
 
