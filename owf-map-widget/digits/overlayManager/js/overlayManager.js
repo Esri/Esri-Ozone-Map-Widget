@@ -172,22 +172,24 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
                 var height = (featureHeight + overlayHeight + 32);
                 $("#overlay-manager-add").css("height", height);
             }
-            resizeOverlayManager();
+            $('#popover_overlay_wrapper').css('height', ($('#overlay-manager-add').height() + 100));
         }
     };
 
     var changeTreeScrollState = function() {
-        var isRemoveTree = $("#overlay-tree").hasClass('remove-tree');
-        var scrollHeight = parseInt($(".tree-wrapper")[0].scrollHeight);
-        var shrinkPadding = isRemoveTree ? 220 : 200;
-        if(($(window).height() - scrollHeight) <= shrinkPadding) {
-            $(".tree-wrapper").css("height", $(window).height() - shrinkPadding);
-        } else {
-            $(".tree-wrapper").css("height", $("#overlay-tree").height());
+        if(!$('#add-overlay-div').is(':visible') && !$('#add-feature-div').is(':visible')) {
+            var isRemoveTree = $("#overlay-tree").hasClass('remove-tree');
+            var scrollHeight = parseInt($(".tree-wrapper")[0].scrollHeight);
+            var shrinkPadding = isRemoveTree ? 220 : 200;
+            if(($(window).height() - scrollHeight) <= shrinkPadding) {
+                $(".tree-wrapper").css("height", $(window).height() - shrinkPadding);
+            } else {
+                $(".tree-wrapper").css("height", $("#overlay-tree").height());
+            }
+            var height = $(".tree-wrapper").height();
+            var managerHeightPadding = isRemoveTree ? (height + 130): (height + 90);
+            $('#popover_overlay_wrapper').css('height',  managerHeightPadding);
         }
-        var height = $(".tree-wrapper").height();
-        var managerHeightPadding = isRemoveTree ? (height + 130): (height + 90);
-        $('#popover_overlay_wrapper').css('height',  managerHeightPadding);
     };
 
    var overlaySelectonChanged = function() {
@@ -249,11 +251,6 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         }
         changeAddScrollState();
         checkAddFormCompleted();
-    };
-
-    var resizeOverlayManager = function() {
-        var height = $('#overlay-manager-add').height() + 100;
-        $('#popover_overlay_wrapper').css('height', height + 'px');
     };
 
     var updateOverlaySelection = function() {
