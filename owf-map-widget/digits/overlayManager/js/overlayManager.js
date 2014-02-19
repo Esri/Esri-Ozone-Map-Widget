@@ -184,7 +184,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             if(($(window).height() - scrollHeight) <= shrinkPadding) {
                 $(".tree-wrapper").css("height", $(window).height() - shrinkPadding);
             } else {
-                $(".tree-wrapper").css("height", $("#overlay-tree").height());
+                $(".tree-wrapper").css("height", ($("#overlay-tree").height() + 5));
             }
             var height = $(".tree-wrapper").height();
             var managerHeightPadding = isRemoveTree ? (height + 130): (height + 90);
@@ -216,7 +216,6 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             if(!($('#add-feature-div').is(':visible'))) {
                 adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
             } else if($('#overlay-selection').val() === 'Add New Overlay') {
-                var overlayID = guidGenerator();
                 adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
                 adapter.overlayManager.sendFeaturePlotUrl(overlayID, guidGenerator(), featureName,
                     featureType, featureUrl, featureParams, zoom);
@@ -307,8 +306,8 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
     var isValidParams = function(params) {
         if(params) {
             try {
-                var obj = OWF.Util.parseJson(params);
-                return true
+                OWF.Util.parseJson(params);
+                return true;
             } catch(e) {
                 return false;
             }
@@ -329,7 +328,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
         };
         return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
-    }
+    };
 
     var checkAddFormCompleted = function() {
         var emptyInputs = $('.form-control.default').filter(function() {
