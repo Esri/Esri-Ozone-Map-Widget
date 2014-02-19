@@ -77,12 +77,9 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
                         checked + '<img src=' + image + ' alt="Overlay Icon" height="25" width="25">'
                     );
                 },
-                onCanMoveTo: function(moved_node, target_node, position) {
-                    if(target_node['node-type'] === 'feature') {
-                        return (position !== 'inside');
-                    } else {
-                        return true;
-                    }
+                onCanMoveTo: function(moved_node, target_node) {
+                    return target_node['node-type'] !== 'feature';
+
                 }
             });
             //build overlay tree with information in node so that it can make calls to the API on change.
