@@ -31,7 +31,8 @@ require([
             wrapAround180: false,
             center: [0, 0],
             basemap: "streets",
-            slider:false
+            slider:false,
+            autoResize: false
         });
 
         var extentColors = [new Color([255,0,0,1]), new Color([0,255,0,1]), new Color([0,0,255,1])];
@@ -118,14 +119,24 @@ require([
         //Map is initialized as a map with all controls disabled in order to act a contextual map in which
         //a user uses its overview to direct the flow of other maps.
         var initMap = function() {
-            map.disableMapNavigation();
+            //map.disableMapNavigation();
+            map.disableShiftDoubleClickZoom();
+            map.disableScrollWheelZoom();
             map.enableRubberBandZoom();
             map.setMapCursor("crosshair");
-            map.setExtent(new Extent(-180,-90,180,90),
-                    new SpatialReference(4326), true);
+            
+            // set the zoom level based upon how many times the max zoomed world tile could
+            // be expanded within our widget's height and width without obscuring any of the
+            // image.
+            var numberBaseImages = Math.floor(Math.min(map.height / 256, map.width / 256));
+            numberBaseImages = (numberBaseImages >= 1) ? numberBaseImages : 1;
+            map.setZoom(Math.floor(Math.log(numberBaseImages) / Math.log(2)));
 
+            // Activate the drawing tools.
             var draw = new Draw(map, { showTooltips: false });
             draw.activate(esri.toolbars.Draw.EXTENT);
+
+            // Check for OWF before setting up OWF-based events.
             if (OWF.Util.isRunningInOWF()) {
                 OWF.ready(function () {
                     OWF.notifyWidgetReady();
@@ -134,6 +145,30 @@ require([
                     map.on('click', sendClickEvent);
                     draw.on('draw-end', sendDragEvent);
                     CommonMapApi.status.request.send({types:['view']});
+
+                    // Use the widget state API to reposition the context map
+                    // when the widget is resized.
+                    var widgetState = Ozone.state.WidgetState.getInstance({
+                        onStateEventReceived: function(sender, msg) {
+                            var eventName = msg.eventName;
+                            console.log(eventName);
+                            if (eventName === 'resize') {
+                                // Here we're reloading the window assuming resize events are
+                                // not often.  This forces the layout to be completely 
+                                // reconfigured and avoid some issues with trying to use
+                                // map.resize() or map.reposition() to affect the same change.
+                                // Using those methods or having the map auto-resize
+                                // was not properly repositioning full extent map images on
+                                // and lead to extensive whitespace borders.  It may be worth
+                                // revisiting this in the future to avoid reloading the map
+                                // and saving an extra server call. 
+                                window.location.reload();
+                            }
+                        }
+                    });
+                    widgetState.addStateEventListeners({
+                        events: ['resize']
+                    })
                 });
             }
         };
