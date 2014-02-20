@@ -207,6 +207,7 @@ html, body {
 .esriPopup table {
     border-color: #F7F7F7;
     border: none;
+    /*border: 0;*/
 }
 .esriPopup tbody {
     border-color: #F7F7F7;
