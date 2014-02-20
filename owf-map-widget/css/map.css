@@ -204,14 +204,6 @@ html, body {
 .esriViewPopup .hzLine {
     border-top: none;
 }
-.esriPopup table {
-    border-color: #F7F7F7;
-    border: none;
-    /*border: 0;*/
-}
-.esriPopup tbody {
-    border-color: #F7F7F7;
-}
 .esriPopup {
     border-radius: 6px;
 }
