@@ -181,7 +181,7 @@ html, body {
     float: right;
 }
 .sizer > .titlePane {
-    background-color: #0E6280;
+    background-color: #333333;
 }
 .pointer {
     background-color: #0E6280;
@@ -191,6 +191,25 @@ html, body {
 }
 .maximize:hover, .restore:hover {
     opacity: 0.2;
+}
+.esriViewPopup .header {
+font-size: 18px;
+}
+.esriViewPopup .hzLine {
+    border-top: none;
+}
+.esriPopup table {
+    border-color: #F7F7F7;
+    border: none;
+}
+.esriPopup tbody {
+    border-color: #F7F7F7;
+}
+.esriPopup {
+    border-radius: 6px;
+}
+.esriPopup .sizer {
+    width: 700px; /*Make dynamic & wrap long urls*/
 }
 .esriPopup a {
     text-decoration: none;
@@ -211,6 +230,12 @@ html, body {
 .esriPopup .pointer.top {
     background-position: -73px -618px;
 }
+/*#map_infowindow.simpleInfoWindow{
+    border: 2px solid #455268;
+    background-color: #dfe5d7;
+    background: -moz-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfff4), color-stop(40%,#dfe5d7), color-stop(100%,#b3bead));
+}*/
 img {
     margin-bottom: 5px;
     margin-left: 5px;
