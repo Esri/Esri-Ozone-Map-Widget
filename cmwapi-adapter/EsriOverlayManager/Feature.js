@@ -691,7 +691,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                         sendError(caller, msg, {type: "map.feature.update", msg: msg});
                     } else {
                         name = (name ? name : feature.name);
-
                         var oldId = feature.esriObject.id;
                         var newIdString = newOverlayId + " - " + featureId;
                         feature.esriObject.id = newIdString;
@@ -705,6 +704,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
                         }
 
                         var newFeature = new Feature(newOverlayId, featureId, name, feature.format, feature.feature, feature.zoom, feature.esriObject);
+                        newFeature.params = feature.params;
                         manager.overlays[newOverlayId].features[featureId] = newFeature;
                         delete manager.overlays[overlayId].features[featureId];
 
