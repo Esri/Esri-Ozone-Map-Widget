@@ -22,16 +22,17 @@
  */
 
 require([
-    "esri/map", "esri/toolbars/draw", "esri/graphic", "esri/geometry/Extent", "esri/symbols/SimpleFillSymbol","esri/symbols/SimpleLineSymbol",
+    "esri/map", "esri/toolbars/draw", "esri/graphic", "esri/geometry/Extent", "esri/SpatialReference", "esri/symbols/SimpleFillSymbol","esri/symbols/SimpleLineSymbol",
     "esri/layers/GraphicsLayer", "dojo/_base/Color", "esri/geometry/webMercatorUtils", "cmwapi/cmwapi", "dojo/domReady!"],
-    function(Map, Draw, Graphic, Extent, SimpleFillSymbol, SimpleLineSymbol, GraphicsLayer, Color, webMercatorUtils, CommonMapApi) {
+    function(Map, Draw, Graphic, Extent, SpatialReference, SimpleFillSymbol, SimpleLineSymbol, GraphicsLayer, Color, webMercatorUtils, CommonMapApi) {
         var clickEvent, doubleClickEvent;
 
         var map = new Map("mapDiv", {
-            center: [-77.035841, 38.901721],
-            zoom: 1,
+            wrapAround180: false,
+            center: [0, 0],
             basemap: "streets",
-            slider:false
+            slider:false,
+            autoResize: false
         });
 
         var extentColors = [new Color([255,0,0,1]), new Color([0,255,0,1]), new Color([0,0,255,1])];
@@ -59,15 +60,14 @@ require([
         //the current views of the other maps on the dashboard.
         var statusHadler = function() {
             CommonMapApi.status.view.addHandler(function(jsonID, senderID, msg) {
-                var sourceID = senderID;
+                var sourceID = OWF.Util.parseJson(jsonID).id;
                 var northEast = msg.northEast;
                 var southWest = msg.southWest;
-                var extent = webMercatorUtils.geographicToWebMercator(new Extent(
-                    southWest.lon,
+                var extent = new Extent(southWest.lon,
                     southWest.lat,
                     northEast.lon,
                     northEast.lat,
-                    map.spatialReference));
+                    new SpatialReference(4326));
 
                 var layer = new GraphicsLayer();
                 if(mapIds[sourceID.toString()]) {
@@ -82,7 +82,36 @@ require([
                     new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, extentColors[mapColorCount[sourceID.toString()]], 1),
                     new Color([125,125,125,0.35]));
 
-                layer.add(new Graphic(extent, symbol));
+                // Handle the case out extent encompasses pretty much the entire world.  Using 359.9999 here instead of
+                // 360 to allow for some rounding error.  Also catch the case where rounding errors may have
+                // made xmax < xmin on very large extents that encompass nearly all of the globe.
+                if (Math.abs(extent.xmax - extent.xmin) >= 359.999999 ||
+                    (Math.abs(extent.xmax - extent.xmin) <= 0.000001 && extent.xmax < extent.xmin)) {
+                    layer.add(new Graphic(new Extent(-180, 
+                        extent.ymin,
+                        180,
+                        extent.ymax,
+                        extent.spatialReference), symbol));
+                }
+                // Handle the case where our bounding box wraps around the international date
+                // line.  In this case, we draw two bounding boxes to show the wrapping area.
+                else if (extent.xmax < extent.xmin) {
+                    layer.add(new Graphic(new Extent(extent.xmin,
+                        extent.ymin, 
+                        180, 
+                        extent.ymax, 
+                        extent.spatialReference), symbol));
+                    layer.add(new Graphic(new Extent(-180, 
+                        extent.ymin,
+                        extent.xmax,
+                        extent.ymax,
+                        extent.spatialReference), symbol));
+                }
+                // Otherwise draw a normal bounding box.
+                else {
+                    layer.add(new Graphic(extent, symbol));    
+                }
+                
                 map.addLayer(layer);
             });
         };
@@ -90,11 +119,24 @@ require([
         //Map is initialized as a map with all controls disabled in order to act a contextual map in which
         //a user uses its overview to direct the flow of other maps.
         var initMap = function() {
-            map.disableMapNavigation();
+            //map.disableMapNavigation();
+            map.disableShiftDoubleClickZoom();
+            map.disableScrollWheelZoom();
             map.enableRubberBandZoom();
             map.setMapCursor("crosshair");
+            
+            // set the zoom level based upon how many times the max zoomed world tile could
+            // be expanded within our widget's height and width without obscuring any of the
+            // image.
+            var numberBaseImages = Math.floor(Math.min(map.height / 256, map.width / 256));
+            numberBaseImages = (numberBaseImages >= 1) ? numberBaseImages : 1;
+            map.setZoom(Math.floor(Math.log(numberBaseImages) / Math.log(2)));
+
+            // Activate the drawing tools.
             var draw = new Draw(map, { showTooltips: false });
             draw.activate(esri.toolbars.Draw.EXTENT);
+
+            // Check for OWF before setting up OWF-based events.
             if (OWF.Util.isRunningInOWF()) {
                 OWF.ready(function () {
                     OWF.notifyWidgetReady();
@@ -102,10 +144,35 @@ require([
                     map.on('dbl-click', sendClickEvent);
                     map.on('click', sendClickEvent);
                     draw.on('draw-end', sendDragEvent);
+                    CommonMapApi.status.request.send({types:['view']});
+
+                    // Use the widget state API to reposition the context map
+                    // when the widget is resized.
+                    var widgetState = Ozone.state.WidgetState.getInstance({
+                        onStateEventReceived: function(sender, msg) {
+                            var eventName = msg.eventName;
+                            console.log(eventName);
+                            if (eventName === 'resize') {
+                                // Here we're reloading the window assuming resize events are
+                                // not often.  This forces the layout to be completely 
+                                // reconfigured and avoid some issues with trying to use
+                                // map.resize() or map.reposition() to affect the same change.
+                                // Using those methods or having the map auto-resize
+                                // was not properly repositioning full extent map images on
+                                // and lead to extensive whitespace borders.  It may be worth
+                                // revisiting this in the future to avoid reloading the map
+                                // and saving an extra server call. 
+                                window.location.reload();
+                            }
+                        }
+                    });
+                    widgetState.addStateEventListeners({
+                        events: ['resize']
+                    })
                 });
             }
         };
-        
+
         map.on('load', initMap);
     }
 );

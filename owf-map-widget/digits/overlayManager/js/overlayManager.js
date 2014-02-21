@@ -41,6 +41,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         $('#popover_overlay_wrapper').load('./digits/overlayManager/index.html', function() {
             $(window).bind("resize",function() {
                 changeAddScrollState();
+                changeTreeScrollState();
             });
             $('#overlay-tree').tree({
                 data: adapter.overlayManager.getOverlayTree(),
@@ -76,12 +77,9 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
                         checked + '<img src=' + image + ' alt="Overlay Icon" height="25" width="25">'
                     );
                 },
-                onCanMoveTo: function(moved_node, target_node, position) {
-                    if(target_node['node-type'] === 'feature') {
-                        return (position !== 'inside');
-                    } else {
-                        return true;
-                    }
+                onCanMoveTo: function(moved_node, target_node) {
+                    return target_node['node-type'] !== 'feature';
+
                 }
             });
             //build overlay tree with information in node so that it can make calls to the API on change.
@@ -171,7 +169,23 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
                 var height = (featureHeight + overlayHeight + 32);
                 $("#overlay-manager-add").css("height", height);
             }
-            resizeOverlayManager();
+            $('#popover_overlay_wrapper').css('height', ($('#overlay-manager-add').height() + 100));
+        }
+    };
+
+    var changeTreeScrollState = function() {
+        if(!$('#add-overlay-div').is(':visible') && !$('#add-feature-div').is(':visible')) {
+            var isRemoveTree = $("#overlay-tree").hasClass('remove-tree');
+            var scrollHeight = parseInt($(".tree-wrapper")[0].scrollHeight);
+            var shrinkPadding = isRemoveTree ? 220 : 200;
+            if(($(window).height() - scrollHeight) <= shrinkPadding) {
+                $(".tree-wrapper").css("height", $(window).height() - shrinkPadding);
+            } else {
+                $(".tree-wrapper").css("height", ($("#overlay-tree").height() + 5));
+            }
+            var height = $(".tree-wrapper").height();
+            var managerHeightPadding = isRemoveTree ? (height + 130): (height + 90);
+            $('#popover_overlay_wrapper').css('height',  managerHeightPadding);
         }
     };
 
@@ -187,26 +201,27 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
 
     //Called when add button is clicked and fires call to cmwapi based on the information filled out
     //in the Overlay Manager add form.
-    var addOverlayOrFeature = function() {
-        var featureName = $('#feature-add-name').val();
-        var featureUrl = $('#feature-add-url').val().replace(/^\s+|\s+$/g, '');
-        var featureParams = $('#feature-add-params').val();
-        var overlayName = $('#overlay-add-name').val();
-        var overlayID = guidGenerator();
-        var zoom = $('#zoom-checkbox').is(':checked');
-        var featureType = $('#type-selection').val().toLowerCase().replace(' ', '-').replace(/\s/g, '');
-        if(!($('#add-feature-div').is(':visible'))) {
-            adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
-        } else if($('#overlay-selection').val() === 'Add New Overlay') {
+    var addOverlayOrFeature = function(e) {
+        if(e.target.className.indexOf('disabled') < 0) {
+            var featureName = $('#feature-add-name').val();
+            var featureUrl = $('#feature-add-url').val().replace(/^\s+|\s+$/g, '');
+            var featureParams = $('#feature-add-params').val();
+            var overlayName = $('#overlay-add-name').val();
             var overlayID = guidGenerator();
-            adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
-            adapter.overlayManager.sendFeaturePlotUrl(overlayID, guidGenerator(), featureName,
-                featureType, featureUrl, featureParams, zoom);
-        } else {
-            adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
-                guidGenerator(), featureName, featureType, featureUrl, featureParams, zoom);
+            var zoom = $('#zoom-checkbox').is(':checked');
+            var featureType = $('#type-selection').val().toLowerCase().replace(' ', '-').replace(/\s/g, '');
+            if(!($('#add-feature-div').is(':visible'))) {
+                adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
+            } else if($('#overlay-selection').val() === 'Add New Overlay') {
+                adapter.overlayManager.sendOverlayCreate(overlayID, overlayName);
+                adapter.overlayManager.sendFeaturePlotUrl(overlayID, guidGenerator(), featureName,
+                    featureType, featureUrl, featureParams, zoom);
+            } else {
+                adapter.overlayManager.sendFeaturePlotUrl($('#overlay-selection').find(":selected").attr('id'),
+                    guidGenerator(), featureName, featureType, featureUrl, featureParams, zoom);
+            }
+            setStateInit();
         }
-        setStateInit();
     };
 
     var deleteOverlayOrFeature = function() {
@@ -232,11 +247,6 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         }
         changeAddScrollState();
         checkAddFormCompleted();
-    };
-
-    var resizeOverlayManager = function() {
-        var height = $('#overlay-manager-add').height() + 100;
-        $('#popover_overlay_wrapper').css('height', height + 'px');
     };
 
     var updateOverlaySelection = function() {
@@ -293,8 +303,8 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
     var isValidParams = function(params) {
         if(params) {
             try {
-                var obj = OWF.Util.parseJson(params);
-                return true
+                OWF.Util.parseJson(params);
+                return true;
             } catch(e) {
                 return false;
             }
@@ -315,7 +325,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
         };
         return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
-    }
+    };
 
     var checkAddFormCompleted = function() {
         var emptyInputs = $('.form-control.default').filter(function() {
@@ -323,10 +333,8 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         }).length;
         if(emptyInputs === 0 || !($('#add-feature-div').is(':visible'))) {
             $('#overlay-manager-add-button').removeClass('disabled');
-            $('#overlay-manager-add-button').on('click',  addOverlayOrFeature);
         } else {
             $('#overlay-manager-add-button').addClass('disabled');
-            $('#overlay-manager-add-button').off('click');
         }
     };
 
@@ -404,6 +412,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         $('#feature-add-url').parent().removeClass('has-error');
         updateTree();
         resizeOverlayToTree('#overlay-tree', 90);
+        changeTreeScrollState();
     };
 
 
@@ -431,6 +440,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
         $('#add-feature-div').hide();
         addState();
         changeAddScrollState();
+        checkAddFormCompleted();
     };
 
     //Set the state to be the Remove layer or feature form.
@@ -448,6 +458,7 @@ define(["cmwapi-adapter/cmwapi-adapter"], function(cmwapiAdapter) {
             checkDeleteButtonDisabled();
             $("#overlay-tree.remove-tree input:checkbox").removeAttr('checked');
             resizeOverlayToTree('#overlay-tree', 132);
+            changeTreeScrollState();
         }
     };
 
