@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=7,IE=9">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>ESRI Map for OWF</title>
+
+        <!-- MUST include dojo configuration before other js and css -->
+        <script src="js/dojoConfig.js"></script>
+
+    </head>
+    <body class="claro">
+        <div class="map_selector_dropdown"></div>
+        <div class="sublayer_dropdown"></div>
+        <div id="gauge"></div>
+
+        <script>
+            function addCss(src) {
+                document.writeln('<link rel="stylesheet" href="' + src + '">');
+            }
+
+            function addScript(src) {
+                document.writeln('<script src="' + src + '"><\/script>');
+            }
+            addCss(window.esriJsPath + "js/esri/css/esri.css");
+            addCss(window.esriJsPath + "js/dojo/dijit/themes/claro/claro.css");
+            addCss("vendor/css/bootstrap.min.css");
+            //addCss("css/imagequery.css");
+
+            // Add OWF widget API
+            addScript(window.owfJsPath + "owf-widget-" + ((window.isDebug) ? ("debug") : ("min")) + ".js");
+
+            // Add ESRI JS API, which starts dojo AMD loader
+            addScript(window.esriJsPath + "init.js");
+            addScript("vendor/js/jquery.min.js");
+            addScript("vendor/js/bootstrap.min.js");
+
+
+            // Trigger app entry point
+            addScript("js/app.js");
+        </script>
+</body>
+</html>

@@ -79,8 +79,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
             if (validData.result) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_SHOW, Ozone.util.toString(payload[0]));
-                }
-                else {
+                } else {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_SHOW, Ozone.util.toString(payload));
                 }
             }

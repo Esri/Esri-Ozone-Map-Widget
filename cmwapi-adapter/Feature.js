@@ -1,4 +1,4 @@
-define(["cmwapi/cmwapi"], function(CommonMapApi) {
+define(["cmwapi/cmwapi", "cmwapi-adapter/feature/Status"], function(CommonMapApi, Status) {
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -27,8 +27,10 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
      * @param overlayManager {module:cmwapi-adapter/EsriOverlayManager}
      * @alias module:cmwapi-adapter/Feature
      */
-    var Feature = function(adapater, overlayManager) {
+    var Feature = function(adapter, overlayManager, map) {
         var me = this;
+
+        me.status = new Status(overlayManager, map);
 
         /**
          * Handler for plot feature request

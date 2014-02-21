@@ -1,8 +1,7 @@
 
-define(["cmwapi/map/feature/Plot", "cmwapi/map/feature/PlotURL", "cmwapi/map/feature/Unplot",
-    "cmwapi/map/feature/Hide", "cmwapi/map/feature/Show", "cmwapi/map/feature/Selected",
-    "cmwapi/map/feature/Update", "cmwapi/map/feature/Status"],
-    function(Plot, PlotURL, Unplot, Hide, Show, Selected, Update, Status) {
+define(["cmwapi/map/feature/status/Start", "cmwapi/map/feature/status/Stop",
+    "cmwapi/map/feature/status/Request", "cmwapi/map/feature/status/Sublayers"],
+    function(Start, Stop, Request, Sublayers) {
 
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
@@ -25,42 +24,30 @@ define(["cmwapi/map/feature/Plot", "cmwapi/map/feature/PlotURL", "cmwapi/map/fea
      *
      * @version 1.1
      *
-     * @exports cmwapi/map/Feature
+     * @exports cmwapi/map/feature/Status
      */
-    var Feature = {
+    var Status = {
 
         /**
-         * @see module:cmwapi/map/feature/Plot
+         * @see module:cmwapi/map/feature/status/Start
          */
-        plot : Plot,
-        /**
-         * @see module:cmwapi/map/feature/Unplot
-         */
-        unplot: Unplot,
-        /**
-         * @see module:cmwapi/map/feature/Hide
-         */
-        hide: Hide,
-        /**
-         * @see module:cmwapi/map/feature/Show
-         */
-        show: Show,
-        /**
-         * @see module:cmwapi/map/feature/Selected
-         */
-        selected: Selected,
-        /**
-         * @see module:cmwapi/map/feature/Update
-         */
-        update: Update,
+        start: Start,
 
-        status: Status
+        /**
+         * @see module:cmwapi/map/feature/status/Stop
+         */
+        stop: Stop,
+
+        /**
+         * @see module:cmwapi/map/feature/status/Request
+         */
+        request: Request,
+
+        /**
+         * @see module:cmwapi/map/feature/status/Sublayers
+         */
+        sublayers: Sublayers
     };
 
-    /**
-     * @see module:cmwapi/map/feature/PlotURL
-     */
-    Feature.plot.url = PlotURL;
-
-    return Feature;
+    return Status;
 });

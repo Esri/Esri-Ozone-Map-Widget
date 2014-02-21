@@ -14,6 +14,12 @@ define(function() {
     var MAP_FEATURE_SELECTED = 'map.feature.selected';
     var MAP_FEATURE_UPDATE = 'map.feature.update';
 
+    var MAP_FEATURE_STATUS_START = 'map.feature.status.start';
+    var MAP_FEATURE_STATUS_STOP = 'map.feature.status.stop';
+    var MAP_FEATURE_STATUS_REQUEST = 'map.feature.status.request';
+    var MAP_FEATURE_STATUS_LAYERS = 'map.feature.status.layers';
+    var MAP_FEATURE_STATUS_REPORT = 'map.feature.status.report';
+
     var MAP_VIEW_ZOOM = 'map.view.zoom';
     var MAP_VIEW_CENTER_OVERLAY = 'map.view.center.overlay';
     var MAP_VIEW_CENTER_FEATURE = 'map.view.center.feature';
@@ -25,6 +31,7 @@ define(function() {
     var MAP_STATUS_VIEW = 'map.status.view';
     var MAP_STATUS_FORMAT = 'map.status.format';
     var MAP_STATUS_ABOUT = 'map.status.about';
+
 
     var MAP_ERROR = 'map.error';
 

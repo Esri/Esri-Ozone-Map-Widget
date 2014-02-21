@@ -261,7 +261,7 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
          * @see module:cmwapi-adapter/Feature
          * @memberof! module:cmwapi-adapter/cmwapi-adapter#
          */
-        this.feature = new Feature(this, this.overlayManager);
+        this.feature = new Feature(this, this.overlayManager, map);
         /**
          * @see module:cmwapi-adapter/Status
          * @memberof! module:cmwapi-adapter/cmwapi-adapter#

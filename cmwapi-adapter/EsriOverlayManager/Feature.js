@@ -321,7 +321,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             map.on("layers-add-result", handleQueryClick);
             params = params || {};
             params.mode = FeatureLayer.MODE_ONDEMAND;
+            if(!params.outFields) {
+                params.outFields = ['*'];
+            }
             var layer = new FeatureLayer(url, params);
+
+            window.global_tmp = layer;
 
             var symbol = new SimpleFillSymbol(
                   SimpleFillSymbol.STYLE_SOLID,

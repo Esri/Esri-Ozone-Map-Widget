@@ -1,5 +1,31 @@
 define(["esri/dijit/Legend"], function(esriLegend) {
+    /**
+     * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
+     *
+     * @license
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at<br>
+     * <br>
+     *     {@link http://www.apache.org/licenses/LICENSE-2.0}<br>
+     * <br>
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     *
+     * @version 1.1
+     *
+     * @module digits/Legend
+     */
 
+    /**
+     * @constructor
+     * @param map {Object} Esri map for which this legend should apply.
+     * @alias module:digits/Legend
+     */
     var Legend = function(map) {
         var me = this;
 
@@ -12,7 +38,7 @@ define(["esri/dijit/Legend"], function(esriLegend) {
             });
          });
 
-
+        //Catch layers being added and push them into the legend
         map.on("layer-add-result", function (evt) {
             if(evt.layer.declaredClass === "esri.layers.ArcGISTiledMapServiceLayer") {
                 //basemap
@@ -43,6 +69,7 @@ define(["esri/dijit/Legend"], function(esriLegend) {
             }
         });
 
+        //clean up the legend when layers are removed from the map.
         map.on('layer-remove', function(layer) {
             for(var i = 0; i < layers.length; i++) {
                 if(layers[i].name === layer.layer.id) {
@@ -53,6 +80,7 @@ define(["esri/dijit/Legend"], function(esriLegend) {
             }
         });
 
+        //update the name of layers in the legend when the layer is updated or moved in the overlay manager
         map.on('layerUpdated', function(data) {
             for(var i = 0; i < layers.length; i++) {
                 if(layers[i].name === data.old_id) {
@@ -65,6 +93,10 @@ define(["esri/dijit/Legend"], function(esriLegend) {
 
         var legendWidth = 250;
         var legendDividerWidth = 3;
+        /**
+         * Show the legend and resize the map.
+         * Note- The map size is set explicitly to prevent it from auto-resizing to 600px x 400px
+         */
         me.handleLegendPopOut = function() {
             $('#overlay').removeClass('selected');
             $('#basemaps').removeClass('selected');
@@ -97,6 +129,9 @@ define(["esri/dijit/Legend"], function(esriLegend) {
             });
         };
 
+        /**
+         *  Close the legend and reset the map to full window size
+         */
         var handleLegendClose = function() {
             setLegendWidth(0);
             setMapWidth($(window).width());

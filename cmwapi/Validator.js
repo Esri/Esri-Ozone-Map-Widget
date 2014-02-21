@@ -2,6 +2,7 @@ define('cmwapi/Validator', function() {
 
     var SUPPORTED_STATUS_TYPES = ["about", "format", "view"];
     var SUPPORTED_MAP_TYPES = ["2-D","3-D","other"];
+    var SUPPORTED_FEATURE_STATUS_EVENT_TYPES = ["mouse-over", "click"];
 
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
@@ -41,6 +42,8 @@ define('cmwapi/Validator', function() {
          * The [CMWAPI 1.1 Specification](http://www.cmwapi.org) allows for "2-D", "3-D", and "other".
          */
         SUPPORTED_MAP_TYPES: SUPPORTED_MAP_TYPES,
+
+        SUPPORTED_FEATURE_STATUS_EVENT_TYPES: SUPPORTED_FEATURE_STATUS_EVENT_TYPES,
 
         /**
          * Validate the input type against the supported map types.
@@ -87,6 +90,34 @@ define('cmwapi/Validator', function() {
                     if (!found) {
                         retVal.result = false;
                         retVal.msg += types[i] + ' is not a supported map status request type. ';
+                    }
+                }
+            }
+            return retVal;
+        },
+
+        /**
+         * Validate the input types against the supported map feature status event types.
+         * @param types {Array<string>} The types to validate.
+         * @returns {module:cmwapi/Validator~Result}
+         */
+        validEventTypes: function(types) {
+            var retVal = {
+                result: true,
+                msg: ""
+            };
+
+            if (types) {
+                for (var i = 0; i < types.length; i++  ) {
+                    var found = false;
+                    for (var j = 0; j < SUPPORTED_FEATURE_STATUS_EVENT_TYPES.length; j++ ) {
+                        if (SUPPORTED_FEATURE_STATUS_EVENT_TYPES[j] === types[i]) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        retVal.result = false;
+                        retVal.msg += types[i] + ' is not a supported map feature status event type. ';
                     }
                 }
             }
