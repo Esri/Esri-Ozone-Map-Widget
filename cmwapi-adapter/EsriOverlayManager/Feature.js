@@ -54,9 +54,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature
          */
         var Feature = function(overlayId, featureId, name, format, feature, zoom, esriObject) {
-            var resolveFeature = function() {
-                //TODO figure out the type of esri feature and return
-            };
 
             this.overlayId = overlayId; //needed?
             this.featureId = featureId;
