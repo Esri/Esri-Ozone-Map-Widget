@@ -1,6 +1,6 @@
 define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/Point",
-    "cmwapi-adapter/ViewUtils", "OWFWidgetExtensions/owf-widget-extended"],
-    function(CommonMapApi, EsriNS, Extent, Point, ViewUtils, OWFWidgetExtensions) {
+    "cmwapi-adapter/ViewUtils", "esri/tasks/PrintTask", "esri/tasks/PrintParameters","OWFWidgetExtensions/owf-widget-extended"],
+    function(CommonMapApi, EsriNS, Extent, Point, ViewUtils, PrintTask, PrintParameters, OWFWidgetExtensions) {
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
      *
@@ -187,11 +187,18 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         };
         CommonMapApi.view.center.bounds.addHandler(me.handleCenterBounds);
 
-        /**
-         * Saves the current view extent to an OWF user preference.
-         * @method saveView
-         * @memberof module:cmwapi-adapter/View#
-         */
+        me.printView = function(sender, data) {
+            var params = new PrintParameters();
+            params.map = map;
+            var printTask = new PrintTask("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task");
+            printTask.execute(params, function(e) {
+                var a = $("<a>").attr("href", e.url).attr("download", e.url).appendTo("body");
+                a[0].click();
+                a.remove();
+            });
+        };
+        CommonMapApi.view.print.addHandler(me.printView);
+
         me.saveView = function() {
             var bounds = {
                 southWest: {
