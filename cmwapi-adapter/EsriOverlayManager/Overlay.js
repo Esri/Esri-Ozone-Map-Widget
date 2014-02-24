@@ -93,13 +93,14 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
         };
 
         /**
+         * This function removes any overlays with the given overlayId.  If no
+         * overlay object is found with the given id, no action is taken.
          * @method deleteOverlay
          * @param caller {String} the id of the widget which made the request resulting in this function call.
          * @param overlayId {String} the id of the overlay to be deleted from the manager
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Overlay#
          */
         me.removeOverlay = function(caller, overlayId) {
-            //TODO Error if overlay not found?
 
             var overlay = manager.overlays[overlayId];
 
@@ -124,10 +125,10 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/ViewUtils"], function(cmwapi, ViewUtils
                         me.removeOverlay(caller, i);
                     }
                 }
-            }
 
-            delete manager.overlays[overlayId];
-            manager.treeChanged();
+                delete manager.overlays[overlayId];
+                manager.treeChanged();
+            }
         };
 
         /**

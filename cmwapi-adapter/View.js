@@ -187,6 +187,11 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
         };
         CommonMapApi.view.center.bounds.addHandler(me.handleCenterBounds);
 
+        /**
+         * Saves the current view extent to an OWF user preference.
+         * @method saveView
+         * @memberof module:cmwapi-adapter/View#
+         */
         me.saveView = function() {
             var bounds = {
                 southWest: {
@@ -208,10 +213,15 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
 
 
             var successHandler = function() {
-                console.log("Saved view preference...");
+                // Empty example handler.  No action required.
             };
             var failureHandler = function() {
-                console.log ("Unable to archive state.");
+                CommonMapApi.error.send({
+                    sender: OWF.getInstanceId(),
+                    type: "internal error",
+                    msg: "Unable to archive state",
+                    error: "Error: " + e
+                });
             };
             var dataValue = OWFWidgetExtensions.Util.toString({bounds: bounds, center: center, range: range});
             OWFWidgetExtensions.Preferences.setWidgetInstancePreference({
@@ -223,14 +233,18 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             });
         };
 
+        /**
+         * Sets the initial view extent to last extent saved in an OWF user preference
+         * for this map.
+         * @method setInitialView
+         * @memberof module:cmwapi-adapter/View#
+         */
         me.setInitialView = function() {
             var successHandler = function(retValue) {
                 var viewDetails;
                 if (retValue && retValue.value) {
-                    console.log("Retrieved view info: " + retValue.value);
                     viewDetails = OWFWidgetExtensions.Util.parseJson(retValue.value);
                     viewDetails.zoom = viewDetails.range;
-                    console.debug(viewDetails);
                 }
 
                 me.handleCenterBounds(null, viewDetails)
@@ -239,7 +253,12 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             };
 
             var failureHandler = function(e) {
-                console.log("Error in getting preference" + e);
+                CommonMapApi.error.send({
+                    sender: OWF.getInstanceId(),
+                    type: "internal error",
+                    msg: "Error in getting preference.",
+                    error: "Error: " + e
+                });
 
                 me.handleCenterLocation(null, {location: {lon: -76.809469, lat: 39.168101}, zoom: '447946.6823900473'});
 
