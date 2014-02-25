@@ -74,7 +74,7 @@ define(["cmwapi/Channels", "cmwapi/map/view/Print", "cmwapi/map/Error", "cmwapi/
 
 
 
-        xit("wraps added handlers", function() {
+        it("wraps added handlers", function() {
 
             var eventing = OWF.Eventing;
             spyOn(eventing, 'subscribe');
@@ -90,7 +90,7 @@ define(["cmwapi/Channels", "cmwapi/map/view/Print", "cmwapi/map/Error", "cmwapi/
 
             // Spy on Error and call our wrapper handler.
             spyOn(Error, 'send');
-            newHandler(Ozone.util.toString(sender));
+            newHandler(Ozone.util.toString(sender), {});
 
             // We don't expect error to be called
             expect(Error.send.calls.length).toEqual(0);
@@ -98,5 +98,37 @@ define(["cmwapi/Channels", "cmwapi/map/view/Print", "cmwapi/map/Error", "cmwapi/
             expect(testHandler.calls.length).toEqual(1);
         });
 
+        it("Test that handler gets passed object arrays", function() {
+            var eventing = OWF.Eventing;
+            expect(eventing).not.toBe(null);
+
+            spyOn(Print, 'send').andCallThrough();
+            spyOn(eventing, 'publish');
+            spyOn(Error, 'send').andCallThrough();
+
+            Print.send({template:{}});
+            expect(Print.send).toHaveBeenCalled();
+
+            // empty object is valid paramter expect channel to have been called.
+            expect(eventing.publish).toHaveBeenCalled();
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_VIEW_PRINT);
+
+            //Data must be an object, expect to send error.
+            Print.send("test");
+            expect(Print.send).toHaveBeenCalled();
+            expect(eventing.publish).toHaveBeenCalled();
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_ERROR);
+
+
+            Print.send({template:"test"});
+            expect(Print.send).toHaveBeenCalled();
+
+            // template should be an object, expect error channel to have been called.
+            expect(eventing.publish).toHaveBeenCalled();
+            expect(eventing.publish.mostRecentCall.args[0]).toEqual(Channels.MAP_ERROR);
+
+            expect(Error.send.calls.length).toEqual(2);
+
+        });
     });
 });
