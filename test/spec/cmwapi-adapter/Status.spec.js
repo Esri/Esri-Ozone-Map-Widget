@@ -91,7 +91,10 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Status", "esri/kernel", "test/mock/esri
                 status.handleRequest("FakeWidget", ["format"]);
                 expect(CommonMapApi.status.view.send).not.toHaveBeenCalled();
                 expect(CommonMapApi.status.about.send).not.toHaveBeenCalled();
-                expect(CommonMapApi.status.format.send).toHaveBeenCalledWith({formats: ["kml"]});
+                expect(CommonMapApi.status.format.send).toHaveBeenCalledWith({formats: ["kml", 
+                "wms", 
+                "arcgis-dynamicmapservice",
+                "arcgis-imageservice", "arcgis-feature"]});
             });
 
             it("and check that the view and format send are called with 'format' and 'view' types as params", function() {

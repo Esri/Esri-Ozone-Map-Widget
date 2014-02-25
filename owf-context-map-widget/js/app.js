@@ -35,7 +35,8 @@ require([
             autoResize: false
         });
 
-        var extentColors = [new Color([255,0,0,1]), new Color([0,255,0,1]), new Color([0,0,255,1])];
+        var extentColors = [new Color([228,26,28,1]), new Color([55,126,184,1]), new Color([77,175,74,1]), new Color([152,78,163,1]),
+            new Color([255,127,0,1])];
         var mapIds = {};
         var mapColorCount = {};
         var contextCount = 0;
@@ -87,7 +88,7 @@ require([
                 // made xmax < xmin on very large extents that encompass nearly all of the globe.
                 if (Math.abs(extent.xmax - extent.xmin) >= 359.999999 ||
                     (Math.abs(extent.xmax - extent.xmin) <= 0.000001 && extent.xmax < extent.xmin)) {
-                    layer.add(new Graphic(new Extent(-180, 
+                    layer.add(new Graphic(new Extent(-180,
                         extent.ymin,
                         180,
                         extent.ymax,
@@ -97,11 +98,11 @@ require([
                 // line.  In this case, we draw two bounding boxes to show the wrapping area.
                 else if (extent.xmax < extent.xmin) {
                     layer.add(new Graphic(new Extent(extent.xmin,
-                        extent.ymin, 
-                        180, 
-                        extent.ymax, 
+                        extent.ymin,
+                        180,
+                        extent.ymax,
                         extent.spatialReference), symbol));
-                    layer.add(new Graphic(new Extent(-180, 
+                    layer.add(new Graphic(new Extent(-180,
                         extent.ymin,
                         extent.xmax,
                         extent.ymax,
@@ -109,9 +110,9 @@ require([
                 }
                 // Otherwise draw a normal bounding box.
                 else {
-                    layer.add(new Graphic(extent, symbol));    
+                    layer.add(new Graphic(extent, symbol));
                 }
-                
+
                 map.addLayer(layer);
             });
         };
@@ -124,7 +125,7 @@ require([
             map.disableScrollWheelZoom();
             map.enableRubberBandZoom();
             map.setMapCursor("crosshair");
-            
+
             // set the zoom level based upon how many times the max zoomed world tile could
             // be expanded within our widget's height and width without obscuring any of the
             // image.
@@ -154,14 +155,14 @@ require([
                             console.log(eventName);
                             if (eventName === 'resize') {
                                 // Here we're reloading the window assuming resize events are
-                                // not often.  This forces the layout to be completely 
+                                // not often.  This forces the layout to be completely
                                 // reconfigured and avoid some issues with trying to use
                                 // map.resize() or map.reposition() to affect the same change.
                                 // Using those methods or having the map auto-resize
                                 // was not properly repositioning full extent map images on
                                 // and lead to extensive whitespace borders.  It may be worth
                                 // revisiting this in the future to avoid reloading the map
-                                // and saving an extra server call. 
+                                // and saving an extra server call.
                                 window.location.reload();
                             }
                         }

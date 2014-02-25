@@ -50,7 +50,8 @@ define(["cmwapi/cmwapi"], function(CommonMapApi) {
          * @memberof! module:EsriAdapter#
          */
         me.handleError = function(sender, type, message, error) {
-            //TODO What do we want to do with an error
+            // No need to report errors from other widgets at this time;
+            // Our own are reported over the CMWAPI error channel.
         };
         CommonMapApi.error.addHandler(me.handleError);
     };

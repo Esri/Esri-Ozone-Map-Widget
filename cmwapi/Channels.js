@@ -21,6 +21,7 @@ define(function() {
     var MAP_FEATURE_STATUS_REPORT = 'map.feature.status.report';
 
     var MAP_VIEW_ZOOM = 'map.view.zoom';
+    var MAP_VIEW_PRINT = 'map.view.print';
     var MAP_VIEW_CENTER_OVERLAY = 'map.view.center.overlay';
     var MAP_VIEW_CENTER_FEATURE = 'map.view.center.feature';
     var MAP_VIEW_CENTER_LOCATION = 'map.view.center.location';
@@ -159,6 +160,11 @@ define(function() {
          * @string
          */
         MAP_VIEW_CLICKED: MAP_VIEW_CLICKED,
+        /**
+         * The name of the print channel.
+         * @string
+         */
+        MAP_VIEW_PRINT: MAP_VIEW_PRINT,
 
         /**
          * The name of the status request channel.

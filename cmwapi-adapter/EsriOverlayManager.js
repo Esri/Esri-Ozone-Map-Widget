@@ -147,9 +147,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             return me.overlays;
         };
 
-
-//////////////////////////
-
         /**
          * Pass through a call to the common map widget api for map.overlay.create
          * @method sendOverlayCreate
@@ -323,7 +320,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
          * @memberof module:cmwapi-adapter/EsriOverlayManager#
          */
         me.archiveState = function() {
-            console.log("archive state for widget");
             var overlayData = me.getOverlays();
 
             /*
@@ -345,10 +341,16 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             }
 
             var successHandler = function() {
-                //console.log("Saved preference...");
-                //console.log("Saved preference handler: " + dataValue);
+                // Preferences were saved; no action required; this is an example handler.
             };
-            var failureHandler = function() { console.log ("Unable to archive state."); };
+            var failureHandler = function(e) { 
+                cmwapi.error.send({
+                    sender: OWF.getInstanceId(),
+                    type: "internal error",
+                    msg: "Unable to archive state",
+                    error: "Error: " + e
+                });
+            };
 
             var dataValue = OWFWidgetExtensions.Util.toString(overlayData);
             OWFWidgetExtensions.Preferences.setWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME,
@@ -370,7 +372,6 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
 
             var successHandler = function(retValue) {
                 if (retValue && retValue.value) {
-                    console.log("Retrieved overlay configuration: " + retValue.value);
                     me.overlays = OWFWidgetExtensions.Util.parseJson(retValue.value);
                 }
 
@@ -419,7 +420,12 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "cmwapi-adapter/EsriOverlayMana
             };
 
             var failureHandler = function(e) {
-                console.log("Error in getting preference" + e);
+                cmwapi.error.send({
+                    sender: OWF.getInstanceId(),
+                    type: "internal error",
+                    msg: "Error in getting preference.",
+                    error: "Error: " + e
+                });
             };
 
             OWFWidgetExtensions.Preferences.getWidgetInstancePreference({namespace: OVERLAY_PREF_NAMESPACE, name: OVERLAY_PREF_NAME,
