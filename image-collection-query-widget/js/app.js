@@ -65,7 +65,7 @@ require(["dojo/request/script", "dojo/json", "dojo/query","dojo/io-query", "dojo
                 f: (returnCountOnly) ? "json" : "kmz",
                 returnCountOnly: (returnCountOnly === true),
                 outFields: "*",
-                returnGeometry: (returnCountOnly === true)
+                returnGeometry: !(returnCountOnly === true)
             };
 
             // Change the server if necessary
@@ -176,7 +176,8 @@ require(["dojo/request/script", "dojo/json", "dojo/query","dojo/io-query", "dojo
             createQueryOverlay("Image Collection Queries");
 
             var requestUrl = buildRequestUrl(query("#collection-url").attr("value"),
-                query("#cloud-cover").attr("value")),
+                query("#cloud-cover").attr("value"),
+                false),
                 featureId = query("#query-name").attr("value");
 
             featureId = (featureId && featureId.toString().replace(/^\s+|\s+$/g, '').length > 0) ? featureId : DEFAULT_NAME;
