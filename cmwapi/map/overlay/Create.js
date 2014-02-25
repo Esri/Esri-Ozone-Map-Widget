@@ -111,7 +111,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
                     // The parentId is optional
                 }
 
-                handler(sender, (data.length === 1) ? data[0] : data);
+                handler(jsonSender.id, (data.length === 1) ? data[0] : data);
             };
 
             OWF.Eventing.subscribe(Channels.MAP_OVERLAY_CREATE, newHandler);

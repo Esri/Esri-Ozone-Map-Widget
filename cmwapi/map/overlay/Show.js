@@ -97,7 +97,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
                     data[i].overlayId = (data[i].overlayId) ? data[i].overlayId : jsonSender.id;
                 }
 
-                handler(sender, (data.length === 1) ? data[0] : data);
+                handler(jsonSender.id, (data.length === 1) ? data[0] : data);
             };
 
             OWF.Eventing.subscribe(Channels.MAP_OVERLAY_SHOW, newHandler);

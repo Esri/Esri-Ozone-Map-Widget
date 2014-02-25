@@ -105,7 +105,7 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
                     // in, so we do not blow away any existing values.
                 }
 
-                handler(sender, (data.length === 1) ? data[0] : data);
+                handler(jsonSender.id, (data.length === 1) ? data[0] : data);
             };
 
             OWF.Eventing.subscribe(Channels.MAP_OVERLAY_UPDATE, newHandler);
