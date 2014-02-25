@@ -74,7 +74,7 @@ define(["cmwapi/Channels", "cmwapi/map/view/Print", "cmwapi/map/Error", "cmwapi/
 
 
 
-        it("wraps added handlers", function() {
+        xit("wraps added handlers", function() {
 
             var eventing = OWF.Eventing;
             spyOn(eventing, 'subscribe');
@@ -97,28 +97,6 @@ define(["cmwapi/Channels", "cmwapi/map/view/Print", "cmwapi/map/Error", "cmwapi/
 
             expect(testHandler.calls.length).toEqual(1);
         });
-
-        it("passes invalid object arrays to added handlers and verifies error is thown", function() {
-
-            var eventing = OWF.Eventing;
-            spyOn(eventing, 'subscribe');
-
-            var testHandler = jasmine.createSpy('testHandler');
-            var newHandler = Print.addHandler(testHandler);
-            expect(eventing.subscribe.mostRecentCall.args[0]).toEqual(Channels.MAP_VIEW_ZOOM);
-
-            // Test the behavior for newHandler  Create a sender an empty payload to pass along
-            // Our code should fill in the payload and pass it along to the testHandler
-            var sender = {
-                id: INSTANCE_ID
-            };
-
-            // Spy on Error and call our wrapper handler.
-            spyOn(Error, 'send');
-            newHandler(Ozone.util.toString(sender), 'sdfg');
-
-            // We do expect error to be called
-            expect(Error.send.calls.length).toEqual(0);
 
     });
 });
