@@ -72,11 +72,16 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 }
 
             }
-            if (!isValidData) {
-                // Send an error with the current widget instance as the sender.
-                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_STATUS_STOP, payload, errorMsg);
+
+            if (validData.result) {
+                if (payload.length === 1) {
+                    OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_STOP, Ozone.util.toString(payload[0]));
+                } else {
+                    OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_STOP, Ozone.util.toString(payload));
+                }
             } else {
-                OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_STOP, Ozone.util.toString(payload));
+                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_STATUS_STOP, payload, errorMsg);
+                return;
             }
         },
 
@@ -97,16 +102,20 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var newHandler = function(sender, msg) {
                 var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = Ozone.util.parseJson(msg);
-                if (jsonMsg.types) {
-                    var checkEventTypes = Validator.validEventTypes(jsonMsg.eventTypes);
-                    if (checkEventTypes.result) {
-                        handler(jsonSender.id, jsonMsg.eventTypes, jsonMsg.overlayId, jsonMsg.featureId, jsonMsg.subfeatureId);
+                var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
+
+                for (var i = 0; i < data.length; i ++) {
+                    if (data[i].types) {
+                        var checkEventTypes = Validator.validEventTypes(data[i].eventTypes);
+                        if (checkEventTypes.result) {
+                            handler(jsonSender.id, data[i].eventTypes, data[i].overlayId, data[i].featureId, data[i].subfeatureId);
+                        } else {
+                            Error.send(jsonSender.id, Channels.MAP_FEATURE_STATUS_STOP, msg, checkEventTypes.msg);
+                        }
                     } else {
-                        Error.send( jsonSender.id, Channels.MAP_FEATURE_STATUS_STOP, msg, checkEventTypes.msg);
+                        // if none requested, handle _all_
+                        handler(jsonSender.id, Validator.SUPPORTED_EVENT_TYPES, data[i].overlayId, data[i].featureId, data[i].subfeatureId);
                     }
-                } else {
-                    // if none requested, handle _all_
-                    handler(jsonSender.id, Validator.SUPPORTED_EVENT_TYPES, jsonMsg.overlayId, jsonMsg.featureId, jsonMsg.subfeatureId);
                 }
             };
             OWF.Eventing.subscribe(Channels.MAP_FEATURE_STATUS_STOP, newHandler);

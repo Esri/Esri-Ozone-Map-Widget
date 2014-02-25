@@ -104,12 +104,13 @@ define(["cmwapi/Channels", "cmwapi/Validator"], function(Channels, Validator) {
             var newHandler = function(sender, msg) {
 
                 // Parse the sender and msg to JSON.
+                var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
                 var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
                 var validData = true;
 
                 if (validData) {
-                    handler(sender, (data.length === 1) ? data[0] : data);
+                    handler(jsonSender.id, (data.length === 1) ? data[0] : data);
                 } else {
                     // nothing really that can be done if the error message itself has an error...
                     console.log("Error handler is being given invalid data: " + msg);

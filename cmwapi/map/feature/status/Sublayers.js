@@ -48,19 +48,19 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * @param layers.[subfeatureName] {String}
          */
         send: function(data) {
-
             var validData = Validator.validObjectOrArray(data);
             var payload = validData.payload;
 
-            if (!validData.result) {
+            if (validData.result) {
+                if (payload.length === 1) {
+                    OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_LAYERS, Ozone.util.toString(payload[0]));
+                } else {
+                    OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_LAYERS, Ozone.util.toString(payload));
+                }
+            } else {
                 Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_STATUS_LAYERS, data, validData.msg);
                 return;
             }
-
-            var isValidData = true;
-            var errorMsg = '';
-
-            OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_LAYERS, Ozone.util.toString(payload));
         },
 
         /**
@@ -80,7 +80,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var newHandler = function(sender, msg) {
                 var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = Ozone.util.parseJson(msg);
-                handler(jsonSender.id, jsonMsg);
+                var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
+
+                for (var i = 0; i < data.length; i ++) {
+                    handler(jsonSender.id, data[i]);
+                }
             };
             OWF.Eventing.subscribe(Channels.MAP_FEATURE_STATUS_LAYERS, newHandler);
             return newHandler;  // returning to make it easy to test!

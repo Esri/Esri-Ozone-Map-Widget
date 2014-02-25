@@ -1,7 +1,8 @@
 
 define(["cmwapi/map/feature/status/Start", "cmwapi/map/feature/status/Stop",
-    "cmwapi/map/feature/status/Request", "cmwapi/map/feature/status/Sublayers"],
-    function(Start, Stop, Request, Sublayers) {
+    "cmwapi/map/feature/status/Request", "cmwapi/map/feature/status/Sublayers",
+    "cmwapi/map/feature/status/Report"],
+    function(Start, Stop, Request, Sublayers, Report) {
 
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
@@ -46,7 +47,9 @@ define(["cmwapi/map/feature/status/Start", "cmwapi/map/feature/status/Stop",
         /**
          * @see module:cmwapi/map/feature/status/Sublayers
          */
-        sublayers: Sublayers
+        sublayers: Sublayers,
+
+        report: Report
     };
 
     return Status;

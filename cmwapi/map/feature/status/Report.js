@@ -43,20 +43,24 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * @param data.overlayId {String}
          * @param data.featureId {String}
          * @param data.[subfeatureId] {String}
-         * @param data.featueValue {String|Number} The value for the given feature or subfeature to which this report applies
+         * @param data.featureValue {String|Number} The value for the given feature or subfeature to which this report applies
          */
         send: function(data) {
 
-            var validData = Validator.validObjectOrArray( data );
+            var validData = Validator.validObjectOrArray(data);
             var payload = validData.payload;
 
-            if (!validData.result) {
+            if (validData.result) {
+                if (payload.length === 1) {
+                    OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_REPORT, Ozone.util.toString(payload[0]));
+                } else {
+                    OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_REPORT, Ozone.util.toString(payload));
+                }
+            } else {
                 Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_STATUS_REPORT, data,
                     validData.msg);
                 return;
             }
-
-            OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_REPORT, Ozone.util.toString(payload));
         },
 
         /**
@@ -76,8 +80,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var newHandler = function(sender, msg) {
                 var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = Ozone.util.parseJson(msg);
+                var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
 
-                handler(jsonSender.id, jsonMsg.overlayId, jsonMsg.featureId, jsonMsg.subfeatureId, jsonMsg.featureValue);
+                for (var i = 0; i < data.length; i ++) {
+                    handler(jsonSender.id, data[i].overlayId, data[i].featureId, data[i].subfeatureId, data[i].featureValue);
+                }
             };
             OWF.Eventing.subscribe(Channels.MAP_FEATURE_STATUS_REPORT, newHandler);
             return newHandler;  // returning to make it easy to test!
@@ -101,5 +108,5 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          */
     };
 
-    return Start;
+    return Report;
 });

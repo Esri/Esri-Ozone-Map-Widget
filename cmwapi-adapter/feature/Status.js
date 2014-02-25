@@ -37,11 +37,11 @@ define(["cmwapi/cmwapi"], function(cmwapi) {
          */
         me.handleRequest = function(sender) {
             var treeArray = overlayManager.getOverlayTree();
-
             for(var i = 0; i < treeArray.length; i++) {
                 handleTree(treeArray[i]);
             }
         };
+        cmwapi.feature.status.request.addHandler(me.handleRequest);
 
         var handleTree = function(tree) {
             for(var i = 0; i < tree.children.length; i++) {
@@ -54,6 +54,7 @@ define(["cmwapi/cmwapi"], function(cmwapi) {
         }
 
         var handleFeature = function(overlay, feature) {
+            var format = feature.format;
             if(format === 'kml') {
                 // handleKml(overlay, feature);
             } else if(format === "wms") {
@@ -70,11 +71,23 @@ define(["cmwapi/cmwapi"], function(cmwapi) {
         var handleArcgisFeature = function(overlay, feature) {
             var layer = feature.esriObject;
             var fields = layer.fields;
+
+            var toSend = [];
             for(var i = 0; i < fields.length; i++) {
-                if(fields[i].type === "estiFieldTypeDouble" ||
-                   fields[i].type === "estiFieldTypeInteger") {
-                    cmwapi.feature.status.sublayers.send(overlay.id, overlay.name, feature.id, feature.name, fields[i].name);
+                if(fields[i].type === "esriFieldTypeDouble" ||
+                   fields[i].type === "esriFieldTypeInteger") {
+                    toSend.push({
+                        overlayId: overlay.id,
+                        overlayName: overlay.name,
+                        featureId: feature.id,
+                        featureName: feature.name,
+                        sublayerId: fields[i].name
+                    });
                 }
+            }
+            if(toSend.length > 0) {
+                //console.log(cmwapi);
+                cmwapi.feature.status.sublayers.send(toSend);
             }
         }
 
@@ -93,18 +106,32 @@ define(["cmwapi/cmwapi"], function(cmwapi) {
             var overlay = overlayManager.overlays[overlayId];
             if(!overlay) {
                 var msg = "Overlay not found with id " + overlayId;
-                sendError(caller, msg, {type: "map.feature.status.start", msg: msg});
+                sendError(sender, msg, {type: "map.feature.status.start", msg: msg});
             } else {
-                var feature = overlay.features[overlayId];
+                var feature = overlay.features[featureId];
                 if(!feature) {
                     var msg = "Feature not found with id " + featureId;
-                    sendError(caller, msg, {type: "map.feature.status.start", msg: msg});
+                    sendError(sender, msg, {type: "map.feature.status.start", msg: msg});
                 } else {
                     //find sublayer
                     //sublayer.on[EventType](report);
+                    console.log("need to look for sublayer")
+
+                    if(feature.format === "arcgis-feature") {
+                        feature.esriObject.gaugeHandler = feature.esriObject.on('mouse-over', function(mouseEvent) {
+                            console.log(mouseEvent.graphic.attributes[subfeatureId]);
+                            cmwapi.feature.status.report.send({
+                                overlayId: overlayId,
+                                featureId: featureId,
+                                subfeatureId: subfeatureId,
+                                featureValue: mouseEvent.graphic.attributes[subfeatureId]
+                            });
+                        });
+                    }
                 }
             }
         };
+        cmwapi.feature.status.start.addHandler(me.handleStart);
 
         /**
          * Handler for feature status stop
@@ -120,7 +147,27 @@ define(["cmwapi/cmwapi"], function(cmwapi) {
         me.handleStop = function(sender, eventTypes, overlayId, featureId, subfeatureId) {
             //need to pull a reference to the handler described by the params
             //handler.removeEvent();
+            var overlay = overlayManager.overlays[overlayId];
+            if(!overlay) {
+                var msg = "Overlay not found with id " + overlayId;
+                sendError(sender, msg, {type: "map.feature.status.start", msg: msg});
+            } else {
+                var feature = overlay.features[featureId];
+                if(!feature) {
+                    var msg = "Feature not found with id " + featureId;
+                    sendError(sender, msg, {type: "map.feature.status.start", msg: msg});
+                } else {
+                    //find sublayer
+                    //sublayer.on[EventType](report);
+                    console.log("need to look for sublayer")
+                    if(feature.format === "arcgis-feature") {
+                        feature.esriObject.gaugeHandler.remove();
+                        delete feature.esriObject.gaugeHandler;
+                    }
+                }
+            }
         };
+        cmwapi.feature.status.stop.addHandler(me.handleStop);
     };
 
     return Status;
