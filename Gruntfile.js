@@ -17,7 +17,8 @@ module.exports = function(grunt) {
             widget : {
                 src: ['owf-map-widget/js/*.js',
                       'owf-map-widget/js/models/**/*.js',
-                      'image-collection-query-widget/js/app.js'],
+                      'image-collection-query-widget/js/app.js',
+                      'image-collection-query-widget/js/util/*.js'],
                 options: {
                     destination: 'target/jsdoc/widget',
                     private: true,

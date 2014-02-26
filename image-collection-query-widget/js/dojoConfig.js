@@ -136,7 +136,7 @@ dojoConfig.packages = [
     { location: window.esriJsPath + "js/put-selector", main: "put", name: "put-selector" },
 
     // Additional packages for this webapp
-    { location: window.contextPath + "digits", name: "digits" },
+    { location: window.contextPath + "js", name: "image-collection-query-widget" },
     { location: window.contextPath + "../cmwapi", name: "cmwapi" },
     { location: window.contextPath + "vendor/js/bootstrap.min", name: "bootstrap"}
 
