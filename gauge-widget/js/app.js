@@ -22,56 +22,111 @@
 require(["cmwapi/cmwapi", "esri/dijit/Gauge", "dojo/parser", "dojo/domReady!"], function(CMWAPI, Gauge, parser) {
     parser.parse();
 
-    console.debug("Starting gauge widget");
     var knownMaps = {};
+    var mapLayers = {};
 
-    if(OWF.Util.isRunningInOWF()) {
-        OWF.ready(function() {
-            var gauge = new Gauge({
-                title: "test"
-            }, 'gauge');
-            gauge.startup();
+    var selectedMapId;
+    var selectedOverlayId;
+    var selectedFeatureId;
+    var selectedSubfeatureId;
+    var selectedEventType = 'mouse-over';
 
-            CMWAPI.status.format.addHandler(function(callerID, data){
-                try{
-                var formats = data.formats;
-                for(var i = 0; i < formats.length; i++) {
-                    if(formats[i] === "arcgis-dynamicmapservice" ||
-                        formats[i] === "arcgis-imageservice" ||
-                        formats[i] === "arcgis-feature" ) {
-                        knownMaps[callerID] = {};
-                        break;
-                    }
+    var gauge;
+
+    var checkMapResponse = function(callerId, data){
+        var mapSelector = $(".map_selector");
+
+        var formats = data.formats;
+        for(var i = 0; i < formats.length; i++) {
+            if(formats[i] === "arcgis-dynamicmapservice" ||
+                formats[i] === "arcgis-imageservice" ||
+                formats[i] === "arcgis-feature" ) {
+
+                //if its not in the list and drop down then add it
+                if(typeof(knownMaps[callerId]) === "undefined") {
+                    knownMaps[callerId] = {};
+                    mapSelector.append("<option mapId=" + callerId + ">" + callerId + "</option>");
                 }
-                } catch(e) {
-                    console.debug(e);
-                }
-            });
-
-            console.debug("Calling map.status.request");
-            CMWAPI.status.request.send({types: ["format"]});
-        });
-    }
-
-    var addToDropdown = function(guid) {
-        knownMaps.push(guid);
-        if(knownMaps.length > 1) {
-            //check for dropdown
-            console.log($("select.map_selection_dropdown"));
-
-            //get all widgets so we can pull id? --> point being how do we get the name?
-
-            //add if its not there
-            //make sure all options are in list and still open
+                break;
+            }
         }
     };
 
-    var changeSelection = function() {
+    var handleMapSelected = function() {
+        CMWAPI.feature.status.request.send();
+    }
+
+    var handleReceivedLayers = function(sender, layers) {
+        var selected = $(".map_selector option:selected");
+        var mapWidgetId = selected.attr("mapId");
+
+        var layerSelector = $('.sublayer_selector');
+
+        if(!CMWAPI.validator.isArray(layers)) {
+            layers = [layers];
+        }
+
+        for(var i = 0; i < layers.length; i++) {
+            if(sender === mapWidgetId) {
+
+                layerSelector.append('<option overlayId="' + layers[i].overlayId +
+                    '" featureId="' + layers[i].featureId +
+                    '" sublayerId="' + layers[i].sublayerId +
+                    '">' + layers[i].overlayName + " - " + layers[i].featureName + " - " +
+                    layers[i].sublayerId + '</option>');
+            }
+        }
+    }
+
+    var handleChangeSelection = function() {
+        //send message to stop reporting old
+        if(selectedOverlayId && selectedFeatureId) {
+            CMWAPI.feature.status.stop.send({
+                type: selectedEventType,
+                overlayId: selectedOverlayId,
+                featureId: selectedFeatureId,
+                subfeatureId: selectedSubfeatureId
+            });
+        }
+
+        var selected = $('.sublayer_selector option:selected');
+
+        selectedOverlayId = selected.attr("overlayId");
+        selectedFeatureId = selected.attr("featureId");
+        selectedSubfeatureId = selected.attr("sublayerId");
+
         //send message to setup on event to new
-        CMWAPI.feature.status.start.send({type: 'mouse-over'});
-        //send message to stop on event to old
-        CMWAPI.feature.status.start.send({});
+        CMWAPI.feature.status.start.send({
+            type: selectedEventType,
+            overlayId: selectedOverlayId,
+            featureId: selectedFeatureId,
+            subfeatureId: selectedSubfeatureId
+        });
     };
 
-    //on dropdown popout double check open maps
+    var handleReport = function(sender, overlayId, featureId, subfeatureId, value) {
+        if(overlayId === selectedOverlayId &&
+            featureId === selectedFeatureId &&
+            subfeatureId === selectedSubfeatureId) {
+            gauge.set('value', value);
+            gauge.set('caption', value);
+        }
+    }
+
+    if(OWF.Util.isRunningInOWF()) {
+        OWF.ready(function() {
+            gauge = new Gauge({}, 'gauge');
+            gauge.startup();
+
+            CMWAPI.status.format.addHandler(checkMapResponse);
+
+            CMWAPI.status.request.send({types: ["format"]});
+
+            $(".map_selector").on('change', handleMapSelected);
+            $(".sublayer_selector").on('change', handleChangeSelection);
+
+            CMWAPI.feature.status.sublayers.addHandler(handleReceivedLayers);
+            CMWAPI.feature.status.report.addHandler(handleReport);
+        });
+    }
 });
