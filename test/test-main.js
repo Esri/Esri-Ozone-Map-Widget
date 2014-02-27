@@ -24,8 +24,7 @@ var dojoConfig = {
          }, {
              name: 'dijit',
              location: 'http://js.arcgis.com/3.7/js/dojo/dijit'
-         },
-        {
+         }, {
             name: 'cmwapi',
             location: '/base/cmwapi'
         }, {
@@ -34,6 +33,9 @@ var dojoConfig = {
         }, {
             name: 'owf-map-widget',
             location: '/base/owf-map-widget'
+        }, {
+            name: 'image-collection-query-widget',
+            location: '/base/image-collection-query-widget'
         }, {
             name: 'OWFWidgetExtensions',
             location: '/base/owf-map-widget/js'
