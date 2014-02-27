@@ -47,7 +47,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          * @param {number|string} [data.zoom] A range in meters at which to set a zoom or the term "auto" to
          *     to ask a map to best vit the overlay in the user's viewable area.
          */
-        send : function ( data ) {
+        send: function(data) {
 
             // validData will story results from any Validator and may be resused for internal
             // error bookkeeping.
@@ -108,12 +108,13 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
          *     invalid payloads are noted on the Error channel prior to execution of the
          *     the input handler.  Invalid payloads will short-circuit execution of the provided handler.
          */
-        addHandler : function (handler) {
+        addHandler: function(handler) {
 
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
-            var newHandler = function( sender, msg ) {
+            var newHandler = function(sender, msg) {
 
                 // Parse the sender and msg to JSON.
+                var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
                 var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
                 var validData = {result: true, msg: ""};
@@ -137,10 +138,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
 
                 if (validData.result) {
-                    handler(sender, (data.length === 1) ? data[0] : data);
+                    handler(jsonSender.id, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_VIEW_CENTER_LOCATION,
+                    Error.send(jsonSender.id, Channels.MAP_VIEW_CENTER_LOCATION,
                         msg,
                         validData.msg);
                 }
@@ -154,7 +155,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
         /**
          * Stop listening to the channel and handling events upon it.
          */
-        removeHandlers : function() {
+        removeHandlers: function() {
             OWF.Eventing.unsubscribe(Channels.MAP_VIEW_CENTER_LOCATION);
         }
 

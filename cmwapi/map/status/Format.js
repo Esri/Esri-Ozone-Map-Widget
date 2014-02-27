@@ -106,14 +106,15 @@ define(["cmwapi/Channels", "cmwapi/map/Error", "cmwapi/Validator"], function(Cha
             var newHandler = function(sender, msg) {
 
                 // Parse the sender and msg to JSON.
-                var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
-                var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
+                var jsonSender = Ozone.util.parseJson(sender);
+                var jsonMsg = (Validator.isString(msg) ? Ozone.util.parseJson(msg) : msg);
+                var data = (Validator.isArray(jsonMsg) ? jsonMsg : [jsonMsg]);
 
                 for (var i = 0; i < data.length; i ++) {
                     if (!data[i].formats) {
-                        Error.send(sender, Channels.MAP_STATUS_FORMATS, msg, "Unable to determine formats" );
+                        Error.send(jsonSender.id, Channels.MAP_STATUS_FORMATS, msg, "Unable to determine formats" );
                     } else {
-                        handler(sender, data[i]);
+                        handler(jsonSender.id, data[i]);
                     }
                 }
             };

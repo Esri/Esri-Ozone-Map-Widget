@@ -140,10 +140,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
 
                 if (validData.result) {
-                    handler(sender, (data.length === 1) ? data[0] : data);
+                    handler(jsonSender.id, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_VIEW_CENTER_FEATURE,
+                    Error.send(jsonSender.id, Channels.MAP_VIEW_CENTER_FEATURE,
                         msg,
                         validData.msg);
                 }

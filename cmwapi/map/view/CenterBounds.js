@@ -118,6 +118,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
             var newHandler = function( sender, msg ) {
 
                 // Parse the sender and msg to JSON.
+                var jsonSender = Ozone.util.parseJson(sender);
                 var jsonMsg = (Validator.isString(msg)) ? Ozone.util.parseJson(msg) : msg;
                 var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
                 var validData = {result: true, msg: ""};
@@ -141,10 +142,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"],
                 }
 
                 if (validData.result) {
-                    handler(sender, (data.length === 1) ? data[0] : data);
+                    handler(jsonSender.id, (data.length === 1) ? data[0] : data);
                 }
                 else {
-                    Error.send(sender, Channels.MAP_VIEW_CENTER_BOUNDS,
+                    Error.send(jsonSender.id, Channels.MAP_VIEW_CENTER_BOUNDS,
                         msg,
                         validData.msg);
                 }
