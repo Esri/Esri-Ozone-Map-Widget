@@ -6,27 +6,27 @@ This Git Repo provides sample widgets (light-weight web applications) designed f
 
 ## Included Components
 
-#### [ArcGIS OWF Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-map-widget)
+#### [ArcGIS OWF Map Widget](https://github.com/Esri/Esri-Ozone-Map-Widget/tree/master/owf-map-widget)
 
 A resusable map widget that supports CMWAPI v1.1 widget interactions.  This widget includes a few common ArcGIS JavaScript map controls for map view manipulation and allows the plotting of map layers through the CMWAPI.  Additionally, it includes a basic Overlay Manager for displaying and manipulating map Overlays and Features as defined by the CMWAPI.  This widget leverages the CMWAPI 1.1 Specification Implementation and the ArcGIS CMWAPI Adapter modules described below.
 
-#### [ArcGIS OWF Context Map Widget](https://github.com/Esri/Next-Century/tree/master/owf-context-map-widget)
+#### [ArcGIS OWF Context Map Widget](https://github.com/Esri/Esri-Ozone-Map-Widget/tree/master/owf-context-map-widget)
 
 The widget is intended to be used with the ArcGIS OWF Map Widget or another CMWAPI 1.1 compliant widget.  It shows the context of the viewed area in the primary map widget, as compared to a 2-D map of the world.  Clicking in or dragging a bounding box in the context map sends a message to listening maps to center on the click or bounding box location.
 
-#### [ArcGIS Image Collection Query Widget](https://github.com/Esri/Next-Century/tree/master/image-collection-query-widget)
+#### [ArcGIS Image Collection Query Widget](https://github.com/Esri/Esri-Ozone-Map-Widget/tree/master/image-collection-query-widget)
 
 Allows the user to query for image metadata from a a particular feature service RESTful endpoint provided by Esri, within a time interval and cloud coverage percentage.  The endpoint returns KML, which the widget broadcasts via CMWAPI.  Users using CMWAPI-compliant widgets, including the ArcGIS OWF Map Widget, then see the existence and metadata of images of analytical interest, plotted on their map.
 
-#### [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi)
+#### [cmwapi](https://github.com/Esri/Esri-Ozone-Map-Widget/tree/master/cmwapi)
 
 A set of AMD modules that implement the CMWAPI specification and allow any OWF widget to communicate via CMWAPI channels without having to duplicate standard channel management and verification logic.  These modules attempt to provide all map-agnostic CMWAPI constructs and processing for client code.  They abstract the OWF pub/sub mechanism and include default message validation using specification rules. Where appropriate, missing message elements are replaced with default values (e.g., replacing missing overlayId values with the id of the sending widget).  Any errors detected by these modules are published on the map.error channel. 
 
-#### [cmwapi-adapter](https://github.com/Esri/Next-Century/tree/master/cmwapi-adapter)
+#### [cmwapi-adapter](https://github.com/Esri/Esri-Ozone-Map-Widget/tree/master/cmwapi-adapter)
 
-A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https://developers.arcgis.com/en/javascript/jsapi/map-amd.html) object to interact with OWF widgets via the CMWAPI.  These modules attach a series of event handlers to the CMWAPI channels that translate CMWAPI messages to appropriate ArcGIS JavaScript calls via the [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi) modules. They represent the ArcGIS specific portion of a full CMWAPI implementation.
+A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https://developers.arcgis.com/en/javascript/jsapi/map-amd.html) object to interact with OWF widgets via the CMWAPI.  These modules attach a series of event handlers to the CMWAPI channels that translate CMWAPI messages to appropriate ArcGIS JavaScript calls via the [cmwapi](https://github.com/Esri/Esri-Ozone-Map-Widget/tree/master/cmwapi) modules. They represent the ArcGIS specific portion of a full CMWAPI implementation.
 
-#### [Basic Map Widget](https://github.com/Esri/Next-Century/tree/master/basic-map-widget)
+#### [Basic Map Widget](https://github.com/Esri/Esri-Ozone-Map-Widget/tree/master/basic-map-widget)
 
 A simple map widget using the ESRI [ArcGIS JavaScript API](https://developers.arcgis.com/en/javascript/). It's purpose is to provide a basic demonstration of using ArcGIS maps within OWF widgets.  When run within OWF alongside the Contacts Manager widget described below, it includes the following features:
 
@@ -36,7 +36,7 @@ A simple map widget using the ESRI [ArcGIS JavaScript API](https://developers.ar
 
 * Receives [Intents](https://github.com/ozoneplatform/owf/wiki/OWF-7-Developer-Widget-Intents-API) from other OWF widgets that plot a location
 
-#### [Contacts Manager](https://github.com/Esri/Next-Century/tree/master/contacts)
+#### [Contacts Manager](https://github.com/Esri/Esri-Ozone-Map-Widget/tree/master/contacts)
 
 A modified version of the [Contacts Manager](https://github.com/ozoneplatform/owf/tree/master/web-app/examples/walkthrough/widgets/contacts) example widget that ships with OWF 7. This version uses Intents to allow the user to select which map widget implementation should receive the address when contact entry is clicked. (The original version was hard coded to send the address to a specific map widget.)
 
@@ -169,4 +169,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 A copy of the license is available in the repository's
-[license.txt](https://github.com/Esri/Next-Century/blob/master/license.txt) file.
+[license.txt](https://github.com/Esri/Esri-Ozone-Map-Widget/blob/master/license.txt) file.
