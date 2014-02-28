@@ -29,6 +29,7 @@ module.exports = function(config) {
         // Source files here; paths are relative to basePath defined above.
         {pattern: '*cmwapi*/**/*.js', included: false},
         {pattern: 'owf-map-widget/js/owf-widget-extended.js', included: false},
+        {pattern: 'image-collection-query-widget/js/util/ImageCollectionQuery.js', included: false},
 
         {pattern: 'test/mock/**/*.js', included: false},
         // All mock files

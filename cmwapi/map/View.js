@@ -1,9 +1,9 @@
 
 define(["cmwapi/Channels", "cmwapi/map/view/Zoom", "cmwapi/map/view/CenterOverlay",
     "cmwapi/map/view/CenterFeature", "cmwapi/map/view/CenterLocation",
-    "cmwapi/map/view/CenterBounds", "cmwapi/map/view/Clicked"],
+    "cmwapi/map/view/CenterBounds", "cmwapi/map/view/Clicked", "cmwapi/map/view/Print"],
     function(Channels, Zoom, CenterOverlay, CenterFeature, CenterLocation,
-        CenterBounds, Clicked) {
+        CenterBounds, Clicked, Print) {
 
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
@@ -50,13 +50,18 @@ define(["cmwapi/Channels", "cmwapi/map/view/Zoom", "cmwapi/map/view/CenterOverla
             /**
              * @see module:cmwapi/map/view/CenterBounds
              */
-            bounds: CenterBounds
+            bounds: CenterBounds,
         },
 
         /**
          * @see module:cmwapi/map/view/Clicked
          */
-        clicked: Clicked
+        clicked: Clicked,
+
+        /**
+         * @see module:cmwapi/map/view/Print
+         */
+        print: Print
     };
 
     return View;

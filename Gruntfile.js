@@ -6,7 +6,7 @@ module.exports = function(grunt) {
 
         jsdoc : {
             cmwapi: {
-                src: ['README.md', 'cmwapi/**/*.js', 'cmwapi-adapter/**/*.js'],
+                src: ['README.md', 'cmwapi/**/*.js', 'cmwapi-adapter/**/*.js', '!cmwapi-adapter/Vendor/**'],
                 options: {
                     destination: 'target/jsdoc/cmwapi',
                     template: "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",
@@ -17,7 +17,8 @@ module.exports = function(grunt) {
             widget : {
                 src: ['owf-map-widget/js/*.js',
                       'owf-map-widget/js/models/**/*.js',
-                      'image-collection-query-widget/js/app.js'],
+                      'image-collection-query-widget/js/app.js',
+                      'image-collection-query-widget/js/util/*.js'],
                 options: {
                     destination: 'target/jsdoc/widget',
                     private: true,

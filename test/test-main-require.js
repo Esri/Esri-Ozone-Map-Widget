@@ -15,6 +15,7 @@ requirejs.config({
         'cmwapi': 'cmwapi',
         'cmwapi-adapter': 'cmwapi-adapter',
         'owf-map-widget': 'owf-map-widget',
+        'image-collection-query-widget': 'image-collection-query-widget',
         'owf-widget-extended': 'owf-widget-extended',
         'esri': 'test/mock/esri'
 

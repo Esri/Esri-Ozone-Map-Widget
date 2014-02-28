@@ -238,7 +238,6 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/Overlay", "cmwapi-adapter/Feature", "cm
          * @memberof module:cmwapi-adapter/cmwapi-adapter#
          */
         var unloadHandlers = function() {
-            console.log("UNLOADING OUR CUSTOM MAP EVENT HANDLERS!");
             me.clickHandler.remove();
             me.dblClickHandler.remove();
             me.upClickHandler.remove();
