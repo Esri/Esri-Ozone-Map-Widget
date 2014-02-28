@@ -65,15 +65,15 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
             var errorMsg = '';
 
             for (var i=0 ; i < payload.length ; i++ ) {
-                var checkEventTypes = Validator.validEventTypes(payload[i].types);
-                if (!checkEventTypes.result) {
+                var checkEventType = Validator.validEventTypes(payload[i].eventType);
+                if (!checkEventType.result) {
                    isValidData = false;
-                   errorMsg += checkEventTypes.msg + ' at index[' + i + ']. ';
+                   errorMsg += checkEventType.msg + ' at index[' + i + ']. ';
                 }
 
             }
 
-            if (validData.result) {
+            if(isValidData) {
                 if (payload.length === 1) {
                     OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_STOP, Ozone.util.toString(payload[0]));
                 } else {
@@ -105,16 +105,16 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
 
                 for (var i = 0; i < data.length; i ++) {
-                    if (data[i].types) {
-                        var checkEventTypes = Validator.validEventTypes(data[i].eventTypes);
-                        if (checkEventTypes.result) {
-                            handler(jsonSender.id, data[i].eventTypes, data[i].overlayId, data[i].featureId, data[i].subfeatureId);
+                    if (data[i].eventType) {
+                        var checkEventType = Validator.validEventTypes(data[i].eventType);
+                        if (checkEventType.result) {
+                            handler(jsonSender.id, data[i].eventType, data[i].overlayId, data[i].featureId, data[i].subfeatureId);
                         } else {
-                            Error.send(jsonSender.id, Channels.MAP_FEATURE_STATUS_STOP, msg, checkEventTypes.msg);
+                            Error.send(jsonSender.id, Channels.MAP_FEATURE_STATUS_STOP, msg, checkEventType.msg);
                         }
                     } else {
                         // if none requested, handle _all_
-                        handler(jsonSender.id, Validator.SUPPORTED_EVENT_TYPES, data[i].overlayId, data[i].featureId, data[i].subfeatureId);
+                        handler(jsonSender.id, 'mouse-over', data[i].overlayId, data[i].featureId, data[i].subfeatureId);
                     }
                 }
             };
@@ -126,7 +126,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * Stop listening to the channel and handling events upon it.
          */
         removeHandlers: function() {
-            OWF.Eventing.unsubscribe(Channels.MAP_FATURE_STATUS_STOP);
+            OWF.Eventing.unsubscribe(Channels.MAP_FEATURE_STATUS_STOP);
         }
 
         /**

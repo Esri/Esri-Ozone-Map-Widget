@@ -78,6 +78,7 @@ define('cmwapi/Validator', function() {
                 result: true,
                 msg: ""
             };
+            var found = false;
 
             if (types) {
                 for (var i = 0; i < types.length; i++  ) {
@@ -101,24 +102,22 @@ define('cmwapi/Validator', function() {
          * @param types {Array<string>} The types to validate.
          * @returns {module:cmwapi/Validator~Result}
          */
-        validEventTypes: function(types) {
+        validEventTypes: function(eventType) {
             var retVal = {
                 result: true,
                 msg: ""
             };
+            var found = false;
 
-            if (types) {
-                for (var i = 0; i < types.length; i++  ) {
-                    var found = false;
-                    for (var j = 0; j < SUPPORTED_FEATURE_STATUS_EVENT_TYPES.length; j++ ) {
-                        if (SUPPORTED_FEATURE_STATUS_EVENT_TYPES[j] === types[i]) {
-                            found = true;
-                        }
+            if(eventType) {
+                for (var j = 0; j < SUPPORTED_FEATURE_STATUS_EVENT_TYPES.length; j++ ) {
+                    if (SUPPORTED_FEATURE_STATUS_EVENT_TYPES[j] === eventType) {
+                        found = true;
                     }
-                    if (!found) {
-                        retVal.result = false;
-                        retVal.msg += types[i] + ' is not a supported map feature status event type. ';
-                    }
+                }
+                if (!found) {
+                    retVal.result = false;
+                    retVal.msg += eventType + ' is not a supported map feature status event type. ';
                 }
             }
             return retVal;
