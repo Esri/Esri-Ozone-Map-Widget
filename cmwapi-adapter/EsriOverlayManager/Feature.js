@@ -2,10 +2,11 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
     "esri/layers/GraphicsLayer", "esri/graphic","esri/symbols/PictureMarkerSymbol", "esri/geometry/Point", "esri/InfoTemplate",
      "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/layers/ArcGISImageServiceLayer", "esri/config",
      "esri/symbols/SimpleFillSymbol","esri/symbols/SimpleLineSymbol","esri/dijit/AttributeInspector", "dojo/dom-construct",
-     "esri/tasks/query", "dojo/_base/Color","esri/renderers/SimpleRenderer"],
+     "esri/tasks/query", "dojo/_base/Color","esri/renderers/SimpleRenderer",'cmwapi-adapter/Vendor/geojson-utils/jsonConverters',
+     "esri/symbols/SimpleMarkerSymbol"],
     function(cmwapi, KMLLayer, WMSLayer, WMSLayerInfo, ViewUtils, GraphicsLayer, Graphic, PictureMarkerSymbol, Point, InfoTemplate,
         FeatureLayer, ArcGISDynamicMapServiceLayer, ArcGISImageServiceLayer, esriConfig, SimpleFillSymbol, SimpleLineSymbol,
-        AttributeInspector,domConstruct, Query, Color, SimpleRenderer) {
+        AttributeInspector,domConstruct, Query, Color, SimpleRenderer, jsonConverters, SimpleMarkerSymbol) {
 
     /**
      * @copyright © 2013 Environmental Systems Research Institute, Inc. (Esri)
@@ -124,50 +125,224 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
          * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
          */
         me.plotMarker = function(caller, overlayId, featureId, name, marker, zoom) {
-            if(typeof(manager.overlays[overlayId]) === 'undefined') {
-                manager.overlay.createOverlay(caller, overlayId, overlayId);
-            }
-            var overlay = manager.overlays[overlayId];
-            if(typeof(overlay.features[featureId]) !== 'undefined') {
-                me.deleteFeature(caller, overlayId, featureId);
-            }
-            var layer = new GraphicsLayer();
-            var markerImage = marker.iconUrl ? {url : marker.iconUrl, height: 25, width: 25} : MARKER_SYMBOL;
-            var symbol = new PictureMarkerSymbol(markerImage);
-            var point = new Point(marker.latlong.long, marker.latlong.lat);
-            var graphic = new Graphic(point, symbol);
-            var infoTemplate = new InfoTemplate();
+            // if(typeof(manager.overlays[overlayId]) === 'undefined') {
+            //     manager.overlay.createOverlay(caller, overlayId, overlayId);
+            // }
+            // var overlay = manager.overlays[overlayId];
+            // if(typeof(overlay.features[featureId]) !== 'undefined') {
+            //     me.deleteFeature(caller, overlayId, featureId);
+            // }
+            // var layer = new GraphicsLayer();
+            // var markerImage = marker.iconUrl ? {url : marker.iconUrl, height: 25, width: 25} : MARKER_SYMBOL;
+            // var symbol = new PictureMarkerSymbol(markerImage);
+            // var point = new Point(marker.latlong.long, marker.latlong.lat);
+            // var graphic = new Graphic(point, symbol);
+            // var infoTemplate = new InfoTemplate();
 
-            infoTemplate.setTitle(name);
-            infoTemplate.setContent(marker.details);
+            // infoTemplate.setTitle(name);
+            // infoTemplate.setContent(marker.details);
 
-            graphic.setAttributes({id: featureId, name: name});
-            graphic.setInfoTemplate(infoTemplate);
-            layer.add(graphic);
-            map.addLayer(layer);
-            zoom = zoom ? map.getMaxZoom() : undefined;
-            map.setZoom(zoom);
-            map.centerAt(point);
-            overlay.features[featureId] = new Feature(overlayId, featureId, name, 'marker', null, null, layer);
+            // graphic.setAttributes({id: featureId, name: name});
+            // graphic.setInfoTemplate(infoTemplate);
+            // layer.add(graphic);
+            // map.addLayer(layer);
+            // zoom = zoom ? map.getMaxZoom() : undefined;
+            // map.setZoom(zoom);
+            // map.centerAt(point);
+            // overlay.features[featureId] = new Feature(overlayId, featureId, name, 'marker', null, null, layer);
 
-            // Add the original marker data to the feature so it can be recreated if persisted to OWF preferences or elsewhere.
-            overlay.features[featureId].marker = marker;
+            // // Add the original marker data to the feature so it can be recreated if persisted to OWF preferences or elsewhere.
+            // overlay.features[featureId].marker = marker;
 
-            layer.on('click', function(e) {
-                cmwapi.feature.selected.send({
-                    overlayId:overlayId,
-                    featureId:featureId,
-                    selectedId: e.graphic.attributes.id,
-                    selectedName: e.graphic.attributes.name
-                });
-            });
+            // layer.on('click', function(e) {
+            //     cmwapi.feature.selected.send({
+            //         overlayId:overlayId,
+            //         featureId:featureId,
+            //         selectedId: e.graphic.attributes.id,
+            //         selectedName: e.graphic.attributes.name
+            //     });
+            // });
 
-            layer.on("error", function(e) {
-                _layerErrorHandler(caller, overlayId, featureId, layer, e);
-            });
-            manager.treeChanged();
+            // layer.on("error", function(e) {
+            //     _layerErrorHandler(caller, overlayId, featureId, layer, e);
+            // });
+            // manager.treeChanged();
+
+            //hack for the purpose of testing the integration of geojson
+            me.plotGeoJSON()
         };
 
+        /**
+         * @method plotMarker
+         * @param caller {String} the id of the widget which made the request resulting in this function call.
+         * @param overlayId {String} The id of the overlay on which this marker should be displayed
+         * @param featureId {String} The id to be given for the feature, unique to the provided overlayId
+         * @param name {String} The readable name for which this feature should be labeled
+         * @param marker {String} The icon and location information of the marker to be placed.
+         * @memberof module:cmwapi-adapter/EsriOverlayManager/Feature#
+         */
+        me.plotGeoJSON = function(caller, overlayId, featureId, name, marker, zoom) {;
+            ptSymbol = new SimpleMarkerSymbol().setSize(10).setColor(new Color([255, 0, 0]));
+            lineSymbol = new SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new Color([0, 255, 0]), 3);
+            polySymbol = new SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, lineSymbol, new Color([255, 0, 0]));
+            var jsonconverter = jsonConverters.geoJsonConverter();
+            esriFeats = jsonconverter.toEsri(getTestPoint().feature);
+            if (esriFeats && esriFeats.features){
+                for (i = 0; i < esriFeats.features.length; i++){
+                    var feat = esriFeats.features[i];
+                    graphic = new Graphic(feat);
+
+                    if (graphic.geometry.spatialReference.wkid === 4326){
+                      graphic.setGeometry(esri.geometry.geographicToWebMercator(graphic.geometry));
+                    }
+
+                    graphic.setSymbol(getSymbolForGraphic(graphic.geometry));
+                    graphic.setInfoTemplate(new InfoTemplate("Attributes", "${*}"));
+
+                    if (graphic) {
+                      map.graphics.add(graphic);
+                    }
+                }
+            }
+         /*
+       * Get the proper symbol for the type of geometry
+       */
+      function getSymbolForGraphic(geometry){
+        var symbol;
+        if (! geometry){
+          return symbol;
+        }
+
+        switch(geometry.type) {
+          case "point":
+            symbol = ptSymbol;
+            break;
+          case "multipoint":
+            symbol = ptSymbol;
+            break;
+          case "polyline":
+            symbol = lineSymbol;
+            break;
+          case "polygon":
+            symbol = polySymbol;
+            break;
+        }
+        console.log("SYMBOL: ", symbol);
+        return symbol;
+      }
+        };
+
+        function getTestPoint() {
+
+
+            //simple test data used to demostrate that geojson will plot
+           return {
+               "overlayId":"2d882141-0d9e-59d4-20bb-58e6d0460699.1",
+               "featureId":"example.geojson.1",
+               "format":"geojson",
+               "feature":{
+                  "type":"FeatureCollection",
+                  "features":[
+                     {
+                        "type":"Feature",
+                        "geometry":{
+                           "type":"Polygon",
+                           "coordinates":[
+                              [
+                                 100.0,
+                                 0.0
+                              ],
+                              [
+                                 101.0,
+                                 0.0
+                              ],
+                              [
+                                 101.0,
+                                 1.0
+                              ],
+                              [
+                                 100.0,
+                                 1.0
+                              ],
+                              [
+                                 100.0,
+                                 0.0
+                              ]
+                           ]
+                        },
+                        "properties":{
+                           "style":{
+                              "lineStyle":{
+                                 "color":{
+                                    "r":255,
+                                    "g":0,
+                                    "b":255,
+                                    "a":0.5
+                                 }
+                              },
+                              "polyStyle":{
+                                 "color":{
+                                    "r":0,
+                                    "g":255,
+                                    "b":0,
+                                    "a":0.25
+                                 }
+                              },
+                              "name":"test polygon",
+                              "id":"tp13456",
+                              "description":"polygon pop-up text"
+                           }
+                        }
+                    },
+                    {
+                       "type":"Feature",
+                       "geometry":{
+                          "type":"LineString",
+                          "coordinates":[
+                             [
+                                80.0,
+                                3.0
+                             ],
+                             [
+                                81.0,
+                                3.0
+                             ],
+                             [
+                                81.0,
+                                5.0
+                             ],
+                             [
+                                82.0,
+                                2.0
+                             ]
+                          ]
+                       },
+                       "properties":{
+                          "style":{
+                             "lineStyle":{
+                                "color":{
+                                   "r":0,
+                                   "g":255,
+                                   "b":255,
+                                   "a":0.5
+                                }
+                             }
+                          }
+                       },
+                       "name":"crossingLine",
+                       "id":"0x45632",
+                       "description":"this is a line you don’t want to cross"
+                    }
+                  ]
+               },
+               "name":"Sample GeoJSON Feature Collection",
+               "zoom":true,
+               "readOnly":false
+            };
+
+
+
+        }
         /**
          * Plots a kml layer via url to the map
          * @private
