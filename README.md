@@ -24,7 +24,7 @@ A set of AMD modules that implement the CMWAPI specification and allow any OWF w
 
 #### [cmwapi-adapter](https://github.com/Esri/Next-Century/tree/master/cmwapi-adapter)
 
-A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https://developers.arcgis.com/en/javascript/jsapi/map-amd.html) object to interact with OWF widgets via the CMWAPI.  These modules attach a serices of event handlers to the CMWAPI channels that translate CMWAPI messages to appropriate ArcGIS JavaScript calls via the [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi) modules. They represent the ArcGIS specific portion of a full CMWAPI implementation.
+A set of AMD modules that can be used in conjunction with an [ArcGIS Map](https://developers.arcgis.com/en/javascript/jsapi/map-amd.html) object to interact with OWF widgets via the CMWAPI.  These modules attach a series of event handlers to the CMWAPI channels that translate CMWAPI messages to appropriate ArcGIS JavaScript calls via the [cmwapi](https://github.com/Esri/Next-Century/tree/master/cmwapi) modules. They represent the ArcGIS specific portion of a full CMWAPI implementation.
 
 #### [Basic Map Widget](https://github.com/Esri/Next-Century/tree/master/basic-map-widget)
 

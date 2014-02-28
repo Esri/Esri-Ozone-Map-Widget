@@ -34,7 +34,7 @@ cd /home/vagrant
 #  But while it's still a private repo, we'll have to stop here...
 
 # download code - pulling into esri directory for ease in linking from web application server
-# git clone https://github.com/Esri/Next-Century.git esri
+# git clone https://github.com/Esri/Esri-Ozone-Map-Widget.git esri
 # cd esri
 
 # npm install
