@@ -464,7 +464,7 @@ define(["cmwapi/cmwapi", "esri/layers/KMLLayer", "esri/layers/WMSLayer", "esri/l
             var projectParams = new esri.tasks.ProjectParameters();
             projectParams.geometries = [layer.initialExtent];
             projectParams.outSR = map.spatialReference;
-            esriConfig.defaults.geometryService = new esri.tasks.GeometryService("http://servicesbeta.esri.com/ArcGIS/rest/services/Geometry/GeometryServer");
+            esriConfig.defaults.geometryService = new esri.tasks.GeometryService(window.esriGeometryService);
             var defer = esriConfig.defaults.geometryService.project(projectParams);
             dojo.when(defer, function (projectedGeometry) {
                 if (projectedGeometry.length > 0) {
