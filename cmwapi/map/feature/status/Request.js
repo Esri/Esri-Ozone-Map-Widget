@@ -53,14 +53,10 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          */
         addHandler: function(handler) {
             // Wrap their handler with validation checks for API for folks invoking outside of our calls
-            var newHandler = function(sender, msg) {
+            var newHandler = function(sender) {
                 var jsonSender = Ozone.util.parseJson(sender);
-                var jsonMsg = Ozone.util.parseJson(msg);
-                var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
 
-                for (var i = 0; i < data.length; i ++) {
-                    handler(jsonSender.id);
-                }
+                handler(jsonSender.id);
             };
             OWF.Eventing.subscribe(Channels.MAP_FEATURE_STATUS_REQUEST, newHandler);
             return newHandler;  // returning to make it easy to test!

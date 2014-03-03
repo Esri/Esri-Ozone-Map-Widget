@@ -174,8 +174,8 @@ define(["cmwapi/cmwapi", "cmwapi-adapter/feature/Status"], function(CommonMapApi
          * @memberof module:cmwapi-adapter/Feature#
          */
         me.handleSelected = function(sender, data) {
-            var senderObj = OWF.Util.parseJson(sender);
-            if(OWF.getInstanceId() !== senderObj.id) {
+
+            if(OWF.getInstanceId() !== sender) {
                 if(data.length > 1) {
                     var data_item;
                     for(var i = 0; i < data.length; i++) {

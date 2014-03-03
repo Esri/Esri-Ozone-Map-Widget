@@ -37,7 +37,7 @@ define(["cmwapi/Channels"], function(Channels) {
                 expect(Channels.getChannels().indexOf(Channels.MAP_FEATURE_STATUS_START) > -1);
                 expect(Channels.getChannels().indexOf(Channels.MAP_FEATURE_STATUS_STOP) > -1);
                 expect(Channels.getChannels().indexOf(Channels.MAP_FEATURE_STATUS_REQUEST) > -1);
-                expect(Channels.getChannels().indexOf(Channels.MAP_FEATURE_STATUS_LAYERS) > -1);
+                expect(Channels.getChannels().indexOf(Channels.MAP_FEATURE_STATUS_SUBLAYERS) > -1);
                 expect(Channels.getChannels().indexOf(Channels.MAP_FEATURE_STATUS_REPORT) > -1);
 
                 expect(Channels.getChannels().indexOf(Channels.MAP_VIEW_ZOOM) > -1);

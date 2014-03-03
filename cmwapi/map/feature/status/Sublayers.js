@@ -45,7 +45,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * @param layers.[overlayName] {String}
          * @param layers.featureId {String}
          * @param layers.[featureName] {String}
-         * @param layers.[subfeatureName] {String}
+         * @param layers.[subfeatureId] {String}
          */
         send: function(data) {
             var validData = Validator.validObjectOrArray(data);
@@ -53,12 +53,12 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
 
             if (validData.result) {
                 if (payload.length === 1) {
-                    OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_LAYERS, Ozone.util.toString(payload[0]));
+                    OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_SUBLAYERS, Ozone.util.toString(payload[0]));
                 } else {
-                    OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_LAYERS, Ozone.util.toString(payload));
+                    OWF.Eventing.publish(Channels.MAP_FEATURE_STATUS_SUBLAYERS, Ozone.util.toString(payload));
                 }
             } else {
-                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_STATUS_LAYERS, data, validData.msg);
+                Error.send( OWF.getInstanceId(), Channels.MAP_FEATURE_STATUS_SUBLAYERS, data, validData.msg);
                 return;
             }
         },
@@ -83,10 +83,11 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
                 var data = (Validator.isArray(jsonMsg)) ? jsonMsg : [jsonMsg];
 
                 for (var i = 0; i < data.length; i ++) {
-                    handler(jsonSender.id, data[i]);
+                    handler(jsonSender.id, data[i].overlayId, data[i].overlayName,
+                        data[i].featureId, data[i].featureName, data[i].subfeatureId);
                 }
             };
-            OWF.Eventing.subscribe(Channels.MAP_FEATURE_STATUS_LAYERS, newHandler);
+            OWF.Eventing.subscribe(Channels.MAP_FEATURE_STATUS_SUBLAYERS, newHandler);
             return newHandler;  // returning to make it easy to test!
         },
 
@@ -94,7 +95,7 @@ define(["cmwapi/Channels", "cmwapi/Validator", "cmwapi/map/Error"], function(Cha
          * Stop listening to the channel and handling events upon it.
          */
         removeHandlers: function() {
-            OWF.Eventing.unsubscribe(Channels.MAP_FEATURE_STATUS_LAYERS);
+            OWF.Eventing.unsubscribe(Channels.MAP_FEATURE_STATUS_SUBLAYERS);
         }
 
         /**

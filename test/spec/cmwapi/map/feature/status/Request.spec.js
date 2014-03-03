@@ -51,61 +51,7 @@ define(["cmwapi/Channels", "cmwapi/map/feature/status/Request", "cmwapi/map/Erro
             expect(Error.send.calls.length).toBe(0);
         });
 
-        xit("errors on bad event type", function() {
-            var eventing = OWF.Eventing;
-            expect(eventing).not.toBe(null);
-
-            spyOn(Request, 'send').andCallThrough();
-            spyOn(eventing, 'publish');
-            spyOn(Error, 'send').andCallThrough();
-
-            Request.send({eventType: 'fake-event'});
-            expect(Request.send).toHaveBeenCalled();
-
-            // expect publish to be called on the error channel.
-            expect(eventing.publish).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toBe(Channels.MAP_ERROR);
-            expect(Error.send.calls.length).toBe(1);
-        });
-
-        xit("errors on bad data object", function() {
-            var eventing = OWF.Eventing;
-            expect(eventing).not.toBe(null);
-
-            spyOn(Request, 'send').andCallThrough();
-            spyOn(eventing, 'publish');
-            spyOn(Error, 'send').andCallThrough();
-
-            //pre json encoded
-            Request.send( Ozone.util.toString({eventType: 'fake-event'}));
-            expect(Request.send).toHaveBeenCalled();
-
-            // expect publish to be called on the error channel.
-            expect(eventing.publish).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toBe(Channels.MAP_ERROR);
-            expect(Error.send.calls.length).toBe(1);
-        });
-
-        xit("does not error on data object array", function() {
-            var eventing = OWF.Eventing;
-            expect(eventing).not.toBe(null);
-
-            spyOn(Request, 'send').andCallThrough();
-            spyOn(eventing, 'publish');
-            spyOn(Error, 'send').andCallThrough();
-
-            //pre json encoded
-            Request.send([{eventType: 'mouse-over', overlayId: 'o', featureId: 'f', subfeatureId: 'sf'},
-                        {eventType: 'mouse-over', overlayId: 'o2', featureId: 'f2', subfeatureId: 'sf2'}]);
-            expect(Request.send).toHaveBeenCalled();
-
-            // expect publish to be called on the error channel.
-            expect(eventing.publish).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_STOP);
-            expect(Error.send.calls.length).toBe(0);
-        });
-
-        xit("unsubscribes the correct channel when removeHandlers is called", function() {
+        it("unsubscribes the correct channel when removeHandlers is called", function() {
 
             var eventing = OWF.Eventing;
 
@@ -115,43 +61,34 @@ define(["cmwapi/Channels", "cmwapi/map/feature/status/Request", "cmwapi/map/Erro
 
             Request.removeHandlers();
             expect(Request.removeHandlers).toHaveBeenCalled();
-            expect(eventing.unsubscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_STOP);
+            expect(eventing.unsubscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_REQUEST);
 
             expect(Error.send.calls.length).toBe(0);
 
         });
 
-        xit("wraps added handlers and passes along any optional elements", function() {
+        it("wraps added handlers and passes along any optional elements", function() {
 
             var eventing = OWF.Eventing;
             spyOn(eventing, 'subscribe');
 
             var testHandler = jasmine.createSpy('testHandler');
             var newHandler = Request.addHandler(testHandler);
-            expect(eventing.subscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_STOP);
+            expect(eventing.subscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_REQUEST);
 
-            var jsonVal = {
-                overlayId: 'o',
-                featureId: 'f',
-                subfeatureId: 'sf'
-            };
             var sender = {
                 id: INSTANCE_ID
             };
 
             // Spy on Error and call our wrapper handler.
             spyOn(Error, 'send');
-            newHandler(Ozone.util.toString(sender), Ozone.util.toString(jsonVal));
+            newHandler(Ozone.util.toString(sender));
 
             // We don't expect error to be called
             expect(Error.send.calls.length).toBe(0);
 
             // We DO expect testHandler to have been called and event type to have been filled in
             expect(testHandler.calls.length).toBe(1);
-            expect(testHandler.mostRecentCall.args[1]).toBe('mouse-over');
-            expect(testHandler.mostRecentCall.args[2]).toBe('o');
-            expect(testHandler.mostRecentCall.args[3]).toBe('f');
-            expect(testHandler.mostRecentCall.args[4]).toBe('sf');
         });
 
         xit("validates event type on handler and passes if good", function() {

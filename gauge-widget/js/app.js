@@ -56,7 +56,7 @@ require(["cmwapi/cmwapi", "esri/dijit/Gauge", "dojo/parser", "dojo/domReady!"], 
         CMWAPI.feature.status.request.send();
     }
 
-    var handleReceivedLayers = function(sender, layers) {
+    var handleReceivedLayers = function(sender, overlayId, overlayName, featureId, featureName, subfeatureId) {
         var selected = $(".map_selector option:selected");
         var mapWidgetId = selected.attr("mapId");
 

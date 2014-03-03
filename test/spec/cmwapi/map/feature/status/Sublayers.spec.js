@@ -17,7 +17,7 @@ define(["cmwapi/Channels", "cmwapi/map/feature/status/Sublayers", "cmwapi/map/Er
     "test/mock/OWF", "test/mock/Ozone"],
     function(Channels, Sublayers, Error, Validator, OWF, Ozone) {
 
-    xdescribe("Verify " + Channels.MAP_FEATURE_STATUS_SUBLAYER + " module", function() {
+    describe("Verify " + Channels.MAP_FEATURE_STATUS_SUBLAYERS + " module", function() {
 
         var INSTANCE_ID = OWF.getInstanceId();
 
@@ -45,27 +45,10 @@ define(["cmwapi/Channels", "cmwapi/map/feature/status/Sublayers", "cmwapi/map/Er
 
             // expect publish to be called
             expect(eventing.publish).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_STOP);
+            expect(eventing.publish.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_SUBLAYERS);
 
             // don't expect error to be called
             expect(Error.send.calls.length).toBe(0);
-        });
-
-        it("errors on bad event type", function() {
-            var eventing = OWF.Eventing;
-            expect(eventing).not.toBe(null);
-
-            spyOn(Sublayers, 'send').andCallThrough();
-            spyOn(eventing, 'publish');
-            spyOn(Error, 'send').andCallThrough();
-
-            Sublayers.send({eventType: 'fake-event'});
-            expect(Sublayers.send).toHaveBeenCalled();
-
-            // expect publish to be called on the error channel.
-            expect(eventing.publish).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toBe(Channels.MAP_ERROR);
-            expect(Error.send.calls.length).toBe(1);
         });
 
         it("errors on bad data object", function() {
@@ -77,7 +60,7 @@ define(["cmwapi/Channels", "cmwapi/map/feature/status/Sublayers", "cmwapi/map/Er
             spyOn(Error, 'send').andCallThrough();
 
             //pre json encoded
-            Sublayers.send( Ozone.util.toString({eventType: 'fake-event'}));
+            Sublayers.send( Ozone.util.toString({foo: 'bar'}));
             expect(Sublayers.send).toHaveBeenCalled();
 
             // expect publish to be called on the error channel.
@@ -101,7 +84,7 @@ define(["cmwapi/Channels", "cmwapi/map/feature/status/Sublayers", "cmwapi/map/Er
 
             // expect publish to be called on the error channel.
             expect(eventing.publish).toHaveBeenCalled();
-            expect(eventing.publish.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_STOP);
+            expect(eventing.publish.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_SUBLAYERS);
             expect(Error.send.calls.length).toBe(0);
         });
 
@@ -115,7 +98,7 @@ define(["cmwapi/Channels", "cmwapi/map/feature/status/Sublayers", "cmwapi/map/Er
 
             Sublayers.removeHandlers();
             expect(Sublayers.removeHandlers).toHaveBeenCalled();
-            expect(eventing.unsubscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_STOP);
+            expect(eventing.unsubscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_SUBLAYERS);
 
             expect(Error.send.calls.length).toBe(0);
 
@@ -128,11 +111,13 @@ define(["cmwapi/Channels", "cmwapi/map/feature/status/Sublayers", "cmwapi/map/Er
 
             var testHandler = jasmine.createSpy('testHandler');
             var newHandler = Sublayers.addHandler(testHandler);
-            expect(eventing.subscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_STOP);
+            expect(eventing.subscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_SUBLAYERS);
 
             var jsonVal = {
                 overlayId: 'o',
+                overlayName: 'overlay',
                 featureId: 'f',
+                featureName: 'feature',
                 subfeatureId: 'sf'
             };
             var sender = {
@@ -148,31 +133,35 @@ define(["cmwapi/Channels", "cmwapi/map/feature/status/Sublayers", "cmwapi/map/Er
 
             // We DO expect testHandler to have been called and event type to have been filled in
             expect(testHandler.calls.length).toBe(1);
-            expect(testHandler.mostRecentCall.args[1]).toBe('mouse-over');
-            expect(testHandler.mostRecentCall.args[2]).toBe('o');
+            expect(testHandler.mostRecentCall.args[1]).toBe('o');
+            expect(testHandler.mostRecentCall.args[2]).toBe('overlay');
             expect(testHandler.mostRecentCall.args[3]).toBe('f');
-            expect(testHandler.mostRecentCall.args[4]).toBe('sf');
+            expect(testHandler.mostRecentCall.args[4]).toBe('feature');
+            expect(testHandler.mostRecentCall.args[5]).toBe('sf');
         });
 
-        it("validates event type on handler and passes if good", function() {
+        it("wraps added handlers and passes along any optional elements without breaking on array",
+            function() {
 
             var eventing = OWF.Eventing;
             spyOn(eventing, 'subscribe');
 
             var testHandler = jasmine.createSpy('testHandler');
             var newHandler = Sublayers.addHandler(testHandler);
-            expect(eventing.subscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_STOP);
+            expect(eventing.subscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_SUBLAYERS);
 
             var jsonVal = [{
                 overlayId: 'o',
+                overlayName: 'overlay',
                 featureId: 'f',
-                subfeatureId: 'sf',
-                eventType: 'mouse-over'
+                featureName: 'feature',
+                subfeatureId: 'sf'
             },{
                 overlayId: 'o2',
+                overlayName: 'overlay2',
                 featureId: 'f2',
-                subfeatureId:'sf2',
-                eventType: 'click'
+                featureName: 'feature2',
+                subfeatureId: 'sf2'
             }];
             var sender = {
                 id: INSTANCE_ID
@@ -187,36 +176,11 @@ define(["cmwapi/Channels", "cmwapi/map/feature/status/Sublayers", "cmwapi/map/Er
 
             // We DO expect testHandler to have been called and event type to have been filled in
             expect(testHandler.calls.length).toBe(2);
-        });
-
-        it("validates event type on handler and errors if bad", function() {
-
-            var eventing = OWF.Eventing;
-            spyOn(eventing, 'subscribe');
-
-            var testHandler = jasmine.createSpy('testHandler');
-            var newHandler = Sublayers.addHandler(testHandler);
-            expect(eventing.subscribe.mostRecentCall.args[0]).toBe(Channels.MAP_FEATURE_STATUS_STOP);
-
-            var jsonVal = {
-                overlayId: 'o',
-                featureId: 'f',
-                subfeatureId: 'sf',
-                eventType: 'fake-event'
-            };
-            var sender = {
-                id: INSTANCE_ID
-            };
-
-            // Spy on Error and call our wrapper handler.
-            spyOn(Error, 'send');
-            newHandler(Ozone.util.toString(sender), Ozone.util.toString(jsonVal));
-
-            // We don't expect error to be called
-            expect(Error.send.calls.length).toBe(1);
-
-            // We DO expect testHandler to have been called and event type to have been filled in
-            expect(testHandler.calls.length).toBe(0);
+            expect(testHandler.mostRecentCall.args[1]).toBe('o2');
+            expect(testHandler.mostRecentCall.args[2]).toBe('overlay2');
+            expect(testHandler.mostRecentCall.args[3]).toBe('f2');
+            expect(testHandler.mostRecentCall.args[4]).toBe('feature2');
+            expect(testHandler.mostRecentCall.args[5]).toBe('sf2');
         });
     });
 });

@@ -17,7 +17,7 @@ define(function() {
     var MAP_FEATURE_STATUS_START = 'map.feature.status.start';
     var MAP_FEATURE_STATUS_STOP = 'map.feature.status.stop';
     var MAP_FEATURE_STATUS_REQUEST = 'map.feature.status.request';
-    var MAP_FEATURE_STATUS_LAYERS = 'map.feature.status.layers';
+    var MAP_FEATURE_STATUS_SUBLAYERS = 'map.feature.status.layers';
     var MAP_FEATURE_STATUS_REPORT = 'map.feature.status.report';
 
     var MAP_VIEW_ZOOM = 'map.view.zoom';
@@ -126,7 +126,7 @@ define(function() {
         MAP_FEATURE_STATUS_START: MAP_FEATURE_STATUS_START,
         MAP_FEATURE_STATUS_STOP: MAP_FEATURE_STATUS_STOP,
         MAP_FEATURE_STATUS_REQUEST: MAP_FEATURE_STATUS_REQUEST,
-        MAP_FEATURE_STATUS_LAYERS: MAP_FEATURE_STATUS_LAYERS,
+        MAP_FEATURE_STATUS_SUBLAYERS: MAP_FEATURE_STATUS_SUBLAYERS,
         MAP_FEATURE_STATUS_REPORT: MAP_FEATURE_STATUS_REPORT,
 
 
