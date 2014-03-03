@@ -213,6 +213,11 @@ html, body {
     overflow: auto;
 
 }
+
+.esriPopup .contentPane {
+    overflow-x: hidden;
+}
+
 .esriPopup a {
     text-decoration: none;
 }
@@ -299,3 +304,6 @@ img {
     width: 100%;
 }
 
+.esriPrintButton{
+  color:#4A777A;
+}

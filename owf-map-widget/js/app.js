@@ -24,8 +24,8 @@
 require([
     "esri/map", "digits/overlayManager/js/overlayManager", "digits/legend/js/legend",
     "digits/basemapGallery/js/basemapGallery", "esri/dijit/Scalebar", "esri/dijit/Geocoder", "dojo/_base/array",
-    "dojo/parser", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
-    function(Map, OverlayManager, Legend, BasemapGallery, Scalebar, Geocoder, arrayUtils, parser) {
+    "dojo/parser", "esri/dijit/Print", "esri/tasks/PrintTemplate", "notify/notify.min", "dojo/dom-style", "dojo/domReady!"],
+    function(Map, OverlayManager, Legend, BasemapGallery, Scalebar, Geocoder, arrayUtils, parser, Print, PrintTemplate) {
 
     var map = new Map("map", {
         basemap: "streets"
@@ -87,6 +87,50 @@ require([
             $("#legend_button").on('click', legend.handleLegendPopOut);
             //$('#data_div_button').on('click', handleDataDivPopOut);
             $("[rel=tooltip]").tooltip({ placement: 'bottom'});
+            createPrintDijit("asdf");
        });
     }
+
+
+     function createPrintDijit(printTitle) {
+          var layoutTemplate, templateNames, mapOnlyIndex, templates;
+
+          // create an array of objects that will be used to create print templates
+          var layouts = [{
+            name: "Letter ANSI A Landscape",
+            label: "Landscape (PDF)",
+            format: "pdf",
+            options: {
+              legendLayers: [], // empty array means no legend
+              scalebarUnit: "Miles",
+              titleText: printTitle + ", Landscape PDF"
+            }
+          }, {
+            name: "Letter ANSI A Portrait",
+            label: "Portrait (Image)",
+            format: "jpg",
+            options:  {
+              legendLayers: [],
+              scaleBarUnit: "Miles",
+              titleText: printTitle + ", Portrait JPG"
+            }
+          }];
+
+          // create the print templates
+          var templates = arrayUtils.map(layouts, function(lo) {
+            var t = new PrintTemplate();
+            t.layout = lo.name;
+            t.label = lo.label;
+            t.format = lo.format;
+            t.layoutOptions = lo.options;
+            return t;
+          });
+
+          var printer = new Print({
+            map:map,
+            templates: templates,
+            url: "http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task",
+          }, "print_button");
+          printer.startup();
+        }
 });
