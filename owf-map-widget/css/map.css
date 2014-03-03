@@ -22,7 +22,7 @@ html, body {
     background-repeat: no-repeat;
     border-radius: 5px;
     border: 1.5px solid #928F8F;
-     float: left;
+    float: left;
     z-index:3;
 }
 #legend_button:hover{
@@ -31,6 +31,29 @@ html, body {
     background-repeat: no-repeat;
 }
 #legend_button.selected{
+    background-image: url("../images/icons/Legend_Selected.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+#print-button {
+    margin-right: 5px;
+    width: 30px;
+    height: 30px;
+    background-image: url("../images/icons/Legend_Default.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    border: 1.5px solid #928F8F;
+     float: left;
+    z-index:3;
+}
+#print-button:hover{
+    background-image: url("../images/icons/Legend_Hover.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+#print-button.selected{
     background-image: url("../images/icons/Legend_Selected.png");
     background-position: center center;
     background-repeat: no-repeat;
@@ -95,7 +118,7 @@ html, body {
     z-index: 2;
     right: 20px;
     float: left;
-    width: 350px;
+    width: 375px;
 }
 .esriAttribution {
     visibility: hidden;
