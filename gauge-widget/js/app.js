@@ -53,6 +53,8 @@ require(["cmwapi/cmwapi", "esri/dijit/Gauge", "dojo/parser", "dojo/domReady!"], 
     };
 
     var handleMapSelected = function() {
+        var selected = $(".map_selector option:selected");
+        selectedMapId = selected.attr("mapId");
         CMWAPI.feature.status.request.send();
     }
 
@@ -105,7 +107,8 @@ require(["cmwapi/cmwapi", "esri/dijit/Gauge", "dojo/parser", "dojo/domReady!"], 
     };
 
     var handleReport = function(sender, overlayId, featureId, subfeatureId, value) {
-        if(overlayId === selectedOverlayId &&
+        if(sender === selectedMapId &&
+            overlayId === selectedOverlayId &&
             featureId === selectedFeatureId &&
             subfeatureId === selectedSubfeatureId) {
             gauge.set('value', value);
