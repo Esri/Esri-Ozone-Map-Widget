@@ -200,7 +200,7 @@ define(["cmwapi/cmwapi", "esri/kernel", "esri/geometry/Extent", "esri/geometry/P
             var params = new PrintParameters();
             params.map = map;
             var filename;
-            var printTask = new PrintTask("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task");
+            var printTask = new PrintTask(window.esriPrintService);
             if(data.template) {
                 var t = new PrintTemplate();
                 t.format = data.template.format;

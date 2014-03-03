@@ -103,6 +103,18 @@ if (!window.esriJsPath) {
     })();
 }
 
+if (!window.esriGeometryService) {
+
+  window.esriGeometryService = "http://servicesbeta.esri.com/ArcGIS/rest/services/Geometry/GeometryServer";
+
+}
+
+if (!window.esriPrintService) {
+
+  window.esriPrintService = "http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task";
+
+}
+
 /**
  * Dojo AMD loader configuration defined to allow ESRI libraries to be
  * loaded either from the Internet or within this webapp depending on the
